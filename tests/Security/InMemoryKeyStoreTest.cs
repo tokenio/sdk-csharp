@@ -27,9 +27,9 @@ namespace tests.Security
             var privileged = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
             var standard = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Standard);
             var low = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Low);
-            keyStore.put(memberId, privileged);
-            keyStore.put(memberId, standard);
-            keyStore.put(memberId, low);
+            keyStore.Put(memberId, privileged);
+            keyStore.Put(memberId, standard);
+            keyStore.Put(memberId, low);
             Assert.AreEqual(privileged, keyStore.GetByLevel(memberId, Privileged));
             Assert.AreEqual(standard, keyStore.GetByLevel(memberId, Standard));
             Assert.AreEqual(low, keyStore.GetByLevel(memberId, Low));
@@ -40,8 +40,8 @@ namespace tests.Security
         {
             var key1 = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
             var key2 = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
-            keyStore.put(memberId, key1);
-            keyStore.put(memberId, key2);
+            keyStore.Put(memberId, key1);
+            keyStore.Put(memberId, key2);
             Assert.AreEqual(key1, keyStore.GetById(memberId, key1.Id));
             Assert.AreEqual(key2, keyStore.GetById(memberId, key2.Id));
         }
@@ -51,8 +51,8 @@ namespace tests.Security
         {
             var oldKey = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
             var newKey = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
-            keyStore.put(memberId, oldKey);
-            keyStore.put(memberId, newKey);
+            keyStore.Put(memberId, oldKey);
+            keyStore.Put(memberId, newKey);
             Assert.AreEqual(newKey, keyStore.GetByLevel(memberId, Privileged));
         }
 
@@ -62,9 +62,9 @@ namespace tests.Security
             var privileged = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
             var standard = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Standard);
             var low = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Low);
-            keyStore.put(memberId, privileged);
-            keyStore.put(memberId, standard);
-            keyStore.put(memberId, low);
+            keyStore.Put(memberId, privileged);
+            keyStore.Put(memberId, standard);
+            keyStore.Put(memberId, low);
             var keyList = new List<KeyPair> {privileged, standard, low};
             CollectionAssert.AreEquivalent(keyStore.KeyList(memberId), keyList);
         }
@@ -75,8 +75,8 @@ namespace tests.Security
             var member2 = Util.Nonce();
             var key1 = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
             var key2 = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
-            keyStore.put(memberId, key1);
-            keyStore.put(member2, key2);
+            keyStore.Put(memberId, key1);
+            keyStore.Put(member2, key2);
             Assert.AreEqual(key1, keyStore.GetById(memberId, key1.Id));
             Assert.AreEqual(key2, keyStore.GetById(member2, key2.Id));
         }

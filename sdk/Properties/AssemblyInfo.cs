@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("sdk")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("C# SDK for interacting with the Token System")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Token, Inc")]
 [assembly: AssemblyProduct("sdk")]

@@ -446,7 +446,7 @@ namespace sdk.Api
                         State = parameters.SerializedState
                     };
 
-                    Util.verifySignature(member, payload, parameters.Signature);
+                    Util.VerifySignature(member, payload, parameters.Signature);
 
                     return TokenRequestCallback.Create(parameters.TokenId, state.InnerState);
                 });

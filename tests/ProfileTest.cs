@@ -2,7 +2,6 @@
 using Google.Protobuf;
 using Io.Token.Proto.Common.Member;
 using NUnit.Framework;
-using sdk;
 using sdk.Api;
 using static Io.Token.Proto.Common.Member.ProfilePictureSize;
 

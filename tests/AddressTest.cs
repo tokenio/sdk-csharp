@@ -1,9 +1,9 @@
-﻿using sdk;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Io.Token.Proto.Common.Address;
 using NUnit.Framework;
+using sdk;
 using sdk.Api;
 using static tests.TestUtil;
 
@@ -69,7 +69,7 @@ namespace tests
         }
 
         [Test]
-        public void getAddress_NotFound()
+        public void GetAddress_NotFound()
         {
             var fakeAddressId = Util.Nonce();
             Assert.Throws<AggregateException>(() => member.GetAddress(fakeAddressId));

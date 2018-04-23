@@ -10,7 +10,7 @@ namespace sdk.Security
         /// </summary>
         /// <param name="memberId">the member id</param>
         /// <param name="keyPair">the key paid</param>
-        void put(string memberId, KeyPair keyPair);
+        void Put(string memberId, KeyPair keyPair);
 
         /// <summary>
         /// Gets a key pair of a specific level.

@@ -1,7 +1,6 @@
 ﻿using System;
 using Io.Token.Proto.Common.Token;
 using NUnit.Framework;
-using sdk;
 using sdk.Api;
 using static sdk.Api.TokenRequestOptions;
 

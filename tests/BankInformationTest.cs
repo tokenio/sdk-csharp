@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using sdk;
 using sdk.Api;
 using static tests.TestUtil;
 

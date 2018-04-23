@@ -17,7 +17,7 @@ namespace sdk.Security
         public Key GenerateKey(Key.Types.Level level)
         {
             var keyPair = PublicKeyAuth.GenerateKeyPair().ToKeyPair(level);
-            keys.put(memberId, keyPair);
+            keys.Put(memberId, keyPair);
             return keyPair.ToKey();
         }
 

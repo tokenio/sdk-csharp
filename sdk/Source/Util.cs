@@ -147,7 +147,7 @@ namespace sdk
             return ToBigEndianHex(Sha256Hash(Encoding.ASCII.GetBytes(str)));
         }
 
-        public static void verifySignature(
+        public static void VerifySignature(
             Member member,
             IMessage payload,
             Signature signature)

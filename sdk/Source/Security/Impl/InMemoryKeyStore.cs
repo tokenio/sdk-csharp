@@ -16,7 +16,7 @@ namespace sdk.Security
             AllKeys = new Dictionary<Tuple<string, string>, KeyPair>();
         }
 
-        public void put(string memberId, KeyPair keyPair)
+        public void Put(string memberId, KeyPair keyPair)
         {
             LatestKeys[new Tuple<string, Key.Types.Level>(memberId, keyPair.Level)] = keyPair;
             AllKeys[new Tuple<string, string>(memberId, keyPair.Id)] = keyPair;
