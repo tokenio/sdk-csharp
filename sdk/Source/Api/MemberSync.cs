@@ -764,14 +764,14 @@ namespace sdk.Api
         }
 
         /// <summary>
-        /// Requests a signature for a (tokenID | state) payload.
+        /// Signs a token request state payload.
         /// </summary>
         /// <param name="tokenId">the token id</param>
         /// <param name="state">the state</param>
         /// <returns>the signature</returns>
-        public Signature RequestSignature(string tokenId, string state)
+        public Signature SignTokenRequestState(string tokenId, string state)
         {
-            return async.RequestSignature(tokenId, state).Result;
+            return async.SignTokenRequestState(tokenId, state).Result;
         }
 
         /// <summary>

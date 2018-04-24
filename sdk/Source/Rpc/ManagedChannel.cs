@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Threading;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
@@ -6,9 +7,10 @@ using log4net;
 
 namespace sdk.Rpc
 {
-    public class ManagedChannel
+    public class ManagedChannel : IDisposable
     {
-        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog logger = LogManager
+            .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         
         private static readonly int SHUTDOWN_DURATION_MS = 10000;
         
@@ -21,18 +23,18 @@ namespace sdk.Rpc
             this.interceptors = interceptors;
         }
 
-        public void Shutdown()
+        public CallInvoker BuildInvoker()
+        {
+            return channel.Intercept(interceptors);
+        }
+
+        public void Dispose()
         {
             if (!channel.ShutdownAsync().Wait(SHUTDOWN_DURATION_MS))
             {
                 logger.Error("Channel shutdown timed out! Interrupting thread...");
                 Thread.CurrentThread.Interrupt();
             }
-        }
-
-        public CallInvoker BuildInvoker()
-        {
-            return channel.Intercept(interceptors);
         }
     }
 }

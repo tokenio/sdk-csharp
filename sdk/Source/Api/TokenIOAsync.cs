@@ -440,7 +440,7 @@ namespace sdk.Api
                         throw new InvalidStateException(csrfToken);
                     }
 
-                    var payload = new RequestSignaturePayload
+                    var payload = new TokenRequestStatePayload
                     {
                         TokenId = parameters.TokenId,
                         State = parameters.SerializedState
@@ -465,7 +465,7 @@ namespace sdk.Api
 
         public void Dispose()
         {
-            channel.Shutdown();
+            channel.Dispose();
         }
     }
 }

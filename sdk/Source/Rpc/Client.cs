@@ -941,22 +941,22 @@ namespace sdk.Rpc
         }
 
         /// <summary>
-        /// Request a signature for a (tokenID | state) payload.
+        /// Signs a token request state payload.
         /// </summary>
         /// <param name="tokenId">the token id</param>
         /// <param name="state">the state</param>
         /// <returns>the signature</returns>
-        public Task<Signature> RequestSignature(string tokenId, string state)
+        public Task<Signature> SignTokenRequestState(string tokenId, string state)
         {
-            var request = new RequestSignatureRequest
+            var request = new SignTokenRequestStateRequest
             {
-                Payload = new RequestSignaturePayload
+                Payload = new TokenRequestStatePayload
                 {
                     TokenId = tokenId,
                     State = state
                 }
             };
-            return gateway.RequestSignatureAsync(request)
+            return gateway.SignTokenRequestStateAsync(request)
                 .ToTask(response => response.Signature);
         }
 

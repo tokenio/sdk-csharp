@@ -168,7 +168,7 @@ namespace tests
                 .ParseQueryString(Util.GetQueryString(tokenRequestUrl))
                 .Get("state");
 
-            var signature = member1.RequestSignature(
+            var signature = member1.SignTokenRequestState(
                 token.Id,
                 stateParameter);
 
@@ -181,6 +181,16 @@ namespace tests
                 csrfToken);
 
             Assert.AreEqual(originalState, callback.State);
+        }
+        
+        [Test]
+        public void RequestSignature() {
+            var token = member1.CreateAccessToken(AccessTokenBuilder
+                .Create(member2.FirstAlias())
+                .ForAll()
+                .Build());
+            var signature = member1.SignTokenRequestState(token.Id, Util.Nonce());
+            Assert.IsNotEmpty(signature.Signature_);
         }
     }
 }
