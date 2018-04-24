@@ -2,7 +2,15 @@
 
 C# SDK for interacting with TokenOS.
 
-## Using the SDK on Linux/OSX
+Account linking and notification features are currently not supported.
+
+## Using the SDK
+
+### On Windows
+
+There are no prerequisites for Windows.
+
+### On Linux and OSX
 
 1. Install `Mono` from [here](https://www.mono-project.com/download/stable/).
 
@@ -21,7 +29,7 @@ C# SDK for interacting with TokenOS.
         xbuild libsodium-net.sln
 
     For more information, see [here](https://github.com/adamcaudill/libsodium-net).
-        
+
 ## Build
 
 To build the SDK and run tests:
