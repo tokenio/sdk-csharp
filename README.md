@@ -1,10 +1,10 @@
-# sdk-csharp
+# SDK-CSharp
 
 C# SDK for interacting with TokenOS.
 
 Account linking and notification features are currently not supported.
 
-## Using the SDK
+## Requirements
 
 ### On Windows
 
@@ -26,12 +26,15 @@ There are no prerequisites for Windows.
 
     **For Linux**:
 
-        xbuild libsodium-net.sln
+        sudo apt-get install libsodium-dev
 
     For more information, see [here](https://github.com/adamcaudill/libsodium-net).
 
 ## Build
 
+Follow the steps above, make sure you have `ruby` and `curl` installed.
+
 To build the SDK and run tests:
 
         ./build.sh
+
