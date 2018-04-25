@@ -114,7 +114,7 @@ if [ ! -f "$CAKE_EXE" ]; then
 fi
 
 # Restore required packages.
-nuget restore
+mono "$NUGET_EXE" restore
 
 # Fetch the latest protobufs and build.
 ruby build_proto.rb
