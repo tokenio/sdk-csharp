@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Io.Token.Proto.Common.Address;
-using Io.Token.Proto.Common.Alias;
-using sdk;
-using sdk.Api;
-using static Io.Token.Proto.Common.Alias.Alias.Types.Type;
+using Tokenio;
+using Tokenio.Proto.Common.AddressProtos;
+using Tokenio.Proto.Common.AliasProtos;
+using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 
-namespace tests
+namespace Test
 {
     public class TestUtil
     {

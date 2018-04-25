@@ -1,23 +1,25 @@
 ﻿using System;
-using Io.Token.Proto.Common.Token;
 using NUnit.Framework;
-using sdk.Api;
-using static sdk.Api.TokenRequestOptions;
+using Tokenio;
+using Tokenio.Proto.Common.TokenProtos;
+using static Test.TestUtil;
+using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types;
+using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types.Resource.Types;
 
-namespace tests
+namespace Test
 {
     [TestFixture]
     public class TokenRequestTest
     {
         private static readonly string tokenUrl = "https://token.io";
-        private static readonly TokenIO tokenIO = TestUtil.NewSdkInstance();
+        private static readonly TokenIO tokenIO = NewSdkInstance();
 
         private MemberSync memberSync;
 
         [SetUp]
         public void Init()
         {
-            memberSync = tokenIO.CreateMember(TestUtil.Alias());
+            memberSync = tokenIO.CreateMember(Alias());
         }
 
         [Test]
@@ -28,7 +30,7 @@ namespace tests
                 Payload = memberSync.CreateTransferToken(10.0, "EUR")
                     .SetToMemberId(memberSync.MemberId())
                     .BuildPayload(),
-                Options = {{redirectUrl.ToString(), tokenUrl}}
+                Options = {{TokenRequestOptions.redirectUrl.ToString(), tokenUrl}}
             };
             var requestId = memberSync.StoreTokenRequest(storedRequest);
             Assert.IsNotEmpty(requestId);
@@ -53,14 +55,14 @@ namespace tests
                     {
                         Resources =
                         {
-                            new AccessBody.Types.Resource
+                            new Resource
                             {
-                                AllAddresses = new AccessBody.Types.Resource.Types.AllAddresses()
+                                AllAddresses = new AllAddresses()
                             }
                         }
                     }
                 },
-                Options = {{redirectUrl.ToString(), tokenUrl}}
+                Options = {{TokenRequestOptions.redirectUrl.ToString(), tokenUrl}}
             };
             var requestId = memberSync.StoreTokenRequest(storedRequest);
             Assert.IsNotEmpty(requestId);

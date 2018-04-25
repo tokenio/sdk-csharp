@@ -1,12 +1,11 @@
 ﻿using System;
 using Google.Protobuf;
 using NUnit.Framework;
-using sdk;
-using sdk.Api;
-using static Io.Token.Proto.Common.Blob.Blob.Types;
-using static tests.TestUtil;
+using Tokenio;
+using static Test.TestUtil;
+using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 
-namespace tests
+namespace Test
 {
     [TestFixture]
     public class BlobTest

@@ -1,12 +1,12 @@
 ﻿using System.Security.Cryptography;
-using Io.Token.Proto.Common.Alias;
 using NUnit.Framework;
-using sdk;
-using sdk.Security;
-using static Io.Token.Proto.Common.Alias.Alias.Types.Type;
-using static Io.Token.Proto.Common.Security.Key.Types.Level;
+using Tokenio;
+using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Security;
+using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace tests.Security
+namespace Test.Security
 {
     [TestFixture]
     public class CryptoEngineTest

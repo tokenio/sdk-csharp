@@ -1,14 +1,14 @@
 ﻿using System.Text;
-using Io.Token.Proto.Common.Alias;
-using Io.Token.Proto.Common.Token;
 using NUnit.Framework;
-using sdk;
-using sdk.Security;
-using static Io.Token.Proto.Common.Alias.Alias.Types.Type;
-using static Io.Token.Proto.Common.Token.AccessBody.Types;
-using static Io.Token.Proto.Common.Token.AccessBody.Types.Resource.Types;
+using Tokenio;
+using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.TokenProtos;
+using Tokenio.Security;
+using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
+using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types;
+using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types.Resource.Types;
 
-namespace tests
+namespace Test
 {
     [TestFixture]
     public class UtilityTest
