@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using sdk;
-using sdk.Security;
 using Sodium;
-using static Io.Token.Proto.Common.Security.Key.Types.Level;
-using KeyPair = sdk.Security.KeyPair;
+using Tokenio;
+using Tokenio.Security;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
+using KeyPair = Tokenio.Security.KeyPair;
 
-namespace tests.Security
+namespace Test.Security
 {
     [TestFixture]
     public class InMemoryKeyStoreTest

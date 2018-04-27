@@ -1,21 +1,22 @@
-﻿using Io.Token.Proto.Common.Member;
-using NUnit.Framework;
-using sdk.Api;
-using sdk.Security;
-using static Io.Token.Proto.Common.Member.MemberRecoveryOperation.Types;
-using static Io.Token.Proto.Common.Security.Key.Types.Level;
+﻿using NUnit.Framework;
+using Tokenio;
+using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Security;
+using static Test.TestUtil;
+using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace tests
+namespace Test
 {
     [TestFixture]
     public class MemberRegistrationTest
     {
-        private static readonly TokenIO tokenIO = TestUtil.NewSdkInstance();
+        private static readonly TokenIO tokenIO = NewSdkInstance();
 
         [Test]
         public void CreateMember()
         {
-            var alias = TestUtil.Alias();
+            var alias = Alias();
             var member = tokenIO.CreateMember(alias);
             CollectionAssert.Contains(member.Aliases(), alias);
             Assert.AreEqual(3, member.Keys().Count);
@@ -32,7 +33,7 @@ namespace tests
         [Test]
         public void LoginMember()
         {
-            var alias = TestUtil.Alias();
+            var alias = Alias();
             var member = tokenIO.CreateMember(alias);
             var loggedIn = tokenIO.GetMember(member.MemberId());
             CollectionAssert.AreEqual(member.Aliases(), loggedIn.Aliases());
@@ -42,10 +43,10 @@ namespace tests
         [Test]
         public void ProvisionDevice()
         {
-            var alias = TestUtil.Alias();
+            var alias = Alias();
             var member = tokenIO.CreateMember(alias);
 
-            var secondDevice = TestUtil.NewSdkInstance();
+            var secondDevice = NewSdkInstance();
 
             var deviceInfo = secondDevice.ProvisionDevice(member.FirstAlias());
             member.ApproveKeys(deviceInfo.Keys);
@@ -59,9 +60,9 @@ namespace tests
         [Test]
         public void AddAlias()
         {
-            var alias1 = TestUtil.Alias();
-            var alias2 = TestUtil.Alias();
-            var alias3 = TestUtil.Alias();
+            var alias1 = Alias();
+            var alias2 = Alias();
+            var alias3 = Alias();
 
             var member = tokenIO.CreateMember(alias1);
             member.AddAlias(alias2);
@@ -73,8 +74,8 @@ namespace tests
         [Test]
         public void RemoveAlias()
         {
-            var alias1 = TestUtil.Alias();
-            var alias2 = TestUtil.Alias();
+            var alias1 = Alias();
+            var alias2 = Alias();
 
             var member = tokenIO.CreateMember(alias1);
 
@@ -88,14 +89,14 @@ namespace tests
         [Test]
         public void AliasDoesNotExist()
         {
-            var alias = TestUtil.Alias();
+            var alias = Alias();
             Assert.False(tokenIO.AliasExists(alias));
         }
 
         [Test]
         public void AliasExists()
         {
-            var alias = TestUtil.Alias();
+            var alias = Alias();
             tokenIO.CreateMember(alias);
             Assert.True(tokenIO.AliasExists(alias));
         }
@@ -103,7 +104,7 @@ namespace tests
         [Test]
         public void Recovery()
         {
-            var alias = TestUtil.Alias();
+            var alias = Alias();
             var member = tokenIO.CreateMember(alias);
             member.UseDefaultRecoveryRule();
             var verificationId = tokenIO.BeginRecovery(alias);
@@ -125,12 +126,12 @@ namespace tests
         [Test]
         public void Recovery_withSecondaryAgent()
         {
-            var alias = TestUtil.Alias();
+            var alias = Alias();
             var member = tokenIO.CreateMember(alias);
             var memberId = member.MemberId();
             var primaryAgentId = member.GetDefaultAgent();
-            var secondaryAgent = tokenIO.CreateMember(TestUtil.Alias());
-            var unusedSecondaryAgent = tokenIO.CreateMember(TestUtil.Alias());
+            var secondaryAgent = tokenIO.CreateMember(Alias());
+            var unusedSecondaryAgent = tokenIO.CreateMember(Alias());
             member.AddRecoveryRule(new RecoveryRule
             {
                 PrimaryAgent = primaryAgentId,

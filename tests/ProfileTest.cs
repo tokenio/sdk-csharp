@@ -1,23 +1,24 @@
 ﻿using System;
 using Google.Protobuf;
-using Io.Token.Proto.Common.Member;
 using NUnit.Framework;
-using sdk.Api;
-using static Io.Token.Proto.Common.Member.ProfilePictureSize;
+using Tokenio;
+using Tokenio.Proto.Common.MemberProtos;
+using static Test.TestUtil;
+using static Tokenio.Proto.Common.MemberProtos.ProfilePictureSize;
 
-namespace tests
+namespace Test
 {
     [TestFixture]
     public class ProfileTest
     {
-        private static readonly TokenIO tokenIO = TestUtil.NewSdkInstance();
+        private static readonly TokenIO tokenIO = NewSdkInstance();
         
         private MemberSync member;
 
         [SetUp]
         public void Init()
         {
-            member = tokenIO.CreateMember(TestUtil.Alias());
+            member = tokenIO.CreateMember(Alias());
         }
         
         [Test]

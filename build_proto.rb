@@ -1,8 +1,7 @@
 #
 # Fetches specified proto files from the artifact repository.
 #
-TOKEN_PROTOS_VER = "1.0.475"
-FANK_PROTOS_VER = "1.0.14"
+TOKEN_PROTOS_VER = "1.0.478"
 
 require 'open-uri'
 
@@ -35,11 +34,6 @@ def fetch_protos()
     puts("unzipping #{file}")
     system("unzip -d protos/common -o #{file} '*.proto'")
     system("unzip -d protos/common -o #{file} 'google/api/*.proto'")
-    system("rm -f #{file}");
-
-    file = download("io/token/fank", "tokenio-fank", "proto", FANK_PROTOS_VER)
-    puts("unzipping #{file}")
-    system("unzip -d protos -o #{file} '*.proto'")
     system("rm -f #{file}");
 end
 
@@ -79,12 +73,11 @@ end
 fetch_protos();
 
 # Build the command that generates the protos.
-dir = "./sdk/Generated"
+dir = "./sdk/generated"
 system("rm -rf #{dir}");
 
 gencommand = generate_protos_cmd("common", dir) +
     generate_protos_cmd("common/google/api", dir) + 
-    generate_protos_cmd("external/gateway", dir) +
-    generate_protos_cmd("fank", dir);
+    generate_protos_cmd("external/gateway", dir);
 
 system(gencommand)

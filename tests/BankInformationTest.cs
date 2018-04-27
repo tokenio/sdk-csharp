@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using sdk.Api;
-using static tests.TestUtil;
+using Tokenio;
+using static Test.TestUtil;
 
-namespace tests
+namespace Test
 {
     [TestFixture]
     public class BankInformationTest

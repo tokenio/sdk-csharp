@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Io.Token.Proto.Common.Address;
 using NUnit.Framework;
-using sdk;
-using sdk.Api;
-using static tests.TestUtil;
+using Tokenio;
+using Tokenio.Proto.Common.AddressProtos;
+using static Test.TestUtil;
 
-namespace tests
+namespace Test
 {
     [TestFixture]
     public class AddressTest

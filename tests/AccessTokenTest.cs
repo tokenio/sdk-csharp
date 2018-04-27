@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Web;
-using Io.Token.Proto.Common.Token;
 using NUnit.Framework;
-using sdk;
-using sdk.Api;
-using static Io.Token.Proto.Common.Security.Key.Types.Level;
-using static tests.TestUtil;
+using Tokenio;
+using Tokenio.Proto.Common.TokenProtos;
+using static Test.TestUtil;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace tests
+namespace Test
 {
     [TestFixture]
     public class AccessTokenTest
