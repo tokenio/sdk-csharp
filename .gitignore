@@ -1,0 +1,12 @@
+tools/
+**/bin/
+**/obj/
+sdk/Generated
+*.csproj.DotSettings
+**/*.proto
+!protos/common/google/protobuf/descriptor.proto
+packages/
+
+.idea/
+.vs/
+.DS_Store
