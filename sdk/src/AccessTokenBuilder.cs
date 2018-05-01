@@ -3,6 +3,7 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types;
 using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types.Resource.Types;
+using static Tokenio.Proto.Common.TokenProtos.TokenPayload.Types;
 
 namespace Tokenio
 {
@@ -220,6 +221,17 @@ namespace Tokenio
         public AccessTokenBuilder To(string redeemerMemberId)
         {
             payload.To.Id = redeemerMemberId;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets "acting as" field on the payload.
+        /// </summary>
+        /// <param name="actingAs">entity the redeemer is acting on behalf of</param>
+        /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        public AccessTokenBuilder ActingAs(ActingAs actingAs)
+        {
+            payload.ActingAs = actingAs;
             return this;
         }
 

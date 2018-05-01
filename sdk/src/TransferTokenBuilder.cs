@@ -16,6 +16,7 @@ using log4net;
 using Tokenio.Exceptions;
 using static Tokenio.Proto.Common.AccountProtos.BankAccount.Types;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
+using static Tokenio.Proto.Common.TokenProtos.TokenPayload.Types;
 using static Tokenio.Proto.Common.TransferInstructionsProtos.TransferInstructions.Types;
 using AccountType = Tokenio.Proto.Common.AccountProtos.BankAccount.AccountOneofCase;
 using Token = Tokenio.Proto.Common.TokenProtos.Token;
@@ -303,6 +304,17 @@ namespace Tokenio
         public TransferTokenBuilder SetPurposeOfPayment(PurposeOfPayment purposeOfPayment)
         {
             payload.Transfer.Instructions.Metadata.TransferPurpose = purposeOfPayment;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets acting as on the token
+        /// </summary>
+        /// <param name="actingAs">entity the redeemer is acting on behalf of</param>
+        /// <returns>the builder</returns>
+        public TransferTokenBuilder SetActingAs(ActingAs actingAs)
+        {
+            payload.ActingAs = actingAs;
             return this;
         }
 
