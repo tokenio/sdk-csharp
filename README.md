@@ -1,4 +1,4 @@
-# SDK-CSharp [![NuGet Version](http://img.shields.io/nuget/v/Token.SDK.Net.svg)](https://www.nuget.org/packages/Token.SDK.Net/)
+# SDK-CSharp
 
 C# SDK for interacting with TokenOS.
 
@@ -40,10 +40,10 @@ To build the SDK and run tests:
         
 ## Using the SDK
 
-To use the SDK, add the package as a dependency to your project file:
+To use the SDK, add the [Nuget](https://www.nuget.org/packages/Token.SDK.Net/) package as a dependency to your project file:
 
 <div class="codediv"><pre>
 &lt;ItemGroup>
-    &lt;PackageReference Include="Token.SDK.Net" Version="1.0.1" />
+    &lt;PackageReference Include="Token.SDK.Net" Version="1.0.2" />
 &lt;/ItemGroup>
 </pre></div>
