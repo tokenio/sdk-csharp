@@ -22,7 +22,7 @@ There are no prerequisites for Windows.
 
     **For OSX**:
 
-        brew install libsodium --universal
+        brew install libsodium
 
     **For Linux**:
 
@@ -37,4 +37,13 @@ Follow the steps above, make sure you have `ruby` and `curl` installed.
 To build the SDK and run tests:
 
         ./build.sh
+        
+## Using the SDK
 
+To use the SDK, add the package as a dependency to your project file:
+
+<div class="codediv"><pre>
+&lt;ItemGroup>
+    &lt;PackageReference Include="Token.SDK.Net" Version="1.0.1" />
+&lt;/ItemGroup>
+</pre></div>
