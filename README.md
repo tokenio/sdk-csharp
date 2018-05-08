@@ -1,4 +1,4 @@
-# SDK-CSharp
+# SDK-CSharp [![NuGet Version](http://img.shields.io/nuget/v/Token.SDK.Net.svg)](https://www.nuget.org/packages/Token.SDK.Net/)
 
 C# SDK for interacting with TokenOS.
 
