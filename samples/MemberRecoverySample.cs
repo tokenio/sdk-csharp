@@ -86,7 +86,7 @@ namespace samples
             // authorizeRecovery begin snippet to include in doc
             // "Remember" whether this person who claims to be member with
             // the ID m:12345678 really is:
-            var isCorrect = checkMemberId(authorization.MemberId);
+            var isCorrect = CheckMemberId(authorization.MemberId);
             if (isCorrect)
             {
                 return agentMember.AuthorizeRecovery(authorization);
@@ -141,12 +141,12 @@ namespace samples
             return recoveredMember;
         }
 
-        private void TellRecoveryAgentMemberId(string memberId)
+        private static void TellRecoveryAgentMemberId(string memberId)
         {
         } /* this simple sample uses a no op */
 
         /* this simple sample approves everybody */
-        private bool checkMemberId(string memberId)
+        private static bool CheckMemberId(string memberId)
         {
             return true;
         }
