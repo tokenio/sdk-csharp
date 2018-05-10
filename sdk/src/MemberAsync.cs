@@ -30,7 +30,7 @@ namespace Tokenio
             .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private IList<Key> keys;
-        
+
         private readonly Client client;
 
         /// <summary>
@@ -297,6 +297,42 @@ namespace Tokenio
         public Task RemoveKey(string keyId)
         {
             return RemoveKeys(new List<string> {keyId});
+        }
+
+        /// <summary>
+        /// Links a funding bank account to Token and returns it to the caller.
+        /// </summary>
+        /// <returns>a list of accounts</returns>
+        public Task<IList<AccountAsync>> GetAccounts()
+        {
+            return client
+                .GetAccounts()
+                .Map(accounts => (IList<AccountAsync>) accounts
+                    .Select(account => new AccountAsync(this, account, client))
+                    .ToList());
+        }
+
+        /// <summary>
+        /// Looks up a funding bank account linked to Token.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <returns>the account</returns>
+        public Task<AccountAsync> GetAccount(string accountId)
+        {
+            return client
+                .GetAccount(accountId)
+                .Map(account => new AccountAsync(this, account, client));
+        }
+
+        /// <summary>
+        /// Get the default bank account for this member.
+        /// </summary>
+        /// <returns>the account</returns>
+        public Task<AccountAsync> GetDefaultAccount()
+        {
+            return client
+                .GetDefaultAccount(MemberId())
+                .Map(account => new AccountAsync(this, account, client));
         }
 
         /// <summary>
@@ -656,7 +692,7 @@ namespace Tokenio
         {
             return RedeemToken(token, null, null, null, destination, refId);
         }
-        
+
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
@@ -673,7 +709,7 @@ namespace Tokenio
         {
             return RedeemToken(token, amount, currency, description, null, null);
         }
-        
+
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
@@ -690,7 +726,7 @@ namespace Tokenio
         {
             return RedeemToken(token, amount, currency, null, destination, null);
         }
-        
+
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
@@ -734,7 +770,6 @@ namespace Tokenio
                 TokenId = token.Id,
                 Description = token.Payload.Description
             };
-
             if (destination != null)
             {
                 payload.Destinations.Add(destination);
@@ -810,7 +845,6 @@ namespace Tokenio
         {
             return client.GetBalance(accountId, keyLevel);
         }
-
 
         /// <summary>
         /// Looks up current account balance.
