@@ -9,8 +9,15 @@ Task("Build")
   MSBuild("sdk/sdk.csproj");
 });
 
-Task("Build-Tests")
+Task("Build-Samples")
   .IsDependentOn("Build")
+  .Does(() =>
+{
+  MSBuild("samples/samples.csproj");
+});
+
+Task("Build-Tests")
+  .IsDependentOn("Build-Samples")
   .Does(() =>
 {
   MSBuild("tests/tests.csproj");

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
@@ -264,6 +265,43 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Looks up funding bank accounts linked to Token.
+        /// </summary>
+        /// <returns>a list of linked accounts</returns>
+        public IList<AccountSync> GetAccounts()
+        {
+            return async.GetAccounts()
+                .Map(accounts => (IList<AccountSync>) accounts
+                    .Select(account => account.Sync()))
+                .Result;
+        }
+
+        /// <summary>
+        /// Looks up a funding bank account linked to Token.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <returns>the account</returns>
+        public AccountSync GetAccount(string accountId)
+        {
+            return async
+                .GetAccount(accountId)
+                .Map(account => account.Sync())
+                .Result;
+        }
+
+        /// <summary>
+        /// Gets the default bank account for this member.
+        /// </summary>
+        /// <returns>the default bank account id</returns>
+        public AccountSync GetDefaultAccount()
+        {
+            return async
+                .GetDefaultAccount()
+                .Map(account => account.Sync())
+                .Result;
+        }
+
+        /// <summary>
         /// Looks up an existing token transfer.
         /// </summary>
         /// <param name="transferId">the transfer id</param>
@@ -283,7 +321,8 @@ namespace Tokenio
         public PagedList<Transfer> GetTransfers(
             string offset,
             int limit,
-            string tokenId) {
+            string tokenId)
+        {
             return async.GetTransfers(tokenId, offset, limit).Result;
         }
 
@@ -353,7 +392,8 @@ namespace Tokenio
         /// <param name="type">MIME type of the picture</param>
         /// <param name="data">the image data</param>
         /// <returns>a task</returns>
-        public void SetProfilePicture(string type, byte[] data) {
+        public void SetProfilePicture(string type, byte[] data)
+        {
             async.SetProfilePicture(type, data).Wait();
         }
 
@@ -426,7 +466,8 @@ namespace Tokenio
         /// <param name="limit">the max number of records to return</param>
         /// <param name="offset">nullable offset to start at</param>
         /// <returns>a paged list of transfer tokens</returns>
-        public PagedList<Token> GetTransferTokens(string offset, int limit) {
+        public PagedList<Token> GetTransferTokens(string offset, int limit)
+        {
             return async.GetTransferTokens(limit, offset).Result;
         }
 
@@ -436,7 +477,8 @@ namespace Tokenio
         /// <param name="limit">the max number of records to return</param>
         /// <param name="offset">nullable offset to start at</param>
         /// <returns>a paged list of access tokens</returns>
-        public PagedList<Token> GetAccessTokens(string offset, int limit) {
+        public PagedList<Token> GetAccessTokens(string offset, int limit)
+        {
             return async.GetAccessTokens(limit, offset).Result;
         }
 
@@ -548,7 +590,8 @@ namespace Tokenio
             Token token,
             double? amount,
             string currency,
-            string description) {
+            string description)
+        {
             return async.RedeemToken(token, amount, currency, description, null, null).Result;
         }
 
@@ -564,7 +607,8 @@ namespace Tokenio
             Token token,
             double? amount,
             string currency,
-            TransferEndpoint destination) {
+            TransferEndpoint destination)
+        {
             return async.RedeemToken(token, amount, currency, null, destination, null).Result;
         }
 
@@ -582,7 +626,8 @@ namespace Tokenio
             double? amount,
             string currency,
             string description,
-            TransferEndpoint destination) {
+            TransferEndpoint destination)
+        {
             return async.RedeemToken(token, amount, currency, description, destination, null).Result;
         }
 
@@ -603,7 +648,8 @@ namespace Tokenio
             string currency,
             string description,
             TransferEndpoint destination,
-            string refId) {
+            string refId)
+        {
             return async.RedeemToken(token, amount, currency, description, destination, refId).Result;
         }
 
@@ -634,7 +680,8 @@ namespace Tokenio
             string accountId,
             string offset,
             int limit,
-            Level keyLevel) {
+            Level keyLevel)
+        {
             return async.GetTransactions(accountId, limit, keyLevel, offset).Result;
         }
 
@@ -752,7 +799,7 @@ namespace Tokenio
         {
             return async.GetTokenBlob(tokenId, blobId).Result;
         }
-        
+
         /// <summary>
         /// Applies SCA for the given a list of accounts.
         /// </summary>
