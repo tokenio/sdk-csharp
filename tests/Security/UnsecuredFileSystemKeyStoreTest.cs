@@ -13,8 +13,10 @@ namespace Test.Security
     public class UnsecuredFileSystemKeyStoreTest
     {
         private readonly string directory = "./testKeys";
-        private readonly string memberId1 = Util.Nonce();
-        private readonly string memberId2 = Util.Nonce();
+        
+        private readonly string memberId1 = Util.Nonce() + ":" + Util.Nonce();
+        private readonly string memberId2 = Util.Nonce() + ":" + Util.Nonce();
+        
         private readonly KeyPair privileged = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
         private readonly KeyPair standard = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Standard);
         private readonly KeyPair lowOld = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Low);
