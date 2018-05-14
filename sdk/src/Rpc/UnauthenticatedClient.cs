@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Gateway;
@@ -133,6 +136,108 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
+        /// Notifies subscribed devices that accounts should be linked.
+        /// </summary>
+        /// <param name="alias">alias of the member</param>
+        /// <param name="authorization">the bank authorization for the funding account</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyLinkAccounts(
+            Alias alias,
+            BankAuthorization authorization)
+        {
+            var request = new NotifyRequest
+            {
+                Alias = alias,
+                Body = new NotifyBody
+                {
+                    LinkAccounts = new LinkAccounts
+                    {
+                        BankAuthorization = authorization
+                    }
+                }
+            };
+            return gateway.NotifyAsync(request)
+                .ToTask(response => response.Status);
+        }
+
+        /// <summary>
+        /// Notifies subscribed devices that a key should be added.
+        /// </summary>
+        /// <param name="alias">alias of the member</param>
+        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
+        /// <param name="key">the that needs an approval</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyAddKey(
+            Alias alias,
+            string name,
+            Key key)
+        {
+            var request = new NotifyRequest
+            {
+                Alias = alias,
+                Body = new NotifyBody
+                {
+                    AddKey = new AddKey
+                    {
+                        Name = name,
+                        Key = key
+                    }
+                }
+            };
+            return gateway.NotifyAsync(request)
+                .ToTask(response => response.Status);
+        }
+
+        /// <summary>
+        /// Notifies subscribed devices that a key should be added.
+        /// </summary>
+        /// <param name="alias">alias of the member</param>
+        /// <param name="authorization">the bank authorization for the funding account</param>
+        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
+        /// <param name="key">the that needs an approval</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyLinkAccountsAndAddKey(
+            Alias alias,
+            BankAuthorization authorization,
+            string name,
+            Key key)
+        {
+            var request = new NotifyRequest
+            {
+                Alias = alias,
+                Body = new NotifyBody
+                {
+                    LinkAccountsAndAddKey = new LinkAccountsAndAddKey
+                    {
+                        LinkAccounts = new LinkAccounts
+                        {
+                            BankAuthorization = authorization
+                        },
+                        AddKey = new AddKey
+                        {
+                            Name = name,
+                            Key = key
+                        }
+                    }
+                }
+            };
+            return gateway.NotifyAsync(request)
+                .ToTask(response => response.Status);
+        }
+
+        /// <summary>
+        /// Notifies subscribed devices of payment requests.
+        /// </summary>
+        /// <param name="tokenPayload">the payload of a token to be sent</param>
+        /// <returns>status of the notification request</returns>
+        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
+        {
+            var request = new RequestTransferRequest{TokenPayload = tokenPayload};
+            return gateway.RequestTransferAsync(request)
+                .ToTask(response => response.Status);
+        }
+
+        /// <summary>
         /// Begins account recovery.
         /// </summary>
         /// <param name="alias">the alias used to recover</param>
@@ -260,32 +365,37 @@ namespace Tokenio.Rpc
             string sort)
         {
             var request = new GetBanksRequest();
-            
+
             if (ids != null)
             {
                 request.Ids.Add(ids);
             }
+
             if (search != null)
             {
                 request.Search = search;
             }
+
             if (country != null)
             {
                 request.Country = country;
             }
+
             if (page.HasValue)
             {
                 request.Page = page.Value;
             }
+
             if (perPage.HasValue)
             {
                 request.PerPage = perPage.Value;
             }
+
             if (sort != null)
             {
                 request.Sort = sort;
             }
-            
+
             return gateway.GetBanksAsync(request)
                 .ToTask(response => new PagedBanks(response));
         }
