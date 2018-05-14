@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tokenio.Exceptions;
+using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Rpc;
@@ -192,6 +194,74 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Notifies to link an account.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="authorization">the bank authorization for the funding account</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyLinkAccounts(
+            Alias alias,
+            BankAuthorization authorization)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            return unauthenticated.NotifyLinkAccounts(alias, authorization);
+        }
+
+        /// <summary>
+        /// Notifies to add a key.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
+        /// <param name="key">key that needs an approval</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyAddKey(
+            Alias alias,
+            string name,
+            Key key)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            return unauthenticated.NotifyAddKey(alias, name, key);
+        }
+
+        /// <summary>
+        /// Notifies to link accounts and add a key.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="authorization">the bank authorization for the funding account</param>
+        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
+        /// <param name="key">the key that needs an approval</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyLinkAccountsAndAddKey(
+            Alias alias,
+            BankAuthorization authorization,
+            string name,
+            Key key)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            return unauthenticated.NotifyLinkAccountsAndAddKey(
+                alias,
+                authorization,
+                name,
+                key);
+        }
+
+        /// <summary>
+        /// Sends a notification to request a payment.
+        /// </summary>
+        /// <param name="tokenPayload">the payload of a token to be sent</param>
+        /// <returns>status of the notification request</returns>
+        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            if (string.IsNullOrEmpty(tokenPayload.RefId))
+            {
+                tokenPayload.RefId = Util.Nonce();
+            }
+
+            return unauthenticated.NotifyPaymentRequest(tokenPayload);
+        }
+
+        /// <summary>
         /// Begins account recovery.
         /// </summary>
         /// <param name="alias">the used to recover</param>
@@ -287,7 +357,7 @@ namespace Tokenio
         {
             return GetBanks(1, 200);
         }
-        
+
         /// <summary>
         /// Returns banks from a given list of bank IDs (case-insensitive).
         /// </summary>
@@ -297,7 +367,7 @@ namespace Tokenio
         {
             return GetBanks(ids, null, null, null, null, null);
         }
-        
+
         /// <summary>
         /// Return banks whose 'name' or 'identifier' contains the given search string (case-insensitive).
         /// </summary>
@@ -307,7 +377,7 @@ namespace Tokenio
         {
             return GetBanks(null, search, null, null, null, null);
         }
-        
+
         /// <summary>
         /// Returns banks with specified paging information.
         /// </summary>
@@ -320,7 +390,7 @@ namespace Tokenio
         {
             return GetBanks(null, null, null, page, perPage, null);
         }
-        
+
         /// <summary>
         /// Return banks whose 'country' matches the given country code (case-insensitive).
         /// </summary>
@@ -335,7 +405,7 @@ namespace Tokenio
         {
             return GetBanks(null, null, country, page, perPage, null);
         }
-        
+
         /// <summary>
         /// Return banks that satisfy given filtering requirements. 
         /// </summary>

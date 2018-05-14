@@ -48,6 +48,7 @@
     <Compile Include="GetTransactionsSample.cs" />
     <Compile Include="GetTransfersSample.cs" />
     <Compile Include="MemberRecoverySample.cs" />
+    <Compile Include="NotifySample.cs" />
     <Compile Include="ProvisionDeviceSample.cs" />
     <Compile Include="RedeemAccessTokenSample.cs" />
     <Compile Include="RedeemTransferTokenSample.cs" />

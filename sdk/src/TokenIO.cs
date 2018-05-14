@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
+using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Rpc;
@@ -161,6 +163,67 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Notifies to link accounts.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="authorization">the bank authorization for the account</param>
+        /// <returns>status of the notification request</returns>
+        public NotifyStatus NotifyLinkAccounts(
+            Alias alias,
+            BankAuthorization authorization)
+        {
+            return async.NotifyLinkAccounts(alias, authorization).Result;
+        }
+
+        /// <summary>
+        /// Notifies to add a key.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
+        /// <param name="key">key that needs an approval</param>
+        /// <returns>status of the notification request</returns>
+        public NotifyStatus NotifyAddKey(
+            Alias alias,
+            string name,
+            Key key)
+        {
+            return async.NotifyAddKey(alias, name, key).Result;
+        }
+
+        /// <summary>
+        /// Notifies to link accounts and add a key.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="authorization">the bank authorization for the account</param>
+        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
+        /// <param name="key">key that needs an approval</param>
+        /// <returns>status of the notification request</returns>
+        public NotifyStatus NotifyLinkAccountsAndAddKey(
+            Alias alias,
+            BankAuthorization authorization,
+            string name,
+            Key key)
+        {
+            return async
+                .NotifyLinkAccountsAndAddKey(
+                    alias,
+                    authorization,
+                    name,
+                    key)
+                .Result;
+        }
+
+        /// <summary>
+        /// Sends a notification to request a payment.
+        /// </summary>
+        /// <param name="tokenPayload">the payload of a token to be sent</param>
+        /// <returns>status of the notification request</returns>
+        public NotifyStatus NotifyPaymentRequest(TokenPayload tokenPayload)
+        {
+            return async.NotifyPaymentRequest(tokenPayload).Result;
+        }
+
+        /// <summary>
         /// Begins account recovery.
         /// </summary>
         /// <param name="alias">the used to recover</param>
@@ -231,7 +294,7 @@ namespace Tokenio
                 .Map(memberAsyc => memberAsyc.Sync())
                 .Result;
         }
-        
+
         /// <summary>
         /// Returns the first 200 available banks for linking.
         /// </summary>
@@ -240,7 +303,7 @@ namespace Tokenio
         {
             return GetBanks(1, 200);
         }
-        
+
         /// <summary>
         /// Returns banks from a given list of bank IDs (case-insensitive).
         /// </summary>
@@ -250,7 +313,7 @@ namespace Tokenio
         {
             return GetBanks(ids, null, null, null, null, null);
         }
-        
+
         /// <summary>
         /// Return banks whose 'name' or 'identifier' contains the given search string (case-insensitive).
         /// </summary>
@@ -260,7 +323,7 @@ namespace Tokenio
         {
             return GetBanks(null, search, null, null, null, null);
         }
-        
+
         /// <summary>
         /// Returns banks with specified paging information.
         /// </summary>
@@ -273,7 +336,7 @@ namespace Tokenio
         {
             return GetBanks(null, null, null, page, perPage, null);
         }
-        
+
         /// <summary>
         /// Return banks whose 'country' matches the given country code (case-insensitive).
         /// </summary>
@@ -288,7 +351,7 @@ namespace Tokenio
         {
             return GetBanks(null, null, country, page, perPage, null);
         }
-        
+
         /// <summary>
         /// Return banks that satisfy given filtering requirements. 
         /// </summary>
@@ -507,9 +570,10 @@ namespace Tokenio
                 {
                     throw new Exception("Please provide a developer key. Contact Token for more details.");
                 }
-                
+
                 var channel = new Channel(hostName, port, useSsl ? new SslCredentials() : ChannelCredentials.Insecure);
-                Interceptor[] interceptors = {
+                Interceptor[] interceptors =
+                {
                     new AsyncTimeoutInterceptor(timeoutMs),
                     new AsyncMetadataInterceptor(metadata =>
                     {
@@ -522,9 +586,9 @@ namespace Tokenio
                     })
                 };
                 var newChannel = new ManagedChannel(channel, interceptors);
-                
+
                 return new TokenIOAsync(
-                    newChannel, 
+                    newChannel,
                     cryptoEngine ?? new TokenCryptoEngineFactory(new InMemoryKeyStore()),
                     tokenCluster ?? TokenCluster.SANDBOX);
             }
