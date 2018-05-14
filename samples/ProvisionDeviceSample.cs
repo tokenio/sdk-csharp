@@ -21,7 +21,8 @@ namespace samples
             var lowKey = deviceInfo.Keys
                 .Where(k => k.Level.Equals(Low))
                 .FirstOrDefault(null);
-
+            // ask user (on "regular" device) to approve one of our keys
+            var status = tokenIO.NotifyAddKey(alias, "SDK Sample", lowKey);
             return lowKey;
         }
 
