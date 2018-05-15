@@ -2,7 +2,7 @@
 {
     public class TokenCluster
     {
-        private TokenCluster(string webAppUrl, string url)
+        private TokenCluster(string url, string webAppUrl)
         {
             WebAppUrl = webAppUrl;
             Url = url;
