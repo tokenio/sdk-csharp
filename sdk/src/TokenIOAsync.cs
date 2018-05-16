@@ -12,6 +12,7 @@ using Tokenio.Rpc;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using WebUtility = System.Net.WebUtility;
 
 namespace Tokenio
 {
@@ -470,10 +471,11 @@ namespace Tokenio
         {
             var csrfTokenHash = Util.HashString(csrfToken);
             var tokenRequestState = TokenRequestState.Create(csrfTokenHash, state);
-            return Task.FromResult(string.Format(TOKEN_REQUEST_TEMPLATE,
+            return Task.FromResult(string.Format(
+                TOKEN_REQUEST_TEMPLATE,
                 tokenCluster.WebAppUrl,
                 requestId,
-                tokenRequestState.Serialize()));
+                WebUtility.UrlEncode(tokenRequestState.Serialize())));
         }
 
         /// <summary>
@@ -513,7 +515,7 @@ namespace Tokenio
                     var payload = new TokenRequestStatePayload
                     {
                         TokenId = parameters.TokenId,
-                        State = parameters.SerializedState
+                        State = WebUtility.UrlEncode(parameters.SerializedState)
                     };
 
                     Util.VerifySignature(member, payload, parameters.Signature);

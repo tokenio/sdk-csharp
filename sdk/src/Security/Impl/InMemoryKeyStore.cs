@@ -7,34 +7,34 @@ namespace Tokenio.Security
 {
     public class InMemoryKeyStore : IKeyStore
     {
-        private readonly IDictionary<Tuple<string, Level>, KeyPair> LatestKeys;
-        private readonly IDictionary<Tuple<string, string>, KeyPair> AllKeys;
+        private readonly IDictionary<Tuple<string, Level>, KeyPair> latestKeys;
+        private readonly IDictionary<Tuple<string, string>, KeyPair> allKeys;
 
         public InMemoryKeyStore()
         {
-            LatestKeys = new Dictionary<Tuple<string, Level>, KeyPair>();
-            AllKeys = new Dictionary<Tuple<string, string>, KeyPair>();
+            latestKeys = new Dictionary<Tuple<string, Level>, KeyPair>();
+            allKeys = new Dictionary<Tuple<string, string>, KeyPair>();
         }
 
         public void Put(string memberId, KeyPair keyPair)
         {
-            LatestKeys[new Tuple<string, Level>(memberId, keyPair.Level)] = keyPair;
-            AllKeys[new Tuple<string, string>(memberId, keyPair.Id)] = keyPair;
+            latestKeys[new Tuple<string, Level>(memberId, keyPair.Level)] = keyPair;
+            allKeys[new Tuple<string, string>(memberId, keyPair.Id)] = keyPair;
         }
 
         public KeyPair GetByLevel(string memberId, Level level)
         {
-            return LatestKeys[new Tuple<string, Level>(memberId, level)];
+            return latestKeys[new Tuple<string, Level>(memberId, level)];
         }
 
         public KeyPair GetById(string memberId, string keyId)
         {
-            return AllKeys[new Tuple<string, string>(memberId, keyId)];
+            return allKeys[new Tuple<string, string>(memberId, keyId)];
         }
 
         public IList<KeyPair> KeyList(string memberId)
         {
-            return AllKeys.Where(entry => entry.Key.Item1 == memberId)
+            return allKeys.Where(entry => entry.Key.Item1 == memberId)
                 .Select(entry => entry.Value)
                 .ToList();
         }

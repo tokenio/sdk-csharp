@@ -8,7 +8,7 @@ namespace Tokenio
 {
     public class TokenRequestCallbackParameters
     {
-        private static readonly string TOKEN_ID_FIELD = "token-id";
+        private static readonly string TOKEN_ID_FIELD = "tokenId";
         private static readonly string STATE_FIELD = "state";
         private static readonly string SIGNATURE_FIELD = "signature";
 

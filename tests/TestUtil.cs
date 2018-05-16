@@ -32,10 +32,13 @@ namespace Test
 
         public static TokenIO NewSdkInstance()
         {
-            var tokenEnv = Environment.GetEnvironmentVariable("TOKEN_ENV") ?? "development";
+            Enum.TryParse(
+                Environment.GetEnvironmentVariable("TOKEN_ENV") ?? "development",
+                true,
+                out TokenCluster.TokenEnv tokenEnv);
+            
             return TokenIO.NewBuilder()
-                .ConnectTo(TokenCluster.DEVELOPMENT)
-                .HostName("api-grpc.dev.token.io")
+                .ConnectTo(TokenCluster.GetCluster(tokenEnv))
                 .Port(443)
                 .Timeout(10 * 60 * 1_000) // Set high for easy debugging.
                 .DeveloperKey("4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI")
