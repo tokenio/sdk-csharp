@@ -28,8 +28,7 @@ namespace Tokenio
 
         public string Serialize()
         {
-            var json = JsonConvert.SerializeObject(this);
-            return WebUtility.UrlEncode(json);
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

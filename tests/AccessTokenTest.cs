@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Web;
 using NUnit.Framework;
 using Tokenio;
@@ -169,9 +170,13 @@ namespace Test
 
             var signature = member1.SignTokenRequestState(
                 token.Id,
-                stateParameter);
+                WebUtility.UrlEncode(stateParameter));
 
-            var path = $"path?token-id={token.Id}&state={stateParameter}&signature={Util.ToJson(signature)}";
+            var path = string.Format(
+                "path?tokenId={0}&state={1}&signature={2}",
+                token.Id,
+                WebUtility.UrlEncode(stateParameter),
+                Util.ToJson(signature));
 
             var tokenRequestCallbackUrl = "http://localhost:80/" + path;
 
