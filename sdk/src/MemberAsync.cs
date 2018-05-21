@@ -530,7 +530,7 @@ namespace Tokenio
         /// <param name="amount">the transfer amount</param>
         /// <param name="currency">the currency code, e.g. "USD"</param>
         /// <returns>the transfer token builder</returns>
-        public TransferTokenBuilder CreateTransferTokenBuilder(double amount, string currency)
+        public TransferTokenBuilder CreateTransferToken(double amount, string currency)
         {
             return new TransferTokenBuilder(this, amount, currency);
         }
