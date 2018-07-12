@@ -45,7 +45,7 @@ namespace Test
                 .Build();
         }
         
-        public static async Task WaitUntil(
+        public static void WaitUntil(
             int timeoutMs,
             int waitTimeMs,
             Action action) {
@@ -56,7 +56,7 @@ namespace Test
                 } catch (Exception caughtError) {
                     if (Util.EpochTimeMillis() - start < timeoutMs)
                     {
-                        await Task.Delay(waitTimeMs);
+                        System.Threading.Thread.Sleep(waitTimeMs);
                     } else {
                         throw caughtError;
                     }

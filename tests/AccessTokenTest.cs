@@ -15,6 +15,8 @@ namespace Test
     {
         private static readonly int TOKEN_LOOKUP_TIMEOUT_MS = 15000;
         private static readonly int TOKEN_LOOKUP_POLL_FREQUENCY_MS = 1000;
+        private static readonly int ALIAS_VERIFICATION_TIMEOUT_MS = 60000;
+        private static readonly int ALIAS_VERIFICATION_POLL_FREQUENCY_MS = 1000;
 
         private static readonly TokenIO tokenIO = NewSdkInstance();
 
@@ -26,6 +28,11 @@ namespace Test
         {
             member1 = tokenIO.CreateMember(Alias());
             member2 = tokenIO.CreateMember(Alias());
+            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
+            {
+                CollectionAssert.IsNotEmpty(member1.Aliases());
+                CollectionAssert.IsNotEmpty(member2.Aliases());
+            });
         }
 
         [Test]
@@ -54,7 +61,7 @@ namespace Test
             {
                 var result = member1.GetAccessTokens(null, 2);
                 Assert.True(result.List.Select(t => t.Id.Equals(accessToken.Id)).Any());
-            }).Wait();
+            });
         }
 
         [Test]
@@ -87,8 +94,7 @@ namespace Test
             member1.EndorseToken(member1.CreateAccessToken(accessToken), Standard);
 
             WaitUntil(TOKEN_LOOKUP_TIMEOUT_MS, TOKEN_LOOKUP_POLL_FREQUENCY_MS,
-                    () => { Assert.AreEqual(member1.GetAccessTokens(null, 2).List.Count, 1); })
-                .Wait();
+                () => { Assert.AreEqual(member1.GetAccessTokens(null, 2).List.Count, 1); });
         }
 
         [Test, RequiresThread]
@@ -117,7 +123,7 @@ namespace Test
             member1.EndorseToken(accessToken, Standard);
             var address1 = member1.AddAddress(Util.Nonce(), Address());
             var address2 = member1.AddAddress(Util.Nonce(), Address());
-            
+
             member2.UseAccessToken(accessToken.Id);
             var result = member2.GetAddress(address2.Id);
 
@@ -143,7 +149,7 @@ namespace Test
             {
                 var tokenId = tokenIO.GetTokenId(tokenRequestId);
                 Assert.AreEqual(accessToken.Id, tokenId);
-            }).Wait();
+            });
         }
 
         [Test]
@@ -186,9 +192,10 @@ namespace Test
 
             Assert.AreEqual(originalState, callback.State);
         }
-        
+
         [Test]
-        public void RequestSignature() {
+        public void RequestSignature()
+        {
             var token = member1.CreateAccessToken(AccessTokenBuilder
                 .Create(member2.FirstAlias())
                 .ForAll()
