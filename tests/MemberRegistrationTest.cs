@@ -12,8 +12,6 @@ namespace Test
     public class MemberRegistrationTest
     {
         private static readonly TokenIO tokenIO = NewSdkInstance();
-        private static readonly int ALIAS_VERIFICATION_TIMEOUT_MS = 60000;
-        private static readonly int ALIAS_VERIFICATION_POLL_FREQUENCY_MS = 1000;
 
         [Test]
         public void CreateMember()

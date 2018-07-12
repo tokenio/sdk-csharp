@@ -15,8 +15,6 @@ namespace Test
     {
         private static readonly int TOKEN_LOOKUP_TIMEOUT_MS = 15000;
         private static readonly int TOKEN_LOOKUP_POLL_FREQUENCY_MS = 1000;
-        private static readonly int ALIAS_VERIFICATION_TIMEOUT_MS = 60000;
-        private static readonly int ALIAS_VERIFICATION_POLL_FREQUENCY_MS = 1000;
 
         private static readonly TokenIO tokenIO = NewSdkInstance();
 
