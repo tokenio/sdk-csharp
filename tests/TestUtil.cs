@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Threading;
 using Tokenio;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
@@ -56,7 +56,7 @@ namespace Test
                 } catch (Exception caughtError) {
                     if (Util.EpochTimeMillis() - start < timeoutMs)
                     {
-                        System.Threading.Thread.Sleep(waitTimeMs);
+                        Thread.Sleep(waitTimeMs);
                     } else {
                         throw caughtError;
                     }
