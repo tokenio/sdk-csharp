@@ -86,7 +86,7 @@ namespace Test
 
             var member = tokenIO.CreateMember(alias1);
             WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                Assert.True(member.Aliases().Contains(alias1)));
+                CollectionAssert.AreEquivalent(member.Aliases(), new[] {alias1}));
 
             member.AddAlias(alias2);
             WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
