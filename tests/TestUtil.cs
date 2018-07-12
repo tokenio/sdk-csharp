@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
+using System.Threading;
 using Tokenio;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
@@ -9,6 +9,9 @@ namespace Test
 {
     public class TestUtil
     {
+        public const int ALIAS_VERIFICATION_TIMEOUT_MS = 60000;
+        public const int ALIAS_VERIFICATION_POLL_FREQUENCY_MS = 1000;
+
         public static Alias Alias()
         {
             return new Alias
@@ -45,7 +48,7 @@ namespace Test
                 .Build();
         }
         
-        public static async Task WaitUntil(
+        public static void WaitUntil(
             int timeoutMs,
             int waitTimeMs,
             Action action) {
@@ -56,7 +59,7 @@ namespace Test
                 } catch (Exception caughtError) {
                     if (Util.EpochTimeMillis() - start < timeoutMs)
                     {
-                        await Task.Delay(waitTimeMs);
+                        Thread.Sleep(waitTimeMs);
                     } else {
                         throw caughtError;
                     }
