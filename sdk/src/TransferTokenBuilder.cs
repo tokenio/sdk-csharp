@@ -264,7 +264,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Sets the memberId of the payee.
+        /// Sets the member Id of the payee.
         /// </summary>
         /// <param name="toMemberId">the member id</param>
         /// <returns>the builder</returns>
@@ -275,12 +275,17 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Sets the referenceId of the token.
+        /// Sets the reference Id of the token.
         /// </summary>
-        /// <param name="refId">the reference ID</param>
+        /// <param name="refId">the reference ID, at most 18 characters long</param>
         /// <returns>the builder</returns>
         public TransferTokenBuilder SetRefId(string refId)
         {
+            if (refId.Length > 18)
+            {
+                throw new ArgumentOutOfRangeException("The length of the refId is at most 18, got: "
+                                                      + refId.Length);
+            }
             payload.RefId = refId;
             return this;
         }
@@ -363,7 +368,7 @@ namespace Tokenio
             if (payload.RefId == null)
             {
                 logger.Warn("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce();
+                SetRefId(Util.Nonce());
             }
 
             var attachmentUploads = blobPayloads.Select(payload => member.CreateBlob(
