@@ -22,7 +22,7 @@ namespace Tokenio
     {
         public static string Nonce()
         {
-            return Guid.NewGuid().ToString().Replace("-", string.Empty);
+            return Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 18);
         }
 
         public static string ToJson(IMessage message)

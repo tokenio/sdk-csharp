@@ -277,10 +277,15 @@ namespace Tokenio
         /// <summary>
         /// Sets the referenceId of the token.
         /// </summary>
-        /// <param name="refId">the reference ID</param>
+        /// <param name="refId">the reference ID, at most 18 characters long</param>
         /// <returns>the builder</returns>
         public TransferTokenBuilder SetRefId(string refId)
         {
+            if (refId.Length > 18)
+            {
+                throw new ArgumentOutOfRangeException("The length of the refId is at most 18, got: "
+                                                      + refId.Length);
+            }
             payload.RefId = refId;
             return this;
         }
