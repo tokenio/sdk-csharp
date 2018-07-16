@@ -264,7 +264,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Sets the memberId of the payee.
+        /// Sets the member Id of the payee.
         /// </summary>
         /// <param name="toMemberId">the member id</param>
         /// <returns>the builder</returns>
@@ -275,7 +275,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Sets the referenceId of the token.
+        /// Sets the reference Id of the token.
         /// </summary>
         /// <param name="refId">the reference ID, at most 18 characters long</param>
         /// <returns>the builder</returns>
@@ -368,7 +368,7 @@ namespace Tokenio
             if (payload.RefId == null)
             {
                 logger.Warn("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce();
+                SetRefId(Util.Nonce());
             }
 
             var attachmentUploads = blobPayloads.Select(payload => member.CreateBlob(
