@@ -149,7 +149,6 @@ namespace Test
             var primaryAgentId = member.GetDefaultAgent();
             var secondaryAgent = tokenIO.CreateMember(Alias());
             var unusedSecondaryAgent = tokenIO.CreateMember(Alias());
-
             member.AddRecoveryRule(new RecoveryRule
             {
                 PrimaryAgent = primaryAgentId,
