@@ -142,13 +142,14 @@ namespace Test
         {
             var alias = Alias();
             var member = tokenIO.CreateMember(alias);
+            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
+                Assert.True(member.Aliases().Contains(alias)));
+            
             var memberId = member.MemberId();
             var primaryAgentId = member.GetDefaultAgent();
             var secondaryAgent = tokenIO.CreateMember(Alias());
             var unusedSecondaryAgent = tokenIO.CreateMember(Alias());
 
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                Assert.True(member.Aliases().Contains(alias)));
             member.AddRecoveryRule(new RecoveryRule
             {
                 PrimaryAgent = primaryAgentId,
