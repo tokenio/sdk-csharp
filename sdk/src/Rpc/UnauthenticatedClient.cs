@@ -81,7 +81,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="memberType">the type of member to register</param>
         /// <returns>the created member ID</returns>
-        public Task<string> CreateMemberId(MemberType memberType)
+        public Task<string> CreateMemberId(CreateMemberType memberType)
         {
             var request = new CreateMemberRequest {Nonce = Util.Nonce(), MemberType = memberType};
             return gateway.CreateMemberAsync(request)
@@ -416,8 +416,8 @@ namespace Tokenio.Rpc
         /// <returns>the token id</returns>
         public Task<string> GetTokenId(string tokenRequestId)
         {
-            var request = new GetTokenIdRequest {TokenRequestId = tokenRequestId};
-            return gateway.GetTokenIdAsync(request)
+            var request = new GetTokenRequestResultRequest {TokenRequestId = tokenRequestId};
+            return gateway.GetTokenRequestResultAsync(request)
                 .ToTask(response => response.TokenId);
         }
     }

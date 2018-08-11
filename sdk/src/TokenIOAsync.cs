@@ -79,7 +79,7 @@ namespace Tokenio
         /// will be created with the member</param>
         /// <param name="memberType">the type of member to register</param>
         /// <returns>the created member</returns>
-        public Task<MemberAsync> CreateMember(Alias alias, MemberType memberType)
+        public Task<MemberAsync> CreateMember(Alias alias, CreateMemberType memberType)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
@@ -117,7 +117,7 @@ namespace Tokenio
         /// <returns>the created member</returns>
         public Task<MemberAsync> CreateMember()
         {
-            return CreateMember(null, MemberType.Personal);
+            return CreateMember(null, CreateMemberType.Personal);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Tokenio
         /// <returns>the created member</returns>
         public Task<MemberAsync> CreateMember(Alias alias)
         {
-            return CreateMember(alias, MemberType.Personal);
+            return CreateMember(alias, CreateMemberType.Personal);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Tokenio
         /// <returns>the created member</returns>
         public Task<MemberAsync> CreateBusinessMember(Alias alias)
         {
-            return CreateMember(alias, MemberType.Business);
+            return CreateMember(alias, CreateMemberType.Business);
         }
 
         /// <summary>
@@ -408,7 +408,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Return banks that satisfy given filtering requirements. 
+        /// Return banks that satisfy given filtering requirements.
         /// </summary>
         /// <param name="ids">the bank IDs to fetch</param>
         /// <param name="search">the keyword to search the fields 'name' and 'identifier' for</param>
@@ -419,7 +419,7 @@ namespace Tokenio
         /// <returns>banks with paging information</returns>
         /// <remarks>
         /// All fields are optional. Set to null if absent. The default value for page is 1; the default
-        /// value for perPage is 200. Values set out of range will be treated as default value. 
+        /// value for perPage is 200. Values set out of range will be treated as default value.
         /// </remarks>
         public Task<PagedBanks> GetBanks(
             IList<string> ids,

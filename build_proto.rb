@@ -1,7 +1,8 @@
 #
 # Fetches specified proto files from the artifact repository.
 #
-TOKEN_PROTOS_VER = "1.0.478"
+TOKEN_PROTOS_VER = "1.1.0"
+RPC_PROTOS_VER = "1.0.124"
 
 require 'open-uri'
 
@@ -34,6 +35,10 @@ def fetch_protos()
     puts("unzipping #{file}")
     system("unzip -d protos/common -o #{file} '*.proto'")
     system("unzip -d protos/common -o #{file} 'google/api/*.proto'")
+    system("rm -f #{file}");
+
+    file = download("io/token/rpc", "tokenio-rpc", "proto", RPC_PROTOS_VER)
+    system("unzip -d protos -o #{file} '*.proto'")
     system("rm -f #{file}");
 end
 
@@ -77,7 +82,8 @@ dir = "./sdk/generated"
 system("rm -rf #{dir}");
 
 gencommand = generate_protos_cmd("common", dir) +
-    generate_protos_cmd("common/google/api", dir) + 
-    generate_protos_cmd("external/gateway", dir);
+    generate_protos_cmd("common/google/api", dir) +
+    generate_protos_cmd("external/gateway", dir) +
+    generate_protos_cmd("extensions", dir);
 
 system(gencommand)
