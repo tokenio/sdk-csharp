@@ -813,12 +813,16 @@ namespace Tokenio
         /// <summary>
         /// Signs a token request state payload.
         /// </summary>
+        /// <param name="tokenRequestId">the token request id</param>
         /// <param name="tokenId">the token id</param>
         /// <param name="state">the state</param>
         /// <returns>the signature</returns>
-        public Signature SignTokenRequestState(string tokenId, string state)
+        public Signature SignTokenRequestState(
+            string tokenRequestId,
+            string tokenId,
+            string state)
         {
-            return async.SignTokenRequestState(tokenId, state).Result;
+            return async.SignTokenRequestState(tokenRequestId, tokenId, state).Result;
         }
 
         /// <summary>

@@ -410,15 +410,15 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Get a token ID based on a token's tokenRequestId.
+        /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the token id</returns>
-        public Task<string> GetTokenId(string tokenRequestId)
+        /// <returns>the token request result</returns>
+        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
         {
             var request = new GetTokenRequestResultRequest {TokenRequestId = tokenRequestId};
             return gateway.GetTokenRequestResultAsync(request)
-                .ToTask(response => response.TokenId);
+                .ToTask(response => new TokenRequestResult(response.TokenId, response.Signature));
         }
     }
 }

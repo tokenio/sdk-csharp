@@ -593,7 +593,7 @@ namespace Tokenio.Rpc
             {
                 request.Page.Offset = offset;
             }
-            
+
             return gateway.GetTransfersAsync(request)
                 .ToTask(response => new PagedList<Transfer>(response.Transfers, response.Offset));
         }
@@ -659,7 +659,7 @@ namespace Tokenio.Rpc
             {
                 request.Page.Offset = offset;
             }
-            
+
             return gateway.GetTransactionsAsync(request)
                 .ToTask(response =>
                 {
@@ -942,10 +942,14 @@ namespace Tokenio.Rpc
         /// <summary>
         /// Signs a token request state payload.
         /// </summary>
+        /// <param name="tokenRequestId">the token request id</param>
         /// <param name="tokenId">the token id</param>
         /// <param name="state">the state</param>
         /// <returns>the signature</returns>
-        public Task<Signature> SignTokenRequestState(string tokenId, string state)
+        public Task<Signature> SignTokenRequestState(
+            string tokenRequestId,
+            string tokenId,
+            string state)
         {
             var request = new SignTokenRequestStateRequest
             {
@@ -953,7 +957,8 @@ namespace Tokenio.Rpc
                 {
                     TokenId = tokenId,
                     State = state
-                }
+                },
+                TokenRequestId = tokenRequestId
             };
             return gateway.SignTokenRequestStateAsync(request)
                 .ToTask(response => response.Signature);
