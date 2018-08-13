@@ -77,13 +77,13 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">nullable member alias to use, must be unique. If null, then no alias
         /// will be created with the member</param>
-        /// <param name="memberType">the type of member to register</param>
+        /// <param name="createMemberType">the type of member to register</param>
         /// <returns>the created member</returns>
-        public Task<MemberAsync> CreateMember(Alias alias, CreateMemberType memberType)
+        public Task<MemberAsync> CreateMember(Alias alias, CreateMemberType createMemberType)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
-                .CreateMemberId(memberType)
+                .CreateMemberId(createMemberType)
                 .FlatMap(memberId =>
                 {
                     var crypto = cryptoEngineFactory.Create(memberId);
