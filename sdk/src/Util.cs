@@ -40,7 +40,7 @@ namespace Tokenio
         {
             return Base58.Encode(Sha256Hash(message.ToByteArray()));
         }
-        
+
         public static string DoubleToString(double d)
         {
             return Convert.ToString(d, CultureInfo.InvariantCulture);
@@ -157,11 +157,11 @@ namespace Tokenio
             {
                 key = member.Keys.Single(k => k.Id.Equals(signature.KeyId));
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 throw new CryptoKeyNotFoundException(signature.KeyId);
             }
-            
+
             var verifier = new Ed25519Veifier(key.PublicKey);
             verifier.Verify(payload, signature.Signature_);
         }
@@ -204,7 +204,7 @@ namespace Tokenio
                      }
 
                      break;
-                 
+
                  case JTokenType.Array:
                      foreach (var child in ((JArray) jToken).Children())
                      {
@@ -212,7 +212,7 @@ namespace Tokenio
                      }
 
                      break;
-                 
+
                  default: return;
             }
         }

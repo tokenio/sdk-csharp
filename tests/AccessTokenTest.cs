@@ -143,11 +143,12 @@ namespace Test
 
             member1.EndorseToken(accessToken, Standard);
 
-            WaitUntil(TOKEN_LOOKUP_TIMEOUT_MS, TOKEN_LOOKUP_POLL_FREQUENCY_MS, () =>
-            {
-                var tokenId = tokenIO.GetTokenId(tokenRequestId);
-                Assert.AreEqual(accessToken.Id, tokenId);
-            });
+            var signature = member1.SignTokenRequestState(tokenRequestId, accessToken.Id, Util.Nonce());
+            Assert.IsNotEmpty(signature.Signature_);
+
+            var result = tokenIO.GetTokenRequestResult(tokenRequestId);
+            Assert.AreEqual(accessToken.Id, result.TokenId);
+            Assert.AreEqual(signature.Signature_, result.Signature.Signature_);
         }
 
         [Test]
@@ -173,6 +174,7 @@ namespace Test
                 .Get("state");
 
             var signature = member1.SignTokenRequestState(
+                requestId,
                 token.Id,
                 WebUtility.UrlEncode(stateParameter));
 
@@ -198,7 +200,7 @@ namespace Test
                 .Create(member2.FirstAlias())
                 .ForAll()
                 .Build());
-            var signature = member1.SignTokenRequestState(token.Id, Util.Nonce());
+            var signature = member1.SignTokenRequestState(Util.Nonce(), token.Id, Util.Nonce());
             Assert.IsNotEmpty(signature.Signature_);
         }
     }

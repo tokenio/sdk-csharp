@@ -77,13 +77,13 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">nullable member alias to use, must be unique. If null, then no alias
         /// will be created with the member</param>
-        /// <param name="memberType">the type of member to register</param>
+        /// <param name="createMemberType">the type of member to register</param>
         /// <returns>the created member</returns>
-        public Task<MemberAsync> CreateMember(Alias alias, MemberType memberType)
+        public Task<MemberAsync> CreateMember(Alias alias, CreateMemberType createMemberType)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
-                .CreateMemberId(memberType)
+                .CreateMemberId(createMemberType)
                 .FlatMap(memberId =>
                 {
                     var crypto = cryptoEngineFactory.Create(memberId);
@@ -117,7 +117,7 @@ namespace Tokenio
         /// <returns>the created member</returns>
         public Task<MemberAsync> CreateMember()
         {
-            return CreateMember(null, MemberType.Personal);
+            return CreateMember(null, CreateMemberType.Personal);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Tokenio
         /// <returns>the created member</returns>
         public Task<MemberAsync> CreateMember(Alias alias)
         {
-            return CreateMember(alias, MemberType.Personal);
+            return CreateMember(alias, CreateMemberType.Personal);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Tokenio
         /// <returns>the created member</returns>
         public Task<MemberAsync> CreateBusinessMember(Alias alias)
         {
-            return CreateMember(alias, MemberType.Business);
+            return CreateMember(alias, CreateMemberType.Business);
         }
 
         /// <summary>
@@ -408,7 +408,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Return banks that satisfy given filtering requirements. 
+        /// Return banks that satisfy given filtering requirements.
         /// </summary>
         /// <param name="ids">the bank IDs to fetch</param>
         /// <param name="search">the keyword to search the fields 'name' and 'identifier' for</param>
@@ -419,7 +419,7 @@ namespace Tokenio
         /// <returns>banks with paging information</returns>
         /// <remarks>
         /// All fields are optional. Set to null if absent. The default value for page is 1; the default
-        /// value for perPage is 200. Values set out of range will be treated as default value. 
+        /// value for perPage is 200. Values set out of range will be treated as default value.
         /// </remarks>
         public Task<PagedBanks> GetBanks(
             IList<string> ids,
@@ -525,14 +525,14 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Get a token ID based on a token's tokenRequestId.
+        /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the token id</returns>
-        public Task<string> GetTokenId(string tokenRequestId)
+        /// <returns>the token request result</returns>
+        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetTokenId(tokenRequestId);
+            return unauthenticated.GetTokenRequestResult(tokenRequestId);
         }
 
         public void Dispose()

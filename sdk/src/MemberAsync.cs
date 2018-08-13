@@ -904,12 +904,16 @@ namespace Tokenio
         /// <summary>
         /// Signs a token request state payload.
         /// </summary>
+        /// <param name="tokenRequestId">the token request id</param>
         /// <param name="tokenId">the token id</param>
         /// <param name="state">the state</param>
         /// <returns>the signature</returns>
-        public Task<Signature> SignTokenRequestState(string tokenId, string state)
+        public Task<Signature> SignTokenRequestState(
+            string tokenRequestId,
+            string tokenId,
+            string state)
         {
-            return client.SignTokenRequestState(tokenId, state);
+            return client.SignTokenRequestState(tokenRequestId, tokenId, state);
         }
 
         /// <summary>

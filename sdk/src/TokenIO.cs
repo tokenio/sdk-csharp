@@ -353,7 +353,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Return banks that satisfy given filtering requirements. 
+        /// Return banks that satisfy given filtering requirements.
         /// </summary>
         /// <param name="ids">the bank IDs to fetch</param>
         /// <param name="search">the keyword to search the fields 'name' and 'identifier' for</param>
@@ -364,7 +364,7 @@ namespace Tokenio
         /// <returns>banks with paging information</returns>
         /// <remarks>
         /// All fields are optional. Set to null if absent. The default value for page is 1; the default
-        /// value for perPage is 200. Values set out of range will be treated as default value. 
+        /// value for perPage is 200. Values set out of range will be treated as default value.
         /// </remarks>
         public PagedBanks GetBanks(
             IList<string> ids,
@@ -436,13 +436,13 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Get a token ID based on a token's tokenRequestId.
+        /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the token id</returns>
-        public string GetTokenId(string tokenRequestId)
+        /// <returns>the token request result</returns>
+        public TokenRequestResult GetTokenRequestResult(string tokenRequestId)
         {
-            return async.GetTokenId(tokenRequestId).Result;
+            return async.GetTokenRequestResult(tokenRequestId).Result;
         }
 
         public void Dispose()

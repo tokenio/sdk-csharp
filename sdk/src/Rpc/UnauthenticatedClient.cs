@@ -79,11 +79,13 @@ namespace Tokenio.Rpc
         /// <summary>
         /// Creates new member ID. After the method returns the ID is reserved on the server.
         /// </summary>
-        /// <param name="memberType">the type of member to register</param>
+        /// <param name="createMemberType">the type of member to register</param>
         /// <returns>the created member ID</returns>
-        public Task<string> CreateMemberId(MemberType memberType)
+        public Task<string> CreateMemberId(CreateMemberType createMemberType)
         {
-            var request = new CreateMemberRequest {Nonce = Util.Nonce(), MemberType = memberType};
+            var request = new CreateMemberRequest {
+                Nonce = Util.Nonce(),
+                MemberType = createMemberType};
             return gateway.CreateMemberAsync(request)
                 .ToTask(response => response.MemberId);
         }
@@ -410,15 +412,15 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Get a token ID based on a token's tokenRequestId.
+        /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the token id</returns>
-        public Task<string> GetTokenId(string tokenRequestId)
+        /// <returns>the token request result</returns>
+        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
         {
-            var request = new GetTokenIdRequest {TokenRequestId = tokenRequestId};
-            return gateway.GetTokenIdAsync(request)
-                .ToTask(response => response.TokenId);
+            var request = new GetTokenRequestResultRequest {TokenRequestId = tokenRequestId};
+            return gateway.GetTokenRequestResultAsync(request)
+                .ToTask(response => new TokenRequestResult(response.TokenId, response.Signature));
         }
     }
 }
