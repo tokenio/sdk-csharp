@@ -39,14 +39,11 @@ namespace Tokenio.Rpc
             metadata.Add("token-created-at-ms", now.ToString());
             metadata.Add("token-member-id", memberId);
 
-            if (AuthenticationContext.CustomerInitiated)
-            {
-                metadata.Add("customer-initiated", "true");
-            }
-
             if (AuthenticationContext.OnBehalfOf != null)
             {
                 metadata.Add("token-on-behalf-of", AuthenticationContext.OnBehalfOf);
+                metadata.Add("customer-initiated", AuthenticationContext.CustomerInitiated.ToString());
+                AuthenticationContext.ClearAccessToken();
             }
 
             return continuation(request,

@@ -19,13 +19,11 @@ namespace samples
 
             // Access grantor's account list by applying
             // access token to the grantee client.
-            grantee.UseAccessToken(tokenId, customerInitiated);
-            var grantorAccounts = grantee.GetAccounts();
+            var representable = grantee.ForAccessToken(tokenId, customerInitiated);
+            var grantorAccounts = representable.GetAccounts();
 
             // Get the data we want
             var balance0 = grantorAccounts[0].GetCurrentBalance(Standard);
-            // When done using access, clear token from grantee client.
-            grantee.ClearAccessToken();
             return balance0;
         }
     }

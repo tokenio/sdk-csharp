@@ -27,10 +27,17 @@ namespace Tokenio.Rpc
             set => customerInitiated.Value = value;
         }
         
-        public static Level ResetKeyLevel() {
+        public static Level ResetKeyLevel()
+        {
             var level = keyLevel.Value;
             keyLevel.Value = Level.Low;
             return level;
+        }
+
+        public static void ClearAccessToken()
+        {
+            OnBehalfOf = null;
+            CustomerInitiated = false;
         }
     }
 }

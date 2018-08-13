@@ -107,7 +107,7 @@ namespace Tokenio
                 {
                     var crypto = cryptoEngineFactory.Create(member.Id);
                     var client = ClientFactory.Authenticated(channel, member.Id, crypto);
-                    return new MemberAsync(member, client);
+                    return new MemberAsync(client);
                 });
         }
 
@@ -180,7 +180,7 @@ namespace Tokenio
             var client = ClientFactory.Authenticated(channel, memberId, crypto);
             return client
                 .GetMember(memberId)
-                .Map(member => new MemberAsync(member, client));
+                .Map(member => new MemberAsync(client));
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace Tokenio
                 .Map(member =>
                 {
                     var client = ClientFactory.Authenticated(channel, member.Id, cryptoEngine);
-                    return new MemberAsync(member, client);
+                    return new MemberAsync(client);
                 });
         }
 
@@ -346,7 +346,7 @@ namespace Tokenio
                 .Map(member =>
                 {
                     var client = ClientFactory.Authenticated(channel, member.Id, cryptoEngine);
-                    return new MemberAsync(member, client);
+                    return new MemberAsync(client);
                 });
         }
 

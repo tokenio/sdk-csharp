@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
@@ -18,7 +19,7 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio
 {
-    public class MemberSync
+    public class MemberSync : RepresentableSync
     {
         private readonly MemberAsync async;
 
@@ -78,38 +79,19 @@ namespace Tokenio
         /// <returns>a list of public keys</returns>
         public IList<Key> Keys()
         {
-            return async.Keys();
+            return async.Keys().Result;
         }
-
+        
         /// <summary>
-        /// Sets the On-Behalf-Of authentication value to be used with this client.
-        /// The value must correspond to an existing Access Token ID issued for the
-        /// client member. Sets customer initiated to false.
+        /// Creates a <see cref="RepresentableSync"/> that acts as another member.
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
-        public void UseAccessToken(string accessTokenId)
+        /// <param name="customerInitiated">whether the customer initiated the call</param>
+        /// <returns>the <see cref="RepresentableSync"/></returns>
+        public RepresentableSync ForAccessToken(string accessTokenId, bool customerInitiated = false)
         {
-            async.UseAccessToken(accessTokenId);
-        }
-
-        /// <summary>
-        /// Sets the On-Behalf-Of authentication value to be used with this client.
-        /// The value must correspond to an existing Access Token ID issued for the
-        /// client member. Sets customer initiated to false.
-        /// </summary>
-        /// <param name="accessTokenId">the access token id to be used</param>
-        /// <param name="customerInitiated">whether the customer initiated the calls</param>
-        public void UseAccessToken(string accessTokenId, bool customerInitiated)
-        {
-            async.UseAccessToken(accessTokenId, customerInitiated);
-        }
-
-        /// <summary>
-        /// Clears the On-Behalf-Of value used with this client.
-        /// </summary>
-        public void ClearAccessToken()
-        {
-            async.ClearAccessToken();
+            var newAsync = async.ForAccessTokenInternal(accessTokenId, customerInitiated);
+            return new MemberSync(newAsync);
         }
 
         /// <summary>
