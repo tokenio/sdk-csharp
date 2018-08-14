@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
@@ -19,7 +18,7 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio
 {
-    public class MemberSync : RepresentableSync
+    public class MemberSync : IRepresentableSync
     {
         private readonly MemberAsync async;
 
@@ -83,12 +82,12 @@ namespace Tokenio
         }
         
         /// <summary>
-        /// Creates a <see cref="RepresentableSync"/> that acts as another member.
+        /// Creates a representable that acts as another member.
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
         /// <param name="customerInitiated">whether the customer initiated the call</param>
-        /// <returns>the <see cref="RepresentableSync"/></returns>
-        public RepresentableSync ForAccessToken(string accessTokenId, bool customerInitiated = false)
+        /// <returns>the representable</returns>
+        public IRepresentableSync ForAccessToken(string accessTokenId, bool customerInitiated = false)
         {
             var newAsync = async.ForAccessTokenInternal(accessTokenId, customerInitiated);
             return new MemberSync(newAsync);

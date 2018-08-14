@@ -5,7 +5,10 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio
 {
-    public interface RepresentableSync
+    /// <summary>
+    /// Represents the part of a token member that can be accessed through an access token.
+    /// </summary>
+    public interface IRepresentableSync
     {
         /// <summary>
         /// Looks up member addresses.

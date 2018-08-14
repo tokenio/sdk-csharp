@@ -24,7 +24,7 @@ using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 
 namespace Tokenio
 {
-    public class MemberAsync : RepresentableAsync
+    public class MemberAsync : IRepresentableAsync
     {
         private static readonly ILog logger = LogManager
             .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -99,11 +99,12 @@ namespace Tokenio
         }
         
         /// <summary>
-        /// Creates a <see cref="RepresentableAsync"/> that acts as another member.
+        /// Creates a representable that acts as another member.
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
         /// <param name="customerInitiated">whether the customer initiated the call</param>
-        public RepresentableAsync ForAccessToken(string accessTokenId, bool customerInitiated = false)
+        /// <returns>the representable</returns>>
+        public IRepresentableAsync ForAccessToken(string accessTokenId, bool customerInitiated = false)
         {
             return ForAccessTokenInternal(accessTokenId, customerInitiated);
         }
