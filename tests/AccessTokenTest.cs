@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using NUnit.Framework;
 using Tokenio;
+using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using static Test.TestUtil;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
@@ -95,7 +97,7 @@ namespace Test
                 () => { Assert.AreEqual(member1.GetAccessTokens(null, 2).List.Count, 1); });
         }
 
-        [Test, RequiresThread]
+        [Test]
         public void CreateAddressAccessToken()
         {
             var address1 = member1.AddAddress(Util.Nonce(), Address());
@@ -105,13 +107,13 @@ namespace Test
                 .ForAddress(address1.Id)
                 .Build());
             member1.EndorseToken(accessToken, Standard);
-            member2.UseAccessToken(accessToken.Id);
+            var representable = member2.ForAccessToken(accessToken.Id);
 
-            Assert.AreEqual(address1, member2.GetAddress(address1.Id));
-            Assert.Throws<AggregateException>(() => member2.GetAddress(address2.Id));
+            Assert.AreEqual(address1, representable.GetAddress(address1.Id));
+            Assert.Throws<AggregateException>(() => representable.GetAddress(address2.Id));
         }
 
-        [Test, RequiresThread]
+        [Test]
         public void CreateAddressesAccessToken()
         {
             var accessToken = member1.CreateAccessToken(AccessTokenBuilder
@@ -122,8 +124,8 @@ namespace Test
             var address1 = member1.AddAddress(Util.Nonce(), Address());
             var address2 = member1.AddAddress(Util.Nonce(), Address());
 
-            member2.UseAccessToken(accessToken.Id);
-            var result = member2.GetAddress(address2.Id);
+            var representable = member2.ForAccessToken(accessToken.Id);
+            var result = representable.GetAddress(address2.Id);
 
             Assert.AreEqual(result, address2);
             Assert.AreNotEqual(result, address1);
@@ -149,6 +151,38 @@ namespace Test
             var result = tokenIO.GetTokenRequestResult(tokenRequestId);
             Assert.AreEqual(accessToken.Id, result.TokenId);
             Assert.AreEqual(signature.Signature_, result.Signature.Signature_);
+        }
+
+        [Test]
+        public void UseAccessTokenConcurrently()
+        {
+            var address1 = member1.AddAddress(Util.Nonce(), Address());
+            var address2 = member2.AddAddress(Util.Nonce(), Address());
+            
+            var user = tokenIO.CreateMember(Alias());
+            var accessToken1 = member1.CreateAccessToken(AccessTokenBuilder
+                .Create(user.FirstAlias())
+                .ForAddress(address1.Id)
+                .Build());
+            var accessToken2 = member2.CreateAccessToken(AccessTokenBuilder
+                .Create(user.FirstAlias())
+                .ForAddress(address2.Id)
+                .Build());
+
+            member1.EndorseToken(accessToken1, Standard);
+            member2.EndorseToken(accessToken2, Standard);
+            
+            var representable1 = user.Async().ForAccessToken(accessToken1.Id);
+            var representable2 = user.Async().ForAccessToken(accessToken2.Id);
+
+            Task<AddressRecord> t1 = representable1.GetAddress(address1.Id);
+            Task<AddressRecord> t2 = representable2.GetAddress(address2.Id);
+            Task<AddressRecord> t3 = representable1.GetAddress(address1.Id);
+            Task.WhenAll(t1, t2, t3).Wait();
+            
+            Assert.AreEqual(t1.Result, address1);
+            Assert.AreEqual(t2.Result, address2);
+            Assert.AreEqual(t3.Result, address1);
         }
 
         [Test]

@@ -24,24 +24,20 @@ using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 
 namespace Tokenio
 {
-    public class MemberAsync
+    public class MemberAsync : IRepresentableAsync
     {
         private static readonly ILog logger = LogManager
             .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        private IList<Key> keys;
 
         private readonly Client client;
 
         /// <summary>
         /// Creates an instance of <see cref="MemberAsync"/>
         /// </summary>
-        /// <param name="member">the member</param>
         /// <param name="client">the gRPC client</param>
-        public MemberAsync(Member member, Client client)
+        public MemberAsync(Client client)
         {
             this.client = client;
-            this.keys = member.Keys;
         }
 
         /// <summary>
@@ -95,40 +91,29 @@ namespace Tokenio
         /// Gets all public keys for this member.
         /// </summary>
         /// <returns>a list of public keys</returns>
-        public IList<Key> Keys()
+        public Task<IList<Key>> Keys()
         {
-            return keys;
+            return client
+                .GetMember()
+                .Map(member => (IList<Key>) member.Keys);
         }
 
         /// <summary>
-        /// Sets the On-Behalf-Of authentication value to be used with this client.
-        /// The value must correspond to an existing Access Token ID issued for the
-        /// client member. Sets customer initiated to false.
+        /// Creates a representable that acts as another member.
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
-        public void UseAccessToken(string accessTokenId)
+        /// <param name="customerInitiated">whether the customer initiated the call</param>
+        /// <returns>the representable</returns>>
+        public IRepresentableAsync ForAccessToken(string accessTokenId, bool customerInitiated = false)
         {
-            client.UseAccessToken(accessTokenId);
+            return ForAccessTokenInternal(accessTokenId, customerInitiated);
         }
 
-        /// <summary>
-        /// Sets the On-Behalf-Of authentication value to be used with this client.
-        /// The value must correspond to an existing Access Token ID issued for the
-        /// client member. Sets customer initiated to false.
-        /// </summary>
-        /// <param name="accessTokenId">the access token id to be used</param>
-        /// <param name="customerInitiated">whether the customer initiated the calls</param>
-        public void UseAccessToken(string accessTokenId, bool customerInitiated)
+        internal MemberAsync ForAccessTokenInternal(string accessTokenId, bool customerInitiated)
         {
-            client.UseAccessToken(accessTokenId, customerInitiated);
-        }
-
-        /// <summary>
-        /// Clears the On-Behalf-Of value used with this client.
-        /// </summary>
-        public void ClearAccessToken()
-        {
-            client.ClearAccessToken();
+            var cloned = client.Clone();
+            cloned.UseAccessToken(accessTokenId, customerInitiated);
+            return new MemberAsync(cloned);
         }
 
         /// <summary>
@@ -251,8 +236,7 @@ namespace Tokenio
         public Task ApproveKeys(IList<Key> keys)
         {
             var operations = keys.Select(Util.ToAddKeyOperation).ToList();
-            return client.UpdateMember(operations)
-                .Map(member => keys = member.Keys);
+            return client.UpdateMember(operations);
         }
 
         /// <summary>
@@ -285,8 +269,7 @@ namespace Tokenio
         public Task RemoveKeys(IList<string> keyIds)
         {
             var operations = keyIds.Select(Util.ToRemoveKeyOperation).ToList();
-            return client.UpdateMember(operations)
-                .Map(member => keys = member.Keys);
+            return client.UpdateMember(operations);
         }
 
         /// <summary>

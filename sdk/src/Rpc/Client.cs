@@ -19,6 +19,7 @@ using Tokenio.Security;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using static Tokenio.Proto.Gateway.GatewayService;
 using static Tokenio.Proto.Gateway.GetTransfersRequest.Types;
 using static Tokenio.Proto.Gateway.ReplaceTokenRequest.Types;
 using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action;
@@ -34,7 +35,9 @@ namespace Tokenio.Rpc
     public class Client
     {
         private readonly ICryptoEngine cryptoEngine;
-        private readonly GatewayService.GatewayServiceClient gateway;
+        private readonly GatewayServiceClient gateway;
+        private string onBehalfOf = null;
+        private bool customerInitiated = false;
 
         /// <summary>
         /// Instantiates a client.
@@ -43,7 +46,7 @@ namespace Tokenio.Rpc
         /// <param name="cryptoEngine">the crypto engine used to sign for authentication, request
         /// payloads, etc</param>
         /// <param name="gateway">the gateway gRPC client</param>
-        public Client(string memberId, ICryptoEngine cryptoEngine, GatewayService.GatewayServiceClient gateway)
+        public Client(string memberId, ICryptoEngine cryptoEngine, GatewayServiceClient gateway)
         {
             this.MemberId = memberId;
             this.cryptoEngine = cryptoEngine;
@@ -55,23 +58,14 @@ namespace Tokenio.Rpc
         /// <summary>
         /// Sets the On-Behalf-Of authentication value to be used with this client.
         /// The value must correspond to an existing Access Token ID issued for the
-        /// client member. Sets customer initiated to false.
+        /// client member. Sets customer initiated to false if not specified.
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
         /// <param name="customerInitiated">whether the customer initiated the calls</param>
         public void UseAccessToken(string accessTokenId, bool customerInitiated = false)
         {
-            AuthenticationContext.OnBehalfOf = accessTokenId;
-            AuthenticationContext.CustomerInitiated = customerInitiated;
-        }
-
-        /// <summary>
-        /// Clears the On-Behalf-Of value used with this client.
-        /// </summary>
-        public void ClearAccessToken()
-        {
-            AuthenticationContext.OnBehalfOf = null;
-            AuthenticationContext.CustomerInitiated = false;
+            this.onBehalfOf = accessTokenId;
+            this.customerInitiated = customerInitiated;
         }
 
         /// <summary>
@@ -211,6 +205,7 @@ namespace Tokenio.Rpc
         /// <returns>the account info</returns>
         public Task<Account> GetAccount(string accountId)
         {
+            SetOnBehalfOf();
             var request = new GetAccountRequest {AccountId = accountId};
             return gateway.GetAccountAsync(request)
                 .ToTask(response => response.Account);
@@ -222,6 +217,7 @@ namespace Tokenio.Rpc
         /// <returns>a list of linked accounts</returns>
         public Task<IList<Account>> GetAccounts()
         {
+            SetOnBehalfOf();
             return gateway.GetAccountsAsync(new GetAccountsRequest())
                 .ToTask(response => (IList<Account>) response.Accounts);
         }
@@ -495,6 +491,7 @@ namespace Tokenio.Rpc
         /// <exception cref="StepUpRequiredException"></exception>
         public Task<Balance> GetBalance(string acountId, Level keyLevel)
         {
+            SetOnBehalfOf();
             SetRequestSignerKeyLevel(keyLevel);
 
             var request = new GetBalanceRequest {AccountId = acountId};
@@ -611,6 +608,7 @@ namespace Tokenio.Rpc
             string transactionId,
             Level keyLevel)
         {
+            SetOnBehalfOf();
             SetRequestSignerKeyLevel(keyLevel);
 
             var request = new GetTransactionRequest
@@ -645,6 +643,7 @@ namespace Tokenio.Rpc
             Level keyLevel,
             string offset)
         {
+            SetOnBehalfOf();
             SetRequestSignerKeyLevel(keyLevel);
 
             var request = new GetTransactionsRequest
@@ -744,6 +743,7 @@ namespace Tokenio.Rpc
         /// <returns>the address record</returns>
         public Task<AddressRecord> GetAddress(string addressId)
         {
+            SetOnBehalfOf();
             var request = new GetAddressRequest {AddressId = addressId};
             return gateway.GetAddressAsync(request)
                 .ToTask(response => response.Address);
@@ -755,6 +755,7 @@ namespace Tokenio.Rpc
         /// <returns>a list of addresses</returns>
         public Task<IList<AddressRecord>> GetAddresses()
         {
+            SetOnBehalfOf();
             return gateway.GetAddressesAsync(new GetAddressesRequest())
                 .ToTask(response => (IList<AddressRecord>) response.Addresses);
         }
@@ -974,6 +975,11 @@ namespace Tokenio.Rpc
                 .ToTask(response => (IList<Device>) response.Devices);
         }
 
+        internal Client Clone()
+        {
+            return new Client(MemberId, cryptoEngine, gateway);
+        }
+
         private Task<TokenOperationResult> CancelAndReplace(
             Token tokenToCancel,
             CreateToken tokenToCreate)
@@ -1010,6 +1016,15 @@ namespace Tokenio.Rpc
         private string Stringify(TokenPayload payload, TokenAction action)
         {
             return $"{Util.ToJson(payload)}.{action.ToString().ToLower()}";
+        }
+
+        private void SetOnBehalfOf()
+        {
+            if (onBehalfOf != null)
+            {
+                AuthenticationContext.OnBehalfOf = onBehalfOf;
+                AuthenticationContext.CustomerInitiated = customerInitiated;
+            }
         }
     }
 }
