@@ -97,7 +97,7 @@ namespace Tokenio
                 .GetMember()
                 .Map(member => (IList<Key>) member.Keys);
         }
-        
+
         /// <summary>
         /// Creates a representable that acts as another member.
         /// </summary>
