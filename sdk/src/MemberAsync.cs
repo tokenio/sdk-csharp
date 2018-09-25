@@ -907,5 +907,15 @@ namespace Tokenio
         {
             return client.GetPairedDevices();
         }
+
+        /// <summary>
+        /// Verifies an affiliated TPP.
+        /// </summary>
+        /// <param name="memberId">member ID of the TPP verify</param>
+        /// <returns>a task</returns>
+        public Task VerifyAffiliate(string memberId)
+        {
+            return client.VerifyAffiliate(memberId);
+        }
     }
 }
