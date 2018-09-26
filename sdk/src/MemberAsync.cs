@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using log4net;
+using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
@@ -123,9 +124,23 @@ namespace Tokenio
         /// <returns>a task</returns>
         public Task AddAliases(IList<Alias> aliases)
         {
-            var operations = aliases.Select(Util.ToAddAliasOperation).ToList();
-            var metadata = aliases.Select(Util.ToAddAliasMetadata).ToList();
-            return client.UpdateMember(operations, metadata);
+            return client.GetMember().Map(member => {
+                aliases = aliases.Select(alias => {
+                    var partnerId = member.PartnerId;
+                    if (!string.IsNullOrEmpty(partnerId) && !partnerId.Equals("token")) {
+                        // Realm must equal member's partner ID if affiliated
+                        if (!string.IsNullOrEmpty(alias.Realm) && !alias.Realm.Equals(partnerId)) {
+                            throw new InvalidRealmException(alias.Realm, partnerId);
+                        }
+                        alias.Realm = partnerId;
+                    }
+                    return alias;
+                }).ToList();
+
+                var operations = aliases.Select(Util.ToAddAliasOperation).ToList();
+                var metadata = aliases.Select(Util.ToAddAliasMetadata).ToList();
+                return client.UpdateMember(operations, metadata);
+            });
         }
 
         /// <summary>
