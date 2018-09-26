@@ -814,5 +814,14 @@ namespace Tokenio
         {
             return async.GetPairedDevices().Result;
         }
+
+        /// <summary>
+        /// Verifies an affiliated TPP.
+        /// </summary>
+        /// <param name="memberId">member ID of the TPP verify</param>
+        public void VerifyAffiliate(string memberId)
+        {
+            async.VerifyAffiliate(memberId).Wait();
+        }
     }
 }

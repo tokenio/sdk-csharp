@@ -975,6 +975,17 @@ namespace Tokenio.Rpc
                 .ToTask(response => (IList<Device>) response.Devices);
         }
 
+        /// <summary>
+        /// Verifies an affiliated TPP.
+        /// </summary>
+        /// <param name="memberId">member ID of the TPP verify</param>
+        /// <returns>a task</returns>
+        public Task VerifyAffiliate(string memberId)
+        {
+            var request = new VerifyAffiliateRequest {MemberId = memberId};
+            return gateway.VerifyAffiliateAsync(request).ToTask();
+        }
+
         internal Client Clone()
         {
             return new Client(MemberId, cryptoEngine, gateway);
