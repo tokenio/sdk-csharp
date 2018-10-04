@@ -106,6 +106,22 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Grants access to all accounts at the given bank.
+        /// </summary>
+        /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        public AccessTokenBuilder ForAllAccountsAtBank(string bankId)
+        {
+            payload.Access.Resources.Add(new Resource
+            {
+                AllAccountsAtBank = new AllAccountsAtBank
+                {
+                    BankId = bankId
+                }
+            });
+            return this;
+        }
+
+        /// <summary>
         /// Grants access to a given account id.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
@@ -130,6 +146,22 @@ namespace Tokenio
             payload.Access.Resources.Add(new Resource
             {
                 AllTransactions = new AllAccountTransactions()
+            });
+            return this;
+        }
+
+        /// <summary>
+        /// Grants access to transactions for all accounts at a given bank.
+        /// </summary>
+        /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        public AccessTokenBuilder ForAllTransactionsAtBank(string bankId)
+        {
+            payload.Access.Resources.Add(new Resource
+            {
+                AllTransactionsAtBank = new AllTransactionsAtBank
+                {
+                    BankId = bankId
+                }
             });
             return this;
         }
@@ -164,6 +196,22 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Grants access to balances for all accounts at the given bank.
+        /// </summary>
+        /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        public AccessTokenBuilder ForAllBalancesAtBank(string bankId)
+        {
+            payload.Access.Resources.Add(new Resource
+            {
+                AllBalancesAtBank = new AllBalancesAtBank
+                {
+                    BankId = bankId
+                }
+            });
+            return this;
+        }
+
+        /// <summary>
         /// Grants access to balances of a given account.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
@@ -180,6 +228,51 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Grants access to all transfer destinations.
+        /// </summary>
+        /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        public AccessTokenBuilder ForAllTransferDestinations()
+        {
+            payload.Access.Resources.Add(new Resource
+            {
+                AllTransferDestinations = new AllTransferDestinations()
+            });
+            return this;
+        }
+
+        /// <summary>
+        /// Grants access to all transfer destinations at the given bank.
+        /// </summary>
+        /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        public AccessTokenBuilder ForAllTransferDestinationsAtBank(string bankId)
+        {
+            payload.Access.Resources.Add(new Resource
+            {
+                AllTransferDestinationsAtBank = new AllTransferDestinationsAtBank
+                {
+                    BankId = bankId
+                }
+            });
+            return this;
+        }
+
+        /// <summary>
+        /// Grants access to a transfer destinations for the given account.
+        /// </summary>
+        /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        public AccessTokenBuilder ForTransferDestination(string accountId)
+        {
+            payload.Access.Resources.Add(new Resource
+            {
+                TransferDestinations = new TransferDestinations
+                {
+                    AccountId = accountId
+                }
+            });
+            return this;
+        }
+
+        /// <summary>
         /// Grants access to ALL resources (aka wildcard permissions).
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
@@ -188,7 +281,8 @@ namespace Tokenio
             return ForAllAccounts()
                 .ForAllAddresses()
                 .ForAllBalances()
-                .ForAllTransactions();
+                .ForAllTransactions()
+                .ForAllTransferDestinations();
         }
 
         /// <summary>

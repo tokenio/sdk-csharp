@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.TransactionProtos;
+using Tokenio.Proto.Common.TransferInstructionsProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio
@@ -69,5 +70,12 @@ namespace Tokenio
             string accountId,
             string transactionId,
             Level keyLevel);
+
+        /// <summary>
+        /// Resolves transfer destinations for the given account.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <returns>a list of transfer endpoints</returns>
+        IList<TransferEndpoint> ResolveTransferDestination(string accountId);
     }
 }
