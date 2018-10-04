@@ -12,6 +12,7 @@ using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
+using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Exceptions;
@@ -984,6 +985,19 @@ namespace Tokenio.Rpc
         {
             var request = new VerifyAffiliateRequest {MemberId = memberId};
             return gateway.VerifyAffiliateAsync(request).ToTask();
+        }
+
+        /// <summary>
+        /// Resolves transfer destinations for the given account.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <returns>a list of transfer endpoints</returns>
+        public Task<IList<TransferEndpoint>> ResolveTransferDestination(string accountId)
+        {
+            SetOnBehalfOf();
+            var request = new ResolveTransferDestinationsRequest {AccountId = accountId};
+            return gateway.ResolveTransferDestinationsAsync(request)
+                .ToTask(response => (IList<TransferEndpoint>) response.Destinations);
         }
 
         internal Client Clone()

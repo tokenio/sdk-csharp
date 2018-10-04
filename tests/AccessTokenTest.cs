@@ -237,5 +237,16 @@ namespace Test
             var signature = member1.SignTokenRequestState(Util.Nonce(), token.Id, Util.Nonce());
             Assert.IsNotEmpty(signature.Signature_);
         }
+
+        [Test]
+        public void AccessTokenBuilderSetTransferDestinations()
+        {
+            var payload = AccessTokenBuilder.Create(member2.FirstAlias())
+                .ForAllTransferDestinations()
+                .Build();
+            var accessToken = member1.CreateAccessToken(payload);
+            var result = member1.GetToken(accessToken.Id);
+            Assert.AreEqual(accessToken, result);
+        }
     }
 }
