@@ -49,15 +49,6 @@ namespace Test
                 .Build();
         }
 
-        public static TrustedBeneficiary.Types.Payload TrustedBeneficiaryPayload(string memberId)
-        {
-            return new TrustedBeneficiary.Types.Payload
-            {
-                MemberId = memberId,
-                Nonce = Util.Nonce()
-            };
-        }
-
         public static void WaitUntil(
             int timeoutMs,
             int waitTimeMs,
