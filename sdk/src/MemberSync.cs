@@ -833,5 +833,32 @@ namespace Tokenio
         {
             return async.ResolveTransferDestination(accountId).Result;
         }
+        
+        /// <summary>
+        /// Adds a trusted beneficiary for whom the SCA will be skipped.
+        /// </summary>
+        /// <param name="memberId">the member id of the beneficiary</param>
+        public void AddTrustedBeneficiary(string memberId)
+        {
+            async.AddTrustedBeneficiary(memberId).Wait();
+        }
+
+        /// <summary>
+        /// Removes a trusted beneficiary. 
+        /// </summary>
+        /// <param name="memberId">the member id of the beneficiary</param>
+        public void RemoveTrustedBeneficiary(string memberId)
+        {
+            async.RemoveTrustedBeneficiary(memberId).Wait();
+        }
+
+        /// <summary>
+        /// Gets a list of all trusted beneficiaries.
+        /// </summary>
+        /// <returns>the list</returns>
+        public IList<TrustedBeneficiary> GetTrustedBeneficiaries()
+        {
+            return async.GetTrustedBeneficiaries().Result;
+        }
     }
 }
