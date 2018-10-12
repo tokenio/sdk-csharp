@@ -27,16 +27,16 @@ namespace Test
         public void AddAndGetTrustedBeneficiary()
         {
             member1.AddTrustedBeneficiary(member2.MemberId());
-            Assert.Equals(
+            CollectionAssert.AreEquivalent(
+                new List<string> {member2.MemberId()},
                 member1.GetTrustedBeneficiaries()
-                    .Select(a => a.Payload.MemberId),
-                new List<string> {member2.MemberId()});
+                    .Select(a => a.Payload.MemberId));
 
             member1.AddTrustedBeneficiary(member3.MemberId());
-            Assert.Equals(
+            CollectionAssert.AreEquivalent(
+                new List<string> {member2.MemberId(), member3.MemberId()},
                 member1.GetTrustedBeneficiaries()
-                    .Select(a => a.Payload.MemberId),
-                new List<string> {member2.MemberId(), member3.MemberId()});
+                    .Select(a => a.Payload.MemberId));
         }
 
         [Test]
@@ -44,16 +44,16 @@ namespace Test
         {
             member1.AddTrustedBeneficiary(member2.MemberId());
             member1.AddTrustedBeneficiary(member3.MemberId());
-            Assert.Equals(
+            CollectionAssert.AreEquivalent(
+                new List<string> {member2.MemberId(), member3.MemberId()},
                 member1.GetTrustedBeneficiaries()
-                    .Select(a => a.Payload.MemberId),
-                new List<string> {member2.MemberId(), member3.MemberId()});
+                    .Select(a => a.Payload.MemberId));
 
             member1.RemoveTrustedBeneficiary(member3.MemberId());
-            Assert.Equals(
+            CollectionAssert.AreEquivalent(
+                new List<string> {member2.MemberId()},
                 member1.GetTrustedBeneficiaries()
-                    .Select(a => a.Payload.MemberId),
-                new List<string> {member2.MemberId()});
+                   .Select(a => a.Payload.MemberId));
 
             member1.RemoveTrustedBeneficiary(member2.MemberId());
             Assert.IsEmpty(member1.GetTrustedBeneficiaries());
