@@ -68,6 +68,7 @@
     <Compile Include="Security\CryptoEngineTest.cs" />
     <Compile Include="Security\UnsecuredFileSystemKeyStoreTest.cs" />
     <Compile Include="Security\InMemoryKeyStoreTest.cs" />
+    <Compile Include="TrustedBeneficiaryTest.cs" />
     <Compile Include="UtilityTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="TokenRequestTest.cs" />

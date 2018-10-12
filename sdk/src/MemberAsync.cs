@@ -942,5 +942,44 @@ namespace Tokenio
         {
             return client.ResolveTransferDestination(accountId);
         }
+
+        /// <summary>
+        /// Adds a trusted beneficiary for whom the SCA will be skipped.
+        /// </summary>
+        /// <param name="memberId">the member id of the beneficiary</param>
+        /// <returns>a task</returns>
+        public Task AddTrustedBeneficiary(string memberId)
+        {
+            var payload = new TrustedBeneficiary.Types.Payload
+            {
+                MemberId = memberId,
+                Nonce = Util.Nonce()
+            };
+            return client.AddTrustedBeneficiary(payload);
+        }
+
+        /// <summary>
+        /// Removes a trusted beneficiary. 
+        /// </summary>
+        /// <param name="memberId">the member id of the beneficiary</param>
+        /// <returns>a task</returns>
+        public Task RemoveTrustedBeneficiary(string memberId)
+        {
+            var payload = new TrustedBeneficiary.Types.Payload
+            {
+                MemberId = memberId,
+                Nonce = Util.Nonce()
+            };
+            return client.RemoveTrustedBeneficiary(payload);
+        }
+
+        /// <summary>
+        /// Gets a list of all trusted beneficiaries.
+        /// </summary>
+        /// <returns>the list</returns>
+        public Task<IList<TrustedBeneficiary>> GetTrustedBeneficiaries()
+        {
+            return client.GetTrustedBeneficiaries();
+        }
     }
 }

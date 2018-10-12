@@ -3,6 +3,7 @@ using System.Threading;
 using Tokenio;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.MemberProtos;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 
 namespace Test
@@ -47,7 +48,7 @@ namespace Test
                 .DeveloperKey("4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI")
                 .Build();
         }
-        
+
         public static void WaitUntil(
             int timeoutMs,
             int waitTimeMs,
