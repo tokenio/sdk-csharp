@@ -298,7 +298,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Links a funding bank account to Token and returns it to the caller.
+        /// Looks up funding bank accounts linked to Token.
         /// </summary>
         /// <returns>a list of accounts</returns>
         public Task<IList<AccountAsync>> GetAccounts()
