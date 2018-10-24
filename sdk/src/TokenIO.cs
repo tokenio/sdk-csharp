@@ -577,10 +577,10 @@ namespace Tokenio
                     new AsyncTimeoutInterceptor(timeoutMs),
                     new AsyncMetadataInterceptor(metadata =>
                     {
-                        metadata.Add("token-sdk", "CSharp");
+                        metadata.Add("token-sdk", "csharp");
                         metadata.Add(
                             "token-sdk-version",
-                            Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                            Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
                         metadata.Add("token-dev-key", devKey);
                         return metadata;
                     })
