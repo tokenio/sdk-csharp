@@ -46,6 +46,16 @@ namespace Tokenio
         Balance GetBalance(string accountId, Level keyLevel);
 
         /// <summary>
+        /// Looks up balances for a list of accounts.
+        /// </summary>
+        /// <param name="accountIds">the list of accounts</param>
+        /// <param name="keyLevel">the key level</param>
+        /// <returns>a list of balances</returns>
+        IList<Balance> GetBalances(
+            IList<string> accountIds,
+            Level keyLevel);
+
+        /// <summary>
         /// Looks up transactions for a given account.
         /// </summary>
         /// <param name="accountId">the account ID</param>
