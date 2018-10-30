@@ -163,19 +163,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Notifies to link accounts.
-        /// </summary>
-        /// <param name="alias">alias to notify</param>
-        /// <param name="authorization">the bank authorization for the account</param>
-        /// <returns>status of the notification request</returns>
-        public NotifyStatus NotifyLinkAccounts(
-            Alias alias,
-            BankAuthorization authorization)
-        {
-            return async.NotifyLinkAccounts(alias, authorization).Result;
-        }
-
-        /// <summary>
         /// Notifies to add a key.
         /// </summary>
         /// <param name="alias">alias to notify</param>
@@ -188,29 +175,6 @@ namespace Tokenio
             Key key)
         {
             return async.NotifyAddKey(alias, name, key).Result;
-        }
-
-        /// <summary>
-        /// Notifies to link accounts and add a key.
-        /// </summary>
-        /// <param name="alias">alias to notify</param>
-        /// <param name="authorization">the bank authorization for the account</param>
-        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
-        /// <param name="key">key that needs an approval</param>
-        /// <returns>status of the notification request</returns>
-        public NotifyStatus NotifyLinkAccountsAndAddKey(
-            Alias alias,
-            BankAuthorization authorization,
-            string name,
-            Key key)
-        {
-            return async
-                .NotifyLinkAccountsAndAddKey(
-                    alias,
-                    authorization,
-                    name,
-                    key)
-                .Result;
         }
 
         /// <summary>

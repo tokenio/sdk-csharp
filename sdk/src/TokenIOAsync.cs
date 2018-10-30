@@ -195,20 +195,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Notifies to link an account.
-        /// </summary>
-        /// <param name="alias">alias to notify</param>
-        /// <param name="authorization">the bank authorization for the funding account</param>
-        /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyLinkAccounts(
-            Alias alias,
-            BankAuthorization authorization)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.NotifyLinkAccounts(alias, authorization);
-        }
-
-        /// <summary>
         /// Notifies to add a key.
         /// </summary>
         /// <param name="alias">alias to notify</param>
@@ -222,28 +208,6 @@ namespace Tokenio
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.NotifyAddKey(alias, name, key);
-        }
-
-        /// <summary>
-        /// Notifies to link accounts and add a key.
-        /// </summary>
-        /// <param name="alias">alias to notify</param>
-        /// <param name="authorization">the bank authorization for the funding account</param>
-        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
-        /// <param name="key">the key that needs an approval</param>
-        /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyLinkAccountsAndAddKey(
-            Alias alias,
-            BankAuthorization authorization,
-            string name,
-            Key key)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.NotifyLinkAccountsAndAddKey(
-                alias,
-                authorization,
-                name,
-                key);
         }
 
         /// <summary>
