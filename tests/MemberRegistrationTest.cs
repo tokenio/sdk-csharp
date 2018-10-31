@@ -19,8 +19,6 @@ namespace Test
             var alias = Alias();
             var member = tokenIO.CreateMember(alias);
             Assert.AreEqual(3, member.Keys().Count);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                Assert.True(member.Aliases().Contains(alias)));
         }
 
         [Test]
@@ -34,10 +32,7 @@ namespace Test
         [Test]
         public void LoginMember()
         {
-            var alias = Alias();
-            var member = tokenIO.CreateMember(alias);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                Assert.True(member.Aliases().Contains(alias)));
+            var member = tokenIO.CreateMember(Alias());
 
             var loggedIn = tokenIO.GetMember(member.MemberId());
             CollectionAssert.AreEquivalent(member.Aliases(), loggedIn.Aliases());
@@ -47,10 +42,7 @@ namespace Test
         [Test]
         public void ProvisionDevice()
         {
-            var alias = Alias();
-            var member = tokenIO.CreateMember(alias);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                Assert.True(member.Aliases().Contains(alias)));
+            var member = tokenIO.CreateMember(Alias());
 
             var secondDevice = NewSdkInstance();
 
@@ -70,12 +62,10 @@ namespace Test
             var alias2 = Alias();
 
             var member = tokenIO.CreateMember(alias1);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                CollectionAssert.AreEquivalent(member.Aliases(), new[] {alias1}));
+            CollectionAssert.AreEquivalent(new[] {alias1}, member.Aliases());
 
             member.AddAlias(alias2);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                CollectionAssert.AreEquivalent(member.Aliases(), new[] {alias1, alias2}));
+            CollectionAssert.AreEquivalent(new[] {alias1, alias2}, member.Aliases());
         }
 
         [Test]
@@ -85,15 +75,13 @@ namespace Test
             var alias2 = Alias();
 
             var member = tokenIO.CreateMember(alias1);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                CollectionAssert.AreEquivalent(member.Aliases(), new[] {alias1}));
+            CollectionAssert.AreEquivalent(new[] {alias1}, member.Aliases());
 
             member.AddAlias(alias2);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                CollectionAssert.AreEquivalent(member.Aliases(), new[] {alias1, alias2}));
+            CollectionAssert.AreEquivalent(new[] {alias1, alias2}, member.Aliases());
 
             member.RemoveAlias(alias2);
-            CollectionAssert.AreEquivalent(member.Aliases(), new[] {alias1});
+            CollectionAssert.AreEquivalent(new[] {alias1}, member.Aliases());
         }
 
         [Test]
@@ -108,8 +96,7 @@ namespace Test
         {
             var alias = Alias();
             tokenIO.CreateMember(alias);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                Assert.True(tokenIO.AliasExists(alias)));
+            Assert.True(tokenIO.AliasExists(alias));
         }
 
         [Test]
@@ -117,8 +104,6 @@ namespace Test
         {
             var alias = Alias();
             var member = tokenIO.CreateMember(alias);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                Assert.True(member.Aliases().Contains(alias)));
 
             member.UseDefaultRecoveryRule();
             var verificationId = tokenIO.BeginRecovery(alias);
@@ -134,17 +119,14 @@ namespace Test
 
             recovered.VerifyAlias(verificationId, "code");
             Assert.True(tokenIO.AliasExists(alias));
-            CollectionAssert.AreEquivalent(recovered.Aliases(), new[] {alias});
+            CollectionAssert.AreEquivalent(new[] {alias}, recovered.Aliases());
         }
 
         [Test]
         public void Recovery_withSecondaryAgent()
         {
             var alias = Alias();
-            var member = tokenIO.CreateMember(alias);
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-                Assert.True(member.Aliases().Contains(alias)));
-            
+            var member = tokenIO.CreateMember(alias);            
             var memberId = member.MemberId();
             var primaryAgentId = member.GetDefaultAgent();
             var secondaryAgent = tokenIO.CreateMember(Alias());
@@ -185,7 +167,7 @@ namespace Test
 
             recovered.VerifyAlias(verificationId, "code");
             Assert.True(tokenIO.AliasExists(alias));
-            CollectionAssert.AreEquivalent(recovered.Aliases(), new[] {alias});
+            CollectionAssert.AreEquivalent(new[] {alias}, recovered.Aliases());
         }
     }
 }
