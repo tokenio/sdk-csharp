@@ -101,17 +101,19 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Sets the Bank Authorization.
+        /// Sets the source custom authorization.
         /// </summary>
-        /// <param name="bankAuthorization">the bank authorization</param>
+        /// <param name="bankId">source bank ID</param>
+        /// <param name="authorization">source custom authorization</param>
         /// <returns>the builder</returns>
-        public TransferTokenBuilder SetBankAuthorization(BankAuthorization bankAuthorization)
+        public TransferTokenBuilder SetCustomAuthoriaztion(string bankId, string authorization)
         {
             var sourceAccount = new BankAccount
             {
-                TokenAuthorization = new TokenAuthorization
+                Custom = new Custom
                 {
-                    Authorization = bankAuthorization
+                    BankId = bankId,
+                    Payload = authorization
                 }
             };
             payload.Transfer.Instructions.Source.Account = sourceAccount;

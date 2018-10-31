@@ -138,31 +138,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Notifies subscribed devices that accounts should be linked.
-        /// </summary>
-        /// <param name="alias">alias of the member</param>
-        /// <param name="authorization">the bank authorization for the funding account</param>
-        /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyLinkAccounts(
-            Alias alias,
-            BankAuthorization authorization)
-        {
-            var request = new NotifyRequest
-            {
-                Alias = alias,
-                Body = new NotifyBody
-                {
-                    LinkAccounts = new LinkAccounts
-                    {
-                        BankAuthorization = authorization
-                    }
-                }
-            };
-            return gateway.NotifyAsync(request)
-                .ToTask(response => response.Status);
-        }
-
-        /// <summary>
         /// Notifies subscribed devices that a key should be added.
         /// </summary>
         /// <param name="alias">alias of the member</param>
@@ -183,43 +158,6 @@ namespace Tokenio.Rpc
                     {
                         Name = name,
                         Key = key
-                    }
-                }
-            };
-            return gateway.NotifyAsync(request)
-                .ToTask(response => response.Status);
-        }
-
-        /// <summary>
-        /// Notifies subscribed devices that a key should be added.
-        /// </summary>
-        /// <param name="alias">alias of the member</param>
-        /// <param name="authorization">the bank authorization for the funding account</param>
-        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
-        /// <param name="key">the that needs an approval</param>
-        /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyLinkAccountsAndAddKey(
-            Alias alias,
-            BankAuthorization authorization,
-            string name,
-            Key key)
-        {
-            var request = new NotifyRequest
-            {
-                Alias = alias,
-                Body = new NotifyBody
-                {
-                    LinkAccountsAndAddKey = new LinkAccountsAndAddKey
-                    {
-                        LinkAccounts = new LinkAccounts
-                        {
-                            BankAuthorization = authorization
-                        },
-                        AddKey = new AddKey
-                        {
-                            Name = name,
-                            Key = key
-                        }
                     }
                 }
             };
