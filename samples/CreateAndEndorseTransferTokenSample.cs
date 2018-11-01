@@ -34,7 +34,7 @@ namespace samples
                 // source account:
                 .SetAccountId(payer.GetAccounts()[0].Id())
                 // payee token alias:
-                .SetRedeemerAlias(payeeAlias)
+                .SetToAlias(payeeAlias)
                 // optional description:
                 .SetDescription("Book purchase")
                 // ref id (if not set, will get random ID)
@@ -84,7 +84,6 @@ namespace samples
                 // source account:
                 .SetAccountId(payer.GetAccounts()[0].Id())
                 .SetToMemberId(payeeId)
-                .SetRedeemerMemberId(payeeId)
                 // effective in one second:
                 .SetEffectiveAtMs(now + 1000)
                 // expires in 300 seconds:
@@ -118,7 +117,7 @@ namespace samples
                     100.0, // amount
                     "EUR") // currency
                 .SetAccountId(payer.GetAccounts()[0].Id())
-                .SetRedeemerAlias(payeeAlias)
+                .SetToAlias(payeeAlias)
                 .AddDestination(
                     new TransferEndpoint
                     {
@@ -154,7 +153,7 @@ namespace samples
                     100.0,
                     "EUR")
                 .SetAccountId(payer.GetAccounts()[0].Id())
-                .SetRedeemerAlias(payeeAlias)
+                .SetToAlias(payeeAlias)
                 .SetDescription("Invoice payment")
                 .AddAttachment(
                     payer.MemberId(),
