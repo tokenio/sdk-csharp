@@ -198,28 +198,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Sets the alias of the redeemer.
-        /// </summary>
-        /// <param name="redeemerAlias">the alias</param>
-        /// <returns>the builder</returns>
-        public TransferTokenBuilder SetRedeemerAlias(Alias redeemerAlias)
-        {
-            payload.Transfer.Redeemer.Alias = redeemerAlias;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the memberId of the redeemer.
-        /// </summary>
-        /// <param name="redeemerMemberId">the member id</param>
-        /// <returns>the builder</returns>
-        public TransferTokenBuilder SetRedeemerMemberId(string redeemerMemberId)
-        {
-            payload.Transfer.Redeemer.Id = redeemerMemberId;
-            return this;
-        }
-
-        /// <summary>
         /// Adds an attachment to the token.
         /// </summary>
         /// <param name="attachment">the attachment</param>
