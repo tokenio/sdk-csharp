@@ -10,9 +10,6 @@ namespace Test
 {
     public class TestUtil
     {
-        public const int ALIAS_VERIFICATION_TIMEOUT_MS = 60000;
-        public const int ALIAS_VERIFICATION_POLL_FREQUENCY_MS = 1000;
-
         public static Alias Alias()
         {
             return new Alias

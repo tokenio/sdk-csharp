@@ -28,11 +28,6 @@ namespace Test
         {
             member1 = tokenIO.CreateMember(Alias());
             member2 = tokenIO.CreateMember(Alias());
-            WaitUntil(ALIAS_VERIFICATION_TIMEOUT_MS, ALIAS_VERIFICATION_POLL_FREQUENCY_MS, () =>
-            {
-                CollectionAssert.IsNotEmpty(member1.Aliases());
-                CollectionAssert.IsNotEmpty(member2.Aliases());
-            });
         }
 
         [Test]

@@ -124,7 +124,7 @@ namespace Tokenio
         /// <returns>a task</returns>
         public Task AddAliases(IList<Alias> aliases)
         {
-            return client.GetMember().Map(member => {
+            return client.GetMember().FlatMap(member => {
                 aliases = aliases.Select(alias => {
                     var partnerId = member.PartnerId;
                     if (!string.IsNullOrEmpty(partnerId) && !partnerId.Equals("token")) {
