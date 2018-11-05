@@ -21,29 +21,32 @@ for name in files:
 		os.rename(name, new_name)
 		substitutions[name.rsplit('.', 1)[0]] = new_name.rsplit('.', 1)[0]
 
-files = list(filter(lambda f: f.endswith('.html'), os.listdir('.')))
+html_files = list(filter(lambda f: f.endswith('.html'), os.listdir('.')))
 
+# Methods that don't have overrides.
 non_override = re.compile("<h2 class=\"memtitle\"><span class=\"permalink\"><a href=\"#([^<]+)\">&#9670;&nbsp;</a></span>([^<]+)</h2>")
+# Methods that have overrides.
 override = re.compile("<h2 class=\"memtitle\"><span class=\"permalink\"><a href=\"#([^<]+)\">&#9670;&nbsp;</a></span>([^<]+)\(\) <span class=\"overload\">\[([\d]+)/([\d]+)\]</span></h2>")
 
-for name in files:
+for name in html_files:
 	with open(name) as file:
 		content = file.read()
 		results = re.finditer(non_override, content)
 		for result in results:
 			hash_id = result.group(1)
-			member_name = result.group(2).replace('()', '')
-			substitutions[hash_id] = member_name
+			method_name = result.group(2).replace('()', '')
+			substitutions[hash_id] = method_name
 
 		results = re.finditer(override, content)
 		for result in results:
 			hash_id = result.group(1)
-			member_name = result.group(2) + '-' + result.group(3)
-			substitutions[hash_id] = member_name
+			method_name = result.group(2) + '-' + result.group(3)
+			substitutions[hash_id] = method_name
 
-files = list(filter(lambda f: f.endswith('.html') or f.endswith('.js'), os.listdir('.')))
+all_files = os.listdir('.') + list(map(lambda name: 'search/' + name, os.listdir('./search')))
+files_to_modify = list(filter(lambda f: f.endswith('.html') or f.endswith('.js'), all_files))
 
-for name in files:
+for name in files_to_modify:
 	with open(name) as file:
 		content=file.read()
 	with open(name, 'w') as file:
