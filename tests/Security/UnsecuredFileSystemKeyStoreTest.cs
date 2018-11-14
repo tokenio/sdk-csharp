@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using Sodium;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 using Tokenio;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
@@ -13,18 +14,25 @@ namespace Test.Security
     public class UnsecuredFileSystemKeyStoreTest
     {
         private readonly string directory = "./testKeys";
-        
+
         private readonly string memberId1 = Util.Nonce() + ":" + Util.Nonce();
         private readonly string memberId2 = Util.Nonce() + ":" + Util.Nonce();
-        
-        private readonly KeyPair privileged = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
-        private readonly KeyPair standard = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Standard);
-        private readonly KeyPair lowOld = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Low);
-        private readonly KeyPair lowNew = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Low);
+
+        private KeyPair privileged;
+        private KeyPair standard;
+        private KeyPair lowOld;
+        private KeyPair lowNew;
 
         [SetUp]
         public void Setup()
         {
+            var generator = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
+            generator.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
+            privileged = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
+            standard = generator.GenerateKeyPair().ParseEd25519KeyPair(Standard);
+            lowOld = generator.GenerateKeyPair().ParseEd25519KeyPair(Low);
+            lowNew = generator.GenerateKeyPair().ParseEd25519KeyPair(Low);
+
             var keyStore = new UnsecuredFileSystemKeyStore(directory);
             keyStore.Put(memberId1, standard);
             keyStore.Put(memberId1, lowOld);

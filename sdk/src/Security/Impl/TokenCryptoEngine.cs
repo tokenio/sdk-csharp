@@ -1,4 +1,5 @@
-﻿using Sodium;
+﻿using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
@@ -17,13 +18,16 @@ namespace Tokenio.Security
 
         public Key GenerateKey(Level level)
         {
-            var keyPair = PublicKeyAuth.GenerateKeyPair().ToKeyPair(level);
+            var generator = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
+            generator.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
+            var keyPair = generator.GenerateKeyPair().ParseEd25519KeyPair(level);
             keys.Put(memberId, keyPair);
             return keyPair.ToKey();
         }
 
         public ISigner CreateSigner(Level level)
         {
+            
             var keyPair = keys.GetByLevel(memberId, level);
             return new Ed25519Signer(keyPair.Id, keyPair.PrivateKey);
         }
