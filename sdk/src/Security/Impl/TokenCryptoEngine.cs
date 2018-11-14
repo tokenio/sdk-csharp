@@ -27,7 +27,6 @@ namespace Tokenio.Security
 
         public ISigner CreateSigner(Level level)
         {
-            
             var keyPair = keys.GetByLevel(memberId, level);
             return new Ed25519Signer(keyPair.Id, keyPair.PrivateKey);
         }

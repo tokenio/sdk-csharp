@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
 using Tokenio;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
@@ -15,23 +12,20 @@ namespace Test.Security
     {
         private IKeyStore keyStore;
         private string memberId;
-        private IAsymmetricCipherKeyPairGenerator generator;
 
         [SetUp]
         public void Setup()
         {
             keyStore = new InMemoryKeyStore();
             memberId = Util.Nonce();
-            generator = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
-            generator.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
         }
 
         [Test]
         public void GetByLevel()
         {
-            var privileged = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
-            var standard = generator.GenerateKeyPair().ParseEd25519KeyPair(Standard);
-            var low = generator.GenerateKeyPair().ParseEd25519KeyPair(Low);
+            var privileged = TestUtil.GenerateKeyPair(Privileged);
+            var standard = TestUtil.GenerateKeyPair(Standard);
+            var low = TestUtil.GenerateKeyPair(Low);
             keyStore.Put(memberId, privileged);
             keyStore.Put(memberId, standard);
             keyStore.Put(memberId, low);
@@ -43,8 +37,8 @@ namespace Test.Security
         [Test]
         public void GetById()
         {
-            var key1 = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
-            var key2 = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
+            var key1 = TestUtil.GenerateKeyPair(Privileged);
+            var key2 = TestUtil.GenerateKeyPair(Privileged);
             keyStore.Put(memberId, key1);
             keyStore.Put(memberId, key2);
             Assert.AreEqual(key1, keyStore.GetById(memberId, key1.Id));
@@ -54,8 +48,8 @@ namespace Test.Security
         [Test]
         public void GetLatest()
         {
-            var oldKey = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
-            var newKey = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
+            var oldKey = TestUtil.GenerateKeyPair(Privileged);
+            var newKey = TestUtil.GenerateKeyPair(Privileged);
             keyStore.Put(memberId, oldKey);
             keyStore.Put(memberId, newKey);
             Assert.AreEqual(newKey, keyStore.GetByLevel(memberId, Privileged));
@@ -64,9 +58,9 @@ namespace Test.Security
         [Test]
         public void KeyList()
         {
-            var privileged = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
-            var standard = generator.GenerateKeyPair().ParseEd25519KeyPair(Standard);
-            var low = generator.GenerateKeyPair().ParseEd25519KeyPair(Low);
+            var privileged = TestUtil.GenerateKeyPair(Privileged);
+            var standard = TestUtil.GenerateKeyPair(Standard);
+            var low = TestUtil.GenerateKeyPair(Low);
             keyStore.Put(memberId, privileged);
             keyStore.Put(memberId, standard);
             keyStore.Put(memberId, low);
@@ -78,8 +72,8 @@ namespace Test.Security
         public void DifferentMember()
         {
             var member2 = Util.Nonce();
-            var key1 = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
-            var key2 = generator.GenerateKeyPair().ParseEd25519KeyPair(Privileged);
+            var key1 = TestUtil.GenerateKeyPair(Privileged);
+            var key2 = TestUtil.GenerateKeyPair(Privileged);
             keyStore.Put(memberId, key1);
             keyStore.Put(member2, key2);
             Assert.AreEqual(key1, keyStore.GetById(memberId, key1.Id));

@@ -1,4 +1,5 @@
-﻿using Google.Protobuf;
+﻿using System.Security.Cryptography;
+using Google.Protobuf;
 
 namespace Tokenio.Security
 {
@@ -9,6 +10,7 @@ namespace Tokenio.Security
         /// </summary>
         /// <param name="message">the payload to sign</param>
         /// <param name="signature">the signature to verify</param>
+        /// <exception cref="CryptographicException"></exception>
         void Verify(IMessage message, string signature);
 
         /// <summary>
@@ -16,6 +18,7 @@ namespace Tokenio.Security
         /// </summary>
         /// <param name="payload">the payload to sign</param>
         /// <param name="signature">the signature to verify</param>
+        /// <exception cref="CryptographicException"></exception>
         void Verify(string payload, string signature);
     }
 }
