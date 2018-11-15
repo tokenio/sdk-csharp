@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using Google.Protobuf;
 using Microsoft.IdentityModel.Tokens;
@@ -26,6 +27,7 @@ namespace Tokenio.Security
             Verify(Util.ToJson(message), signature);
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void Verify(string payload, string signature)
         {
             var payloadBytes = Encoding.UTF8.GetBytes(payload);

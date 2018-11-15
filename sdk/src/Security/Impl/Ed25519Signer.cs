@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 using Google.Protobuf;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -28,6 +29,7 @@ namespace Tokenio.Security
             return Sign(Util.ToJson(message));
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public string Sign(string payload)
         {
             var payloadBytes = Encoding.UTF8.GetBytes(payload);
