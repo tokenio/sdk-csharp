@@ -14,12 +14,12 @@ namespace Test
 {
     public class TestUtil
     {
-        private static readonly IAsymmetricCipherKeyPairGenerator generator;
+        private static readonly IAsymmetricCipherKeyPairGenerator ed255519KeyGen;
 
         static TestUtil()
         {
-            generator = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
-            generator.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
+            ed255519KeyGen = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
+            ed255519KeyGen.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
         }
 
         public static Alias Alias()
@@ -60,7 +60,7 @@ namespace Test
 
         public static KeyPair GenerateKeyPair(Key.Types.Level level)
         {
-            return generator.GenerateKeyPair().ParseEd25519KeyPair(level);
+            return ed255519KeyGen.GenerateKeyPair().ParseEd25519KeyPair(level);
         }
 
         public static void WaitUntil(
