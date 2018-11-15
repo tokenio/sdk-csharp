@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using Sodium;
 using Tokenio;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
@@ -13,14 +12,14 @@ namespace Test.Security
     public class UnsecuredFileSystemKeyStoreTest
     {
         private readonly string directory = "./testKeys";
-        
+
         private readonly string memberId1 = Util.Nonce() + ":" + Util.Nonce();
         private readonly string memberId2 = Util.Nonce() + ":" + Util.Nonce();
-        
-        private readonly KeyPair privileged = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Privileged);
-        private readonly KeyPair standard = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Standard);
-        private readonly KeyPair lowOld = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Low);
-        private readonly KeyPair lowNew = PublicKeyAuth.GenerateKeyPair().ToKeyPair(Low);
+
+        private readonly KeyPair privileged = TestUtil.GenerateKeyPair(Privileged);
+        private readonly KeyPair standard = TestUtil.GenerateKeyPair(Standard);
+        private readonly KeyPair lowOld = TestUtil.GenerateKeyPair(Low);
+        private readonly KeyPair lowNew = TestUtil.GenerateKeyPair(Low);
 
         [SetUp]
         public void Setup()

@@ -1,15 +1,27 @@
 ﻿using System;
 using System.Threading;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 using Tokenio;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
-using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Proto.Common.SecurityProtos;
+using Tokenio.Security;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 
 namespace Test
 {
     public class TestUtil
     {
+        private static readonly IAsymmetricCipherKeyPairGenerator ed255519KeyGen;
+
+        static TestUtil()
+        {
+            ed255519KeyGen = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
+            ed255519KeyGen.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
+        }
+
         public static Alias Alias()
         {
             return new Alias
@@ -44,6 +56,11 @@ namespace Test
                 .Timeout(10 * 60 * 1_000) // Set high for easy debugging.
                 .DeveloperKey("4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI")
                 .Build();
+        }
+
+        public static KeyPair GenerateKeyPair(Key.Types.Level level)
+        {
+            return ed255519KeyGen.GenerateKeyPair().ParseEd25519KeyPair(level);
         }
 
         public static void WaitUntil(

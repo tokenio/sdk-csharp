@@ -5,6 +5,8 @@ using Grpc.Core;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
@@ -13,10 +15,17 @@ namespace Tokenio
 {
     public static class Extensions
     {
-        public static KeyPair ToKeyPair(this Sodium.KeyPair keyPair, Level level)
+        public static KeyPair ParseEd25519KeyPair(this AsymmetricCipherKeyPair ed25519KeyPair, Level level)
         {
-            var id = Base64UrlEncoder.Encode(SHA256.Create().ComputeHash(keyPair.PublicKey)).Substring(0, 16);
-            return new KeyPair(id, level, Algorithm.Ed25519, keyPair.PrivateKey, keyPair.PublicKey);
+            var publicKey = ((Ed25519PublicKeyParameters) ed25519KeyPair.Public).GetEncoded();
+            var privateKey = ((Ed25519PrivateKeyParameters) ed25519KeyPair.Private).GetEncoded();
+            var id = Base64UrlEncoder.Encode(SHA256.Create().ComputeHash(publicKey)).Substring(0, 16);
+            return new KeyPair(
+                id,
+                level,
+                Algorithm.Ed25519,
+                privateKey,
+                publicKey);
         }
 
         public static Key ToKey(this KeyPair keyPair)
