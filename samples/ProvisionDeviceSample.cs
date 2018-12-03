@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
@@ -22,7 +24,9 @@ namespace samples
                 .Where(k => k.Level.Equals(Low))
                 .FirstOrDefault(null);
             // ask user (on "regular" device) to approve one of our keys
-            var status = tokenIO.NotifyAddKey(alias, "SDK Sample", lowKey);
+            IList<Key> keys = new List<Key>();
+            keys.Add(lowKey);
+            var status = tokenIO.NotifyAddKey(alias, keys, new DeviceMetadata());
             return lowKey;
         }
 

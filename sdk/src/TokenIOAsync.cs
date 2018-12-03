@@ -8,6 +8,7 @@ using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
+using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
@@ -198,16 +199,21 @@ namespace Tokenio
         /// Notifies to add a key.
         /// </summary>
         /// <param name="alias">alias to notify</param>
-        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
-        /// <param name="key">key that needs an approval</param>
+        /// <param name="keys">keys that need approval</param>
+        /// <param name="deviceMetadata">device metadata of the keys</param>
         /// <returns>status of the notification</returns>
         public Task<NotifyStatus> NotifyAddKey(
             Alias alias,
-            string name,
-            Key key)
+            IList<Key> keys,
+            DeviceMetadata deviceMetadata)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.NotifyAddKey(alias, name, key);
+            var addKey = new AddKey
+            {
+                Keys = {keys},
+                DeviceMetadata = deviceMetadata
+            };
+            return unauthenticated.NotifyAddKey(alias, addKey);
         }
 
         /// <summary>

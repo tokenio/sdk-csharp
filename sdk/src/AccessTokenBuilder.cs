@@ -3,7 +3,6 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types;
 using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types.Resource.Types;
-using static Tokenio.Proto.Common.TokenProtos.TokenPayload.Types;
 
 namespace Tokenio
 {

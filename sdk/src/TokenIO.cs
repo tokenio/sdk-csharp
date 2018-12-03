@@ -166,15 +166,15 @@ namespace Tokenio
         /// Notifies to add a key.
         /// </summary>
         /// <param name="alias">alias to notify</param>
-        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
-        /// <param name="key">key that needs an approval</param>
+        /// <param name="keys">keys that need approval</param>
+        /// <param name="deviceMetadata">device metadata of the keys</param>
         /// <returns>status of the notification request</returns>
         public NotifyStatus NotifyAddKey(
             Alias alias,
-            string name,
-            Key key)
+            IList<Key> keys,
+            DeviceMetadata deviceMetadata)
         {
-            return async.NotifyAddKey(alias, name, key).Result;
+            return async.NotifyAddKey(alias, keys, deviceMetadata).Result;
         }
 
         /// <summary>
