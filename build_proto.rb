@@ -5,6 +5,7 @@ TOKEN_PROTOS_VER = "1.1.46"
 RPC_PROTOS_VER = "1.1.0"
 
 require 'open-uri'
+require 'fileutils'
 
 def fetch_protos()
     def download(path, name, type, version)
