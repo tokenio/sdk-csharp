@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using log4net;
 using Tokenio.Exceptions;
+using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
@@ -503,13 +505,38 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Stores a transfer token request.
+        /// Stores a token request.
+        /// </summary>
+        /// <param name="requestPayload">the token request payload (immutable fields)</param>
+        /// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
+        /// <returns>an id to reference the token request</returns>
+        public Task<string> StoreTokenRequest(
+            TokenRequestPayload requestPayload, 
+            Proto.Common.TokenProtos.TokenRequestOptions requestOptions)
+        {
+            return client.StoreTokenRequest(requestPayload, requestOptions);
+        }
+
+        /// <summary>
+        /// Stores a token request.
         /// </summary>
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
+        [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
         public Task<string> StoreTokenRequest(TokenRequest tokenRequest)
         {
             return client.StoreTokenRequest(tokenRequest.Payload, tokenRequest.Options);
+        }
+
+        /// <summary>
+        /// Update an existing token request.
+        /// </summary>
+        /// <param name="requestId">token request ID</param>
+        /// <param name="options">new token request options</param>
+        /// <returns>a task</returns>
+        public Task UpdateTokenRequest(string requestId, Proto.Common.TokenProtos.TokenRequestOptions options)
+        {
+            return client.UpdateTokenRequest(requestId, options);
         }
 
         /// <summary>
@@ -980,6 +1007,17 @@ namespace Tokenio
         public Task<IList<TrustedBeneficiary>> GetTrustedBeneficiaries()
         {
             return client.GetTrustedBeneficiaries();
+        }
+
+        /// <summary>
+        /// **For testing purposes only**
+        /// Creates a linked test bank account.
+        /// </summary>
+        /// <param name="balance">the account balance to set</param>
+        /// <returns>the OAuth bank authorization</returns>
+        public Task<Account> CreateAndLinkTestBankAccount(Money balance)
+        {
+            return client.CreateAndLinkTestBankAccount(balance);
         }
     }
 }

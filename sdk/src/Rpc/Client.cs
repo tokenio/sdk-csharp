@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tokenio.Proto.BankLink;
@@ -226,9 +227,29 @@ namespace Tokenio.Rpc
         /// <summary>
         /// Stores a transfer token request.
         /// </summary>
+        /// <param name="payload">the token request payload (immutable fields)</param>
+        /// <param name="options">the token request options (mutable fields)</param>
+        /// <returns>an id to reference the token request</returns>
+        public Task<string> StoreTokenRequest(
+            TokenRequestPayload payload,
+            Proto.Common.TokenProtos.TokenRequestOptions options)
+        {
+            var request = new StoreTokenRequestRequest
+            {
+                RequestPayload = payload,
+                RequestOptions = options
+            };
+            return gateway.StoreTokenRequestAsync(request)
+                .ToTask(response => response.TokenRequest.Id);
+        }
+        
+        /// <summary>
+        /// **DEPRECATED** Stores a transfer token request.
+        /// </summary>
         /// <param name="payload">the transfer token payload</param>
         /// <param name="options">a map of options</param>
         /// <returns>an id to reference the token request</returns>
+        [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
         public Task<string> StoreTokenRequest(
             TokenPayload payload,
             IDictionary<string, string> options)
@@ -240,6 +261,24 @@ namespace Tokenio.Rpc
             };
             return gateway.StoreTokenRequestAsync(request)
                 .ToTask(response => response.TokenRequest.Id);
+        }
+
+        /// <summary>
+        /// Update an existing token request.
+        /// </summary>
+        /// <param name="requestId">token request ID</param>
+        /// <param name="options">new token request options</param>
+        /// <returns>a task</returns>
+        public Task UpdateTokenRequest(
+            string requestId,
+            Proto.Common.TokenProtos.TokenRequestOptions options)
+        {
+            var request = new UpdateTokenRequestRequest
+            {
+                RequestId = requestId,
+                RequestOptions = options
+            };
+            return gateway.UpdateTokenRequestAsync(request).ToTask();
         }
 
         /// <summary>
