@@ -5,6 +5,7 @@ using Tokenio.Proto.Common.TokenProtos;
 using static Test.TestUtil;
 using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types;
 using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types.Resource.Types;
+using TokenRequestOptions = Tokenio.TokenRequestOptions;
 
 namespace Test
 {

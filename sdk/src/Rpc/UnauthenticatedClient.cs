@@ -141,24 +141,16 @@ namespace Tokenio.Rpc
         /// Notifies subscribed devices that a key should be added.
         /// </summary>
         /// <param name="alias">alias of the member</param>
-        /// <param name="name">device/client name, e.g. iPhone, Chrome Browser, etc</param>
-        /// <param name="key">the that needs an approval</param>
-        /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyAddKey(
-            Alias alias,
-            string name,
-            Key key)
+        /// <param name="addKey">AddKey payload to be sent</param>
+        /// <returns></returns>
+        public Task<NotifyStatus> NotifyAddKey(Alias alias, AddKey addKey)
         {
             var request = new NotifyRequest
             {
                 Alias = alias,
                 Body = new NotifyBody
                 {
-                    AddKey = new AddKey
-                    {
-                        Name = name,
-                        Key = key
-                    }
+                    AddKey = addKey
                 }
             };
             return gateway.NotifyAsync(request)
