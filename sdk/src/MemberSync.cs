@@ -252,8 +252,9 @@ namespace Tokenio
         public IList<AccountSync> GetAccounts()
         {
             return async.GetAccounts()
-                .Map(accounts => (IList<AccountSync>) accounts
-                    .Select(account => account.Sync()))
+                .Map(accounts => accounts
+                    .Select(account => account.Sync())
+                    .ToList())
                 .Result;
         }
 

@@ -96,7 +96,7 @@ namespace Tokenio
         {
             return client
                 .GetMember()
-                .Map(member => (IList<Key>) member.Keys);
+                .Map(member => (IList<Key>) member.Keys.ToList());
         }
 
         /// <summary>
