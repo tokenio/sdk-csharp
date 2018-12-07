@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using Tokenio.Proto.BankLink;
+using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
@@ -80,7 +84,7 @@ namespace Tokenio
         {
             return async.Keys().Result;
         }
-        
+
         /// <summary>
         /// Creates a representable that acts as another member.
         /// </summary>
@@ -391,13 +395,37 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Stores a token request.
+        /// </summary>
+        /// <param name="requestPayload">the token request payload (immutable fields)</param>
+        /// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
+        /// <returns>an id to reference the token request</returns>
+        public string StoreTokenRequest(
+            TokenRequestPayload requestPayload, 
+            Proto.Common.TokenProtos.TokenRequestOptions requestOptions)
+        {
+            return async.StoreTokenRequest(requestPayload, requestOptions).Result;
+        }
+
+        /// <summary>
         /// Stores a transfer token request.
         /// </summary>
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
+        [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
         public string StoreTokenRequest(TokenRequest tokenRequest)
         {
             return async.StoreTokenRequest(tokenRequest).Result;
+        }
+
+        /// <summary>
+        /// Update an existing token request.
+        /// </summary>
+        /// <param name="requestId">token request ID</param>
+        /// <param name="options">new token request options</param>
+        public void UpdateTokenRequest(string requestId, Proto.Common.TokenProtos.TokenRequestOptions options)
+        {
+            async.UpdateTokenRequest(requestId, options).Wait();
         }
 
         /// <summary>
@@ -860,6 +888,17 @@ namespace Tokenio
         public IList<TrustedBeneficiary> GetTrustedBeneficiaries()
         {
             return async.GetTrustedBeneficiaries().Result;
+        }
+
+        /// <summary>
+        /// **For testing purposes only**
+        /// Creates a linked test bank account.
+        /// </summary>
+        /// <param name="balance">the account balance to set</param>
+        /// <returns>the OAuth bank authorization</returns>
+        public Account CreateAndLinkTestBankAccount(Money balance)
+        {
+            return async.CreateAndLinkTestBankAccount(balance).Result;
         }
     }
 }

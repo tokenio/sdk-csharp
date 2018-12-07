@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Tokenio;
 using Tokenio.Proto.Common.TokenProtos;
 using static Test.TestUtil;
-using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types;
-using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types.Resource.Types;
-using TokenRequestOptions = Tokenio.TokenRequestOptions;
+using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types;
 
 namespace Test
 {
@@ -26,50 +25,69 @@ namespace Test
         [Test]
         public void AddAndGetTransferTokenRequest()
         {
-            var storedRequest = new TokenRequest
+            var storedPayload = new TokenRequestPayload
             {
-                Payload = memberSync.CreateTransferToken(10.0, "EUR")
-                    .SetToMemberId(memberSync.MemberId())
-                    .BuildPayload(),
-                Options = {{TokenRequestOptions.redirectUrl.ToString(), tokenUrl}}
+                UserRefId = Util.Nonce(),
+                RedirectUrl = tokenUrl,
+                To = new TokenMember
+                {
+                    Id = memberSync.MemberId()
+                },
+                Description = Util.Nonce(),
+                CallbackState = Util.Nonce(),
+                TransferBody = new TokenRequestPayload.Types.TransferBody
+                {
+                    Amount = "10.0",
+                    Currency = "EUR"
+                }
             };
-            var requestId = memberSync.StoreTokenRequest(storedRequest);
-            Assert.IsNotEmpty(requestId);
-            storedRequest.Id = requestId;
-            var retrievedRequest = tokenIO.RetrieveTokenRequest(requestId);
-            Assert.AreEqual(storedRequest, retrievedRequest);
-        }
 
+            var storedOptions = new Tokenio.Proto.Common.TokenProtos.TokenRequestOptions
+            {
+                BankId = "iron",
+                ReceiptRequested = false
+            };
+
+            var requestId = memberSync.StoreTokenRequest(storedPayload, storedOptions);
+            Assert.IsNotEmpty(requestId);
+            var retrievedRequest = tokenIO.RetrieveTokenRequest(requestId);
+            Assert.AreEqual(storedPayload, retrievedRequest.RequestPayload);
+            Assert.AreEqual(storedOptions, retrievedRequest.RequestOptions);
+        }
 
         [Test]
         public void AddAndGetAccessTokenRequest()
         {
-            var storedRequest = new TokenRequest
+            IList<ResourceType> types = new List<ResourceType>();
+            types.Add(ResourceType.Accounts);
+            var storedPayload = new TokenRequestPayload
             {
-                Payload = new TokenPayload
+                UserRefId = Util.Nonce(),
+                RedirectUrl = Util.Nonce(),
+                To = new TokenMember
                 {
-                    To = new TokenMember
-                    {
-                        Id = memberSync.MemberId()
-                    },
-                    Access = new AccessBody
-                    {
-                        Resources =
-                        {
-                            new Resource
-                            {
-                                AllAddresses = new AllAddresses()
-                            }
-                        }
-                    }
+                    Id = memberSync.MemberId()
                 },
-                Options = {{TokenRequestOptions.redirectUrl.ToString(), tokenUrl}}
+                Description = Util.Nonce(),
+                CallbackState = Util.Nonce(),
+                AccessBody = new TokenRequestPayload.Types.AccessBody
+                {
+                    Type = {types}
+                }
             };
-            var requestId = memberSync.StoreTokenRequest(storedRequest);
+
+            var storedOptions = new Tokenio.Proto.Common.TokenProtos.TokenRequestOptions
+            {
+                BankId = "iron",
+                ReceiptRequested = false
+            };
+
+            var requestId = memberSync.StoreTokenRequest(storedPayload, storedOptions);
             Assert.IsNotEmpty(requestId);
-            storedRequest.Id = requestId;
+
             var retrievedRequest = tokenIO.RetrieveTokenRequest(requestId);
-            Assert.AreEqual(storedRequest, retrievedRequest);
+            Assert.AreEqual(storedPayload, retrievedRequest.RequestPayload);
+            Assert.AreEqual(storedOptions, retrievedRequest.RequestOptions);
         }
 
         
@@ -83,13 +101,69 @@ namespace Test
         [Test]
         public void AddAndGetTokenRequest_WrongMember()
         {
-            var storedRequest = new TokenRequest
+            var storedPayload = new TokenRequestPayload
             {
-                Payload = memberSync.CreateTransferToken(10.0, "EUR")
-                    .SetToMemberId(tokenIO.CreateMember().MemberId())
-                    .BuildPayload()
+                UserRefId = Util.Nonce(),
+                RedirectUrl = tokenUrl,
+                To = new TokenMember
+                {
+                    Id = tokenIO.CreateMember().MemberId()
+                },
+                Description = Util.Nonce(),
+                CallbackState = Util.Nonce(),
+                TransferBody = new TokenRequestPayload.Types.TransferBody
+                {
+                    Amount = "10.0",
+                    Currency = "EUR"
+                }
             };
-            Assert.Throws<AggregateException>(() => memberSync.StoreTokenRequest(storedRequest));
+            var storedOptions = new Tokenio.Proto.Common.TokenProtos.TokenRequestOptions
+            {
+                BankId = "iron",
+                ReceiptRequested = false
+            };
+            Assert.Throws<AggregateException>(() => memberSync.StoreTokenRequest(storedPayload, storedOptions));
+        }
+
+        [Test]
+        public void UpdateTokenRequest()
+        {
+            var storedPayload = new TokenRequestPayload
+            {
+                UserRefId = Util.Nonce(),
+                RedirectUrl = tokenUrl,
+                To = new TokenMember
+                {
+                    Id = memberSync.MemberId()
+                },
+                Description = Util.Nonce(),
+                CallbackState = Util.Nonce(),
+                TransferBody = new TokenRequestPayload.Types.TransferBody
+                {
+                    Amount = "10.0",
+                    Currency = "EUR"
+                }
+            };
+            var storedOptions = new Tokenio.Proto.Common.TokenProtos.TokenRequestOptions
+            {
+                BankId = "iron",
+                ReceiptRequested = false
+            };
+            memberSync.StoreTokenRequest(storedPayload, storedOptions);
+            
+            var requestId = memberSync.StoreTokenRequest(storedPayload, storedOptions);
+            Assert.IsNotEmpty(requestId);
+            var retrievedRequest1 = tokenIO.RetrieveTokenRequest(requestId);
+            Assert.IsFalse(retrievedRequest1.RequestOptions.ReceiptRequested);
+            
+            var optionsUpdate = new Tokenio.Proto.Common.TokenProtos.TokenRequestOptions
+            {
+                ReceiptRequested = true
+            };
+            
+            memberSync.UpdateTokenRequest(requestId, optionsUpdate);
+            var retrievedRequest2 = tokenIO.RetrieveTokenRequest(requestId);
+            Assert.IsTrue(retrievedRequest2.RequestOptions.ReceiptRequested);
         }
     }
 }

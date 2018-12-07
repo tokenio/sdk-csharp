@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -6,9 +7,13 @@ using System.Web;
 using NUnit.Framework;
 using Tokenio;
 using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using static Test.TestUtil;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
+using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types;
+using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types.ResourceType;
+using TokenRequestOptions = Tokenio.Proto.Common.TokenProtos.TokenRequestOptions;
 
 namespace Test
 {
@@ -129,14 +134,45 @@ namespace Test
         [Test]
         public void GetAccessTokenId()
         {
-            var address = member1.AddAddress(Util.Nonce(), Address());
-            var payload = AccessTokenBuilder
-                .Create(member2.FirstAlias())
-                .ForAddress(address.Id)
-                .Build();
+            IList<ResourceType> types = new List<ResourceType>();
+            types.Add(Accounts);
 
-            var tokenRequestId = member2.StoreTokenRequest(new TokenRequest {Payload = payload});
-            var accessToken = member1.CreateAccessToken(payload, tokenRequestId);
+            var payload = new TokenRequestPayload
+            {
+                UserRefId = Util.Nonce(),
+                RedirectUrl = Util.Nonce(),
+                To = new TokenMember
+                {
+                    Id = member2.MemberId()
+                },
+                Description = Util.Nonce(),
+                CallbackState = Util.Nonce(),
+                AccessBody = new TokenRequestPayload.Types.AccessBody
+                {
+                    Type = {types}
+                }
+            };
+
+            var options = new TokenRequestOptions
+            {
+                BankId = "iron",
+                ReceiptRequested = false
+            };
+
+            var tokenRequestId = member2.StoreTokenRequest(payload, options);
+
+            var balance = new Money
+            {
+                Value = "1000.00",
+                Currency = "EUR"
+            };
+            var account = member1.CreateAndLinkTestBankAccount(balance);
+            var accessTokenPayload = AccessTokenBuilder.Create(member2.MemberId())
+                .ForAccount(account.Id)
+                .To(member2.MemberId())
+                .From(member1.MemberId())
+                .Build();
+            var accessToken = member1.CreateAccessToken(accessTokenPayload, tokenRequestId);
 
             member1.EndorseToken(accessToken, Standard);
 
