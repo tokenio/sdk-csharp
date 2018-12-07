@@ -98,37 +98,32 @@ namespace Test
         }
 
         [Test]
-        public void CreateAddressAccessToken()
+        public void CreateBalanceAccessToken()
         {
-            var address1 = member1.AddAddress(Util.Nonce(), Address());
-            var address2 = member1.AddAddress(Util.Nonce(), Address());
+            var visibleBalance = new Money
+            {
+                Value = "100.00",
+                Currency = "EUR"
+            };
+            var hiddenBalance = new Money
+            {
+                Value = "1000.00",
+                Currency = "EUR"
+            };
+            var visibleAccount = member1.CreateAndLinkTestBankAccount(visibleBalance);
+            var hiddenAccount = member1.CreateAndLinkTestBankAccount(hiddenBalance);
             var accessToken = member1.CreateAccessToken(AccessTokenBuilder
                 .Create(member2.FirstAlias())
-                .ForAddress(address1.Id)
+                .ForAccount(visibleAccount.Id)
+                .ForAccountBalances(visibleAccount.Id)
                 .Build());
             member1.EndorseToken(accessToken, Standard);
             var representable = member2.ForAccessToken(accessToken.Id);
 
-            Assert.AreEqual(address1, representable.GetAddress(address1.Id));
-            Assert.Throws<AggregateException>(() => representable.GetAddress(address2.Id));
-        }
-
-        [Test]
-        public void CreateAddressesAccessToken()
-        {
-            var accessToken = member1.CreateAccessToken(AccessTokenBuilder
-                .Create(member2.FirstAlias())
-                .ForAllAddresses()
-                .Build());
-            member1.EndorseToken(accessToken, Standard);
-            var address1 = member1.AddAddress(Util.Nonce(), Address());
-            var address2 = member1.AddAddress(Util.Nonce(), Address());
-
-            var representable = member2.ForAccessToken(accessToken.Id);
-            var result = representable.GetAddress(address2.Id);
-
-            Assert.AreEqual(result, address2);
-            Assert.AreNotEqual(result, address1);
+            var balanceResult = representable.GetBalance(visibleAccount.Id, Standard).Current;
+            Assert.AreEqual(Convert.ToDouble(visibleBalance.Value), Convert.ToDouble(balanceResult.Value));
+            Assert.AreEqual(visibleBalance.Currency, balanceResult.Currency);
+            Assert.Throws<AggregateException>(() => representable.GetBalance(hiddenAccount.Id, Standard));
         }
 
         [Test]
@@ -219,9 +214,15 @@ namespace Test
         [Test]
         public void AuthFlowTest()
         {
+            var balance = new Money
+            {
+                Value = "100.00",
+                Currency = "EUR"
+            };
+            var account = member1.CreateAndLinkTestBankAccount(balance);
             var accessToken = member1.CreateAccessToken(AccessTokenBuilder
                 .Create(member2.FirstAlias())
-                .ForAll()
+                .ForAccount(account.Id)
                 .Build());
             var token = member1.GetToken(accessToken.Id);
 
@@ -261,23 +262,18 @@ namespace Test
         [Test]
         public void RequestSignature()
         {
+            var balance = new Money
+            {
+                Value = "100.00",
+                Currency = "EUR"
+            };
+            var account = member1.CreateAndLinkTestBankAccount(balance);
             var token = member1.CreateAccessToken(AccessTokenBuilder
                 .Create(member2.FirstAlias())
-                .ForAll()
+                .ForAccount(account.Id)
                 .Build());
             var signature = member1.SignTokenRequestState(Util.Nonce(), token.Id, Util.Nonce());
             Assert.IsNotEmpty(signature.Signature_);
-        }
-
-        [Test]
-        public void AccessTokenBuilderSetTransferDestinations()
-        {
-            var payload = AccessTokenBuilder.Create(member2.FirstAlias())
-                .ForAllTransferDestinations()
-                .Build();
-            var accessToken = member1.CreateAccessToken(payload);
-            var result = member1.GetToken(accessToken.Id);
-            Assert.AreEqual(accessToken, result);
         }
     }
 }

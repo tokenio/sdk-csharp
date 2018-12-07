@@ -50,9 +50,8 @@ namespace samples
                 oldToken,
                 AccessTokenBuilder
                     .FromPayload(oldToken.Payload)
-                    .ForAllAccounts()
-                    .ForAllBalances()
-                    .ForAllAddresses()
+                    .ForAccount("12345678")
+                    .ForAccountTransactions("12345678")
                     .Build());
             return status;
         }
@@ -74,9 +73,8 @@ namespace samples
                 oldToken,
                 AccessTokenBuilder
                     .FromPayload(oldToken.Payload)
-                    .ForAllAccounts()
-                    .ForAllBalances()
-                    .ForAllAddresses()
+                    .ForAccount("12345678")
+                    .ForAccountTransactions("12345678")
                     .Build());
             return status;
         }
