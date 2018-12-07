@@ -22,8 +22,8 @@ namespace samples
             // account names of the grantor.
             var accessToken = grantor.CreateAccessToken(AccessTokenBuilder
                 .Create(granteeAlias)
-                .ForAllAccounts() // user can call getAccounts()
-                .ForAllBalances() // for each account, can call getBalance()
+                .ForAccount("12345678")
+                .ForAccountTransactions("12345678")
                 .Build());
 
             // Grantor endorses a token to a grantee by signing it

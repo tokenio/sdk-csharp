@@ -66,6 +66,7 @@ namespace Tokenio
         /// Grants access to all addresses.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllAddresses()
         {
             payload.Access.Resources.Add(new Resource
@@ -95,6 +96,7 @@ namespace Tokenio
         /// Grants access to all accounts.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllAccounts()
         {
             payload.Access.Resources.Add(new Resource
@@ -108,6 +110,7 @@ namespace Tokenio
         /// Grants access to all accounts at the given bank.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllAccountsAtBank(string bankId)
         {
             payload.Access.Resources.Add(new Resource
@@ -140,6 +143,7 @@ namespace Tokenio
         /// Grants access to all transactions.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllTransactions()
         {
             payload.Access.Resources.Add(new Resource
@@ -153,6 +157,7 @@ namespace Tokenio
         /// Grants access to transactions for all accounts at a given bank.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllTransactionsAtBank(string bankId)
         {
             payload.Access.Resources.Add(new Resource
@@ -185,6 +190,7 @@ namespace Tokenio
         /// Grants access to all balances.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllBalances()
         {
             payload.Access.Resources.Add(new Resource
@@ -198,6 +204,7 @@ namespace Tokenio
         /// Grants access to balances for all accounts at the given bank.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllBalancesAtBank(string bankId)
         {
             payload.Access.Resources.Add(new Resource
@@ -230,6 +237,7 @@ namespace Tokenio
         /// Grants access to all transfer destinations.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllTransferDestinations()
         {
             payload.Access.Resources.Add(new Resource
@@ -243,6 +251,7 @@ namespace Tokenio
         /// Grants access to all transfer destinations at the given bank.
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAllTransferDestinationsAtBank(string bankId)
         {
             payload.Access.Resources.Add(new Resource
@@ -275,6 +284,7 @@ namespace Tokenio
         /// Grants access to ALL resources (aka wildcard permissions).
         /// </summary>
         /// <returns><see cref= "AccessTokenBuilder"/></returns>
+        [Obsolete("Access token permissions of type 'ALL' will be removed.")]
         public AccessTokenBuilder ForAll()
         {
             return ForAllAccounts()
