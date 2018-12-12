@@ -1,4 +1,5 @@
-﻿using Google.Protobuf;
+﻿using System;
+using Google.Protobuf;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Tokenio.Proto.Gateway;
@@ -10,11 +11,16 @@ namespace Tokenio.Rpc
     {
         private readonly string memberId;
         private readonly ICryptoEngine crypto;
+        private readonly AuthenticationContext authentication;
 
-        public AsyncClientAuthenticator(string memberId, ICryptoEngine crypto)
+        public AsyncClientAuthenticator(
+            string memberId,
+            ICryptoEngine crypto,
+            AuthenticationContext authentication)
         {
             this.memberId = memberId;
             this.crypto = crypto;
+            this.authentication = authentication;
         }
 
         public override AsyncUnaryCall<TResponse> AsyncUnaryCall<TRequest, TResponse>(
@@ -23,7 +29,7 @@ namespace Tokenio.Rpc
             AsyncUnaryCallContinuation<TRequest, TResponse> continuation)
         {
             var now = Util.EpochTimeMillis();
-            var keyLevel = AuthenticationContext.ResetKeyLevel();
+            var keyLevel = authentication.KeyLevel;
             var signer = crypto.CreateSigner(keyLevel);
             var payload = new GrpcAuthPayload
             {
@@ -38,17 +44,23 @@ namespace Tokenio.Rpc
             metadata.Add("token-signature", signature);
             metadata.Add("token-created-at-ms", now.ToString());
             metadata.Add("token-member-id", memberId);
+            metadata.Add("token-security-metadata", encodeSecurityMetadata(authentication));
 
-            if (AuthenticationContext.OnBehalfOf != null)
+            if (authentication.OnBehalfOf != null)
             {
-                metadata.Add("token-on-behalf-of", AuthenticationContext.OnBehalfOf);
-                metadata.Add("customer-initiated", AuthenticationContext.CustomerInitiated.ToString());
-                AuthenticationContext.ClearAccessToken();
+                metadata.Add("token-on-behalf-of", authentication.OnBehalfOf);
+                metadata.Add("customer-initiated", authentication.CustomerInitiated.ToString());
             }
 
             return continuation(request,
                 new ClientInterceptorContext<TRequest, TResponse>(context.Method, context.Host,
                     context.Options.WithHeaders(metadata)));
+        }
+
+        private static string encodeSecurityMetadata(AuthenticationContext context)
+        {
+            var json = Util.ToJson(context.SecurityMetadata);
+            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
         }
     }
 }
