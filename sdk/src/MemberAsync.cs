@@ -120,6 +120,15 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Sets the security metadata to be sent with each request.
+        /// </summary>
+        /// <param name="securityMetadata">security metadata</param>
+        public void SetSecurityMetadata(SecurityMetadata securityMetadata)
+        {
+            client.SetSecurityMetadata(securityMetadata);
+        }
+
+        /// <summary>
         /// Adds new aliases for the member.
         /// </summary>
         /// <param name="aliases"></param>

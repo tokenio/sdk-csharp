@@ -1,43 +1,45 @@
-﻿using System.Threading;
+﻿using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio.Rpc
 {
-    public static class AuthenticationContext
+    public class AuthenticationContext
     {
-        private static readonly ThreadLocal<string> onBehalfOf = new ThreadLocal<string>();
-        private static readonly ThreadLocal<Level> keyLevel = new ThreadLocal<Level>(() => Level.Low);
-        private static readonly ThreadLocal<bool> customerInitiated = new ThreadLocal<bool>();
+        private readonly string onBehalfOf = null;
+        private readonly Level keyLevel = Level.Low;
+        private readonly bool customerInitiated = false;
+        private readonly SecurityMetadata securityMetadata = new SecurityMetadata();
 
-        public static string OnBehalfOf
+        public AuthenticationContext(
+            string onBehalfOf,
+            Level keyLevel,
+            bool customerInitiated,
+            SecurityMetadata securityMetadata)
         {
-            get => onBehalfOf.Value;
-            set => onBehalfOf.Value = value;
+            this.onBehalfOf = onBehalfOf;
+            this.keyLevel = keyLevel;
+            this.customerInitiated = customerInitiated;
+            this.securityMetadata = securityMetadata;
         }
 
-        public static Level KeyLevel
+        public string OnBehalfOf
         {
-            get => keyLevel.Value;
-            set => keyLevel.Value = value;
+            get => onBehalfOf;
         }
 
-        public static bool CustomerInitiated
+        public Level KeyLevel
         {
-            get => customerInitiated.Value;
-            set => customerInitiated.Value = value;
-        }
-        
-        public static Level ResetKeyLevel()
-        {
-            var level = keyLevel.Value;
-            keyLevel.Value = Level.Low;
-            return level;
+            get => keyLevel;
         }
 
-        public static void ClearAccessToken()
+        public bool CustomerInitiated
         {
-            OnBehalfOf = null;
-            CustomerInitiated = false;
+            get => customerInitiated;
+        }
+
+        public SecurityMetadata SecurityMetadata
+        {
+            get => securityMetadata;
         }
     }
 }

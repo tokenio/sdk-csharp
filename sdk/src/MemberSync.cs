@@ -86,6 +86,15 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Sets the security metadata to be sent with each request.
+        /// </summary>
+        /// <param name="securityMetadata">security metadata</param>
+        public void SetSecurityMetadata(SecurityMetadata securityMetadata)
+        {
+            async.SetSecurityMetadata(securityMetadata);
+        }
+
+        /// <summary>
         /// Creates a representable that acts as another member.
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
