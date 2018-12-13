@@ -460,31 +460,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Cancels the existing token, creates a replacement and endorses it.
-        /// Supported only for access tokens.
-        /// </summary>
-        /// <param name="tokenToCancel">the token to cancel</param>
-        /// <param name="tokenToCreate">the payload to create new token with</param>
-        /// <returns>the result of the replacement opration</returns>
-        public Task<TokenOperationResult> ReplaceAndEndorseToken(
-            Token tokenToCancel,
-            TokenPayload tokenToCreate)
-        {
-            var signer = cryptoEngine.CreateSigner(Level.Standard);
-            var createToken = new CreateToken
-            {
-                Payload = tokenToCreate,
-                PayloadSignature = new Signature
-                {
-                    MemberId = MemberId,
-                    KeyId = signer.GetKeyId(),
-                    Signature_ = signer.Sign(Stringify(tokenToCreate, TokenAction.Endorsed))
-                }
-            };
-            return CancelAndReplace(tokenToCancel, createToken);
-        }
-
-        /// <summary>
         /// Makes RPC to get default bank account for this member.
         /// </summary>
         /// <param name="memberId">the member id</param>

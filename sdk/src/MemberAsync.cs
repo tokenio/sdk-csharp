@@ -655,23 +655,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Cancels the existing token, creates a replacement and endorses it.
-        /// Supported only for access tokens.
-        /// </summary>
-        /// <param name="tokenToCancel">the token to cancel</param>
-        /// <param name="tokenToCreate">the payload to create new token with</param>
-        /// <returns>the result of the replacement opration</returns>
-        public Task<TokenOperationResult> ReplaceAndEndorseAccessToken(
-            Token tokenToCancel,
-            TokenPayload tokenToCreate)
-        {
-            tokenToCreate.From.Id = MemberId();
-            return client.ReplaceAndEndorseToken(
-                tokenToCancel,
-                tokenToCreate);
-        }
-
-        /// <summary>
         /// Redeems a transfer token.
         /// </summary>
         /// <param name="token">the transfer token</param>
