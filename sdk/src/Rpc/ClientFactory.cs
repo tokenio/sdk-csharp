@@ -24,11 +24,7 @@ namespace Tokenio.Rpc
             string memberId,
             ICryptoEngine crypto)
         {
-            var intercepted = channel.BuildInvoker()
-                .Intercept(new AsyncClientAuthenticator(memberId, crypto));
-            var gateway = new GatewayService.GatewayServiceClient(intercepted);
-            
-            return new Client(memberId, crypto, gateway);
+            return new Client(memberId, crypto, channel);
         }
     }
 }
