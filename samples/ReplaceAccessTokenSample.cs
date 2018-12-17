@@ -1,6 +1,7 @@
 ﻿using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
 namespace samples
 {
@@ -41,41 +42,19 @@ namespace samples
             Alias granteeAlias,
             Token oldToken)
         {
-            // Replace, but don't endorse the replacement
-            // (replaceAndEndorseAccessToken is much safer.
-            // The "find" code doesn't see unendorsed tokens,
-            // so if the unendorsed token needs replacing,
-            // it can't be "found").
-            var status = grantor.ReplaceAccessToken(
+            // Replace the old access token
+            var newToken = grantor.ReplaceAccessToken(
                 oldToken,
                 AccessTokenBuilder
                     .FromPayload(oldToken.Payload)
                     .ForAccount("12345678")
                     .ForAccountTransactions("12345678")
-                    .Build());
-            return status;
-        }
-
-        /// <summary>
-        /// Replaces and endorses a previously-created access token.
-        /// </summary>
-        /// <param name="grantor">Token member granting access to her accounts</param>
-        /// <param name="granteeAlias">Token member alias acquiring information access</param>
-        /// <param name="oldToken">token to replace</param>
-        /// <returns>success or failure</returns>
-        public static TokenOperationResult ReplaceAndEndorseAccessToken(
-            MemberSync grantor,
-            Alias granteeAlias,
-            Token oldToken)
-        {
-            // Replace old access token:
-            var status = grantor.ReplaceAndEndorseAccessToken(
-                oldToken,
-                AccessTokenBuilder
-                    .FromPayload(oldToken.Payload)
-                    .ForAccount("12345678")
-                    .ForAccountTransactions("12345678")
-                    .Build());
+                    .Build())
+               .Token;
+            
+            // Endorse the new access token
+            var status = grantor.EndorseToken(newToken, Standard);
+            
             return status;
         }
     }
