@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
@@ -9,6 +10,7 @@ namespace Tokenio
     /// <summary>
     /// Represents the part of a token member that can be accessed through an access token.
     /// </summary>
+    [Obsolete("Deprecated, use Representable instead")]
     public interface IRepresentableSync
     {
         /// <summary>

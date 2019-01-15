@@ -22,6 +22,7 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio
 {
+    [Obsolete("Deprecated, use Member instead")]
     public class MemberSync : IRepresentableSync
     {
         private readonly MemberAsync async;

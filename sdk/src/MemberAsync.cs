@@ -27,6 +27,7 @@ using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 
 namespace Tokenio
 {
+    [Obsolete("Deprecated, use Member instead")]
     public class MemberAsync : IRepresentableAsync
     {
         private static readonly ILog logger = LogManager

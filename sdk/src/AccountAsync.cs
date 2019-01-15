@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.TransactionProtos;
@@ -10,6 +11,7 @@ namespace Tokenio
     /// <summary>
     /// Represents a funding account in the Token system.
     /// </summary>
+    [Obsolete("Deprecated, use Account instead")]
     public class AccountAsync
     {
         private readonly MemberAsync member;
