@@ -195,7 +195,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Return a MemberAsync set up to use some Token member's keys (assuming we have them).
+        /// Return a Member set up to use some Token member's keys (assuming we have them).
         /// </summary>
         /// <param name="memberId">the member ID</param>
         /// <returns>the member</returns>
@@ -209,7 +209,7 @@ namespace Tokenio
         }
         
         /// <summary>
-        /// Return a MemberAsync set up to use some Token member's keys (assuming we have them).
+        /// Return a Member set up to use some Token member's keys (assuming we have them).
         /// </summary>
         /// <param name="memberId">the member ID</param>
         /// <returns>the member</returns>
