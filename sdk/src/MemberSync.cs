@@ -21,7 +21,7 @@ using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 
 namespace Tokenio
 {
-    [Obsolete("Deprecated, use Member instead")]
+    [Obsolete("deprecated, use Member instead")]
     public class MemberSync : IRepresentableSync
     {
         private readonly MemberAsync async;

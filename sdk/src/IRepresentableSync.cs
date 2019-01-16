@@ -10,7 +10,7 @@ namespace Tokenio
     /// <summary>
     /// Represents the part of a token member that can be accessed through an access token.
     /// </summary>
-    [Obsolete("Deprecated, use Representable instead")]
+    [Obsolete("deprecated, use Representable instead")]
     public interface IRepresentableSync
     {
         /// <summary>

@@ -28,7 +28,7 @@ using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 
 namespace Tokenio
 {
-    [Obsolete("Deprecated, use Member instead")]
+    [Obsolete("deprecated, use Member instead")]
     public class MemberAsync : IRepresentableAsync
     {
         private static readonly ILog logger = LogManager
