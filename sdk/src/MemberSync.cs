@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-using Tokenio.Proto.BankLink;
-using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
@@ -19,6 +16,8 @@ using Tokenio.Security;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
+using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 
 namespace Tokenio
 {
@@ -142,7 +141,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="rule">the recovery rule</param>
         /// <returns>the updated member</returns>
-        public Member AddRecoveryRule(RecoveryRule rule)
+        public ProtoMember AddRecoveryRule(RecoveryRule rule)
         {
             return async.AddRecoveryRule(rule).Result;
         }
@@ -892,7 +891,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="balance">the account balance to set</param>
         /// <returns>the OAuth bank authorization</returns>
-        public Account CreateAndLinkTestBankAccount(Money balance)
+        public ProtoAccount CreateAndLinkTestBankAccount(Money balance)
         {
             return async.CreateAndLinkTestBankAccount(balance).Result;
         }

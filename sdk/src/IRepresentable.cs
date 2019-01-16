@@ -42,27 +42,27 @@ namespace Tokenio
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
         /// <returns>a list of accounts</returns>
-        Task<IList<AccountAsync>> GetAccounts();
+        Task<IList<Account>> GetAccounts();
         
         /// <summary>
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
         /// <returns>a list of accounts</returns>
-        IList<AccountAsync> GetAccountsBlocking();
+        IList<Account> GetAccountsBlocking();
 
         /// <summary>
         /// Looks up a funding bank account linked to Token.
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>the account</returns>
-        Task<AccountAsync> GetAccount(string accountId);
+        Task<Account> GetAccount(string accountId);
         
         /// <summary>
         /// Looks up a funding bank account linked to Token.
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>the account</returns>
-        AccountAsync GetAccountBlocking(string accountId);
+        Account GetAccountBlocking(string accountId);
 
         /// <summary>
         /// Looks up account balance.

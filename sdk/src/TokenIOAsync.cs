@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tokenio.Exceptions;
-using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
-using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;

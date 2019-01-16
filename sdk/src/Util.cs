@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 using Tokenio.Exceptions;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberOperationMetadata.Types;
+using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 namespace Tokenio
 {
@@ -103,7 +104,7 @@ namespace Tokenio
         }
 
         public static UpdateMemberRequest ToUpdateMemberRequest(
-            Member member,
+            ProtoMember member,
             IList<MemberOperation> operations,
             ISigner signer)
         {
@@ -111,7 +112,7 @@ namespace Tokenio
         }
 
         public static UpdateMemberRequest ToUpdateMemberRequest(
-            Member member,
+            ProtoMember member,
             IList<MemberOperation> operations,
             ISigner signer,
             IList<MemberOperationMetadata> metadata)
@@ -148,7 +149,7 @@ namespace Tokenio
         }
 
         public static void VerifySignature(
-            Member member,
+            ProtoMember member,
             IMessage payload,
             Signature signature)
         {
