@@ -1399,6 +1399,28 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Redeems a transfer token.
+        /// </summary>
+        /// <param name="token">the transfer token</param>
+        /// <param name="amount">the amount to transfer</param>
+        /// <param name="currency">the currency</param>
+        /// <param name="description">the description of the transfer</param>
+        /// <param name="destination">the transfer instruction destination</param>
+        /// <param name="refId">the reference id of the transfer</param>
+        /// <returns>a transfer record</returns>
+        /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
+        public Transfer RedeemTokenBlocking(
+            Token token,
+            double? amount,
+            string currency,
+            string description,
+            TransferEndpoint destination,
+            string refId)
+        {
+            return RedeemToken(token, amount, currency, description, destination, refId).Result;
+        }
+
+        /// <summary>
         /// Looks up an existing transaction for a given account.
         /// </summary>
         /// <param name="accountId">the account ID</param>
