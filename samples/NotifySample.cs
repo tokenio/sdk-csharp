@@ -11,13 +11,13 @@ namespace samples
         /// Creates a payment request (a transfer token payload)
         /// and sends it to a potential payer.
         /// </summary>
-        /// <param name="tokenIO">initialized SDK</param>
+        /// <param name="tokenClient">initialized SDK</param>
         /// <param name="payee">payer Token member</param>
         /// <param name="payerAlias">payee Token member alias</param>
         /// <returns>a transfer Token</returns>
         public static NotifyStatus NotifyPaymentRequest(
-            TokenIO tokenIO,
-            MemberSync payee,
+            TokenClient tokenClient,
+            Member payee,
             Alias payerAlias)
         {
             // We'll use this as a reference ID. Normally, a payee who
@@ -34,7 +34,7 @@ namespace samples
                 },
                 To = new TokenMember
                 {
-                    Alias = payee.FirstAlias()
+                    Alias = payee.GetFirstAlias().Result
                 },
                 Transfer = new TransferBody
                 {
@@ -44,7 +44,7 @@ namespace samples
                 RefId = cartId
             };
 
-            var status = tokenIO.NotifyPaymentRequest(paymentRequest);
+            var status = tokenClient.NotifyPaymentRequest(paymentRequest).Result;
             return status;
         }
     }

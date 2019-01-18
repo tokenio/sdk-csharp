@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
+using Grpc.Core;
+using Grpc.Core.Interceptors;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
@@ -38,6 +41,30 @@ namespace Tokenio
             this.channel = channel;
             this.cryptoEngineFactory = cryptoEngineFactory;
             this.tokenCluster = tokenCluster;
+        }
+        
+        /// <summary>
+        /// Creates a new <see cref="Builder"/> instance that is used to configure and
+        /// </summary>
+        /// <returns>the builder</returns>
+        public static Builder NewBuilder()
+        {
+            return new Builder();
+        }
+        
+        /// <summary>
+        /// Creates a new instance of <see cref="TokenIO"/> that's configured to use
+        /// the specified environment.
+        /// </summary>
+        /// <param name="cluster">the token cluster to connect to</param>
+        /// <param name="developerKey">the developer key</param>
+        /// <returns>an instance of <see cref="TokenIO"/></returns>
+        public static TokenClient Create(TokenCluster cluster, string developerKey)
+        {
+            return NewBuilder()
+                .ConnectTo(cluster)
+                .DeveloperKey(developerKey)
+                .Build();
         }
 
         /// <summary>
@@ -734,6 +761,141 @@ namespace Tokenio
         public void Dispose()
         {
             channel.Dispose();
+        }
+        
+        public class Builder
+        {
+            private static readonly long DEFAULT_TIMEOUT_MS = 10_000L;
+            private static readonly int DEFAULT_SSL_PORT = 443;
+
+            private int port;
+            private bool useSsl;
+            private TokenCluster tokenCluster;
+            private string hostName;
+            private long timeoutMs;
+            private ICryptoEngineFactory cryptoEngine;
+            private string devKey;
+
+            /// <summary>
+            /// Creates new builder instance with the defaults initialized.
+            /// </summary>
+            public Builder()
+            {
+                timeoutMs = DEFAULT_TIMEOUT_MS;
+                port = DEFAULT_SSL_PORT;
+                useSsl = true;
+            }
+
+            /// <summary>
+            /// Sets the host name of the Token Gateway Service to connect to.
+            /// </summary>
+            /// <param name="hostName">the host name to set</param>
+            public Builder HostName(string hostName)
+            {
+                this.hostName = hostName;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the port of the Token Gateway Service to connect to.
+            /// </summary>
+            /// <param name="port">the port number</param>
+            /// <returns>this builder instance</returns>
+            public Builder Port(int port)
+            {
+                this.port = port;
+                this.useSsl = port == DEFAULT_SSL_PORT;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets Token cluster to connect to.
+            /// </summary>
+            /// <param name="cluster">the token cluster</param>
+            /// <returns>this builder instance</returns>
+            public Builder ConnectTo(TokenCluster cluster)
+            {
+                this.tokenCluster = cluster;
+                this.hostName = cluster.Url;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets timeoutMs that is used for the RPC calls.
+            /// </summary>
+            /// <param name="timeoutMs">the RPC call timeoutMs</param>
+            /// <returns>this builder instance</returns>
+            public Builder Timeout(long timeoutMs)
+            {
+                this.timeoutMs = timeoutMs;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the keystore to be used with the SDK.
+            /// </summary>
+            /// <param name="keyStore">the key store to be used</param>
+            /// <returns>this builder instance</returns>
+            public Builder WithKeyStore(IKeyStore keyStore)
+            {
+                this.cryptoEngine = new TokenCryptoEngineFactory(keyStore);
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the crypto engine to be used with the SDK.
+            /// </summary>
+            /// <param name="cryptoEngineFactory">the crypto engine factory to use</param>
+            /// <returns>this builder instance</returns>
+            public Builder WithCryptoEngine(ICryptoEngineFactory cryptoEngineFactory)
+            {
+                this.cryptoEngine = cryptoEngineFactory;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the developer key to be used with the SDK.
+            /// </summary>
+            /// <param name="devKey">the developer key</param>
+            /// <returns>this builder instance</returns>
+            public Builder DeveloperKey(string devKey)
+            {
+                this.devKey = devKey;
+                return this;
+            }
+
+            /// <summary>
+            /// Builds and returns a new <see cref="TokenClient"/> instance.
+            /// </summary>
+            /// <returns>the <see cref="TokenClient"/> instance</returns>
+            public TokenClient Build()
+            {
+                if (devKey == null || devKey.Equals(string.Empty))
+                {
+                    throw new Exception("Please provide a developer key. Contact Token for more details.");
+                }
+
+                var channel = new Channel(hostName, port, useSsl ? new SslCredentials() : ChannelCredentials.Insecure);
+                Interceptor[] interceptors =
+                {
+                    new AsyncTimeoutInterceptor(timeoutMs),
+                    new AsyncMetadataInterceptor(metadata =>
+                    {
+                        metadata.Add("token-sdk", "csharp");
+                        metadata.Add(
+                            "token-sdk-version",
+                            Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        metadata.Add("token-dev-key", devKey);
+                        return metadata;
+                    })
+                };
+                var newChannel = new ManagedChannel(channel, interceptors);
+
+                return new TokenClient(
+                    newChannel,
+                    cryptoEngine ?? new TokenCryptoEngineFactory(new InMemoryKeyStore()),
+                    tokenCluster ?? TokenCluster.SANDBOX);
+            }
         }
     }
 }

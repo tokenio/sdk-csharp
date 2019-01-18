@@ -8,14 +8,14 @@ namespace samples
     public class GetTransactionsSample
     {
         /// <summary>
-        /// Illustrate MemberSync.GetTransactions
+        /// Illustrate Member.GetTransactions
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void GetTransactionsSample_(MemberSync payer)
+        public static void GetTransactionsSample_(Member payer)
         {
-            var accounts = payer.GetAccounts();
+            var accounts = payer.GetAccounts().Result;
             var accountId = accounts[0].Id();
-            foreach (var transaction in payer.GetTransactions(accountId, null, 10, Standard).List)
+            foreach (var transaction in payer.GetTransactions(accountId, 10, Standard, null).Result.List)
             {
                 DisplayTransaction(
                     transaction.Amount.Currency,
@@ -26,20 +26,20 @@ namespace samples
         }
 
         /// <summary>
-        /// Illustrate MemberSync.GetTransaction
+        /// Illustrate Member.GetTransaction
         /// </summary>
         /// <param name="payer">payer Token member</param>
         /// <param name="transfer">recently-completed transfer</param>
         /// <returns>a transaction</returns>
         public static Transaction GetTransactionSample(
-            MemberSync payer,
+            Member payer,
             Transfer transfer)
         {
-            var accounts = payer.GetAccounts();
+            var accounts = payer.GetAccounts().Result;
             var accountId = accounts[0].Id();
 
             var transactionId = transfer.TransactionId;
-            var transaction = payer.GetTransaction(accountId, transactionId, Standard);
+            var transaction = payer.GetTransaction(accountId, transactionId, Standard).Result;
             return transaction;
         }
 
@@ -47,11 +47,11 @@ namespace samples
         /// Illustrate Account.GetTransactions
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void AccountGetTransactionsSample(MemberSync payer)
+        public static void AccountGetTransactionsSample(Member payer)
         {
-            var account = payer.GetAccounts()[0];
+            var account = payer.GetAccounts().Result[0];
 
-            foreach (var transaction in account.GetTransactions(null, 10, Standard).List)
+            foreach (var transaction in account.GetTransactions(null, 10, Standard).Result.List)
             {
                 DisplayTransaction(
                     transaction.Amount.Currency,
@@ -68,13 +68,13 @@ namespace samples
         /// <param name="transfer">recently-completed transfer</param>
         /// <returns>a Transaction</returns>
         public static Transaction AccountGetTransactionSample(
-            MemberSync payer,
+            Member payer,
             Transfer transfer)
         {
-            var account = payer.GetAccounts()[0];
+            var account = payer.GetAccounts().Result[0];
 
             var txnId = transfer.TransactionId;
-            var transaction = account.GetTransaction(txnId, Standard);
+            var transaction = account.GetTransaction(txnId, Standard).Result;
             return transaction;
         }
 

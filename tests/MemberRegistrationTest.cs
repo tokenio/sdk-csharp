@@ -11,48 +11,48 @@ namespace Test
     [TestFixture]
     public class MemberRegistrationTest
     {
-        private static readonly TokenIO tokenIO = NewSdkInstance();
+        private static readonly TokenClient tokenClient = NewSdkInstance();
 
         [Test]
         public void CreateMember()
         {
             var alias = Alias();
-            var member = tokenIO.CreateMember(alias);
-            Assert.AreEqual(3, member.Keys().Count);
+            var member = tokenClient.CreateMemberBlocking(alias);
+            Assert.AreEqual(3, member.GetKeysBlocking().Count);
         }
 
         [Test]
         public void CreateMember_noAlias()
         {
-            var member = tokenIO.CreateMember();
-            CollectionAssert.IsEmpty(member.Aliases());
-            Assert.AreEqual(3, member.Keys().Count);
+            var member = tokenClient.CreateMemberBlocking();
+            CollectionAssert.IsEmpty(member.GetAliasesBlocking());
+            Assert.AreEqual(3, member.GetKeysBlocking().Count);
         }
 
         [Test]
         public void LoginMember()
         {
-            var member = tokenIO.CreateMember(Alias());
+            var member = tokenClient.CreateMemberBlocking(Alias());
 
-            var loggedIn = tokenIO.GetMember(member.MemberId());
-            CollectionAssert.AreEquivalent(member.Aliases(), loggedIn.Aliases());
-            CollectionAssert.AreEquivalent(member.Keys(), loggedIn.Keys());
+            var loggedIn = tokenClient.GetMemberBlocking(member.MemberId());
+            CollectionAssert.AreEquivalent(member.GetAliasesBlocking(), loggedIn.GetAliasesBlocking());
+            CollectionAssert.AreEquivalent(member.GetKeysBlocking(), loggedIn.GetKeysBlocking());
         }
 
         [Test]
         public void ProvisionDevice()
         {
-            var member = tokenIO.CreateMember(Alias());
+            var member = tokenClient.CreateMemberBlocking(Alias());
 
             var secondDevice = NewSdkInstance();
 
-            var deviceInfo = secondDevice.ProvisionDevice(member.FirstAlias());
-            member.ApproveKeys(deviceInfo.Keys);
+            var deviceInfo = secondDevice.ProvisionDeviceBlocking(member.GetFirstAliasBlocking());
+            member.ApproveKeysBlocking(deviceInfo.Keys);
 
-            var loggedIn = secondDevice.GetMember(deviceInfo.MemberId);
+            var loggedIn = secondDevice.GetMemberBlocking(deviceInfo.MemberId);
 
-            CollectionAssert.AreEquivalent(member.Aliases(), loggedIn.Aliases());
-            Assert.AreEqual(6, loggedIn.Keys().Count);
+            CollectionAssert.AreEquivalent(member.GetAliasesBlocking(), loggedIn.GetAliasesBlocking());
+            Assert.AreEqual(6, loggedIn.GetKeysBlocking().Count);
         }
 
         [Test]
@@ -61,11 +61,11 @@ namespace Test
             var alias1 = Alias();
             var alias2 = Alias();
 
-            var member = tokenIO.CreateMember(alias1);
-            CollectionAssert.AreEquivalent(new[] {alias1}, member.Aliases());
+            var member = tokenClient.CreateMemberBlocking(alias1);
+            CollectionAssert.AreEquivalent(new[] {alias1}, member.GetAliasesBlocking());
 
-            member.AddAlias(alias2);
-            CollectionAssert.AreEquivalent(new[] {alias1, alias2}, member.Aliases());
+            member.AddAliasBlocking(alias2);
+            CollectionAssert.AreEquivalent(new[] {alias1, alias2}, member.GetAliasesBlocking());
         }
 
         [Test]
@@ -74,64 +74,64 @@ namespace Test
             var alias1 = Alias();
             var alias2 = Alias();
 
-            var member = tokenIO.CreateMember(alias1);
-            CollectionAssert.AreEquivalent(new[] {alias1}, member.Aliases());
+            var member = tokenClient.CreateMemberBlocking(alias1);
+            CollectionAssert.AreEquivalent(new[] {alias1}, member.GetAliasesBlocking());
 
-            member.AddAlias(alias2);
-            CollectionAssert.AreEquivalent(new[] {alias1, alias2}, member.Aliases());
+            member.AddAliasBlocking(alias2);
+            CollectionAssert.AreEquivalent(new[] {alias1, alias2}, member.GetAliasesBlocking());
 
-            member.RemoveAlias(alias2);
-            CollectionAssert.AreEquivalent(new[] {alias1}, member.Aliases());
+            member.RemoveAliasBlocking(alias2);
+            CollectionAssert.AreEquivalent(new[] {alias1}, member.GetAliasesBlocking());
         }
 
         [Test]
         public void AliasDoesNotExist()
         {
             var alias = Alias();
-            Assert.False(tokenIO.AliasExists(alias));
+            Assert.False(tokenClient.AliasExistsBlocking(alias));
         }
 
         [Test]
         public void AliasExists()
         {
             var alias = Alias();
-            tokenIO.CreateMember(alias);
-            Assert.True(tokenIO.AliasExists(alias));
+            tokenClient.CreateMemberBlocking(alias);
+            Assert.True(tokenClient.AliasExistsBlocking(alias));
         }
 
         [Test]
         public void Recovery()
         {
             var alias = Alias();
-            var member = tokenIO.CreateMember(alias);
+            var member = tokenClient.CreateMemberBlocking(alias);
 
-            member.UseDefaultRecoveryRule();
-            var verificationId = tokenIO.BeginRecovery(alias);
-            var recovered = tokenIO.CompleteRecoveryWithDefaultRule(
+            member.UseDefaultRecoveryRuleBlocking();
+            var verificationId = tokenClient.BeginRecoveryBlocking(alias);
+            var recovered = tokenClient.CompleteRecoveryWithDefaultRuleBlocking(
                 member.MemberId(),
                 verificationId,
                 "code");
 
             Assert.AreEqual(member.MemberId(), recovered.MemberId());
-            Assert.AreEqual(3, recovered.Keys().Count);
-            Assert.IsEmpty(recovered.Aliases());
-            Assert.False(tokenIO.AliasExists(alias));
+            Assert.AreEqual(3, recovered.GetKeysBlocking().Count);
+            Assert.IsEmpty(recovered.GetAliasesBlocking());
+            Assert.False(tokenClient.AliasExistsBlocking(alias));
 
-            recovered.VerifyAlias(verificationId, "code");
-            Assert.True(tokenIO.AliasExists(alias));
-            CollectionAssert.AreEquivalent(new[] {alias}, recovered.Aliases());
+            recovered.VerifyAliasBlocking(verificationId, "code");
+            Assert.True(tokenClient.AliasExistsBlocking(alias));
+            CollectionAssert.AreEquivalent(new[] {alias}, recovered.GetAliasesBlocking());
         }
 
         [Test]
         public void Recovery_withSecondaryAgent()
         {
             var alias = Alias();
-            var member = tokenIO.CreateMember(alias);            
+            var member = tokenClient.CreateMemberBlocking(alias);            
             var memberId = member.MemberId();
-            var primaryAgentId = member.GetDefaultAgent();
-            var secondaryAgent = tokenIO.CreateMember(Alias());
-            var unusedSecondaryAgent = tokenIO.CreateMember(Alias());
-            member.AddRecoveryRule(new RecoveryRule
+            var primaryAgentId = member.GetDefaultAgentBlocking();
+            var secondaryAgent = tokenClient.CreateMemberBlocking(Alias());
+            var unusedSecondaryAgent = tokenClient.CreateMemberBlocking(Alias());
+            member.AddRecoveryRuleBlocking(new RecoveryRule
             {
                 PrimaryAgent = primaryAgentId,
                 SecondaryAgents = {secondaryAgent.MemberId(), unusedSecondaryAgent.MemberId()}
@@ -140,34 +140,34 @@ namespace Test
             var cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
             var key = cryptoEngine.GenerateKey(Privileged);
 
-            var verificationId = tokenIO.BeginRecovery(alias);
+            var verificationId = tokenClient.BeginRecoveryBlocking(alias);
             var authorization = new Authorization
             {
                 MemberId = memberId,
                 MemberKey = key,
-                PrevHash = member.LastHash()
+                PrevHash = member.GetLastHashBlocking()
             };
-            var signature = secondaryAgent.AuthorizeRecovery(authorization);
-            var op1 = tokenIO.GetRecoveryAuthorization(verificationId, "code", key);
+            var signature = secondaryAgent.AuthorizeRecoveryBlocking(authorization);
+            var op1 = tokenClient.GetRecoveryAuthorizationBlocking(verificationId, "code", key);
             var op2 = new MemberRecoveryOperation
             {
                 Authorization = authorization,
                 AgentSignature = signature
             };
-            var recovered = tokenIO.CompleteRecovery(
+            var recovered = tokenClient.CompleteRecoveryBlocking(
                 memberId,
                 new[] {op1, op2},
                 key,
                 cryptoEngine);
 
             Assert.AreEqual(member.MemberId(), recovered.MemberId());
-            Assert.AreEqual(3, recovered.Keys().Count);
-            Assert.IsEmpty(recovered.Aliases());
-            Assert.False(tokenIO.AliasExists(alias));
+            Assert.AreEqual(3, recovered.GetKeysBlocking().Count);
+            Assert.IsEmpty(recovered.GetAliasesBlocking());
+            Assert.False(tokenClient.AliasExistsBlocking(alias));
 
-            recovered.VerifyAlias(verificationId, "code");
-            Assert.True(tokenIO.AliasExists(alias));
-            CollectionAssert.AreEquivalent(new[] {alias}, recovered.Aliases());
+            recovered.VerifyAliasBlocking(verificationId, "code");
+            Assert.True(tokenClient.AliasExistsBlocking(alias));
+            CollectionAssert.AreEquivalent(new[] {alias}, recovered.GetAliasesBlocking());
         }
     }
 }

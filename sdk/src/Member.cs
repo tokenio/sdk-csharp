@@ -1021,45 +1021,45 @@ namespace Tokenio
         /// <summary>
         /// Looks up exsiting transfer tokens.
         /// </summary>
-        /// <param name="limit">the max number of records to return</param>
         /// <param name="offset">nullable offset to start at</param>
+        /// <param name="limit">the max number of records to return</param>
         /// <returns>a paged list of transfer tokens</returns>
-        public Task<PagedList<Token>> GetTransferTokens(int limit, string offset)
+        public Task<PagedList<Token>> GetTransferTokens(string offset, int limit)
         {
             return client.GetTokens(TokenType.Transfer, limit, offset);
         }
-        
+
         /// <summary>
         /// Looks up exsiting transfer tokens.
         /// </summary>
-        /// <param name="limit">the max number of records to return</param>
         /// <param name="offset">nullable offset to start at</param>
+        /// <param name="limit">the max number of records to return</param>
         /// <returns>a paged list of transfer tokens</returns>
-        public PagedList<Token> GetTransferTokensBlocking(int limit, string offset)
+        public PagedList<Token> GetTransferTokensBlocking(string offset, int limit)
         {
-            return GetTransferTokens(limit, offset).Result;
+            return GetTransferTokens(offset, limit).Result;
         }
 
         /// <summary>
         /// Looks up existing access tokens.
         /// </summary>
-        /// <param name="limit">the max number of records to return</param>
         /// <param name="offset">nullable offset to start at</param>
+        /// <param name="limit">the max number of records to return</param>
         /// <returns>a paged list of access tokens</returns>
-        public Task<PagedList<Token>> GetAccessTokens(int limit, string offset)
+        public Task<PagedList<Token>> GetAccessTokens(string offset, int limit)
         {
             return client.GetTokens(TokenType.Access, limit, offset);
         }
-        
+
         /// <summary>
         /// Looks up existing access tokens.
         /// </summary>
-        /// <param name="limit">the max number of records to return</param>
         /// <param name="offset">nullable offset to start at</param>
+        /// <param name="limit">the max number of records to return</param>
         /// <returns>a paged list of access tokens</returns>
-        public PagedList<Token> GetAccessTokensBlocking(int limit, string offset)
+        public PagedList<Token> GetAccessTokensBlocking(string offset, int limit)
         {
-            return GetAccessTokens(limit, offset).Result;
+            return GetAccessTokens(offset, limit).Result;
         }
 
         /// <summary>

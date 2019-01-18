@@ -43,14 +43,14 @@ namespace Test
             };
         }
 
-        public static TokenIO NewSdkInstance()
+        public static TokenClient NewSdkInstance()
         {
             Enum.TryParse(
                 Environment.GetEnvironmentVariable("TOKEN_ENV") ?? "development",
                 true,
                 out TokenCluster.TokenEnv tokenEnv);
             
-            return TokenIO.NewBuilder()
+            return TokenClient.NewBuilder()
                 .ConnectTo(TokenCluster.GetCluster(tokenEnv))
                 .Port(443)
                 .Timeout(10 * 60 * 1_000) // Set high for easy debugging.

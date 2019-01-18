@@ -7,20 +7,20 @@ namespace Test
     [TestFixture]
     public class BankInformationTest
     {
-        private static readonly TokenIO tokenIO = NewSdkInstance();
+        private static readonly TokenClient tokenClient = NewSdkInstance();
 
         [Test]
         public void GetBanks()
         {
-            Assert.IsNotEmpty(tokenIO.GetBanks().Banks);
+            Assert.IsNotEmpty(tokenClient.GetBanksBlocking().Banks);
         }
         
         [Test]
         public void GetBankInfo()
         {
-            var bankId = tokenIO.GetBanks().Banks[0].Id;
-            var member = tokenIO.CreateMember();
-            Assert.IsNotNull(member.GetBankInfo(bankId));
+            var bankId = tokenClient.GetBanksBlocking().Banks[0].Id;
+            var member = tokenClient.CreateMemberBlocking();
+            Assert.IsNotNull(member.GetBankInfoBlocking(bankId));
         }
     }
 }

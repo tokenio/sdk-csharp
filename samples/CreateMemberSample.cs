@@ -11,11 +11,11 @@ namespace samples
         /// Creates and returns a new token member.
         /// </summary>
         /// <returns>a new Member instance</returns>
-        public static MemberSync CreateMember()
+        public static Member CreateMember()
         {
             // Create the client, which communicates with
             // the Token cloud.
-            var tokenIO = TokenIO.NewBuilder()
+            var tokenClient = TokenClient.NewBuilder()
                 .WithKeyStore(new InMemoryKeyStore())
                 .ConnectTo(TokenCluster.SANDBOX)
                 .Build();
@@ -32,10 +32,10 @@ namespace samples
                 Value = Util.Nonce() + "+noverify@example.com"
             };
 
-            var newMember = tokenIO.CreateMember(alias);
+            var newMember = tokenClient.CreateMember(alias).Result;
 
             // let user recover member by verifying email if they lose keys
-            newMember.UseDefaultRecoveryRule();
+            newMember.UseDefaultRecoveryRule().Wait();
 
             return newMember;
         }

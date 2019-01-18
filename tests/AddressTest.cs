@@ -11,14 +11,14 @@ namespace Test
     [TestFixture]
     public class AddressTest
     {
-        private static readonly TokenIO tokenIO = NewSdkInstance();
+        private static readonly TokenClient tokenIO = NewSdkInstance();
 
-        private MemberSync member;
+        private Member member;
 
         [SetUp]
         public void Init()
         {
-            member = tokenIO.CreateMember(Alias());
+            member = tokenIO.CreateMemberBlocking(Alias());
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace Test
         {
             var name = Util.Nonce();
             var payload = Address();
-            var address = member.AddAddress(name, payload);
+            var address = member.AddAddressBlocking(name, payload);
             Assert.AreEqual(name, address.Name);
             Assert.AreEqual(payload, address.Address);
         }
@@ -36,8 +36,8 @@ namespace Test
         {
             var name = Util.Nonce();
             var payload = Address();
-            var address = member.AddAddress(name, payload);
-            var result = member.GetAddress(address.Id);
+            var address = member.AddAddressBlocking(name, payload);
+            var result = member.GetAddressBlocking(address.Id);
             Assert.AreEqual(address, result);
         }
 
@@ -53,25 +53,25 @@ namespace Test
 
             foreach (var entry in addressMap)
             {
-                member.AddAddress(entry.Key, entry.Value);
+                member.AddAddressBlocking(entry.Key, entry.Value);
             }
 
             CollectionAssert.AreEquivalent(
                 addressMap, 
-                member.GetAddresses().ToDictionary(a => a.Name, a => a.Address));
+                member.GetAddressesBlocking().ToDictionary(a => a.Name, a => a.Address));
         }
 
         [Test]
         public void GetAddresses_NotFound()
         {
-            Assert.IsEmpty(member.GetAddresses());
+            Assert.IsEmpty(member.GetAddressesBlocking());
         }
 
         [Test]
         public void GetAddress_NotFound()
         {
             var fakeAddressId = Util.Nonce();
-            Assert.Throws<AggregateException>(() => member.GetAddress(fakeAddressId));
+            Assert.Throws<AggregateException>(() => member.GetAddressBlocking(fakeAddressId));
         }
 
         [Test]
@@ -79,13 +79,13 @@ namespace Test
         {
             var name = Util.Nonce();
             var payload = Address();
-            var address = member.AddAddress(name, payload);
+            var address = member.AddAddressBlocking(name, payload);
             
-            member.GetAddress(address.Id);
-            Assert.IsNotEmpty(member.GetAddresses());
+            member.GetAddressBlocking(address.Id);
+            Assert.IsNotEmpty(member.GetAddressesBlocking());
             
-            member.DeleteAddress(address.Id);
-            Assert.IsEmpty(member.GetAddresses());
+            member.DeleteAddressBlocking(address.Id);
+            Assert.IsEmpty(member.GetAddressesBlocking());
         }
     }
 }

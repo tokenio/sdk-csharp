@@ -16,9 +16,9 @@ namespace samples
         /// <param name="grantor">Token member granting access to her accounts</param>
         /// <param name="granteeAlias">Token member alias acquiring information access</param>
         /// <returns>the access Token</returns>
-        public static Token FindAccessToken(MemberSync grantor, Alias granteeAlias)
+        public static Token FindAccessToken(Member grantor, Alias granteeAlias)
         {
-            foreach (var token in grantor.GetAccessTokens(null, 100).List)
+            foreach (var token in grantor.GetAccessTokens(null, 100).Result.List)
             {
                 var toAlias = token.Payload.To.Alias;
                 if (toAlias.Equals(granteeAlias))
@@ -38,7 +38,7 @@ namespace samples
         /// <param name="oldToken">token to replace</param>
         /// <returns>success or failure</returns>
         public static TokenOperationResult ReplaceAccessToken(
-            MemberSync grantor,
+            Member grantor,
             Alias granteeAlias,
             Token oldToken)
         {
@@ -50,10 +50,11 @@ namespace samples
                     .ForAccount("12345678")
                     .ForAccountTransactions("12345678")
                     .Build())
+               .Result
                .Token;
             
             // Endorse the new access token
-            var status = grantor.EndorseToken(newToken, Standard);
+            var status = grantor.EndorseToken(newToken, Standard).Result;
             
             return status;
         }

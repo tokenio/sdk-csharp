@@ -12,14 +12,14 @@ namespace Test
     public class TokenRequestTest
     {
         private static readonly string tokenUrl = "https://token.io";
-        private static readonly TokenIO tokenIO = NewSdkInstance();
+        private static readonly TokenClient tokenClient = NewSdkInstance();
 
-        private MemberSync memberSync;
+        private Member member;
 
         [SetUp]
         public void Init()
         {
-            memberSync = tokenIO.CreateMember(Alias());
+            member = tokenClient.CreateMemberBlocking(Alias());
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Test
                 RedirectUrl = tokenUrl,
                 To = new TokenMember
                 {
-                    Id = memberSync.MemberId()
+                    Id = member.MemberId()
                 },
                 Description = Util.Nonce(),
                 CallbackState = Util.Nonce(),
@@ -48,9 +48,9 @@ namespace Test
                 ReceiptRequested = false
             };
 
-            var requestId = memberSync.StoreTokenRequest(storedPayload, storedOptions);
+            var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
             Assert.IsNotEmpty(requestId);
-            var retrievedRequest = tokenIO.RetrieveTokenRequest(requestId);
+            var retrievedRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
             Assert.AreEqual(storedPayload, retrievedRequest.RequestPayload);
             Assert.AreEqual(storedOptions, retrievedRequest.RequestOptions);
         }
@@ -66,7 +66,7 @@ namespace Test
                 RedirectUrl = Util.Nonce(),
                 To = new TokenMember
                 {
-                    Id = memberSync.MemberId()
+                    Id = member.MemberId()
                 },
                 Description = Util.Nonce(),
                 CallbackState = Util.Nonce(),
@@ -82,10 +82,10 @@ namespace Test
                 ReceiptRequested = false
             };
 
-            var requestId = memberSync.StoreTokenRequest(storedPayload, storedOptions);
+            var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
             Assert.IsNotEmpty(requestId);
 
-            var retrievedRequest = tokenIO.RetrieveTokenRequest(requestId);
+            var retrievedRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
             Assert.AreEqual(storedPayload, retrievedRequest.RequestPayload);
             Assert.AreEqual(storedOptions, retrievedRequest.RequestOptions);
         }
@@ -94,8 +94,8 @@ namespace Test
         [Test]
         public void AddAndGetTokenRequest_NotFound()
         {
-            Assert.Throws<AggregateException>(() => tokenIO.RetrieveTokenRequest("bogus"));
-            Assert.Throws<AggregateException>(() => tokenIO.RetrieveTokenRequest(memberSync.MemberId()));
+            Assert.Throws<AggregateException>(() => tokenClient.RetrieveTokenRequestBlocking("bogus"));
+            Assert.Throws<AggregateException>(() => tokenClient.RetrieveTokenRequestBlocking(member.MemberId()));
         }
         
         [Test]
@@ -107,7 +107,7 @@ namespace Test
                 RedirectUrl = tokenUrl,
                 To = new TokenMember
                 {
-                    Id = tokenIO.CreateMember().MemberId()
+                    Id = tokenClient.CreateMemberBlocking().MemberId()
                 },
                 Description = Util.Nonce(),
                 CallbackState = Util.Nonce(),
@@ -122,7 +122,7 @@ namespace Test
                 BankId = "iron",
                 ReceiptRequested = false
             };
-            Assert.Throws<AggregateException>(() => memberSync.StoreTokenRequest(storedPayload, storedOptions));
+            Assert.Throws<AggregateException>(() => member.StoreTokenRequestBlocking(storedPayload, storedOptions));
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace Test
                 RedirectUrl = tokenUrl,
                 To = new TokenMember
                 {
-                    Id = memberSync.MemberId()
+                    Id = member.MemberId()
                 },
                 Description = Util.Nonce(),
                 CallbackState = Util.Nonce(),
@@ -149,11 +149,11 @@ namespace Test
                 BankId = "iron",
                 ReceiptRequested = false
             };
-            memberSync.StoreTokenRequest(storedPayload, storedOptions);
+            member.StoreTokenRequestBlocking(storedPayload, storedOptions);
             
-            var requestId = memberSync.StoreTokenRequest(storedPayload, storedOptions);
+            var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
             Assert.IsNotEmpty(requestId);
-            var retrievedRequest1 = tokenIO.RetrieveTokenRequest(requestId);
+            var retrievedRequest1 = tokenClient.RetrieveTokenRequestBlocking(requestId);
             Assert.IsFalse(retrievedRequest1.RequestOptions.ReceiptRequested);
             
             var optionsUpdate = new Tokenio.Proto.Common.TokenProtos.TokenRequestOptions
@@ -161,8 +161,8 @@ namespace Test
                 ReceiptRequested = true
             };
             
-            memberSync.UpdateTokenRequest(requestId, optionsUpdate);
-            var retrievedRequest2 = tokenIO.RetrieveTokenRequest(requestId);
+            member.UpdateTokenRequestBlocking(requestId, optionsUpdate);
+            var retrievedRequest2 = tokenClient.RetrieveTokenRequestBlocking(requestId);
             Assert.IsTrue(retrievedRequest2.RequestOptions.ReceiptRequested);
         }
     }
