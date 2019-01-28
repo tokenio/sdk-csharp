@@ -17,14 +17,14 @@ namespace samples
         /// </summary>
         /// <param name="member">member</param>
         /// <returns>dictionary currency: total</returns>
-        public static IDictionary<string, double> MemberGetBalanceSample(MemberSync member)
+        public static IDictionary<string, double> MemberGetBalanceSample(Member member)
         {
             var sums = new Dictionary<string, double>();
 
-            var accounts = member.GetAccounts();
+            var accounts = member.GetAccounts().Result;
             foreach (var account in accounts)
             {
-                var balance = member.GetCurrentBalance(account.Id(), Standard);
+                var balance = member.GetCurrentBalance(account.Id(), Standard).Result;
                 if (sums.ContainsKey(balance.Currency))
                 {
                     sums[balance.Currency] += Convert.ToDouble(balance.Value);
@@ -43,14 +43,14 @@ namespace samples
         /// </summary>
         /// <param name="member">member</param>
         /// <returns>dictionary currency: total</returns>
-        public static IDictionary<string, double> AccountGetBalanceSample(MemberSync member)
+        public static IDictionary<string, double> AccountGetBalanceSample(Member member)
         {
             var sums = new Dictionary<string, double>();
 
-            var accounts = member.GetAccounts();
+            var accounts = member.GetAccounts().Result;
             foreach (var account in accounts)
             {
-                var balance = account.GetCurrentBalance(Standard);
+                var balance = account.GetCurrentBalance(Standard).Result;
                 if (sums.ContainsKey(balance.Currency))
                 {
                     sums[balance.Currency] += Convert.ToDouble(balance.Value);
@@ -69,13 +69,14 @@ namespace samples
         /// </summary>
         /// <param name="member">member</param>
         /// <returns>a list of balances</returns>
-        public static IList<Balance> MemberGetBalanceListSample(MemberSync member)
+        public static IList<Balance> MemberGetBalanceListSample(Member member)
         {
             var accountIds = member.GetAccounts()
+                .Result
                 .Select(account => account.Id())
                 .ToList();
 
-            var balances = member.GetBalances(accountIds, Standard);
+            var balances = member.GetBalances(accountIds, Standard).Result;
 
             return balances;
         }

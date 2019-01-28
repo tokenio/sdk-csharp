@@ -131,7 +131,7 @@ namespace Tokenio
         {
             payload.Access.Resources.Add(new Resource
             {
-                Account = new Account
+                Account = new Resource.Types.Account
                 {
                     AccountId = accountId
                 }

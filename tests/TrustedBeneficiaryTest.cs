@@ -9,54 +9,54 @@ namespace Test
     [TestFixture]
     public class TrustedBeneficiaryTest
     {
-        private static readonly TokenIO tokenIO = NewSdkInstance();
+        private static readonly TokenClient tokenClient = NewSdkInstance();
 
-        private MemberSync member1;
-        private MemberSync member2;
-        private MemberSync member3;
+        private Member member1;
+        private Member member2;
+        private Member member3;
 
         [SetUp]
         public void Init()
         {
-            member1 = tokenIO.CreateMember(Alias());
-            member2 = tokenIO.CreateMember(Alias());
-            member3 = tokenIO.CreateMember(Alias());
+            member1 = tokenClient.CreateMemberBlocking(Alias());
+            member2 = tokenClient.CreateMemberBlocking(Alias());
+            member3 = tokenClient.CreateMemberBlocking(Alias());
         }
 
         [Test]
         public void AddAndGetTrustedBeneficiary()
         {
-            member1.AddTrustedBeneficiary(member2.MemberId());
+            member1.AddTrustedBeneficiaryBlocking(member2.MemberId());
             CollectionAssert.AreEquivalent(
                 new List<string> {member2.MemberId()},
-                member1.GetTrustedBeneficiaries()
+                member1.GetTrustedBeneficiariesBlocking()
                     .Select(a => a.Payload.MemberId));
 
-            member1.AddTrustedBeneficiary(member3.MemberId());
+            member1.AddTrustedBeneficiaryBlocking(member3.MemberId());
             CollectionAssert.AreEquivalent(
                 new List<string> {member2.MemberId(), member3.MemberId()},
-                member1.GetTrustedBeneficiaries()
+                member1.GetTrustedBeneficiariesBlocking()
                     .Select(a => a.Payload.MemberId));
         }
 
         [Test]
         public void RemoveTrustedBeneficiary()
         {
-            member1.AddTrustedBeneficiary(member2.MemberId());
-            member1.AddTrustedBeneficiary(member3.MemberId());
+            member1.AddTrustedBeneficiaryBlocking(member2.MemberId());
+            member1.AddTrustedBeneficiaryBlocking(member3.MemberId());
             CollectionAssert.AreEquivalent(
                 new List<string> {member2.MemberId(), member3.MemberId()},
-                member1.GetTrustedBeneficiaries()
+                member1.GetTrustedBeneficiariesBlocking()
                     .Select(a => a.Payload.MemberId));
 
-            member1.RemoveTrustedBeneficiary(member3.MemberId());
+            member1.RemoveTrustedBeneficiaryBlocking(member3.MemberId());
             CollectionAssert.AreEquivalent(
                 new List<string> {member2.MemberId()},
-                member1.GetTrustedBeneficiaries()
+                member1.GetTrustedBeneficiariesBlocking()
                    .Select(a => a.Payload.MemberId));
 
-            member1.RemoveTrustedBeneficiary(member2.MemberId());
-            Assert.IsEmpty(member1.GetTrustedBeneficiaries());
+            member1.RemoveTrustedBeneficiaryBlocking(member2.MemberId());
+            Assert.IsEmpty(member1.GetTrustedBeneficiariesBlocking());
         }
     }
 }

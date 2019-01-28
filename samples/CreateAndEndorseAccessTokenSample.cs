@@ -16,7 +16,7 @@ namespace samples
         /// <param name="grantor"></param>
         /// <param name="granteeAlias"></param>
         /// <returns></returns>
-        public static Token CreateAccessToken(MemberSync grantor, Alias granteeAlias)
+        public static Token CreateAccessToken(Member grantor, Alias granteeAlias)
         {
             // Create an access token for the grantee to access bank
             // account names of the grantor.
@@ -24,11 +24,12 @@ namespace samples
                 .Create(granteeAlias)
                 .ForAccount("12345678")
                 .ForAccountTransactions("12345678")
-                .Build());
+                .Build())
+                .Result;
 
             // Grantor endorses a token to a grantee by signing it
             // with her secure private key.
-            accessToken = grantor.EndorseToken(accessToken, Standard).Token;
+            accessToken = grantor.EndorseToken(accessToken, Standard).Result.Token;
 
             return accessToken;
         }

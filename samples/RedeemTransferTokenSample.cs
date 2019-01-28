@@ -9,7 +9,7 @@ namespace samples
     public class RedeemTransferTokenSample
     {
         public static Transfer RedeemTransferToken(
-            MemberSync payee,
+            Member payee,
             string accountId, // account ID of the payee
             string tokenId)
         {
@@ -21,7 +21,7 @@ namespace samples
             var cartId = Util.Nonce();
 
             // Retrieve a transfer token to redeem.
-            var transferToken = payee.GetToken(tokenId);
+            var transferToken = payee.GetToken(tokenId).Result;
 
             // Payee redeems a transfer token.
             // Money is transferred to a payee bank account.
@@ -39,7 +39,7 @@ namespace samples
                     }
                 },
                 // if refId not set, transfer will have random refID:
-                cartId);
+                cartId).Result;
 
             return transfer;
         }

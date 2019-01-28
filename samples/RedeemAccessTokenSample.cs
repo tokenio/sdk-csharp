@@ -12,7 +12,7 @@ namespace samples
         /// <param name="grantee">grantee Token member</param>
         /// <param name="tokenId">ID of the access token to redeem</param>
         /// <returns>balance of one of grantor's acounts</returns>
-        public static Money RedeemAccessToken(MemberSync grantee, string tokenId)
+        public static Money RedeemAccessToken(Member grantee, string tokenId)
         {
             // Specifies whether the request originated from a customer
             var customerInitiated = true;
@@ -20,10 +20,10 @@ namespace samples
             // Access grantor's account list by applying
             // access token to the grantee client.
             var grantor = grantee.ForAccessToken(tokenId, customerInitiated);
-            var accounts = grantor.GetAccounts();
+            var accounts = grantor.GetAccounts().Result;
 
             // Get the data we want
-            var balance0 = accounts[0].GetCurrentBalance(Standard);
+            var balance0 = accounts[0].GetCurrentBalance(Standard).Result;
             return balance0;
         }
     }

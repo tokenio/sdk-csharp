@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tokenio.Exceptions;
-using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
-using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
@@ -19,6 +17,7 @@ namespace Tokenio
 {
     public class TokenIOAsync : IDisposable
     {
+        [Obsolete("deprecated, use TokenClient instead")]
         private static readonly string TOKEN_REQUEST_TEMPLATE =
             "https://{0}/request-token/{1}?state={2}";
 

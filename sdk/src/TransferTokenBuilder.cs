@@ -34,7 +34,7 @@ namespace Tokenio
             AccountType.Bank
         };
 
-        private readonly MemberAsync member;
+        private readonly Member member;
         private readonly TokenPayload payload;
 
         // Used for attaching files / data to tokens
@@ -46,8 +46,22 @@ namespace Tokenio
         /// <param name="member">the payer of the token</param>
         /// <param name="amount">the lifetime amount of the token</param>
         /// <param name="currency">the currency of the token</param>
+        [Obsolete]
         public TransferTokenBuilder(
             MemberAsync member,
+            double amount,
+            string currency) : this (member.toMember(), amount, currency)
+        {
+        }
+
+        /// <summary>
+        /// Creates the builder object.
+        /// </summary>
+        /// <param name="member">the payer of the token</param>
+        /// <param name="amount">the lifetime amount of the token</param>
+        /// <param name="currency">the currency of the token</param>
+        public TransferTokenBuilder(
+            Member member,
             double amount,
             string currency)
         {
@@ -70,7 +84,7 @@ namespace Tokenio
                 To = new TokenMember()
             };
 
-            var alias = member.FirstAlias().Result;
+            var alias = member.GetFirstAliasBlocking();
             if (alias != null)
             {
                 payload.From.Alias = alias;

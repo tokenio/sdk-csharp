@@ -8,6 +8,7 @@ namespace Tokenio
     /// <summary>
     /// Represents a funding account in the Token system.
     /// </summary>
+    [Obsolete("deprecated, use Account instead")]
     public class AccountSync
     {
         private readonly AccountAsync async;

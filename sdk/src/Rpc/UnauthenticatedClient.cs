@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
@@ -13,6 +11,7 @@ using Tokenio.Security;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 namespace Tokenio.Rpc
 {
@@ -69,7 +68,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="memberId">the member ID to check</param>
         /// <returns>the member</returns>
-        public Task<Member> GetMember(string memberId)
+        public Task<ProtoMember> GetMember(string memberId)
         {
             var request = new GetMemberRequest {MemberId = memberId};
             return gateway.GetMemberAsync(request)
@@ -98,7 +97,7 @@ namespace Tokenio.Rpc
         /// <param name="metadata">the metadata of the operations</param>
         /// <param name="signer">the signer used to sign the request</param>
         /// <returns>the created member</returns>
-        public Task<Member> CreateMember(
+        public Task<ProtoMember> CreateMember(
             string memberId,
             IList<MemberOperation> operations,
             IList<MemberOperationMetadata> metadata,
@@ -207,7 +206,7 @@ namespace Tokenio.Rpc
         /// <param name="privilegedKey">the privileged public key in the member recovery operations</param>
         /// <param name="cryptoEngine">the new crypto engine</param>
         /// <returns>the new member</returns>
-        public Task<Member> CompleteRecovery(
+        public Task<ProtoMember> CompleteRecovery(
             string memberId,
             IList<MemberRecoveryOperation> recoveryOperations,
             Key privilegedKey,
@@ -237,7 +236,7 @@ namespace Tokenio.Rpc
         /// <param name="code">the code</param>
         /// <param name="cryptoEngine">the new crypto engine</param>
         /// <returns>the new member</returns>
-        public Task<Member> CompleteRecoveryWithDefaultRule(
+        public Task<ProtoMember> CompleteRecoveryWithDefaultRule(
             string memberId,
             string verificationId,
             string code,
@@ -336,7 +335,7 @@ namespace Tokenio.Rpc
         /// Returns the token member.
         /// </summary>
         /// <returns>the member</returns>
-        public Task<Member> GetTokenMember()
+        public Task<ProtoMember> GetTokenMember()
         {
             return GetMemberId(TOKEN).FlatMap(GetMember);
         }

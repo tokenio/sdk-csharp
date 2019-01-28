@@ -7,12 +7,12 @@ namespace samples
     public class GetTransfersSample
     {
         /// <summary>
-        /// Illustrate MemberSync.GetTransfers
+        /// Illustrate Member.GetTransfers
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void GetTransfersSample_(MemberSync payer)
+        public static void GetTransfersSample_(Member payer)
         {
-            foreach (var transfer in payer.GetTransfers(null, 10, null).List)
+            foreach (var transfer in payer.GetTransfers(null, null, 10).Result.List)
             {
                 DisplayTransfer(
                     transfer.Status,
@@ -21,12 +21,12 @@ namespace samples
         }
 
         /// <summary>
-        /// Illustrate MemberSync.GetTransferTokens
+        /// Illustrate Member.GetTransferTokens
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void GetTransferTokensSample(MemberSync payer)
+        public static void GetTransferTokensSample(Member payer)
         {
-            foreach (var token in payer.GetTransferTokens(null, 10).List)
+            foreach (var token in payer.GetTransferTokens(null, 10).Result.List)
             {
                 var transferBody = token.Payload.Transfer;
                 DisplayTransferToken(
@@ -36,16 +36,16 @@ namespace samples
         }
 
         /// <summary>
-        /// Illustrate MemberSync.GetTransfer
+        /// Illustrate Member.GetTransfer
         /// </summary>
         /// <param name="payer">payer Token member</param>
         /// <param name="transferId">id of a transfer</param>
         /// <returns></returns>
         public static Transfer GetTransferSample(
-            MemberSync payer,
+            Member payer,
             string transferId)
         {
-            var transfer = payer.GetTransfer(transferId);
+            var transfer = payer.GetTransfer(transferId).Result;
             return transfer;
         }
 

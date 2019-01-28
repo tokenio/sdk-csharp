@@ -12,35 +12,35 @@ namespace samples
 {
     public class MemberRecoverySample
     {
-        public MemberSync agentMember; // used by complex recovery rule sample
+        public Tokenio.Member agentMember; // used by complex recovery rule sample
 
-        public void SetUpDefaultRecoveryRule(MemberSync member)
+        public void SetUpDefaultRecoveryRule(Tokenio.Member member)
         {
-            member.UseDefaultRecoveryRule();
+            member.UseDefaultRecoveryRule().Wait();
         }
 
         /// <summary>
         /// Recover previously-created member, assuming they were
         /// configured with a "normal consumer" recovery rule.
         /// </summary>
-        /// <param name="tokenIO">SDK client</param>
+        /// <param name="tokenClient">SDK client</param>
         /// <param name="alias">alias of member to recoverWithDefaultRule</param>
         /// <returns>the recovered member</returns>
-        public MemberSync RecoverWithDefaultRule(TokenIO tokenIO, Alias alias)
+        public Tokenio.Member RecoverWithDefaultRule(TokenClient tokenClient, Alias alias)
         {
-            var verificationId = tokenIO.BeginRecovery(alias);
+            var verificationId = tokenClient.BeginRecovery(alias).Result;
             // recoverWithDefault begin snippet to include in docs
-            var memberId = tokenIO.GetMemberId(alias);
+            var memberId = tokenClient.GetMemberId(alias).Result;
 
             // In the real world, we'd prompt the user to enter the code emailed to them.
             // Since our test member uses an auto-verify email address, any string will work,
             // so we use "1thru6".
-            var recoveredMember = tokenIO.CompleteRecoveryWithDefaultRule(
+            var recoveredMember = tokenClient.CompleteRecoveryWithDefaultRule(
                 memberId,
                 verificationId,
-                "1thru6");
+                "1thru6").Result;
             // We can use the same verification code to re-claim this alias.
-            recoveredMember.VerifyAlias(verificationId, "1thru6");
+            recoveredMember.VerifyAlias(verificationId, "1thru6").Wait();
             // recoverWithDefault done snippet to include in docs
 
             return recoveredMember;
@@ -51,11 +51,11 @@ namespace samples
         /// mode, without the "normal consumer" shortcuts.
         /// </summary>
         /// <param name="newMember">newly-created member we are setting up</param>
-        /// <param name="tokenIO">SDK client</param>
+        /// <param name="tokenClient">SDK client</param>
         /// <param name="agentAlias"> Alias of recovery agent.</param>
         public void SetUpComplexRecoveryRule(
-            MemberSync newMember,
-            TokenIO tokenIO,
+            Tokenio.Member newMember,
+            TokenClient tokenClient,
             Alias agentAlias)
         {
             // setUpComplex begin snippet to include in docs
@@ -65,14 +65,14 @@ namespace samples
             // recovery agent the new member ID so the agent can "remember" later.
             TellRecoveryAgentMemberId(newMember.MemberId());
 
-            var agentId = tokenIO.GetMemberId(agentAlias);
+            var agentId = tokenClient.GetMemberId(agentAlias).Result;
             var recoveryRule = new RecoveryRule {PrimaryAgent = agentId};
             // This example doesn't call .setSecondaryAgents ,
             // but could have. If it had, then recovery would have
             // required one secondary agent authorization along with
             // the primary agent authorization.
 
-            newMember.AddRecoveryRule(recoveryRule);
+            newMember.AddRecoveryRule(recoveryRule).Wait();
             // setUpComplex done snippet to include in docs
         }
 
@@ -89,7 +89,7 @@ namespace samples
             var isCorrect = CheckMemberId(authorization.MemberId);
             if (isCorrect)
             {
-                return agentMember.AuthorizeRecovery(authorization);
+                return agentMember.AuthorizeRecovery(authorization).Result;
             }
 
             throw new Exception("I don't authorize this");
@@ -99,21 +99,21 @@ namespace samples
         /// <summary>
         /// Illustrate recovery using a not-normal-"consumer mode" recovery agent.
         /// </summary>
-        /// <param name="tokenIO">SDK client</param>
+        /// <param name="tokenClient">SDK client</param>
         /// <param name="alias">Alias of member to recover</param>
         /// <returns>the recovered member</returns>
-        public MemberSync RecoverWithComplexRule(
-            TokenIO tokenIO,
+        public Tokenio.Member RecoverWithComplexRule(
+            TokenClient tokenClient,
             Alias alias)
         {
             // complexRecovery begin snippet to include in docs
-            var memberId = tokenIO.GetMemberId(alias);
+            var memberId = tokenClient.GetMemberId(alias).Result;
 
             var cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
             var newKey = cryptoEngine.GenerateKey(Privileged);
 
-            var verificationId = tokenIO.BeginRecovery(alias);
-            var authorization = tokenIO.CreateRecoveryAuthorization(memberId, newKey);
+            var verificationId = tokenClient.BeginRecovery(alias).Result;
+            var authorization = tokenClient.CreateRecoveryAuthorization(memberId, newKey).Result;
 
             // ask recovery agent to verify that I really am this member
             var agentSignature = GetRecoveryAgentSignature(authorization);
@@ -125,17 +125,17 @@ namespace samples
                 AgentSignature = agentSignature,
                 Authorization = authorization
             };
-            var recoveredMember = tokenIO.CompleteRecovery(
+            var recoveredMember = tokenClient.CompleteRecovery(
                 memberId,
                 new List<MemberRecoveryOperation> {mro}, 
                 newKey,
-                cryptoEngine);
+                cryptoEngine).Result;
             // after recovery, aliases aren't verified
 
             // In the real world, we'd prompt the user to enter the code emailed to them.
             // Since our test member uses an auto-verify email address, any string will work,
             // so we use "1thru6".
-            recoveredMember.VerifyAlias(verificationId, "1thru6");
+            recoveredMember.VerifyAlias(verificationId, "1thru6").Wait();
             // complexRecovery done snippet to include in docs
 
             return recoveredMember;

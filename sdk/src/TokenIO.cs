@@ -15,6 +15,7 @@ using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 
 namespace Tokenio
 {
+    [Obsolete("deprecated, use TokenClient instead")]
     public class TokenIO : IDisposable
     {
         private readonly TokenIOAsync async;

@@ -10,11 +10,11 @@ namespace samples
         /// <param name="payee">Payee member</param>
         /// <param name="tokenId">Token with attachments we want to show</param>
         public static void DisplayAttachmentFromTransferToken(
-            MemberSync payee,
+            Member payee,
             string tokenId)
         {
             // Retrieve a transfer token to redeem.
-            var transferToken = payee.GetToken(tokenId);
+            var transferToken = payee.GetToken(tokenId).Result;
 
             var attachments = transferToken
                 .Payload
@@ -28,7 +28,7 @@ namespace samples
                 {
                     // Download the contents for the attachment[s]
                     // we want:
-                    var blob = payee.GetTokenBlob(tokenId, attachment.BlobId);
+                    var blob = payee.GetTokenBlob(tokenId, attachment.BlobId).Result;
                     // Use the attachment data.
                     ShowImage(
                         blob.Payload.Name, // "invoice.jpg"

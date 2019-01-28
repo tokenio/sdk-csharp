@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Rpc;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 
 namespace Tokenio
@@ -11,10 +11,9 @@ namespace Tokenio
     /// <summary>
     /// Represents a funding account in the Token system.
     /// </summary>
-    [Obsolete("deprecated, use Account instead")]
-    public class AccountAsync
+    public class Account
     {
-        private readonly MemberAsync member;
+        private readonly Member member;
         private readonly ProtoAccount account;
         private readonly Client client;
 
@@ -24,7 +23,7 @@ namespace Tokenio
         /// <param name="member">account owner</param>
         /// <param name="account">account information</param>
         /// <param name="client">RPC client used to perform operations against the server</param>
-        internal AccountAsync(MemberAsync member, ProtoAccount account, Client client)
+        internal Account(Member member, ProtoAccount account, Client client)
         {
             this.member = member;
             this.account = account;
@@ -32,19 +31,10 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Returns a sync version of the account API.
-        /// </summary>
-        /// <returns>synchronous version of the account API</returns>
-        public AccountSync Sync()
-        {
-            return new AccountSync(this);
-        }
-
-        /// <summary>
         /// Gets an account owner.
         /// </summary>
         /// <returns>account owner</returns>
-        public MemberAsync Member()
+        public Member Member()
         {
             return member;
         }
@@ -66,6 +56,15 @@ namespace Tokenio
         {
             return client.SetDefaultAccount(Id());
         }
+        
+        /// <summary>
+        /// Sets this account as a member's default account.
+        /// </summary>
+        /// <returns>a task</returns>
+        public void SetAsDefaultBlocking()
+        {
+            SetAsDefault().Wait();
+        }
 
         /// <summary>
         /// Looks up if this account is default.
@@ -74,6 +73,15 @@ namespace Tokenio
         public Task<bool> IsDefault()
         {
             return client.IsDefault(Id());
+        }
+        
+        /// <summary>
+        /// Looks up if this account is default.
+        /// </summary>
+        /// <returns>true if this account is default; false otherwise.</returns>
+        public bool IsDefaultBlocking()
+        {
+            return IsDefault().Result;
         }
 
         /// <summary>
@@ -112,6 +120,16 @@ namespace Tokenio
         {
             return client.GetBalance(account.Id, keyLevel);
         }
+        
+        /// <summary>
+        /// Looks up an account balance.
+        /// </summary>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>the account balance</returns>
+        public Balance GetBalanceBlocking(Level keyLevel)
+        {
+            return GetBalance(keyLevel).Result;
+        }
 
         /// <summary>
         /// Looks up an account current balance.
@@ -123,6 +141,16 @@ namespace Tokenio
             return client.GetBalance(account.Id, keyLevel)
                 .Map(balance => balance.Current);
         }
+        
+        /// <summary>
+        /// Looks up an account current balance.
+        /// </summary>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>the current balance</returns>
+        public Money GetCurrentBalanceBlocking(Level keyLevel)
+        {
+            return GetCurrentBalance(keyLevel).Result;
+        }
 
         /// <summary>
         /// Looks up an account available balance.
@@ -133,6 +161,16 @@ namespace Tokenio
         {
             return client.GetBalance(account.Id, keyLevel)
                 .Map(balance => balance.Available);
+        }
+        
+        /// <summary>
+        /// Looks up an account available balance.
+        /// </summary>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>the available balance</returns>
+        public Money GetAvailableBalanceBlocking(Level keyLevel)
+        {
+            return GetAvailableBalance(keyLevel).Result;
         }
 
         /// <summary>
@@ -146,6 +184,19 @@ namespace Tokenio
             Level keyLevel)
         {
             return client.GetTransaction(account.Id, transactionId, keyLevel);
+        }
+        
+        /// <summary>
+        /// Looks up transaction.
+        /// </summary>
+        /// <param name="transactionId">transaction id</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>the transaction</returns>
+        public Transaction GetTransactionBlocking(
+            string transactionId,
+            Level keyLevel)
+        {
+            return GetTransaction(transactionId, keyLevel).Result;
         }
 
         /// <summary>
@@ -162,7 +213,21 @@ namespace Tokenio
         {
             return client.GetTransactions(account.Id, limit, keyLevel, offset);
         }
-
+        
+        /// <summary>
+        /// Looks up transactions.
+        /// </summary>
+        /// <param name="offset">nullable offset offset</param>
+        /// <param name="limit">limit</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>a paged list of transactions</returns>
+        public PagedList<Transaction> GetTransactionsBlocking(
+            string offset,
+            int limit,
+            Level keyLevel)
+        {
+            return GetTransactions(offset, limit, keyLevel).Result;
+        }
 
         public override int GetHashCode()
         {
@@ -173,7 +238,7 @@ namespace Tokenio
         {
             if (obj != null && obj.GetType().IsInstanceOfType(this))
             {
-                return ((AccountAsync) obj).account.Equals(account);
+                return ((Account) obj).account.Equals(account);
             }
 
             return false;

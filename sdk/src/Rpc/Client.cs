@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tokenio.Proto.BankLink;
-using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
@@ -26,6 +25,8 @@ using static Tokenio.Proto.Gateway.GetTransfersRequest.Types;
 using static Tokenio.Proto.Gateway.ReplaceTokenRequest.Types;
 using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
+using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
+using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 using Grpc.Core.Interceptors;
 
 namespace Tokenio.Rpc
@@ -86,7 +87,7 @@ namespace Tokenio.Rpc
         /// the key used for authentication.
         /// </summary>
         /// <returns>the member</returns>
-        public Task<Member> GetMember()
+        public Task<ProtoMember> GetMember()
         {
             return GetMember(MemberId);
         }
@@ -96,7 +97,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="memberId">the member id of the user</param>
         /// <returns>the member</returns>
-        public Task<Member> GetMember(string memberId)
+        public Task<ProtoMember> GetMember(string memberId)
         {
             var request = new GetMemberRequest {MemberId = memberId};
             return gateway(authenticationContext()).GetMemberAsync(request)
@@ -109,7 +110,7 @@ namespace Tokenio.Rpc
         /// <param name="operations">the operations to apply</param>
         /// <param name="metadata">the metadata associated with the operations</param>
         /// <returns>the updated member</returns>
-        public Task<Member> UpdateMember(
+        public Task<ProtoMember> UpdateMember(
             IList<MemberOperation> operations,
             IList<MemberOperationMetadata> metadata)
         {
@@ -122,7 +123,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="operations">the operations to apply</param>
         /// <returns>the updated member</returns>
-        public Task<Member> UpdateMember(IList<MemberOperation> operations)
+        public Task<ProtoMember> UpdateMember(IList<MemberOperation> operations)
         {
             return GetMember().FlatMap(member => UpdateMember(
                 member,
@@ -138,8 +139,8 @@ namespace Tokenio.Rpc
         /// <param name="operations">the operations to apply</param>
         /// <param name="metadata">the updated member</param>
         /// <returns></returns>
-        public Task<Member> UpdateMember(
-            Member member,
+        public Task<ProtoMember> UpdateMember(
+            ProtoMember member,
             IList<MemberOperation> operations,
             IList<MemberOperationMetadata> metadata)
         {
@@ -172,11 +173,11 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="authorization">an authorization to accounts, from the bank</param>
         /// <returns>a list of linked accounts</returns>
-        public Task<IList<Account>> LinkAccounts(BankAuthorization authorization)
+        public Task<IList<ProtoAccount>> LinkAccounts(BankAuthorization authorization)
         {
             var request = new LinkAccountsRequest {BankAuthorization = authorization};
             return gateway(authenticationContext()).LinkAccountsAsync(request)
-                .ToTask(response => (IList<Account>) response.Accounts);
+                .ToTask(response => (IList<ProtoAccount>) response.Accounts);
         }
 
         /// <summary>
@@ -185,7 +186,7 @@ namespace Tokenio.Rpc
         /// <param name="authorization">an OAuth authorization for linking</param>
         /// <returns>a list of linked accounts</returns>
         /// <exception cref="BankAuthorizationRequiredException"></exception>
-        public Task<IList<Account>> LinkAccounts(OauthBankAuthorization authorization)
+        public Task<IList<ProtoAccount>> LinkAccounts(OauthBankAuthorization authorization)
         {
             var request = new LinkAccountsOauthRequest {Authorization = authorization};
             return gateway(authenticationContext()).LinkAccountsOauthAsync(request)
@@ -196,7 +197,7 @@ namespace Tokenio.Rpc
                         throw new BankAuthorizationRequiredException();
                     }
 
-                    return (IList<Account>) response.Accounts;
+                    return (IList<ProtoAccount>) response.Accounts;
                 });
         }
 
@@ -216,7 +217,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>the account info</returns>
-        public Task<Account> GetAccount(string accountId)
+        public Task<ProtoAccount> GetAccount(string accountId)
         {
             var request = new GetAccountRequest {AccountId = accountId};
             return gateway(authenticateOnBehalfOf()).GetAccountAsync(request)
@@ -227,10 +228,11 @@ namespace Tokenio.Rpc
         /// Looks up all the linked funding accounts.
         /// </summary>
         /// <returns>a list of linked accounts</returns>
-        public Task<IList<Account>> GetAccounts()
+        public Task<IList<ProtoAccount>> GetAccounts()
         {
-            return gateway(authenticateOnBehalfOf()).GetAccountsAsync(new GetAccountsRequest())
-                .ToTask(response => (IList<Account>) response.Accounts);
+            return gateway(authenticateOnBehalfOf())
+                .GetAccountsAsync(new GetAccountsRequest())
+                .ToTask(response => (IList<ProtoAccount>) response.Accounts);
         }
 
         /// <summary>
@@ -473,7 +475,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="memberId">the member id</param>
         /// <returns>the bank account</returns>
-        public Task<Account> GetDefaultAccount(string memberId)
+        public Task<ProtoAccount> GetDefaultAccount(string memberId)
         {
             var request = new GetDefaultAccountRequest {MemberId = memberId};
             return gateway(authenticationContext()).GetDefaultAccountAsync(request)
@@ -863,7 +865,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="balance">the account balance to set</param>
         /// <returns>the linked account</returns>
-        public Task<Account> CreateAndLinkTestBankAccount(Money balance)
+        public Task<ProtoAccount> CreateAndLinkTestBankAccount(Money balance)
         {
             return CreateTestBankAccount(balance)
                 .FlatMap(authorization => LinkAccounts(authorization)
