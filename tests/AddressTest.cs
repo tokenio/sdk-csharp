@@ -11,14 +11,14 @@ namespace Test
     [TestFixture]
     public class AddressTest
     {
-        private static readonly TokenClient tokenIO = NewSdkInstance();
+        private static readonly TokenClient tokenClient = NewSdkInstance();
 
         private Member member;
 
         [SetUp]
         public void Init()
         {
-            member = tokenIO.CreateMemberBlocking(Alias());
+            member = tokenClient.CreateMemberBlocking(Alias());
         }
 
         [Test]

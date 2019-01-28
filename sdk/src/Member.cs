@@ -126,10 +126,7 @@ namespace Tokenio
         /// <returns>a list of public keys</returns>
         public IList<Key> GetKeysBlocking()
         {
-            return client
-                .GetMember()
-                .Map(member => (IList<Key>) member.Keys.ToList())
-                .Result;
+            return GetKeys().Result;
         }
 
         /// <summary>

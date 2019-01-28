@@ -23,7 +23,7 @@ namespace Test
         private static readonly int TOKEN_LOOKUP_TIMEOUT_MS = 15000;
         private static readonly int TOKEN_LOOKUP_POLL_FREQUENCY_MS = 1000;
 
-        private static readonly TokenClient tokenIO = NewSdkInstance();
+        private static readonly TokenClient tokenClient = NewSdkInstance();
 
         private Tokenio.Member member1;
         private Tokenio.Member member2;
@@ -31,8 +31,8 @@ namespace Test
         [SetUp]
         public void Init()
         {
-            member1 = tokenIO.CreateMemberBlocking(Alias());
-            member2 = tokenIO.CreateMemberBlocking(Alias());
+            member1 = tokenClient.CreateMemberBlocking(Alias());
+            member2 = tokenClient.CreateMemberBlocking(Alias());
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace Test
             var signature = member1.SignTokenRequestStateBlocking(tokenRequestId, accessToken.Id, Util.Nonce());
             Assert.IsNotEmpty(signature.Signature_);
 
-            var result = tokenIO.GetTokenRequestResultBlocking(tokenRequestId);
+            var result = tokenClient.GetTokenRequestResultBlocking(tokenRequestId);
             Assert.AreEqual(accessToken.Id, result.TokenId);
             Assert.AreEqual(signature.Signature_, result.Signature.Signature_);
         }
@@ -185,7 +185,7 @@ namespace Test
             var address1 = member1.AddAddressBlocking(Util.Nonce(), Address());
             var address2 = member2.AddAddressBlocking(Util.Nonce(), Address());
             
-            var user = tokenIO.CreateMemberBlocking(Alias());
+            var user = tokenClient.CreateMemberBlocking(Alias());
             var accessToken1 = member1.CreateAccessTokenBlocking(AccessTokenBuilder
                 .Create(user.GetFirstAliasBlocking())
                 .ForAddress(address1.Id)
@@ -230,7 +230,7 @@ namespace Test
             var originalState = Util.Nonce();
             var csrfToken = Util.Nonce();
 
-            var tokenRequestUrl = tokenIO.GenerateTokenRequestUrlBlocking(
+            var tokenRequestUrl = tokenClient.GenerateTokenRequestUrlBlocking(
                 requestId,
                 originalState,
                 csrfToken);
@@ -252,7 +252,7 @@ namespace Test
 
             var tokenRequestCallbackUrl = "http://localhost:80/" + path;
 
-            var callback = tokenIO.ParseTokenRequestCallbackUrlBlocking(
+            var callback = tokenClient.ParseTokenRequestCallbackUrlBlocking(
                 tokenRequestCallbackUrl,
                 csrfToken);
 
