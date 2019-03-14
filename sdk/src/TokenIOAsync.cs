@@ -15,9 +15,9 @@ using WebUtility = System.Net.WebUtility;
 
 namespace Tokenio
 {
+    [Obsolete("deprecated, use TokenClient instead")]
     public class TokenIOAsync : IDisposable
     {
-        [Obsolete("deprecated, use TokenClient instead")]
         private static readonly string TOKEN_REQUEST_TEMPLATE =
             "https://{0}/request-token/{1}?state={2}";
 
