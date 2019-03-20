@@ -58,7 +58,8 @@ namespace Tokenio
         public Task<Boolean> AliasExists(Alias alias)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.AliasExists(alias);
+            return unauthenticated.ResolveAlias(alias)
+                .Map(mem => mem != null);
         }
 
         /// <summary>

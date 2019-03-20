@@ -14,12 +14,12 @@ namespace samples
         /// <param name="grantor">grantor Token member</param>
         /// <param name="tokenId">token ID to cancel</param>
         /// <returns>operation result</returns>
-        public static TokenOperationResult CancelTransferToken(Member grantor, string tokenId) {
+        public static TokenOperationResult CancelTransferToken(Member payee, string tokenId) {
             // Retrieve a transfer token to cancel.
-            var transferToken = grantor.GetToken(tokenId).Result;
+            var transferToken = payee.GetToken(tokenId).Result;
 
             // Cancel transfer token.
-            return grantor.CancelToken(transferToken).Result;
+            return payee.CancelToken(transferToken).Result;
         }
     }
 }

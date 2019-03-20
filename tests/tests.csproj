@@ -62,6 +62,7 @@
     <Compile Include="AddressTest.cs" />
     <Compile Include="BankInformationTest.cs" />
     <Compile Include="BlobTest.cs" />
+    <Compile Include="MemberMethodsSampleTest.cs" />
     <Compile Include="MemberRegistrationTest.cs" />
     <Compile Include="ProfileTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -74,6 +75,10 @@
     <Compile Include="TokenRequestTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\samples\samples.csproj">
+      <Project>{812bfcd3-46dd-414a-b647-766b19f71337}</Project>
+      <Name>samples</Name>
+    </ProjectReference>
     <ProjectReference Include="..\sdk\sdk.csproj">
       <Project>{71becb97-171c-4df1-b3fc-6480bcf575d4}</Project>
       <Name>sdk</Name>

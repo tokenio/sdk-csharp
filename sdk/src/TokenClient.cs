@@ -68,14 +68,39 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Resolve an alias to a TokenMember object, containing member ID and
+        /// the alias with the correct type.
+        /// </summary>
+        /// <param name="alias">alias to resolve</param>
+        /// <returns>TokenMember</returns>
+        public Task<TokenMember> ResolveAlias(Alias alias)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            return unauthenticated.ResolveAlias(alias);
+        }
+
+        /// <summary>
+        /// Resolve an alias to a TokenMember object, containing member ID and
+        /// the alias with the correct type.
+        /// </summary>
+        /// <param name="alias">alias to resolve</param>
+        /// <returns>TokenMember</returns>
+        public TokenMember ResolveAliasBlocking(Alias alias)
+        {
+            return ResolveAlias(alias).Result;
+        }
+
+        /// <summary>
         /// Checks if a given alias already exists.
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>true if alias exists, false otherwise</returns>
+        [Obsolete("Deprecated. Use ResolveAlias instead.")]
         public Task<Boolean> AliasExists(Alias alias)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.AliasExists(alias);
+            return unauthenticated.ResolveAlias(alias)
+                .Map(mem => mem != null);
         }
         
         /// <summary>
@@ -83,6 +108,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>true if alias exists, false otherwise</returns>
+        [Obsolete("Deprecated. Use ResolveAliasBlocking instead.")]
         public bool AliasExistsBlocking(Alias alias)
         {
             return AliasExists(alias).Result;

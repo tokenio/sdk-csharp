@@ -8,13 +8,13 @@ namespace samples
     /// </summary>
     public class CancelAccessTokenSample
     {
-        public static TokenOperationResult CancaelAccessToken(Member grantor, string tokenId)
+        public static TokenOperationResult CancelAccessToken(Member grantee, string tokenId)
         {
             // Retrieve an access token to cancel.
-            var accessToken = grantor.GetToken(tokenId).Result;
+            var accessToken = grantee.GetToken(tokenId).Result;
 
             // Cancel access token.
-            return grantor.CancelToken(accessToken).Result;
+            return grantee.CancelToken(accessToken).Result;
         }
     }
 }
