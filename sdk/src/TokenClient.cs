@@ -95,7 +95,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>true if alias exists, false otherwise</returns>
-        /// DEPRECATED. use resolveAliasBlocking instead
+        [Obsolete("Deprecated. Use ResolveAlias instead.")]
         public Task<Boolean> AliasExists(Alias alias)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
@@ -108,7 +108,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>true if alias exists, false otherwise</returns>
-        /// DEPRECATED. use ResolveAliasBlocking instead
+        [Obsolete("Deprecated. Use ResolveAliasBlocking instead.")]
         public bool AliasExistsBlocking(Alias alias)
         {
             return AliasExists(alias).Result;

@@ -31,10 +31,15 @@ namespace Tokenio
             var json = JsonFormatter.Default.Format(message);
             return NormalizeJson(json);
         }
-
-        public static string NormalizeAndHash(Alias alias)
+        
+        public static string HashAlias(Alias alias)
         {
-            return Base58.Encode(Sha256Hash(Encoding.UTF8.GetBytes(ToJson(alias.ToNormalized()))));
+            return Base58.Encode(Sha256Hash(Encoding.UTF8.GetBytes(ToJson(alias))));
+        }
+
+        public static string NormalizeAndHashAlias(Alias alias)
+        {
+            return HashAlias(alias.ToNormalized());
         }
 
         public static string HashProto(IMessage message)
@@ -53,7 +58,7 @@ namespace Tokenio
             {
                 AddAlias = new MemberAliasOperation
                 {
-                    AliasHash = NormalizeAndHash(alias)
+                    AliasHash = NormalizeAndHashAlias(alias)
                 }
             };
         }
@@ -64,7 +69,7 @@ namespace Tokenio
             {
                 RemoveAlias = new MemberAliasOperation
                 {
-                    AliasHash = NormalizeAndHash(alias)
+                    AliasHash = NormalizeAndHashAlias(alias)
                 }
             };
         }
@@ -76,7 +81,7 @@ namespace Tokenio
                 AddAliasMetadata = new AddAliasMetadata
                 {
                     Alias = alias.ToNormalized(),
-                    AliasHash = NormalizeAndHash(alias)
+                    AliasHash = NormalizeAndHashAlias(alias)
                 }
             };
         }

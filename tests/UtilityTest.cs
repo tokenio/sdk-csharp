@@ -46,7 +46,7 @@ namespace Test
                 Type = Email,
                 Value = "bob@token.io"
             };
-            Assert.AreEqual(Util.NormalizeAndHash(alias), "HHzc3XVck27qD2gadGVzjffaBZrU8ZLEd2jmtcyPKeev");
+            Assert.AreEqual(Util.NormalizeAndHashAlias(alias), "HHzc3XVck27qD2gadGVzjffaBZrU8ZLEd2jmtcyPKeev");
         }
 
         [Test]
