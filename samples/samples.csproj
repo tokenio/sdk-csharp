@@ -47,6 +47,7 @@
     <Compile Include="GetBalanceSample.cs" />
     <Compile Include="GetTransactionsSample.cs" />
     <Compile Include="GetTransfersSample.cs" />
+    <Compile Include="MemberMethodsSample.cs" />
     <Compile Include="MemberRecoverySample.cs" />
     <Compile Include="NotifySample.cs" />
     <Compile Include="ProvisionDeviceSample.cs" />

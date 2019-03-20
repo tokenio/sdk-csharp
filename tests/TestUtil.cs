@@ -26,7 +26,8 @@ namespace Test
         {
             return new Alias
             {
-                Value = Util.Nonce() + "+noverify@example.com",
+                // use uppercase to test normalization
+                Value = Util.Nonce().ToUpper() + "+noverify@example.com",
                 Type = Email
             };
         }

@@ -32,9 +32,9 @@ namespace Tokenio
             return NormalizeJson(json);
         }
 
-        public static string HashAlias(Alias alias)
+        public static string NormalizeAndHash(Alias alias)
         {
-            return Base58.Encode(Sha256Hash(Encoding.UTF8.GetBytes(ToJson(alias))));
+            return Base58.Encode(Sha256Hash(Encoding.UTF8.GetBytes(ToJson(alias.ToNormalized()))));
         }
 
         public static string HashProto(IMessage message)
@@ -53,7 +53,7 @@ namespace Tokenio
             {
                 AddAlias = new MemberAliasOperation
                 {
-                    AliasHash = HashAlias(alias)
+                    AliasHash = NormalizeAndHash(alias)
                 }
             };
         }
@@ -64,7 +64,7 @@ namespace Tokenio
             {
                 RemoveAlias = new MemberAliasOperation
                 {
-                    AliasHash = HashAlias(alias)
+                    AliasHash = NormalizeAndHash(alias)
                 }
             };
         }
@@ -75,8 +75,8 @@ namespace Tokenio
             {
                 AddAliasMetadata = new AddAliasMetadata
                 {
-                    Alias = alias,
-                    AliasHash = HashAlias(alias)
+                    Alias = alias.ToNormalized(),
+                    AliasHash = NormalizeAndHash(alias)
                 }
             };
         }

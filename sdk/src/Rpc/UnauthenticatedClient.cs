@@ -40,15 +40,16 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Checks if a given alias already exists.
+        /// Resolve an alias to a TokenMember object, containing member ID and
+        /// the alias with the correct type.
         /// </summary>
-        /// <param name="alias">the alias to check</param>
-        /// <returns>true if alias exists, false otherwise</returns>
-        public Task<bool> AliasExists(Alias alias)
+        /// <param name="alias">alias to resolve</param>
+        /// <returns>TokenMember</returns>
+        public Task<TokenMember> ResolveAlias(Alias alias)
         {
             var request = new ResolveAliasRequest {Alias = alias};
             return gateway.ResolveAliasAsync(request)
-                .ToTask(response => response.Member != null);
+                .ToTask(response => response.Member);
         }
 
         /// <summary>

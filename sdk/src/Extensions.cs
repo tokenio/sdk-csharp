@@ -41,14 +41,7 @@ namespace Tokenio
 
         public static Alias ToNormalized(this Alias alias)
         {
-            switch (alias.Type)
-            {
-                case Domain:
-                case Email:
-                    return new Alias {Value = alias.Value.ToLower(), Type = alias.Type};
-                default:
-                    return alias;
-            }
+            return new Alias {Value = alias.Value.ToLower().Trim(), Type = alias.Type};
         }
 
         public static async Task<TResult> Map<TSource, TResult>(
