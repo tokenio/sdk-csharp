@@ -791,6 +791,7 @@ namespace Tokenio
         
         public class Builder
         {
+            private static readonly string DEFAULT_DEV_KEY = "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI";
             private static readonly long DEFAULT_TIMEOUT_MS = 10_000L;
             private static readonly int DEFAULT_SSL_PORT = 443;
 
@@ -807,6 +808,7 @@ namespace Tokenio
             /// </summary>
             public Builder()
             {
+                devKey = DEFAULT_DEV_KEY;
                 timeoutMs = DEFAULT_TIMEOUT_MS;
                 port = DEFAULT_SSL_PORT;
                 useSsl = true;
@@ -896,11 +898,6 @@ namespace Tokenio
             /// <returns>the <see cref="TokenClient"/> instance</returns>
             public TokenClient Build()
             {
-                if (devKey == null || devKey.Equals(string.Empty))
-                {
-                    throw new Exception("Please provide a developer key. Contact Token for more details.");
-                }
-
                 var channel = new Channel(hostName, port, useSsl ? new SslCredentials() : ChannelCredentials.Insecure);
                 Interceptor[] interceptors =
                 {
