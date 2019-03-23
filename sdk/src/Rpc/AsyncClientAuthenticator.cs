@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Google.Protobuf;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
@@ -60,7 +61,7 @@ namespace Tokenio.Rpc
         private static string encodeSecurityMetadata(AuthenticationContext context)
         {
             var json = Util.ToJson(context.SecurityMetadata);
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
         }
     }
 }

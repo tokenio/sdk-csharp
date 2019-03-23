@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
-using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;

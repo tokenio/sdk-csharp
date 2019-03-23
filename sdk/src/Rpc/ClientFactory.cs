@@ -1,5 +1,4 @@
-﻿using Grpc.Core.Interceptors;
-using Tokenio.Proto.Gateway;
+﻿using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 
 namespace Tokenio.Rpc

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Grpc.Core.Interceptors;
+using Tokenio.Exceptions;
 using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
@@ -15,7 +17,6 @@ using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Proto.Gateway;
-using Tokenio.Exceptions;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
@@ -27,7 +28,6 @@ using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
-using Grpc.Core.Interceptors;
 
 namespace Tokenio.Rpc
 {
@@ -1122,7 +1122,7 @@ namespace Tokenio.Rpc
         {
             var intercepted = channel.BuildInvoker()
                 .Intercept(new AsyncClientAuthenticator(MemberId, cryptoEngine, authentication));
-            return new GatewayService.GatewayServiceClient(intercepted);
+            return new GatewayServiceClient(intercepted);
         }
     }
 }

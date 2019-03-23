@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
@@ -9,9 +10,7 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Rpc;
 using Tokenio.Security;
-using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using WebUtility = System.Net.WebUtility;
 
 namespace Tokenio
 {
@@ -249,7 +248,7 @@ namespace Tokenio
         /// <param name="memberId">the ID of the member we claim to be.</param>
         /// <param name="privilegedKey">the new privileged key we want to use.</param>
         /// <returns>the authorization</returns>
-        public Task<Authorization> CreateRecoveryAuthorization(
+        public Task<MemberRecoveryOperation.Types.Authorization> CreateRecoveryAuthorization(
             string memberId,
             Key privilegedKey)
         {
