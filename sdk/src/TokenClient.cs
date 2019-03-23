@@ -789,12 +789,28 @@ namespace Tokenio
             string callbackUrl,
             string csrfToken = "")
         {
-            var nvCollection = HttpUtility.ParseQueryString(Util.GetQueryString(callbackUrl));
-            var parameters = nvCollection
-                .Cast<string>()
-                .Select(s => new {Key = s, Value = nvCollection[s]})
-                .ToDictionary(p => p.Key, p => p.Value);
-            return ParseTokenRequestCallbackParams(parameters, csrfToken);
+            // TODO simplify by calling ParseTokenRequestCallbackParams
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            return unauthenticated.GetTokenMember()
+                .Map(member =>
+                {
+                    var parameters = TokenRequestCallbackParameters.Create(callbackUrl);
+                    var state = TokenRequestState.ParseFrom(parameters.SerializedState);
+                    if (!state.CsrfTokenHash.Equals(Util.HashString(csrfToken)))
+                    {
+                        throw new InvalidStateException(csrfToken);
+                    }
+
+                    var payload = new TokenRequestStatePayload
+                    {
+                        TokenId = parameters.TokenId,
+                        State = WebUtility.UrlEncode(parameters.SerializedState)
+                    };
+
+                    Util.VerifySignature(member, payload, parameters.Signature);
+
+                    return TokenRequestCallback.Create(parameters.TokenId, state.InnerState);
+                });
         }
 
         /// <summary>

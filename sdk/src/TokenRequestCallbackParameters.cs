@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Google.Protobuf;
@@ -31,15 +30,23 @@ namespace Tokenio
             };
         }
 
-        [Obsolete("Use Create(Dictionary<string, string> parameters) instead.")]
         public static TokenRequestCallbackParameters Create(string url)
         {
-            var nvCollection = HttpUtility.ParseQueryString(Util.GetQueryString(url));
-            var parameters = nvCollection
-                .Cast<string>()
-                .Select(s => new {Key = s, Value = nvCollection[s]})
-                .ToDictionary(p => p.Key, p => p.Value);
-            return Create(parameters);
+            var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(url));
+            
+            if (!parameters.AllKeys.Contains(TOKEN_ID_FIELD)
+                || !parameters.AllKeys.Contains(STATE_FIELD)
+                || !parameters.AllKeys.Contains(SIGNATURE_FIELD))
+            {
+                throw new InvalidTokenRequestQuery();
+            }
+
+            return new TokenRequestCallbackParameters
+            {
+                TokenId = parameters.Get(TOKEN_ID_FIELD),
+                SerializedState = parameters.Get(STATE_FIELD),
+                Signature = JsonParser.Default.Parse<Signature>(parameters.Get(SIGNATURE_FIELD))
+            };
         }
 
         public string TokenId { get; private set; }

@@ -30,6 +30,6 @@ To use the SDK, add the [Nuget](https://www.nuget.org/packages/Token.SDK.Net/) p
 
 <div class="codediv"><pre>
 &lt;ItemGroup>
-    &lt;PackageReference Include="Token.SDK.Net" Version="1.1.2" />
+    &lt;PackageReference Include="Token.SDK.Net" Version="1.1.3" />
 &lt;/ItemGroup>
 </pre></div>
