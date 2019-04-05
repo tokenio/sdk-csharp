@@ -45,6 +45,7 @@
     <Compile Include="CreateAndEndorseTransferTokenSample.cs" />
     <Compile Include="CreateMemberSample.cs" />
     <Compile Include="GetBalanceSample.cs" />
+    <Compile Include="GetTokensSample.cs" />
     <Compile Include="GetTransactionsSample.cs" />
     <Compile Include="GetTransfersSample.cs" />
     <Compile Include="MemberMethodsSample.cs" />
