@@ -240,7 +240,10 @@ namespace Tokenio
         public Task<TokenRequest> RetrieveTokenRequest(string requestId)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.RetrieveTokenRequest(requestId);
+            return unauthenticated.RetrieveTokenRequest(requestId)
+                .Map(tokenRequest => TokenRequest.Create(
+                    tokenRequest.RequestPayload, 
+                    tokenRequest.RequestOptions));
         }
         
         /// <summary>

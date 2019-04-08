@@ -45,9 +45,9 @@ namespace samples
             return grantee.StoreTokenRequestBlocking(request);
         }
 
-        public static TokenRequest retireveTokenRequest(TokenClient tokenClient, string requestId)
+        public static TokenRequest retrieveTokenRequest(TokenClient tokenClient, string requestId)
         {
-            return null; //tokenClient.RetrieveTokenRequestBlocking(requestId);
+            return tokenClient.RetrieveTokenRequestBlocking(requestId);
         }
     }
 }

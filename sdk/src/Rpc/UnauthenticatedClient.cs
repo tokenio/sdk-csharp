@@ -131,12 +131,11 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>the token request</returns>
-        public Task<TokenRequest> RetrieveTokenRequest(string tokenRequestId)
+        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId)
         {
             var request = new RetrieveTokenRequestRequest {RequestId = tokenRequestId};
             return gateway.RetrieveTokenRequestAsync(request)
-                .ToTask(response => response.TokenRequest)
-                .Map(tokenRequest => TokenRequest.Create(tokenRequest.RequestPayload, tokenRequest.RequestOptions));
+                .ToTask(response => response.TokenRequest);
         }
 
         /// <summary>
