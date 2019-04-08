@@ -598,7 +598,7 @@ namespace Tokenio
         {
             return GetTransfers(tokenId, offset, limit).Result;
         }
-//==================>
+
         /// <summary>
         /// Creates and uploads a blob.
         /// </summary>
@@ -814,7 +814,7 @@ namespace Tokenio
         {
             UpdateTokenRequest(requestId, options).Wait();
         }
-//================>
+
         /// <summary>
         /// Creates a new transfer token.
         /// </summary>
@@ -1336,36 +1336,6 @@ namespace Tokenio
         {
             return GetBankInfo(bankId).Result;
         }
-//=================>
-        /// <summary>
-        /// Signs a token request state payload.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <param name="tokenId">the token id</param>
-        /// <param name="state">the state</param>
-        /// <returns>the signature</returns>
-        public Task<Signature> SignTokenRequestState(
-            string tokenRequestId,
-            string tokenId,
-            string state)
-        {
-            return client.SignTokenRequestState(tokenRequestId, tokenId, state);
-        }
-        
-        /// <summary>
-        /// Signs a token request state payload.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <param name="tokenId">the token id</param>
-        /// <param name="state">the state</param>
-        /// <returns>the signature</returns>
-        public Signature SignTokenRequestStateBlocking(
-            string tokenRequestId,
-            string tokenId,
-            string state)
-        {
-            return SignTokenRequestState(tokenRequestId, tokenId, state).Result;
-        }
 
         /// <summary>
         /// Gets all paired devices.
@@ -1427,29 +1397,59 @@ namespace Tokenio
             return CreateAndLinkTestBankAccount(balance).Result;
         }
         
-        //========================> New Token <======================
-
+        /// <summary>
+        /// Deletes the member
+        /// </summary>
+        /// <returns>Task</returns>
         public Task DeleteMember()
         {
             return client.DeleteMember();
         }
 
-        public Task<Account> CreateTestBankAccount(string balance, string currency)
+        /// <summary>
+        /// Deletes the member
+        /// </summary>
+        /// <returns>Task</returns>
+        public void DeleteMemberBlocking()
         {
-            return client
-                .CreateAndLinkTestBankAccount(new Money
-                    {
-                        Value = balance,
-                        Currency = currency
-                    })
-                .Map(account => new Account(this, account, client));
+            DeleteMember().Wait();
         }
 
+        /// <summary>
+        /// Creates a test bank account in a fake bank and links the account.
+        /// </summary>
+        /// <param name="balance"></param>
+        /// <param name="currency"></param>
+        /// <returns>the linked account</returns>
+        public Task<Account> CreateTestBankAccount(string balance, string currency)
+        {
+            return client.CreateAndLinkTestBankAccount(new Money
+                {
+                   Value = balance,
+                   Currency = currency
+                }).Map(account => new Account(this, account, client));
+        }
+
+        /// <summary>
+        /// Creates a test bank account in a fake bank and links the account.
+        /// </summary>
+        /// <param name="balance">balance in the account</param>
+        /// <param name="currency">currency of the balance</param>
+        /// <returns>the linked account</returns>
         public Account CreateTestBankAccountBlocking(string balance, string currency)
         {
             return CreateTestBankAccount(balance, currency).Result;
         }
 
+        /// <summary>
+        /// Creates a customization
+        /// </summary>
+        /// <param name="logo">logo</param>
+        /// <param name="colors">map of ARGB colors #AARRGGBB</param>
+        /// <param name="consentText">consent text</param>
+        /// <param name="name">display name</param>
+        /// <param name="appName">corresponding app name</param>
+        /// <returns>customization id</returns>
         public Task<string> CreateCustomization(
             Payload logo,
             MapField<string, string> colors,
@@ -1460,6 +1460,15 @@ namespace Tokenio
             return client.CreateCustomization(logo, colors, consentText, name, appName);
         }
         
+        /// <summary>
+        /// Creates a customization
+        /// </summary>
+        /// <param name="logo">logo</param>
+        /// <param name="colors">map of ARGB colors #AARRGGBB</param>
+        /// <param name="consentText">consent text</param>
+        /// <param name="name">display name</param>
+        /// <param name="appName">corresponding app name</param>
+        /// <returns>customization id</returns>
         public string CreateCustomizationBlocking(
             Payload logo,
             MapField<string, string> colors,
@@ -1470,31 +1479,58 @@ namespace Tokenio
             return CreateCustomization(logo, colors, consentText, name, appName).Result;
         }
 
+        /// <summary>
+        /// Sets security metadata included in all requests
+        /// </summary>
+        /// <param name="metaData">security metadata</param>
         public void SetTrackingMetaData(SecurityMetadata metaData)
         {
             client.SetTrackingMetadata(metaData);
         }
 
+        /// <summary>
+        /// Clears the security metadata
+        /// </summary>
         public void ClearTrackingMetaData()
         {
             client.ClearTrackingMetaData();
         }
 
+        /// <summary>
+        /// Trigger a step up notification for balance requests
+        /// </summary>
+        /// <param name="accountIds">list of account ids</param>
+        /// <returns>notification status</returns>
         public Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds)
         {
             return client.TriggerBalanceStepUpNotification(accountIds);
         }
         
+        /// <summary>
+        /// Trigger a step up notification for balance requests
+        /// </summary>
+        /// <param name="accountIds">list of account ids</param>
+        /// <returns>notification status</returns>
         public NotifyStatus TriggerBalanceStepUpNotificationBlocking(IList<string> accountIds)
         {
             return TriggerBalanceStepUpNotification(accountIds).Result;
         }
         
+        /// <summary>
+        /// Trigger a step up notification for transaction requests
+        /// </summary>
+        /// <param name="accountIds">account ids</param>
+        /// <returns>notification status</returns>
         public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
         {
             return client.TriggerTransactionStepUpNotification(accountId);
         }
         
+        /// <summary>
+        /// Trigger a step up notification for transaction requests
+        /// </summary>
+        /// <param name="accountIds">account ids</param>
+        /// <returns>notification status</returns>
         public NotifyStatus TriggerTransactionStepUpNotificationBlocking(string accountId)
         {
             return TriggerTransactionStepUpNotification(accountId).Result;

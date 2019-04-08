@@ -58,7 +58,6 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessTokenTest.cs" />
     <Compile Include="BankInformationTest.cs" />
     <Compile Include="MemberMethodsSampleTest.cs" />
     <Compile Include="MemberRegistrationTest.cs" />
