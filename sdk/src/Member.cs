@@ -608,7 +608,7 @@ namespace Tokenio
         /// <param name="data">the file data</param>
         /// <param name="accessMode">the access mode, normal or public</param>
         /// <returns>an attachment</returns>
-        public Task<Attachment> CreateBlob(
+        internal Task<Attachment> CreateBlob(
             string ownerId,
             string type,
             string name,
@@ -650,48 +650,6 @@ namespace Tokenio
         public Blob GetBlobBlocking(string blobId)
         {
             return GetBlob(blobId).Result;
-        }
-//=================>
-        /// <summary>
-        /// Creates a new member address.
-        /// </summary>
-        /// <param name="name">the name of the address</param>
-        /// <param name="address">the address</param>
-        /// <returns>the created address record</returns>
-        public Task<AddressRecord> AddAddress(string name, Address address)
-        {
-            return client.AddAddress(name, address);
-        }
-        
-        /// <summary>
-        /// Creates a new member address.
-        /// </summary>
-        /// <param name="name">the name of the address</param>
-        /// <param name="address">the address</param>
-        /// <returns>the created address record</returns>
-        public AddressRecord AddAddressBlocking(string name, Address address)
-        {
-            return AddAddress(name, address).Result;
-        }
-//===================>
-        /// <summary>
-        /// Looks up an address by id.
-        /// </summary>
-        /// <param name="addressId">the address id</param>
-        /// <returns>the address record</returns>
-        public Task<AddressRecord> GetAddress(string addressId)
-        {
-            return client.GetAddress(addressId);
-        }
-        
-        /// <summary>
-        /// Looks up an address by id.
-        /// </summary>
-        /// <param name="addressId">the address id</param>
-        /// <returns>the address record</returns>
-        public AddressRecord GetAddressBlocking(string addressId)
-        {
-            return GetAddress(addressId).Result;
         }
 
         /// <summary>
@@ -820,7 +778,19 @@ namespace Tokenio
         [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
         public Task<string> StoreTokenRequest(TokenRequest tokenRequest)
         {
-            return client.StoreTokenRequest(tokenRequest.Payload, tokenRequest.Options);
+            return client.StoreTokenRequest(
+                tokenRequest.GetTokenRequestPayload(), 
+                tokenRequest.GetTokenRequestOptions());
+        }
+        
+        /// Stores a token request.
+        /// </summary>
+        /// <param name="tokenRequest">the token request</param>
+        /// <returns>an id to reference the token request</returns>
+        [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
+        public string StoreTokenRequestBlocking(TokenRequest tokenRequest)
+        {
+            return StoreTokenRequest(tokenRequest).Result;
         }
 
         /// <summary>
@@ -874,48 +844,6 @@ namespace Tokenio
         internal TransferTokenBuilder CreateTransferToken(double amount, string currency)
         {
             return new TransferTokenBuilder(this, amount, currency);
-        }
-//==================>
-        /// <summary>
-        /// Creates an access token.
-        /// </summary>
-        /// <param name="payload">the access token payload</param>
-        /// <returns>the access token</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload)
-        {
-            return client.CreateAccessToken(payload);
-        }
-        
-        /// <summary>
-        /// Creates an access token.
-        /// </summary>
-        /// <param name="payload">the access token payload</param>
-        /// <returns>the access token</returns>
-        public Token CreateAccessTokenBlocking(TokenPayload payload)
-        {
-            return CreateAccessToken(payload).Result;
-        }
-
-        /// <summary>
-        /// Creates an access token with a token request id.
-        /// </summary>
-        /// <param name="payload">the access token payload</param>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the access token</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload, string tokenRequestId)
-        {
-            return client.CreateAccessToken(payload, tokenRequestId);
-        }
-        
-        /// <summary>
-        /// Creates an access token with a token request id.
-        /// </summary>
-        /// <param name="payload">the access token payload</param>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the access token</returns>
-        public Token CreateAccessTokenBlocking(TokenPayload payload, string tokenRequestId)
-        {
-            return CreateAccessToken(payload, tokenRequestId).Result;
         }
 
         /// <summary>
@@ -980,36 +908,6 @@ namespace Tokenio
         public PagedList<Token> GetAccessTokensBlocking(string offset, int limit)
         {
             return GetAccessTokens(offset, limit).Result;
-        }
-//===================>
-        /// <summary>
-        /// Endorses the token by signing it. The signature is persisted along with
-        /// the token
-        /// If the key's level is too low, the result's status is MORE_SIGNATURES_NEEDED
-        /// and the system pushes a notification to the member prompting them to use a
-        /// higher-privilege key.
-        /// </summary>
-        /// <param name="token">the token to endorse</param>
-        /// <param name="keyLevel">the key level to be used to endorse the token</param>
-        /// <returns>the result of the endorsement</returns>
-        public Task<TokenOperationResult> EndorseToken(Token token, Level keyLevel)
-        {
-            return client.EndorseToken(token, keyLevel);
-        }
-        
-        /// <summary>
-        /// Endorses the token by signing it. The signature is persisted along with
-        /// the token
-        /// If the key's level is too low, the result's status is MORE_SIGNATURES_NEEDED
-        /// and the system pushes a notification to the member prompting them to use a
-        /// higher-privilege key.
-        /// </summary>
-        /// <param name="token">the token to endorse</param>
-        /// <param name="keyLevel">the key level to be used to endorse the token</param>
-        /// <returns>the result of the endorsement</returns>
-        public TokenOperationResult EndorseTokenBlocking(Token token, Level keyLevel)
-        {
-            return EndorseToken(token, keyLevel).Result;
         }
 
         /// <summary>

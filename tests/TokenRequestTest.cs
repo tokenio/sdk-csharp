@@ -51,8 +51,8 @@ namespace Test
             var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
             Assert.IsNotEmpty(requestId);
             var retrievedRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
-            Assert.AreEqual(storedPayload, retrievedRequest.RequestPayload);
-            Assert.AreEqual(storedOptions, retrievedRequest.RequestOptions);
+            Assert.AreEqual(storedPayload, retrievedRequest.GetTokenRequestPayload());
+            Assert.AreEqual(storedOptions, retrievedRequest.GetTokenRequestOptions());
         }
 
         [Test]
@@ -86,8 +86,8 @@ namespace Test
             Assert.IsNotEmpty(requestId);
 
             var retrievedRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
-            Assert.AreEqual(storedPayload, retrievedRequest.RequestPayload);
-            Assert.AreEqual(storedOptions, retrievedRequest.RequestOptions);
+            Assert.AreEqual(storedPayload, retrievedRequest.GetTokenRequestPayload());
+            Assert.AreEqual(storedOptions, retrievedRequest.GetTokenRequestOptions());
         }
 
         
@@ -154,7 +154,7 @@ namespace Test
             var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
             Assert.IsNotEmpty(requestId);
             var retrievedRequest1 = tokenClient.RetrieveTokenRequestBlocking(requestId);
-            Assert.IsFalse(retrievedRequest1.RequestOptions.ReceiptRequested);
+            Assert.IsFalse(retrievedRequest1.GetTokenRequestOptions().ReceiptRequested);
             
             var optionsUpdate = new Tokenio.Proto.Common.TokenProtos.TokenRequestOptions
             {
@@ -163,7 +163,7 @@ namespace Test
             
             member.UpdateTokenRequestBlocking(requestId, optionsUpdate);
             var retrievedRequest2 = tokenClient.RetrieveTokenRequestBlocking(requestId);
-            Assert.IsTrue(retrievedRequest2.RequestOptions.ReceiptRequested);
+            Assert.IsTrue(retrievedRequest2.GetTokenRequestOptions().ReceiptRequested);
         }
     }
 }

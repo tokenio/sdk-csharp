@@ -139,7 +139,7 @@ namespace Tokenio
         /// <summary>
         /// Returns ProtoAccount object
         /// </summary>
-        /// <returns> ProtoAccount </returns>
+        /// <returns> the ProtoAccount object</returns>
         public ProtoAccount toProto()
         {
             return account;

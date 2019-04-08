@@ -534,7 +534,7 @@ namespace Tokenio
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
         [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
-        public Task<string> StoreTokenRequest(TokenRequest tokenRequest)
+        public Task<string> StoreTokenRequest(Proto.Common.TokenProtos.TokenRequest tokenRequest)
         {
             return client.StoreTokenRequest(tokenRequest.Payload, tokenRequest.Options);
         }

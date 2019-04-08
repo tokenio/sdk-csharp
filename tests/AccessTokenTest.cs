@@ -180,38 +180,6 @@ namespace Test
         }
 
         [Test]
-        public void UseAccessTokenConcurrently()
-        {
-            var address1 = member1.AddAddressBlocking(Util.Nonce(), Address());
-            var address2 = member2.AddAddressBlocking(Util.Nonce(), Address());
-            
-            var user = tokenClient.CreateMemberBlocking(Alias());
-            var accessToken1 = member1.CreateAccessTokenBlocking(AccessTokenBuilder
-                .Create(user.GetFirstAliasBlocking())
-                .ForAddress(address1.Id)
-                .Build());
-            var accessToken2 = member2.CreateAccessTokenBlocking(AccessTokenBuilder
-                .Create(user.GetFirstAliasBlocking())
-                .ForAddress(address2.Id)
-                .Build());
-
-            member1.EndorseTokenBlocking(accessToken1, Standard);
-            member2.EndorseTokenBlocking(accessToken2, Standard);
-            
-            var representable1 = user.ForAccessToken(accessToken1.Id);
-            var representable2 = user.ForAccessToken(accessToken2.Id);
-
-            Task<AddressRecord> t1 = representable1.GetAddress(address1.Id);
-            Task<AddressRecord> t2 = representable2.GetAddress(address2.Id);
-            Task<AddressRecord> t3 = representable1.GetAddress(address1.Id);
-            Task.WhenAll(t1, t2, t3).Wait();
-            
-            Assert.AreEqual(t1.Result, address1);
-            Assert.AreEqual(t2.Result, address2);
-            Assert.AreEqual(t3.Result, address1);
-        }
-
-        [Test]
         public void AuthFlowTest()
         {
             var balance = new Money

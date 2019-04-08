@@ -135,7 +135,8 @@ namespace Tokenio.Rpc
         {
             var request = new RetrieveTokenRequestRequest {RequestId = tokenRequestId};
             return gateway.RetrieveTokenRequestAsync(request)
-                .ToTask(response => response.TokenRequest);
+                .ToTask(response => response.TokenRequest)
+                .Map(tokenRequest => TokenRequest.Create(tokenRequest.RequestPayload, tokenRequest.RequestOptions));
         }
 
         /// <summary>
