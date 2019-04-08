@@ -1127,8 +1127,6 @@ namespace Tokenio.Rpc
             return new GatewayService.GatewayServiceClient(intercepted);
         }
         
-        //====================> New Stuff <======================================
-
         public Task DeleteMember()
         {
             return gateway(authenticationContext(Level.Privileged))
