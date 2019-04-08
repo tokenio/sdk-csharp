@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf.Collections;
 using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
@@ -28,6 +29,7 @@ using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 using Grpc.Core.Interceptors;
+using Tokenio.Proto.Common.NotificationProtos;
 
 namespace Tokenio.Rpc
 {
@@ -77,7 +79,7 @@ namespace Tokenio.Rpc
         /// Sets the security metadata to be sent with each request.
         /// </summary>
         /// <param name="securityMetadata">security metadata</param>
-        public void SetSecurityMetadata(SecurityMetadata securityMetadata)
+        public void SetTrackingMetadata(SecurityMetadata securityMetadata)
         {
             this.securityMetadata = securityMetadata;
         }
@@ -1123,6 +1125,70 @@ namespace Tokenio.Rpc
             var intercepted = channel.BuildInvoker()
                 .Intercept(new AsyncClientAuthenticator(MemberId, cryptoEngine, authentication));
             return new GatewayService.GatewayServiceClient(intercepted);
+        }
+        
+        //====================> New Stuff <======================================
+
+        public Task DeleteMember()
+        {
+            return gateway(authenticationContext(Level.Privileged))
+                .DeleteMemberAsync(new DeleteMemberRequest())
+                .ToTask();
+        }
+
+        public Task<string> CreateCustomization(
+            Payload logo,
+            MapField<string, string> colors,
+            string consentText,
+            string name,
+            string appName)
+        {
+            var request = new CreateCustomizationRequest
+            {
+                Logo = logo,
+                Colors = {colors},
+                Name = name,
+                ConsentText = consentText,
+                AppName = appName
+            };
+            return gateway(authenticationContext())
+                .CreateCustomizationAsync(request)
+                .ToTask(response => response.CustomizationId);
+        }
+
+        public void ClearTrackingMetaData()
+        {
+            this.securityMetadata = new SecurityMetadata();
+        }
+
+        public Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds)
+        {
+            var request = new TriggerStepUpNotificationRequest
+            {
+                BalanceStepUp = new BalanceStepUp
+                {
+                    AccountId = {accountIds}
+                }
+            };
+            
+            return gateway(authenticationContext())
+                .TriggerStepUpNotificationAsync(request)
+                .ToTask(response => response.Status);
+        }
+
+        public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
+        {
+            var request = new TriggerStepUpNotificationRequest
+            {
+                TransactionStepUp = new TransactionStepUp
+                {
+                    AccountId = accountId
+                }
+            };
+
+            return gateway(authenticationContext())
+                .TriggerStepUpNotificationAsync(request)
+                .ToTask(response => response.Status);
         }
     }
 }

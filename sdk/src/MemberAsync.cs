@@ -127,7 +127,7 @@ namespace Tokenio
         /// <param name="securityMetadata">security metadata</param>
         public void SetSecurityMetadata(SecurityMetadata securityMetadata)
         {
-            client.SetSecurityMetadata(securityMetadata);
+            client.SetTrackingMetadata(securityMetadata);
         }
 
         /// <summary>

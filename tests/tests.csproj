@@ -59,9 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessTokenTest.cs" />
-    <Compile Include="AddressTest.cs" />
     <Compile Include="BankInformationTest.cs" />
-    <Compile Include="BlobTest.cs" />
     <Compile Include="MemberMethodsSampleTest.cs" />
     <Compile Include="MemberRegistrationTest.cs" />
     <Compile Include="ProfileTest.cs" />
@@ -69,7 +67,6 @@
     <Compile Include="Security\CryptoEngineTest.cs" />
     <Compile Include="Security\UnsecuredFileSystemKeyStoreTest.cs" />
     <Compile Include="Security\InMemoryKeyStoreTest.cs" />
-    <Compile Include="TrustedBeneficiaryTest.cs" />
     <Compile Include="UtilityTest.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="TokenRequestTest.cs" />

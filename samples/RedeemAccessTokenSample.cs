@@ -19,11 +19,13 @@ namespace samples
 
             // Access grantor's account list by applying
             // access token to the grantee client.
+            // forAccessToken snippet begin
             var grantor = grantee.ForAccessToken(tokenId, customerInitiated);
             var accounts = grantor.GetAccounts().Result;
 
             // Get the data we want
-            var balance0 = accounts[0].GetCurrentBalance(Standard).Result;
+            Money balance0 = accounts[0].GetBalanceBlocking(Standard).Current;
+            // forAccessToken snippet end
             return balance0;
         }
     }

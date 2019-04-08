@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.BankProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
@@ -351,6 +352,24 @@ namespace Tokenio.Rpc
             var request = new GetTokenRequestResultRequest {TokenRequestId = tokenRequestId};
             return gateway.GetTokenRequestResultAsync(request)
                 .ToTask(response => new TokenRequestResult(response.TokenId, response.Signature));
+        }
+        
+        //=========================> New Stuff <==================
+
+        public Task<IList<string>> GetCountries(string provider)
+        {
+            var request = new GetBanksCountriesRequest();
+            if (provider != null)
+            {
+                var filter = new BankFilter
+                {
+                    Provider = provider
+                };
+                request.Filter = filter;
+            }
+            
+            return gateway.GetBanksCountriesAsync(request)
+                .ToTask(response => (IList<string>)response.Countries);
         }
     }
 }

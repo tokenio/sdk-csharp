@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 using log4net;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AddressProtos;
@@ -12,6 +13,7 @@ using Tokenio.Proto.Common.BankProtos;
 using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
+using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
@@ -148,7 +150,7 @@ namespace Tokenio
         /// <param name="securityMetadata">security metadata</param>
         public void SetSecurityMetadata(SecurityMetadata securityMetadata)
         {
-            client.SetSecurityMetadata(securityMetadata);
+            client.SetTrackingMetadata(securityMetadata);
         }
 
         /// <summary>
@@ -596,7 +598,7 @@ namespace Tokenio
         {
             return GetTransfers(tokenId, offset, limit).Result;
         }
-
+//==================>
         /// <summary>
         /// Creates and uploads a blob.
         /// </summary>
@@ -631,25 +633,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Creates and uploads a blob.
-        /// </summary>
-        /// <param name="ownerId">the id of the owner of the blob</param>
-        /// <param name="type">the MIME type of the file</param>
-        /// <param name="name">the name of the file</param>
-        /// <param name="data">the file data</param>
-        /// <param name="accessMode">the access mode, normal or public</param>
-        /// <returns>an attachment</returns>
-        public Attachment CreateBlobBlocking(
-            string ownerId,
-            string type,
-            string name,
-            byte[] data,
-            AccessMode accessMode = AccessMode.Default)
-        {
-            return CreateBlob(ownerId, type, name, data, accessMode).Result;
-        }
-
-        /// <summary>
         /// Retrieves a blob from the server.
         /// </summary>
         /// <param name="blobId">the blob id</param>
@@ -668,29 +651,7 @@ namespace Tokenio
         {
             return GetBlob(blobId).Result;
         }
-
-        /// <summary>
-        /// Retrieves a blob that is attached to a transfer token.
-        /// </summary>
-        /// <param name="tokenId">the token id</param>
-        /// <param name="blobId">the blob id</param>
-        /// <returns>the blob</returns>
-        public Task<Blob> GetTokenBlob(string tokenId, string blobId)
-        {
-            return client.GetTokenBlob(tokenId, blobId);
-        }
-        
-        /// <summary>
-        /// Retrieves a blob that is attached to a transfer token.
-        /// </summary>
-        /// <param name="tokenId">the token id</param>
-        /// <param name="blobId">the blob id</param>
-        /// <returns>the blob</returns>
-        public Blob GetTokenBlobBlocking(string tokenId, string blobId)
-        {
-            return GetTokenBlob(tokenId, blobId).Result;
-        }
-
+//=================>
         /// <summary>
         /// Creates a new member address.
         /// </summary>
@@ -712,7 +673,7 @@ namespace Tokenio
         {
             return AddAddress(name, address).Result;
         }
-
+//===================>
         /// <summary>
         /// Looks up an address by id.
         /// </summary>
@@ -731,44 +692,6 @@ namespace Tokenio
         public AddressRecord GetAddressBlocking(string addressId)
         {
             return GetAddress(addressId).Result;
-        }
-
-        /// <summary>
-        /// Looks up member addresses.
-        /// </summary>
-        /// <returns>a list of addresses</returns>
-        public Task<IList<AddressRecord>> GetAddresses()
-        {
-            return client.GetAddresses();
-        }
-        
-        /// <summary>
-        /// Looks up member addresses.
-        /// </summary>
-        /// <returns>a list of addresses</returns>
-        public IList<AddressRecord> GetAddressesBlocking()
-        {
-            return GetAddresses().Result;
-        }
-
-        /// <summary>
-        /// Deletes a member address by its id.
-        /// </summary>
-        /// <param name="addressId">the address id</param>
-        /// <returns>a task</returns>
-        public Task DeleteAddress(string addressId)
-        {
-            return client.DeleteAddress(addressId);
-        }
-        
-        /// <summary>
-        /// Deletes a member address by its id.
-        /// </summary>
-        /// <param name="addressId">the address id</param>
-        /// <returns>a task</returns>
-        public void DeleteAddressBlocking(string addressId)
-        {
-            DeleteAddress(addressId).Wait();
         }
 
         /// <summary>
@@ -921,13 +844,13 @@ namespace Tokenio
         {
             UpdateTokenRequest(requestId, options).Wait();
         }
-
+//================>
         /// <summary>
         /// Creates a new transfer token.
         /// </summary>
         /// <param name="payload">the transfer token payload</param>
         /// <returns>the transfer token</returns>
-        public Task<Token> CreateTransferToken(TokenPayload payload)
+        internal Task<Token> CreateTransferToken(TokenPayload payload)
         {
             return client.CreateTransferToken(payload);
         }
@@ -937,7 +860,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="payload">the transfer token payload</param>
         /// <returns>the transfer token</returns>
-        public Token CreateTransferTokenBlocking(TokenPayload payload)
+        internal Token CreateTransferTokenBlocking(TokenPayload payload)
         {
             return CreateTransferToken(payload).Result;
         }
@@ -948,11 +871,11 @@ namespace Tokenio
         /// <param name="amount">the transfer amount</param>
         /// <param name="currency">the currency code, e.g. "USD"</param>
         /// <returns>the transfer token builder</returns>
-        public TransferTokenBuilder CreateTransferToken(double amount, string currency)
+        internal TransferTokenBuilder CreateTransferToken(double amount, string currency)
         {
             return new TransferTokenBuilder(this, amount, currency);
         }
-
+//==================>
         /// <summary>
         /// Creates an access token.
         /// </summary>
@@ -1058,7 +981,7 @@ namespace Tokenio
         {
             return GetAccessTokens(offset, limit).Result;
         }
-
+//===================>
         /// <summary>
         /// Endorses the token by signing it. The signature is persisted along with
         /// the token
@@ -1107,35 +1030,6 @@ namespace Tokenio
         public TokenOperationResult CancelTokenBlocking(Token token)
         {
             return CancelToken(token).Result;
-        }
-
-        /// <summary>
-        /// Cancels the existing access token and creates a replacement for it.
-        /// </summary>
-        /// <param name="tokenToCancel">the token to cancel</param>
-        /// <param name="tokenToCreate">the payload to create new token with</param>
-        /// <returns>the result of the replacement opration</returns>
-        public Task<TokenOperationResult> ReplaceAccessToken(
-            Token tokenToCancel,
-            TokenPayload tokenToCreate)
-        {
-            tokenToCreate.From.Id = MemberId();
-            return client.ReplaceToken(
-                tokenToCancel,
-                tokenToCreate);
-        }
-        
-        /// <summary>
-        /// Cancels the existing access token and creates a replacement for it.
-        /// </summary>
-        /// <param name="tokenToCancel">the token to cancel</param>
-        /// <param name="tokenToCreate">the payload to create new token with</param>
-        /// <returns>the result of the replacement opration</returns>
-        public TokenOperationResult ReplaceAccessTokenBlocking(
-            Token tokenToCancel,
-            TokenPayload tokenToCreate)
-        {
-            return ReplaceAccessToken(tokenToCancel,tokenToCreate).Result;
         }
 
         /// <summary>
@@ -1504,52 +1398,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Looks up current account balance.
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <param name="keyLevel">the key level</param>
-        /// <returns>the balance</returns>
-        public Task<Money> GetCurrentBalance(string accountId, Level keyLevel)
-        {
-            return client.GetBalance(accountId, keyLevel)
-                .Map(response => response.Current);
-        }
-        
-        /// <summary>
-        /// Looks up current account balance.
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <param name="keyLevel">the key level</param>
-        /// <returns>the balance</returns>
-        public Money GetCurrentBalanceBlocking(string accountId, Level keyLevel)
-        {
-            return GetCurrentBalance(accountId, keyLevel).Result;
-        }
-
-        /// <summary>
-        /// Looks up available account balance.
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <param name="keyLevel">the key level</param>
-        /// <returns>the balance</returns>
-        public Task<Money> GetAvailableBalance(string accountId, Level keyLevel)
-        {
-            return client.GetBalance(accountId, keyLevel)
-                .Map(response => response.Available);
-        }
-        
-        /// <summary>
-        /// Looks up available account balance.
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <param name="keyLevel">the key level</param>
-        /// <returns>the balance</returns>
-        public Money GetAvailableBalanceBlocking(string accountId, Level keyLevel)
-        {
-            return GetAvailableBalance(accountId, keyLevel).Result;
-        }
-
-        /// <summary>
         /// Looks up balances for a list of accounts.
         /// </summary>
         /// <param name="accountIds">the list of accounts</param>
@@ -1590,27 +1438,7 @@ namespace Tokenio
         {
             return GetBankInfo(bankId).Result;
         }
-
-        /// <summary>
-        /// Applies SCA for the given a list of accounts.
-        /// </summary>
-        /// <param name="accountIds">the list of accounts</param>
-        /// <returns>a task</returns>
-        public Task ApplySca(IList<string> accountIds)
-        {
-            return client.ApplySca(accountIds);
-        }
-        
-        /// <summary>
-        /// Applies SCA for the given a list of accounts.
-        /// </summary>
-        /// <param name="accountIds">the list of accounts</param>
-        /// <returns>a task</returns>
-        public void ApplyScaBlocking(IList<string> accountIds)
-        {
-            ApplySca(accountIds).Wait();
-        }
-
+//=================>
         /// <summary>
         /// Signs a token request state payload.
         /// </summary>
@@ -1660,26 +1488,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Verifies an affiliated TPP.
-        /// </summary>
-        /// <param name="memberId">member ID of the TPP verify</param>
-        /// <returns>a task</returns>
-        public Task VerifyAffiliate(string memberId)
-        {
-            return client.VerifyAffiliate(memberId);
-        }
-        
-        /// <summary>
-        /// Verifies an affiliated TPP.
-        /// </summary>
-        /// <param name="memberId">member ID of the TPP verify</param>
-        /// <returns>a task</returns>
-        public void VerifyAffiliateBlocking(string memberId)
-        {
-            VerifyAffiliate(memberId).Wait();
-        }
-
-        /// <summary>
         /// Resolves transfer destinations for the given account.
         /// </summary>
         /// <param name="accountId">the account id</param>
@@ -1697,74 +1505,6 @@ namespace Tokenio
         public IList<TransferEndpoint> ResolveTransferDestinationBlocking(string accountId)
         {
             return ResolveTransferDestination(accountId).Result;
-        }
-
-        /// <summary>
-        /// Adds a trusted beneficiary for whom the SCA will be skipped.
-        /// </summary>
-        /// <param name="memberId">the member id of the beneficiary</param>
-        /// <returns>a task</returns>
-        public Task AddTrustedBeneficiary(string memberId)
-        {
-            var payload = new TrustedBeneficiary.Types.Payload
-            {
-                MemberId = memberId,
-                Nonce = Util.Nonce()
-            };
-            return client.AddTrustedBeneficiary(payload);
-        }
-        
-        /// <summary>
-        /// Adds a trusted beneficiary for whom the SCA will be skipped.
-        /// </summary>
-        /// <param name="memberId">the member id of the beneficiary</param>
-        /// <returns>a task</returns>
-        public void AddTrustedBeneficiaryBlocking(string memberId)
-        {
-            AddTrustedBeneficiary(memberId).Wait();
-        }
-
-        /// <summary>
-        /// Removes a trusted beneficiary. 
-        /// </summary>
-        /// <param name="memberId">the member id of the beneficiary</param>
-        /// <returns>a task</returns>
-        public Task RemoveTrustedBeneficiary(string memberId)
-        {
-            var payload = new TrustedBeneficiary.Types.Payload
-            {
-                MemberId = memberId,
-                Nonce = Util.Nonce()
-            };
-            return client.RemoveTrustedBeneficiary(payload);
-        }
-        
-        /// <summary>
-        /// Removes a trusted beneficiary. 
-        /// </summary>
-        /// <param name="memberId">the member id of the beneficiary</param>
-        /// <returns>a task</returns>
-        public void RemoveTrustedBeneficiaryBlocking(string memberId)
-        {
-            RemoveTrustedBeneficiary(memberId).Wait();
-        }
-
-        /// <summary>
-        /// Gets a list of all trusted beneficiaries.
-        /// </summary>
-        /// <returns>the list</returns>
-        public Task<IList<TrustedBeneficiary>> GetTrustedBeneficiaries()
-        {
-            return client.GetTrustedBeneficiaries();
-        }
-        
-        /// <summary>
-        /// Gets a list of all trusted beneficiaries.
-        /// </summary>
-        /// <returns>the list</returns>
-        public IList<TrustedBeneficiary> GetTrustedBeneficiariesBlocking()
-        {
-            return GetTrustedBeneficiaries().Result;
         }
 
         /// <summary>
@@ -1787,6 +1527,79 @@ namespace Tokenio
         public ProtoAccount CreateAndLinkTestBankAccountBlocking(Money balance)
         {
             return CreateAndLinkTestBankAccount(balance).Result;
+        }
+        
+        //========================> New Token <======================
+
+        public Task DeleteMember()
+        {
+            return client.DeleteMember();
+        }
+
+        public Task<Account> CreateTestBankAccount(string balance, string currency)
+        {
+            return client
+                .CreateAndLinkTestBankAccount(new Money
+                    {
+                        Value = balance,
+                        Currency = currency
+                    })
+                .Map(account => new Account(this, account, client));
+        }
+
+        public Account CreateTestBankAccountBlocking(string balance, string currency)
+        {
+            return CreateTestBankAccount(balance, currency).Result;
+        }
+
+        public Task<string> CreateCustomization(
+            Payload logo,
+            MapField<string, string> colors,
+            string consentText,
+            string name,
+            string appName)
+        {
+            return client.CreateCustomization(logo, colors, consentText, name, appName);
+        }
+        
+        public string CreateCustomizationBlocking(
+            Payload logo,
+            MapField<string, string> colors,
+            string consentText,
+            string name,
+            string appName)
+        {
+            return CreateCustomization(logo, colors, consentText, name, appName).Result;
+        }
+
+        public void SetTrackingMetaData(SecurityMetadata metaData)
+        {
+            client.SetTrackingMetadata(metaData);
+        }
+
+        public void ClearTrackingMetaData()
+        {
+            client.ClearTrackingMetaData();
+        }
+
+        public Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds)
+        {
+            return client.TriggerBalanceStepUpNotification(accountIds);
+        }
+        
+        public NotifyStatus TriggerBalanceStepUpNotificationBlocking(IList<string> accountIds)
+        {
+            return TriggerBalanceStepUpNotification(accountIds).Result;
+        }
+        
+        public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
+        {
+            return client.TriggerTransactionStepUpNotification(accountId);
+        }
+        
+        public NotifyStatus TriggerTransactionStepUpNotificationBlocking(string accountId)
+        {
+            return TriggerTransactionStepUpNotification(accountId).Result;
         }
     }
 }
