@@ -7,7 +7,6 @@ using Google.Protobuf;
 using Google.Protobuf.Collections;
 using log4net;
 using Tokenio.Exceptions;
-using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
 using Tokenio.Proto.Common.BlobProtos;
@@ -148,7 +147,7 @@ namespace Tokenio
         /// Sets the security metadata to be sent with each request.
         /// </summary>
         /// <param name="securityMetadata">security metadata</param>
-        public void SetSecurityMetadata(SecurityMetadata securityMetadata)
+        public void SetTrackingMetadata(SecurityMetadata securityMetadata)
         {
             client.SetTrackingMetadata(securityMetadata);
         }
@@ -1338,29 +1337,11 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Gets all paired devices.
-        /// </summary>
-        /// <returns>a list of devices</returns>
-        public Task<IList<Device>> GetPairedDevices()
-        {
-            return client.GetPairedDevices();
-        }
-        
-        /// <summary>
-        /// Gets all paired devices.
-        /// </summary>
-        /// <returns>a list of devices</returns>
-        public IList<Device> GetPairedDevicesBlocking()
-        {
-            return GetPairedDevices().Result;
-        }
-
-        /// <summary>
         /// Resolves transfer destinations for the given account.
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        public Task<IList<TransferEndpoint>> ResolveTransferDestination(string accountId)
+        public Task<IList<TransferEndpoint>> ResolveTransferDestinations(string accountId)
         {
             return client.ResolveTransferDestination(accountId);
         }
@@ -1370,9 +1351,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        public IList<TransferEndpoint> ResolveTransferDestinationBlocking(string accountId)
+        public IList<TransferEndpoint> ResolveTransferDestinationsBlocking(string accountId)
         {
-            return ResolveTransferDestination(accountId).Result;
+            return ResolveTransferDestinations(accountId).Result;
         }
 
         /// <summary>

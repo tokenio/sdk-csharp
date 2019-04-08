@@ -127,13 +127,13 @@ namespace Tokenio
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        Task<IList<TransferEndpoint>> ResolveTransferDestination(string accountId);
+        Task<IList<TransferEndpoint>> ResolveTransferDestinations(string accountId);
         
         /// <summary>
         /// Resolves transfer destinations for the given account.
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        IList<TransferEndpoint> ResolveTransferDestinationBlocking(string accountId);
+        IList<TransferEndpoint> ResolveTransferDestinationsBlocking(string accountId);
     }
 }

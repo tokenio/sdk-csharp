@@ -8,6 +8,12 @@ namespace samples
 {
     public class NotifySample
     {
+        /// <summary>
+        /// Triggers a notification to step up the signature level when requesting balance information.
+        /// </summary>
+        /// <param name="member">member</param>
+        /// <param name="accountIds">list of account ids</param>
+        /// <returns>notification status</returns>
         public static NotifyStatus TriggerBalanceStepUpNotification(
             Member member,
             IList<string> accountIds)

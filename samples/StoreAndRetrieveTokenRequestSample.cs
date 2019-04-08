@@ -8,6 +8,11 @@ namespace samples
     public class StoreAndRetrieveTokenRequestSample
     {
 
+        /// <summary>
+        /// Stores a transfer token request.
+        /// </summary>
+        /// <param name="payee">Payee Token member (the member requesting the transfer token be created)</param>
+        /// <returns>a token request id</returns>
         public static string StoreTransferTokenRequest(Member payee)
         {
             var request = TokenRequest.transferTokenRequestBuilder(100, "EUR")
@@ -26,6 +31,11 @@ namespace samples
             return payee.StoreTokenRequestBlocking(request);
         }
 
+        /// <summary>
+        /// Stores an access token request.
+        /// </summary>
+        /// <param name="grantee">Token member requesting the access token be created</param>
+        /// <returns>a token request id</returns>
         public static string storeAccessTokenRequest(Member grantee)
         {
             var request = TokenRequest.accessTokenRequestBuilder(
@@ -45,6 +55,12 @@ namespace samples
             return grantee.StoreTokenRequestBlocking(request);
         }
 
+        /// <summary>
+        /// Retrieves a token request.
+        /// </summary>
+        /// <param name="tokenClient">tokenIO instance to use</param>
+        /// <param name="requestId">id of request to retrieve</param>
+        /// <returns>token request that was stored with the request id</returns>
         public static TokenRequest retrieveTokenRequest(TokenClient tokenClient, string requestId)
         {
             return tokenClient.RetrieveTokenRequestBlocking(requestId);
