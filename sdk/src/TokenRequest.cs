@@ -57,14 +57,14 @@ namespace Tokenio
         /// <param name="tokenRequestPayload">TokenRequestPayload</param>
         /// <param name="tokenRequestOptions">TokenRequestOptions</param>
         /// <returns></returns>
-        public static TokenRequest Create(
+        public static TokenRequest fromProtos(
             TokenRequestPayload tokenRequestPayload,
             Proto.Common.TokenProtos.TokenRequestOptions tokenRequestOptions)
         {
             return new TokenRequest(tokenRequestPayload, tokenRequestOptions);
         }
 
-        public class Builder
+        public class Builder<T> where T : Builder<T>
         {
             protected TokenRequestPayload requestPayload;
             protected Proto.Common.TokenProtos.TokenRequestOptions requestOptions;
@@ -82,10 +82,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="bankId">bank id</param>
             /// <returns>builder</returns>
-            public Builder SetBankId(string bankId)
+            public T SetBankId(string bankId)
             {
                 this.requestOptions.BankId = bankId;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -93,10 +93,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="fromMemberId">payer/grantor member ID</param>
             /// <returns>builder</returns>
-            public Builder SetFromMemberId(string fromMemberId)
+            public T SetFromMemberId(string fromMemberId)
             {
                 this.requestOptions.From.Id = fromMemberId;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -104,10 +104,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="fromAlias">payer/grantor alias</param>
             /// <returns>builder</returns>
-            public Builder SetFromAlias(Alias fromAlias)
+            public T SetFromAlias(Alias fromAlias)
             {
                 this.requestOptions.From.Alias = fromAlias;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -115,10 +115,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="sourceAccountId">source bank account ID</param>
             /// <returns>builder</returns>
-            public Builder SetSourceAccount(string sourceAccountId)
+            public T SetSourceAccount(string sourceAccountId)
             {
                 this.requestOptions.SourceAccountId = sourceAccountId;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -127,10 +127,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="receiptRequested">receipt requested flag</param>
             /// <returns>builder</returns>
-            public Builder SetReceiptRequested(bool receiptRequested)
+            public T SetReceiptRequested(bool receiptRequested)
             {
                 this.requestOptions.ReceiptRequested = receiptRequested;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -138,10 +138,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="refId">user ref ID</param>
             /// <returns>builder</returns>
-            public Builder SetUserRefId(string refId)
+            public T SetUserRefId(string refId)
             {
                 this.requestPayload.UserRefId = refId;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -149,10 +149,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="customizationId">customization ID</param>
             /// <returns>builder</returns>
-            public Builder SetCustomizationId(string customizationId)
+            public T SetCustomizationId(string customizationId)
             {
                 this.requestPayload.CustomizationId = customizationId;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -160,10 +160,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="redirectUrl">redirect url</param>
             /// <returns>builder</returns>
-            public Builder SetRedirectUrl(string redirectUrl)
+            public T SetRedirectUrl(string redirectUrl)
             {
                 this.requestPayload.RedirectUrl = redirectUrl;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -171,10 +171,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="refId">token ref ID</param>
             /// <returns>builder</returns>
-            public Builder SetRefId(string refId)
+            public T SetRefId(string refId)
             {
                 this.requestPayload.RefId = refId;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -182,10 +182,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="toAlias">to alias</param>
             /// <returns>builder</returns>
-            public Builder SetToAlias(Alias toAlias)
+            public T SetToAlias(Alias toAlias)
             {
                 this.requestPayload.To.Alias = toAlias;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -193,10 +193,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="memberId">memberId</param>
             /// <returns>builder</returns>
-            public Builder SetToMemberId(string memberId)
+            public T SetToMemberId(string memberId)
             {
                 this.requestPayload.To.Id = memberId;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -204,10 +204,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="actingAs">entity the redeemer is acting on behalf of</param>
             /// <returns>builder</returns>
-            public Builder SetActingAs(ActingAs actingAs)
+            public T SetActingAs(ActingAs actingAs)
             {
                 this.requestPayload.ActingAs = actingAs;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -215,10 +215,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="description">description</param>
             /// <returns>builder</returns>
-            public Builder SetDescription(string description)
+            public T SetDescription(string description)
             {
                 this.requestPayload.Description = description;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -227,10 +227,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="state">state</param>
             /// <returns>builder</returns>
-            public Builder SetState(string state)
+            public T SetState(string state)
             {
                 this.oauthState = state;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -239,10 +239,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="csrfToken">CSRF token</param>
             /// <returns>builder</returns>
-            public Builder SetCsrfToken(string csrfToken)
+            public T SetCsrfToken(string csrfToken)
             {
                 this.csrfToken = csrfToken;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -262,7 +262,7 @@ namespace Tokenio
             
         }
 
-        public class AccessBuilder : Builder
+        public class AccessBuilder : Builder<AccessBuilder>
         {
             public AccessBuilder(params TokenRequestPayload.Types.AccessBody.Types.ResourceType[] resources)
             {
@@ -273,7 +273,7 @@ namespace Tokenio
             }
         }
 
-        public class TransferBuilder : Builder
+        public class TransferBuilder : Builder<TransferBuilder>
         {
             public TransferBuilder(double amount, string currency)
             {

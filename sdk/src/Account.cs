@@ -174,6 +174,5 @@ namespace Tokenio
 
             return false;
         }
-        
     }
 }

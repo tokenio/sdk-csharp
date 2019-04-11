@@ -1355,28 +1355,6 @@ namespace Tokenio
         {
             return ResolveTransferDestinations(accountId).Result;
         }
-
-        /// <summary>
-        /// **For testing purposes only**
-        /// Creates a linked test bank account.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the OAuth bank authorization</returns>
-        public Task<ProtoAccount> CreateAndLinkTestBankAccount(Money balance)
-        {
-            return client.CreateAndLinkTestBankAccount(balance);
-        }
-        
-        /// <summary>
-        /// **For testing purposes only**
-        /// Creates a linked test bank account.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the OAuth bank authorization</returns>
-        public ProtoAccount CreateAndLinkTestBankAccountBlocking(Money balance)
-        {
-            return CreateAndLinkTestBankAccount(balance).Result;
-        }
         
         /// <summary>
         /// Deletes the member

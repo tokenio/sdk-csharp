@@ -240,7 +240,7 @@ namespace Tokenio
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.RetrieveTokenRequest(requestId)
-                .Map(tokenRequest => TokenRequest.Create(
+                .Map(tokenRequest => TokenRequest.fromProtos(
                     tokenRequest.RequestPayload, 
                     tokenRequest.RequestOptions));
         }
