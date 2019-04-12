@@ -438,17 +438,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Creates a new transfer token builder.
-        /// </summary>
-        /// <param name="amount">the transfer amount</param>
-        /// <param name="currency">the currency code, e.g. "USD"</param>
-        /// <returns>the transfer token builder</returns>
-        public TransferTokenBuilder CreateTransferToken(double amount, string currency)
-        {
-            return new TransferTokenBuilder(async, amount, currency);
-        }
-
-        /// <summary>
         /// Creates an access token.
         /// </summary>
         /// <param name="payload">the access token payload</param>
@@ -883,17 +872,6 @@ namespace Tokenio
         public IList<TrustedBeneficiary> GetTrustedBeneficiaries()
         {
             return async.GetTrustedBeneficiaries().Result;
-        }
-
-        /// <summary>
-        /// **For testing purposes only**
-        /// Creates a linked test bank account.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the OAuth bank authorization</returns>
-        public ProtoAccount CreateAndLinkTestBankAccount(Money balance)
-        {
-            return async.CreateAndLinkTestBankAccount(balance).Result;
         }
     }
 }

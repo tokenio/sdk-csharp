@@ -75,6 +75,8 @@ namespace Tokenio
             {
                 this.requestOptions = new Proto.Common.TokenProtos.TokenRequestOptions();
                 this.requestPayload = new TokenRequestPayload();
+                this.requestOptions.From = new TokenMember();
+                this.requestPayload.To = new TokenMember();
             }
 
             /// <summary>

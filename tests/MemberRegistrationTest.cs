@@ -107,7 +107,7 @@ namespace Test
 
             recovered.VerifyAliasBlocking(verificationId, "code");
             Assert.True(tokenClient.AliasExistsBlocking(alias));
-            CollectionAssert.AreEquivalent(new[] {alias.ToNormalized()}, recovered.GetAliasesBlocking());
+            CollectionAssert.AreEquivalent(new[] {alias.ToNormalized()}, recovered.GetAliasesBlocking(), "NOT equivalent");
         }
 
         [Test]

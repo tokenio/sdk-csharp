@@ -851,30 +851,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Creates a test bank account and returns the authorization for it.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the oauth bank authorization</returns>
-        public Task<OauthBankAuthorization> CreateTestBankAccount(Money balance)
-        {
-            var request = new CreateTestBankAccountRequest {Balance = balance};
-            return gateway(authenticationContext()).CreateTestBankAccountAsync(request)
-                .ToTask(response => response.Authorization);
-        }
-
-        /// <summary>
-        /// Creates a test bank account and links it.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the linked account</returns>
-        public Task<ProtoAccount> CreateAndLinkTestBankAccount(Money balance)
-        {
-            return CreateTestBankAccount(balance)
-                .FlatMap(authorization => LinkAccounts(authorization)
-                    .Map(accounts => accounts[0]));
-        }
-
-        /// <summary>
         /// Returns a list of aliases of the member.
         /// </summary>
         /// <returns>a list of aliases</returns>

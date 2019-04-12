@@ -599,39 +599,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Creates and uploads a blob.
-        /// </summary>
-        /// <param name="ownerId">the id of the owner of the blob</param>
-        /// <param name="type">the MIME type of the file</param>
-        /// <param name="name">the name of the file</param>
-        /// <param name="data">the file data</param>
-        /// <param name="accessMode">the access mode, normal or public</param>
-        /// <returns>an attachment</returns>
-        internal Task<Attachment> CreateBlob(
-            string ownerId,
-            string type,
-            string name,
-            byte[] data,
-            AccessMode accessMode = AccessMode.Default)
-        {
-            var payload = new Payload
-            {
-                OwnerId = ownerId,
-                Type = type,
-                Name = name,
-                Data = ByteString.CopyFrom(data),
-                AccessMode = accessMode
-            };
-            return client.CreateBlob(payload)
-                .Map(id => new Attachment
-                {
-                    BlobId = id,
-                    Name = name,
-                    Type = type
-                });
-        }
-
-        /// <summary>
         /// Retrieves a blob from the server.
         /// </summary>
         /// <param name="blobId">the blob id</param>
@@ -812,37 +779,6 @@ namespace Tokenio
         public void UpdateTokenRequestBlocking(string requestId, Proto.Common.TokenProtos.TokenRequestOptions options)
         {
             UpdateTokenRequest(requestId, options).Wait();
-        }
-
-        /// <summary>
-        /// Creates a new transfer token.
-        /// </summary>
-        /// <param name="payload">the transfer token payload</param>
-        /// <returns>the transfer token</returns>
-        internal Task<Token> CreateTransferToken(TokenPayload payload)
-        {
-            return client.CreateTransferToken(payload);
-        }
-        
-        /// <summary>
-        /// Creates a new transfer token.
-        /// </summary>
-        /// <param name="payload">the transfer token payload</param>
-        /// <returns>the transfer token</returns>
-        internal Token CreateTransferTokenBlocking(TokenPayload payload)
-        {
-            return CreateTransferToken(payload).Result;
-        }
-
-        /// <summary>
-        /// Creates a new transfer token builder.
-        /// </summary>
-        /// <param name="amount">the transfer amount</param>
-        /// <param name="currency">the currency code, e.g. "USD"</param>
-        /// <returns>the transfer token builder</returns>
-        internal TransferTokenBuilder CreateTransferToken(double amount, string currency)
-        {
-            return new TransferTokenBuilder(this, amount, currency);
         }
 
         /// <summary>
@@ -1372,32 +1308,6 @@ namespace Tokenio
         public void DeleteMemberBlocking()
         {
             DeleteMember().Wait();
-        }
-
-        /// <summary>
-        /// Creates a test bank account in a fake bank and links the account.
-        /// </summary>
-        /// <param name="balance"></param>
-        /// <param name="currency"></param>
-        /// <returns>the linked account</returns>
-        public Task<Account> CreateTestBankAccount(string balance, string currency)
-        {
-            return client.CreateAndLinkTestBankAccount(new Money
-                {
-                   Value = balance,
-                   Currency = currency
-                }).Map(account => new Account(this, account, client));
-        }
-
-        /// <summary>
-        /// Creates a test bank account in a fake bank and links the account.
-        /// </summary>
-        /// <param name="balance">balance in the account</param>
-        /// <param name="currency">currency of the balance</param>
-        /// <returns>the linked account</returns>
-        public Account CreateTestBankAccountBlocking(string balance, string currency)
-        {
-            return CreateTestBankAccount(balance, currency).Result;
         }
 
         /// <summary>
