@@ -19,7 +19,7 @@ namespace samples
             var grantor = grantee.ForAccessToken(tokenId, customerInitiated);
             var accounts = grantor.GetAccounts().Result;
 
-            Money balance0 = accounts[0].GetBalanceBlocking(Standard).Current;
+            Money balance0 = accounts[0].GetBalance(Standard).Result.Current;
             return balance0;
         }
     }

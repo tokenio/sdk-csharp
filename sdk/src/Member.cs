@@ -741,7 +741,30 @@ namespace Tokenio
         /// </summary>
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
-        [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
+        [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequest) instead.")]
+        public Task<string> StoreTokenRequest(Proto.Common.TokenProtos.TokenRequest tokenRequest)
+        {
+            return client.StoreTokenRequest(
+                tokenRequest.Payload, 
+                tokenRequest.Options);
+        }
+        
+        /// Stores a token request.
+        /// </summary>
+        /// <param name="tokenRequest">the token request</param>
+        /// <returns>an id to reference the token request</returns>
+        [Obsolete("Deprecated. Use StoreTokenRequestBlocking(TokenRequest) instead.")]
+        public string StoreTokenRequestBlocking(Proto.Common.TokenProtos.TokenRequest tokenRequest)
+        {
+            return StoreTokenRequest(tokenRequest).Result;
+        }
+        
+        
+        /// <summary>
+        /// Stores a token request.
+        /// </summary>
+        /// <param name="tokenRequest">the token request</param>
+        /// <returns>an id to reference the token request</returns>
         public Task<string> StoreTokenRequest(TokenRequest tokenRequest)
         {
             return client.StoreTokenRequest(
@@ -753,12 +776,11 @@ namespace Tokenio
         /// </summary>
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
-        [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
         public string StoreTokenRequestBlocking(TokenRequest tokenRequest)
         {
             return StoreTokenRequest(tokenRequest).Result;
         }
-
+        
         /// <summary>
         /// Update an existing token request.
         /// </summary>
@@ -1206,6 +1228,56 @@ namespace Tokenio
             string offset)
         {
             return GetTransactions(accountId, limit, keyLevel, offset).Result;
+        }
+        
+        /// <summary>
+        /// Looks up current account balance.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <param name="keyLevel">the key level</param>
+        /// <returns>the balance</returns>
+        [Obsolete("GetCurrentBalance is deprecated")]
+        public Task<Money> GetCurrentBalance(string accountId, Level keyLevel)
+        {
+            return client.GetBalance(accountId, keyLevel)
+                .Map(response => response.Current);
+        }
+        
+        /// <summary>
+        /// Looks up current account balance.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <param name="keyLevel">the key level</param>
+        /// <returns>the balance</returns>
+        [Obsolete("GetCurrentBalanceBlocking is deprecated")]
+        public Money GetCurrentBalanceBlocking(string accountId, Level keyLevel)
+        {
+            return GetCurrentBalance(accountId, keyLevel).Result;
+        }
+
+        /// <summary>
+        /// Looks up available account balance.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <param name="keyLevel">the key level</param>
+        /// <returns>the balance</returns>
+        [Obsolete("GetAvailableBalance is deprecated")]
+        public Task<Money> GetAvailableBalance(string accountId, Level keyLevel)
+        {
+            return client.GetBalance(accountId, keyLevel)
+                .Map(response => response.Available);
+        }
+        
+        /// <summary>
+        /// Looks up available account balance.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <param name="keyLevel">the key level</param>
+        /// <returns>the balance</returns>
+        [Obsolete("GetAvailableBalanceBlocking is deprecated")]
+        public Money GetAvailableBalanceBlocking(string accountId, Level keyLevel)
+        {
+            return GetAvailableBalance(accountId, keyLevel).Result;
         }
 
         /// <summary>

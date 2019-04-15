@@ -2,8 +2,10 @@ using System;
 using NUnit.Framework;
 using samples;
 using Tokenio;
+using Tokenio.Proto.Common.TokenProtos;
 using Member = Tokenio.Member;
 using static Test.TestUtil;
+using TokenRequest = Tokenio.TokenRequest;
 
 namespace Test
 {

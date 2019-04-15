@@ -5,6 +5,7 @@ using Tokenio;
 using Tokenio.Proto.Common.TokenProtos;
 using static Test.TestUtil;
 using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types;
+using TokenRequest = Tokenio.Proto.Common.TokenProtos.TokenRequest;
 
 namespace Test
 {
@@ -81,7 +82,7 @@ namespace Test
                 BankId = "iron",
                 ReceiptRequested = false
             };
-
+            
             var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
             Assert.IsNotEmpty(requestId);
 
