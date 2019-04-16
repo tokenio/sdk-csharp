@@ -252,7 +252,7 @@ namespace Tokenio.Rpc
                 RequestPayload = payload,
                 RequestOptions = options
             };
-
+           
             return gateway(authenticationContext()).StoreTokenRequestAsync(request)
                 .ToTask(response => response.TokenRequest.Id);
         }
