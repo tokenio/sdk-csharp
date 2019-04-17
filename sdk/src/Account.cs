@@ -75,53 +75,13 @@ namespace Tokenio
         {
             return account.BankId;
         }
-        
-        /// <summary>
-        /// Sets this account as a member's default account.
-        /// </summary>
-        /// <returns>a task</returns>
-        [Obsolete("SetAsDefault is deprecated.")]
-        public Task SetAsDefault()
-        {
-            return client.SetDefaultAccount(Id());
-        }
-        
-        /// <summary>
-        /// Sets to be a default account for its member.
-        /// Only 1 account can be default for each member.
-        /// </summary>
-        [Obsolete("SetAsDefaultBlocking is deprecated.")]
-        public void SetAsDefaultBlocking()
-        {
-            SetAsDefault().Wait();
-        }
 
-        /// <summary>
-        /// Looks up if this account is default.
-        /// </summary>
-        /// <returns>true if this account is default; false otherwise.</returns>
-        [Obsolete("IsDefault is deprecated.")]
-        public Task<bool> IsDefault()
-        {
-            return client.IsDefault(Id());
-        }
-        
-        /// <summary>
-        /// Checks if this account is default.
-        /// </summary>
-        /// <returns>true is the account is default; otherwise false</returns>
-        [Obsolete("IsDefaultBlocking is deprecated.")]
-        public bool IsDefaultBlocking()
-        {
-            return IsDefault().Result;
-        }
-        
         /// <summary>
         /// Looks up an account current balance.
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the current balance</returns>
-        [Obsolete("GetCurrentBalance is deprecated.")]
+        [Obsolete("GetCurrentBalance is deprecated. Use GetBalance(keyLevel) instead")]
         public Task<Money> GetCurrentBalance(Level keyLevel)
         {
             return client.GetBalance(account.Id, keyLevel)
@@ -133,7 +93,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the current balance</returns>
-        [Obsolete("GetCurrentBalanceBlocking is deprecated.")]
+        [Obsolete("GetCurrentBalanceBlocking is deprecated. Use GetBalanceBlocking(keyLevel).Current instead")]
         public Money GetCurrentBalanceBlocking(Level keyLevel)
         {
             return GetCurrentBalance(keyLevel).Result;
@@ -144,7 +104,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the available balance</returns>
-        [Obsolete("GetAvailableBalance is deprecated.")]
+        [Obsolete("GetAvailableBalance is deprecated. Use GetBalance(keyLevel) instead.")]
         public Task<Money> GetAvailableBalance(Level keyLevel)
         {
             return client.GetBalance(account.Id, keyLevel)
@@ -156,7 +116,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the available balance</returns>
-        [Obsolete("GetAvailableBalanceBlocking is deprecated.")]
+        [Obsolete("GetAvailableBalanceBlocking is deprecated. Use GetBalanceBlocking(keyLevel).Available instead.")]
         public Money GetAvailableBalanceBlocking(Level keyLevel)
         {
             return GetAvailableBalance(keyLevel).Result;
