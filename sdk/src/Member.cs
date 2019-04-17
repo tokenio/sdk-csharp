@@ -1402,6 +1402,7 @@ namespace Tokenio
         /// Sets security metadata included in all requests
         /// </summary>
         /// <param name="metaData">security metadata</param>
+        /// TODO: RD-2335: Change class from SecurityMetaData to TrackingMetaData
         public void SetTrackingMetaData(SecurityMetadata metaData)
         {
             client.SetTrackingMetadata(metaData);

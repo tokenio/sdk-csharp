@@ -79,6 +79,7 @@ namespace Tokenio.Rpc
         /// Sets the security metadata to be sent with each request.
         /// </summary>
         /// <param name="securityMetadata">security metadata</param>
+        /// TODO: RD-2335: Change from SecurityMetaData to TrackingMetaData
         public void SetTrackingMetadata(SecurityMetadata securityMetadata)
         {
             this.securityMetadata = securityMetadata;
@@ -1131,6 +1132,7 @@ namespace Tokenio.Rpc
                 .ToTask(response => response.CustomizationId);
         }
 
+        /// TODO: RD-2335: Change from SecurityMetaData to TrackingMetaData
         public void ClearTrackingMetaData()
         {
             this.securityMetadata = new SecurityMetadata();
