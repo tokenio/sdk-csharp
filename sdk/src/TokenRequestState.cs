@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace Tokenio
@@ -18,7 +20,7 @@ namespace Tokenio
 
         public static TokenRequestState ParseFrom(string serialized)
         {
-            var json = WebUtility.UrlDecode(serialized);
+            var json = Base64UrlEncoder.Decode(serialized);
             return JsonConvert.DeserializeObject<TokenRequestState>(json);
         }
 
@@ -28,7 +30,8 @@ namespace Tokenio
 
         public string Serialize()
         {
-            return JsonConvert.SerializeObject(this);
+            var json = JsonConvert.SerializeObject(this);
+            return Base64UrlEncoder.Encode(json);
         }
     }
 }

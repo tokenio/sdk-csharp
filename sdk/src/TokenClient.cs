@@ -640,11 +640,10 @@ namespace Tokenio
                     var payload = new TokenRequestStatePayload
                     {
                         TokenId = parameters.TokenId,
-                        State = WebUtility.UrlEncode(parameters.SerializedState)
+                        State = WebUtility.UrlEncode(parameters.SerializedState) 
                     };
 
                     Util.VerifySignature(member, payload, parameters.Signature);
-
                     return TokenRequestCallback.Create(parameters.TokenId, state.InnerState);
                 });
         }
