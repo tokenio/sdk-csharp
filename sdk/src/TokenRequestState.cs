@@ -20,6 +20,7 @@ namespace Tokenio
 
         public static TokenRequestState ParseFrom(string serialized)
         {
+            //ToDo: Remove Base64Encoder call. It's only for backward compatibility with the old Token flow.
             var json = Base64UrlEncoder.Decode(serialized);
             return JsonConvert.DeserializeObject<TokenRequestState>(json);
         }
@@ -30,7 +31,8 @@ namespace Tokenio
 
         public string Serialize()
         {
-            var json = JsonConvert.SerializeObject(this);
+            //ToDo: Remove Base64Encoder call. It's only for backward compatibility with the old Token flow.
+            var json =  JsonConvert.SerializeObject(this);
             return Base64UrlEncoder.Encode(json);
         }
     }

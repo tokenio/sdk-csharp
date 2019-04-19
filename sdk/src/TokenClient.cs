@@ -640,6 +640,7 @@ namespace Tokenio
                     var payload = new TokenRequestStatePayload
                     {
                         TokenId = parameters.TokenId,
+                        //ToDo: Remove WebUtility.UrlEncode call. It's only for backward compatibility with old Token Request Flow.
                         State = WebUtility.UrlEncode(parameters.SerializedState) 
                     };
 
