@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf.Collections;
 using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
@@ -28,6 +29,7 @@ using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 using Grpc.Core.Interceptors;
+using Tokenio.Proto.Common.NotificationProtos;
 
 namespace Tokenio.Rpc
 {
@@ -77,7 +79,8 @@ namespace Tokenio.Rpc
         /// Sets the security metadata to be sent with each request.
         /// </summary>
         /// <param name="securityMetadata">security metadata</param>
-        public void SetSecurityMetadata(SecurityMetadata securityMetadata)
+        /// TODO: RD-2335: Change from SecurityMetaData to TrackingMetaData
+        public void SetTrackingMetadata(SecurityMetadata securityMetadata)
         {
             this.securityMetadata = securityMetadata;
         }
@@ -250,6 +253,7 @@ namespace Tokenio.Rpc
                 RequestPayload = payload,
                 RequestOptions = options
             };
+           
             return gateway(authenticationContext()).StoreTokenRequestAsync(request)
                 .ToTask(response => response.TokenRequest.Id);
         }
@@ -849,30 +853,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Creates a test bank account and returns the authorization for it.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the oauth bank authorization</returns>
-        public Task<OauthBankAuthorization> CreateTestBankAccount(Money balance)
-        {
-            var request = new CreateTestBankAccountRequest {Balance = balance};
-            return gateway(authenticationContext()).CreateTestBankAccountAsync(request)
-                .ToTask(response => response.Authorization);
-        }
-
-        /// <summary>
-        /// Creates a test bank account and links it.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the linked account</returns>
-        public Task<ProtoAccount> CreateAndLinkTestBankAccount(Money balance)
-        {
-            return CreateTestBankAccount(balance)
-                .FlatMap(authorization => LinkAccounts(authorization)
-                    .Map(accounts => accounts[0]));
-        }
-
-        /// <summary>
         /// Returns a list of aliases of the member.
         /// </summary>
         /// <returns>a list of aliases</returns>
@@ -1123,6 +1103,69 @@ namespace Tokenio.Rpc
             var intercepted = channel.BuildInvoker()
                 .Intercept(new AsyncClientAuthenticator(MemberId, cryptoEngine, authentication));
             return new GatewayService.GatewayServiceClient(intercepted);
+        }
+        
+        public Task DeleteMember()
+        {
+            return gateway(authenticationContext(Level.Privileged))
+                .DeleteMemberAsync(new DeleteMemberRequest())
+                .ToTask();
+        }
+
+        public Task<string> CreateCustomization(
+            Payload logo,
+            MapField<string, string> colors,
+            string consentText,
+            string name,
+            string appName)
+        {
+            var request = new CreateCustomizationRequest
+            {
+                Logo = logo,
+                Colors = {colors},
+                Name = name,
+                ConsentText = consentText,
+                AppName = appName
+            };
+            return gateway(authenticationContext())
+                .CreateCustomizationAsync(request)
+                .ToTask(response => response.CustomizationId);
+        }
+
+        /// TODO: RD-2335: Change from SecurityMetaData to TrackingMetaData
+        public void ClearTrackingMetaData()
+        {
+            this.securityMetadata = new SecurityMetadata();
+        }
+
+        public Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds)
+        {
+            var request = new TriggerStepUpNotificationRequest
+            {
+                BalanceStepUp = new BalanceStepUp
+                {
+                    AccountId = {accountIds}
+                }
+            };
+            
+            return gateway(authenticationContext())
+                .TriggerStepUpNotificationAsync(request)
+                .ToTask(response => response.Status);
+        }
+
+        public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
+        {
+            var request = new TriggerStepUpNotificationRequest
+            {
+                TransactionStepUp = new TransactionStepUp
+                {
+                    AccountId = accountId
+                }
+            };
+
+            return gateway(authenticationContext())
+                .TriggerStepUpNotificationAsync(request)
+                .ToTask(response => response.Status);
         }
     }
 }

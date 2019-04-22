@@ -127,7 +127,7 @@ namespace Tokenio
         /// <param name="securityMetadata">security metadata</param>
         public void SetSecurityMetadata(SecurityMetadata securityMetadata)
         {
-            client.SetSecurityMetadata(securityMetadata);
+            client.SetTrackingMetadata(securityMetadata);
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace Tokenio
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
         [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
-        public Task<string> StoreTokenRequest(TokenRequest tokenRequest)
+        public Task<string> StoreTokenRequest(Proto.Common.TokenProtos.TokenRequest tokenRequest)
         {
             return client.StoreTokenRequest(tokenRequest.Payload, tokenRequest.Options);
         }
@@ -548,27 +548,6 @@ namespace Tokenio
         public Task UpdateTokenRequest(string requestId, Proto.Common.TokenProtos.TokenRequestOptions options)
         {
             return client.UpdateTokenRequest(requestId, options);
-        }
-
-        /// <summary>
-        /// Creates a new transfer token.
-        /// </summary>
-        /// <param name="payload">the transfer token payload</param>
-        /// <returns>the transfer token</returns>
-        public Task<Token> CreateTransferToken(TokenPayload payload)
-        {
-            return client.CreateTransferToken(payload);
-        }
-
-        /// <summary>
-        /// Creates a new transfer token builder.
-        /// </summary>
-        /// <param name="amount">the transfer amount</param>
-        /// <param name="currency">the currency code, e.g. "USD"</param>
-        /// <returns>the transfer token builder</returns>
-        public TransferTokenBuilder CreateTransferToken(double amount, string currency)
-        {
-            return new TransferTokenBuilder(this, amount, currency);
         }
 
         /// <summary>
@@ -1001,17 +980,6 @@ namespace Tokenio
         public Task<IList<TrustedBeneficiary>> GetTrustedBeneficiaries()
         {
             return client.GetTrustedBeneficiaries();
-        }
-
-        /// <summary>
-        /// **For testing purposes only**
-        /// Creates a linked test bank account.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the OAuth bank authorization</returns>
-        public Task<ProtoAccount> CreateAndLinkTestBankAccount(Money balance)
-        {
-            return client.CreateAndLinkTestBankAccount(balance);
         }
 
         internal Member toMember()

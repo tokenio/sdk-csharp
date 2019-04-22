@@ -40,22 +40,6 @@ namespace Test
         }
 
         [Test]
-        public void ProvisionDevice()
-        {
-            var member = tokenClient.CreateMemberBlocking(Alias());
-
-            var secondDevice = NewSdkInstance();
-
-            var deviceInfo = secondDevice.ProvisionDeviceBlocking(member.GetFirstAliasBlocking());
-            member.ApproveKeysBlocking(deviceInfo.Keys);
-
-            var loggedIn = secondDevice.GetMemberBlocking(deviceInfo.MemberId);
-
-            CollectionAssert.AreEquivalent(member.GetAliasesBlocking(), loggedIn.GetAliasesBlocking());
-            Assert.AreEqual(6, loggedIn.GetKeysBlocking().Count);
-        }
-
-        [Test]
         public void AddAlias()
         {
             var alias1 = Alias();
@@ -123,7 +107,7 @@ namespace Test
 
             recovered.VerifyAliasBlocking(verificationId, "code");
             Assert.True(tokenClient.AliasExistsBlocking(alias));
-            CollectionAssert.AreEquivalent(new[] {alias.ToNormalized()}, recovered.GetAliasesBlocking());
+            CollectionAssert.AreEquivalent(new[] {alias.ToNormalized()}, recovered.GetAliasesBlocking(), "NOT equivalent");
         }
 
         [Test]

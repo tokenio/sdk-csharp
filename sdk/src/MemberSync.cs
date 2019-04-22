@@ -422,7 +422,7 @@ namespace Tokenio
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
         [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
-        public string StoreTokenRequest(TokenRequest tokenRequest)
+        public string StoreTokenRequest(Proto.Common.TokenProtos.TokenRequest tokenRequest)
         {
             return async.StoreTokenRequest(tokenRequest).Result;
         }
@@ -435,17 +435,6 @@ namespace Tokenio
         public void UpdateTokenRequest(string requestId, Proto.Common.TokenProtos.TokenRequestOptions options)
         {
             async.UpdateTokenRequest(requestId, options).Wait();
-        }
-
-        /// <summary>
-        /// Creates a new transfer token builder.
-        /// </summary>
-        /// <param name="amount">the transfer amount</param>
-        /// <param name="currency">the currency code, e.g. "USD"</param>
-        /// <returns>the transfer token builder</returns>
-        public TransferTokenBuilder CreateTransferToken(double amount, string currency)
-        {
-            return new TransferTokenBuilder(async, amount, currency);
         }
 
         /// <summary>
@@ -883,17 +872,6 @@ namespace Tokenio
         public IList<TrustedBeneficiary> GetTrustedBeneficiaries()
         {
             return async.GetTrustedBeneficiaries().Result;
-        }
-
-        /// <summary>
-        /// **For testing purposes only**
-        /// Creates a linked test bank account.
-        /// </summary>
-        /// <param name="balance">the account balance to set</param>
-        /// <returns>the OAuth bank authorization</returns>
-        public ProtoAccount CreateAndLinkTestBankAccount(Money balance)
-        {
-            return async.CreateAndLinkTestBankAccount(balance).Result;
         }
     }
 }

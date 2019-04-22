@@ -14,16 +14,12 @@ namespace samples
         /// <returns>balance of one of grantor's acounts</returns>
         public static Money RedeemAccessToken(Member grantee, string tokenId)
         {
-            // Specifies whether the request originated from a customer
             var customerInitiated = true;
 
-            // Access grantor's account list by applying
-            // access token to the grantee client.
             var grantor = grantee.ForAccessToken(tokenId, customerInitiated);
             var accounts = grantor.GetAccounts().Result;
 
-            // Get the data we want
-            var balance0 = accounts[0].GetCurrentBalance(Standard).Result;
+            Money balance0 = accounts[0].GetBalance(Standard).Result.Current;
             return balance0;
         }
     }

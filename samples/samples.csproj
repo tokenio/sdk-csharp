@@ -41,9 +41,8 @@
   <ItemGroup>
     <Compile Include="CancelAccessTokenSample.cs" />
     <Compile Include="CancelTransferTokenSample.cs" />
-    <Compile Include="CreateAndEndorseAccessTokenSample.cs" />
-    <Compile Include="CreateAndEndorseTransferTokenSample.cs" />
     <Compile Include="CreateMemberSample.cs" />
+    <Compile Include="DeleteMemberSample.cs" />
     <Compile Include="GetBalanceSample.cs" />
     <Compile Include="GetTokensSample.cs" />
     <Compile Include="GetTransactionsSample.cs" />
@@ -51,11 +50,9 @@
     <Compile Include="MemberMethodsSample.cs" />
     <Compile Include="MemberRecoverySample.cs" />
     <Compile Include="NotifySample.cs" />
-    <Compile Include="ProvisionDeviceSample.cs" />
     <Compile Include="RedeemAccessTokenSample.cs" />
     <Compile Include="RedeemTransferTokenSample.cs" />
-    <Compile Include="ReplaceAccessTokenSample.cs" />
-    <Compile Include="ViewTransferTokenAttachmentsSample.cs" />
+    <Compile Include="StoreAndRetrieveTokenRequestSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sdk\sdk.csproj">
