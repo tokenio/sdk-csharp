@@ -24,7 +24,33 @@ namespace samples
             var accounts = member.GetAccounts().Result;
             foreach (var account in accounts)
             {
-                var balance = member.GetBalanceBlocking(account.Id(), Standard).Current;
+                var balance = member.GetCurrentBalance(account.Id(), Standard).Result;
+                if (sums.ContainsKey(balance.Currency))
+                {
+                    sums[balance.Currency] += Convert.ToDouble(balance.Value);
+                }
+                else
+                {
+                    sums[balance.Currency] = Convert.ToDouble(balance.Value);
+                }
+            }
+
+            return sums;
+        }
+
+        /// <summary>
+        /// Get a member's balances.
+        /// </summary>
+        /// <param name="member">member</param>
+        /// <returns>dictionary currency: total</returns>
+        public static IDictionary<string, double> AccountGetBalanceSample(Member member)
+        {
+            var sums = new Dictionary<string, double>();
+
+            var accounts = member.GetAccounts().Result;
+            foreach (var account in accounts)
+            {
+                var balance = account.GetCurrentBalance(Standard).Result;
                 if (sums.ContainsKey(balance.Currency))
                 {
                     sums[balance.Currency] += Convert.ToDouble(balance.Value);

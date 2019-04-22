@@ -189,7 +189,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="requestId">the request id</param>
         /// <returns>the token request</returns>
-        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string requestId)
+        public Task<TokenRequest> RetrieveTokenRequest(string requestId)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.RetrieveTokenRequest(requestId);

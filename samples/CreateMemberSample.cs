@@ -13,11 +13,19 @@ namespace samples
         /// <returns>a new Member instance</returns>
         public static Member CreateMember()
         {
+            // Create the client, which communicates with
+            // the Token cloud.
             var tokenClient = TokenClient.NewBuilder()
                 .WithKeyStore(new InMemoryKeyStore())
                 .ConnectTo(TokenCluster.SANDBOX)
                 .Build();
 
+            // An alias is a "human-readable" reference to a member.
+            // Here, we use a random email. This works in test environments.
+            // but in production, TokenOS would try to verify we own the address,
+            // so a random address wouldn't be useful for much.
+            // We use a random address because otherwise, if we ran a second
+            // time, Token would say the alias was already taken.
             var alias = new Alias
             {
                 Type = Email,
@@ -26,6 +34,7 @@ namespace samples
 
             var newMember = tokenClient.CreateMember(alias).Result;
 
+            // let user recover member by verifying email if they lose keys
             newMember.UseDefaultRecoveryRule().Wait();
 
             return newMember;

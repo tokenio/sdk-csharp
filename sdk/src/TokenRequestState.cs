@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Security.Cryptography;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 namespace Tokenio
@@ -20,9 +18,7 @@ namespace Tokenio
 
         public static TokenRequestState ParseFrom(string serialized)
         {
-            //ToDo(RD-2410): Remove WebUtility.UrlEncode call. It's only for backward compatibility with the old Token Request Flow.
-            var urlDecoded = WebUtility.UrlDecode(serialized);
-            var json = Base64UrlEncoder.Decode(urlDecoded);
+            var json = WebUtility.UrlDecode(serialized);
             return JsonConvert.DeserializeObject<TokenRequestState>(json);
         }
 
@@ -32,8 +28,7 @@ namespace Tokenio
 
         public string Serialize()
         {
-            var json =  JsonConvert.SerializeObject(this);
-            return Base64UrlEncoder.Encode(json);
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

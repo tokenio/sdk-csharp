@@ -7,6 +7,7 @@ using Grpc.Core.Interceptors;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Rpc;
@@ -208,6 +209,45 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Provisions a new device for an existing user. The call generates a set of keys
+        /// that are returned back. The keys need to be approved by an existing device/keys.
+        /// </summary>
+        /// <param name="alias">the alias to provision the device for</param>
+        /// <returns>information of the device</returns>
+        public Task<DeviceInfo> ProvisionDevice(Alias alias)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            return unauthenticated
+                .GetMemberId(alias)
+                .Map(memberId =>
+                {
+                    if (memberId == null)
+                    {
+                        throw new ArgumentException($"Alias:{alias.Value} is not found");
+                    }
+
+                    var crypto = cryptoEngineFactory.Create(memberId);
+                    return new DeviceInfo(memberId, new List<Key>
+                    {
+                        crypto.GenerateKey(Level.Privileged),
+                        crypto.GenerateKey(Level.Standard),
+                        crypto.GenerateKey(Level.Low)
+                    });
+                });
+        }
+
+        /// <summary>
+        /// Provisions a new device for an existing user. The call generates a set of keys
+        /// that are returned back. The keys need to be approved by an existing device/keys.
+        /// </summary>
+        /// <param name="alias">the alias to provision the device for</param>
+        /// <returns>information of the device</returns>
+        public DeviceInfo ProvisionDeviceBlocking(Alias alias)
+        {
+            return ProvisionDevice(alias).Result;
+        }
+
+        /// <summary>
         /// Return a Member set up to use some Token member's keys (assuming we have them).
         /// </summary>
         /// <param name="memberId">the member ID</param>
@@ -239,10 +279,7 @@ namespace Tokenio
         public Task<TokenRequest> RetrieveTokenRequest(string requestId)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.RetrieveTokenRequest(requestId)
-                .Map(tokenRequest => TokenRequest.fromProtos(
-                    tokenRequest.RequestPayload, 
-                    tokenRequest.RequestOptions));
+            return unauthenticated.RetrieveTokenRequest(requestId);
         }
         
         /// <summary>
@@ -253,6 +290,68 @@ namespace Tokenio
         public TokenRequest RetrieveTokenRequestBlocking(string requestId)
         {
             return RetrieveTokenRequest(requestId).Result;
+        }
+
+        /// <summary>
+        /// Notifies to add a key.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="keys">keys that need approval</param>
+        /// <param name="deviceMetadata">device metadata of the keys</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyAddKey(
+            Alias alias,
+            IList<Key> keys,
+            DeviceMetadata deviceMetadata)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            var addKey = new AddKey
+            {
+                Keys = {keys},
+                DeviceMetadata = deviceMetadata
+            };
+            return unauthenticated.NotifyAddKey(alias, addKey);
+        }
+
+        /// <summary>
+        /// Notifies to add a key.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="keys">keys that need approval</param>
+        /// <param name="deviceMetadata">device metadata of the keys</param>
+        /// <returns>status of the notification</returns>
+        public NotifyStatus NotifyAddKeyBlocking(
+            Alias alias,
+            IList<Key> keys,
+            DeviceMetadata deviceMetadata)
+        {
+            return NotifyAddKey(alias, keys, deviceMetadata).Result;
+        }
+
+        /// <summary>
+        /// Sends a notification to request a payment.
+        /// </summary>
+        /// <param name="tokenPayload">the payload of a token to be sent</param>
+        /// <returns>status of the notification request</returns>
+        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            if (string.IsNullOrEmpty(tokenPayload.RefId))
+            {
+                tokenPayload.RefId = Util.Nonce();
+            }
+
+            return unauthenticated.NotifyPaymentRequest(tokenPayload);
+        }
+
+        /// <summary>
+        /// Sends a notification to request a payment.
+        /// </summary>
+        /// <param name="tokenPayload">the payload of a token to be sent</param>
+        /// <returns>status of the notification request</returns>
+        public NotifyStatus NotifyPaymentRequestBlocking(TokenPayload tokenPayload)
+        {
+            return NotifyPaymentRequest(tokenPayload).Result;
         }
 
         /// <summary>
@@ -640,11 +739,11 @@ namespace Tokenio
                     var payload = new TokenRequestStatePayload
                     {
                         TokenId = parameters.TokenId,
-                        //ToDo(RD-2410): Remove WebUtility.UrlEncode call. It's only for backward compatibility with the old Token Request Flow.
-                        State = WebUtility.UrlEncode(parameters.SerializedState) 
+                        State = WebUtility.UrlEncode(parameters.SerializedState)
                     };
 
                     Util.VerifySignature(member, payload, parameters.Signature);
+
                     return TokenRequestCallback.Create(parameters.TokenId, state.InnerState);
                 });
         }
@@ -663,28 +762,7 @@ namespace Tokenio
         {
             return ParseTokenRequestCallbackUrl(callbackUrl, csrfToken).Result;
         }
-        
-        /// <summary>
-        /// Returns a list of countries with Token-enabled banks.
-        /// </summary>
-        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider</param>
-        /// <returns>a list of country codes</returns>
-        public Task<IList<string>> GetCountries(string provider)
-        {
-            UnauthenticatedClient unauthenticatedClient = ClientFactory.Unauthenticated(channel);
-            return unauthenticatedClient.GetCountries(provider);
-        }
-            
-        /// <summary>
-        /// Returns a list of countries with Token-enabled banks.
-        /// </summary>
-        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider</param>
-        /// <returns>a list of country codes</returns>
-        public IList<string> GetCountriesBlocking(string provider)
-        {
-            return GetCountries(provider).Result;
-        }
-        
+
         /// <summary>
         /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
@@ -842,6 +920,5 @@ namespace Tokenio
                     tokenCluster ?? TokenCluster.SANDBOX);
             }
         }
-        
     }
 }

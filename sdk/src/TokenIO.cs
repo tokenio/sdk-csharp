@@ -158,7 +158,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="requestId">the request id</param>
         /// <returns>the token request</returns>
-        public Proto.Common.TokenProtos.TokenRequest RetrieveTokenRequest(string requestId)
+        public TokenRequest RetrieveTokenRequest(string requestId)
         {
             return async.RetrieveTokenRequest(requestId).Result;
         }
