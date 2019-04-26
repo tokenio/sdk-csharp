@@ -23,15 +23,15 @@ namespace Test
         }
 
         [Test]
-        public void storeAndRetrieveAccessToken()
+        public void StoreAndRetrieveAccessToken()
         {
-            var requestId = StoreAndRetrieveTokenRequestSample.storeAccessTokenRequest(member);
+            var requestId = StoreAndRetrieveTokenRequestSample.StoreAccessTokenRequest(member);
             TokenRequest tokenRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
             Assert.IsNotNull(tokenRequest);
         }
         
         [Test]
-        public void storeAndRetrieveTransferToken()
+        public void StoreAndRetrieveTransferToken()
         {
             var requestId = StoreAndRetrieveTokenRequestSample.StoreTransferTokenRequest(member);
             TokenRequest tokenRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);

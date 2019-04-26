@@ -26,7 +26,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="resources">access token resources</param>
         /// <returns>Builder instance</returns>
-        public static AccessBuilder accessTokenRequestBuilder(
+        public static AccessBuilder AccessTokenRequestBuilder(
             params TokenRequestPayload.Types.AccessBody.Types.ResourceType[] resources)
         {
             return new AccessBuilder(resources);
@@ -38,7 +38,7 @@ namespace Tokenio
         /// <param name="amount">lifetime amount of the token request</param>
         /// <param name="currency">currency of the token request</param>
         /// <returns>Builder instance</returns>
-        public static TransferBuilder transferTokenRequestBuilder(double amount, string currency)
+        public static TransferBuilder TransferTokenRequestBuilder(double amount, string currency)
         {
             return new TransferBuilder(amount, currency);
         }

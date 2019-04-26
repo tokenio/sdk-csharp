@@ -15,7 +15,7 @@ namespace samples
         /// <returns>a token request id</returns>
         public static string StoreTransferTokenRequest(Member payee)
         {
-            var request = TokenRequest.transferTokenRequestBuilder(100, "EUR")
+            var request = TokenRequest.TransferTokenRequestBuilder(100, "EUR")
                 .SetToMemberId(payee.MemberId())
                 .SetDescription("Book purchase")
                 .SetRedirectUrl("https://token.io/callback")
@@ -36,9 +36,9 @@ namespace samples
         /// </summary>
         /// <param name="grantee">Token member requesting the access token be created</param>
         /// <returns>a token request id</returns>
-        public static string storeAccessTokenRequest(Member grantee)
+        public static string StoreAccessTokenRequest(Member grantee)
         {
-            var request = TokenRequest.accessTokenRequestBuilder(
+            var request = TokenRequest.AccessTokenRequestBuilder(
                     TokenRequestPayload.Types.AccessBody.Types.ResourceType.Accounts,
                     TokenRequestPayload.Types.AccessBody.Types.ResourceType.Balances)
                 .SetToMemberId(grantee.MemberId())
@@ -61,7 +61,7 @@ namespace samples
         /// <param name="tokenClient">tokenIO instance to use</param>
         /// <param name="requestId">id of request to retrieve</param>
         /// <returns>token request that was stored with the request id</returns>
-        public static TokenRequest retrieveTokenRequest(TokenClient tokenClient, string requestId)
+        public static TokenRequest RetrieveTokenRequest(TokenClient tokenClient, string requestId)
         {
             return tokenClient.RetrieveTokenRequestBlocking(requestId);
         }
