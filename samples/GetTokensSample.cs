@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Tokenio;
 using Tokenio.Proto.Common.TokenProtos;
 
@@ -6,45 +8,44 @@ namespace samples
     public class GetTokensSample
     {
         /// <summary>
-        /// Gets a token by ID
+        /// Illustrate Member.GetToken
         /// </summary>
-        /// <param name="member">member represented by the token (payer/payee/grantor/grantee)</param>
-        /// <param name="tokenId">token ID</param>
-        /// <returns>token</returns>
-        public static Token GetToken(Member member, string tokenId)
+        /// <param name="member">Token member</param>
+        public static Token GetToken(Member member, String tokenId)
         {
-            var token = member.GetTokenBlocking(tokenId);
-
+            Token token = member.GetTokenBlocking(tokenId);
+            
             // get token payload
-            var payload = token.Payload;
-
+            TokenPayload payload = token.Payload;
+            
             // get signatures
-            var signatures = token.PayloadSignatures;
+            IList<TokenSignature> signatures = token.PayloadSignatures;
 
             return token;
         }
 
-
         /// <summary>
-        /// Gets a list of transfer tokens associated with a member
+        /// Illustrate Member.GetTransferTokens
         /// </summary>
-        /// <param name="member">member</param>
-        /// <returns>paged list of transfer tokens</returns>
-        public static PagedList<Token> getTransferTokens(Member member)
+        /// <param name="member">Token member</param>
+        /// <returns></returns>
+        public static PagedList<Token> GetTransferTokens(Member member)
         {
-           var pagedList =  member.GetTransferTokensBlocking("", 10);
+            // last 10 tokens and offset that can be used to get the next 10
+            PagedList<Token> pagedList = member.GetTransferTokensBlocking("", 10);
 
-           return pagedList;
+            return pagedList;
         }
 
         /// <summary>
-        /// Gets a list of access tokens associated with the member.
+        /// Illustrate Member.GetAccessTokens
         /// </summary>
-        /// <param name="member">member</param>
-        /// <returns>paged list of access tokens</returns>
-        public static PagedList<Token> getAccessTokens(Member member)
+        /// <param name="member">Token member</param>
+        /// <returns></returns>
+        public static PagedList<Token> GetAccessTokens(Member member)
         {
-            var pagedList = member.GetAccessTokensBlocking("", 10);
+            // last 10 tokens and offset that can be used to get the next 10
+            PagedList<Token> pagedList = member.GetAccessTokensBlocking("", 10);
 
             return pagedList;
         }

@@ -50,6 +50,7 @@ for name in files_to_modify:
 	with open(name) as file:
 		content=file.read()
 	with open(name, 'w') as file:
-		for old, new in substitutions.items():
+		# Substitutions start from the longest key in case the longer keys contain the short keys
+		for old, new in sorted(substitutions.items(), key=lambda x: len(x[0]), reverse=True):
 			content = content.replace(old, new)
 		file.write(content)
