@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.BankProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
@@ -130,7 +131,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>the token request</returns>
-        public Task<TokenRequest> RetrieveTokenRequest(string tokenRequestId)
+        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId)
         {
             var request = new RetrieveTokenRequestRequest {RequestId = tokenRequestId};
             return gateway.RetrieveTokenRequestAsync(request)
@@ -351,6 +352,27 @@ namespace Tokenio.Rpc
             var request = new GetTokenRequestResultRequest {TokenRequestId = tokenRequestId};
             return gateway.GetTokenRequestResultAsync(request)
                 .ToTask(response => new TokenRequestResult(response.TokenId, response.Signature));
+        }
+        
+        /// <summary>
+        /// Returns a list of countries with Token-enabled banks.
+        /// </summary>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider</param>
+        /// <returns>a list if country codes</returns>
+        public Task<IList<string>> GetCountries(string provider)
+        {
+            var request = new GetBanksCountriesRequest();
+            if (provider != null)
+            {
+                var filter = new BankFilter
+                {
+                    Provider = provider
+                };
+                request.Filter = filter;
+            }
+            
+            return gateway.GetBanksCountriesAsync(request)
+                .ToTask(response => (IList<string>)response.Countries);
         }
     }
 }

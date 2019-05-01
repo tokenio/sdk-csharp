@@ -41,7 +41,7 @@ namespace Tokenio
 
         public static Alias ToNormalized(this Alias alias)
         {
-            return new Alias {Value = alias.Value.ToLower().Trim(), Type = alias.Type};
+            return new Alias {  Value = alias.Value.ToLower().Trim(), Type = alias.Type, Realm = alias.Realm };
         }
 
         public static async Task<TResult> Map<TSource, TResult>(

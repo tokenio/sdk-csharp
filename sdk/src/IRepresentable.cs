@@ -13,32 +13,6 @@ namespace Tokenio
     public interface IRepresentable
     {
         /// <summary>
-        /// Looks up member addresses.
-        /// </summary>
-        /// <returns>a list of addresses</returns>
-        Task<IList<AddressRecord>> GetAddresses();
-        
-        /// <summary>
-        /// Looks up member addresses.
-        /// </summary>
-        /// <returns>a list of addresses</returns>
-        IList<AddressRecord> GetAddressesBlocking();
-
-        /// <summary>
-        /// Looks up an address by id.
-        /// </summary>
-        /// <param name="addressId">the address id</param>
-        /// <returns>the address record</returns>
-        Task<AddressRecord> GetAddress(string addressId);
-        
-        /// <summary>
-        /// Looks up an address by id.
-        /// </summary>
-        /// <param name="addressId">the address id</param>
-        /// <returns>the address record</returns>
-        AddressRecord GetAddressBlocking(string addressId);
-
-        /// <summary>
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
         /// <returns>a list of accounts</returns>
@@ -153,13 +127,13 @@ namespace Tokenio
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        Task<IList<TransferEndpoint>> ResolveTransferDestination(string accountId);
+        Task<IList<TransferEndpoint>> ResolveTransferDestinations(string accountId);
         
         /// <summary>
         /// Resolves transfer destinations for the given account.
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        IList<TransferEndpoint> ResolveTransferDestinationBlocking(string accountId);
+        IList<TransferEndpoint> ResolveTransferDestinationsBlocking(string accountId);
     }
 }

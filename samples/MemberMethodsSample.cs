@@ -38,10 +38,8 @@ namespace samples
                 Value = "verified-domain.com"
             };
             
-            // add the alias
             member.AddAliasBlocking(alias);
             
-            // remove the alias
             member.RemoveAliasBlocking(alias);
         }
 
@@ -57,13 +55,10 @@ namespace samples
                 Value = "user-email@example.com"
             };
             
-            // If this call fails then the alias does not correspond to an existing member.
             TokenMember resolved = client.ResolveAliasBlocking(alias);
             
-            // resolved member ID from alias
             string memberId = resolved.Id;
             
-            // The resolved alias with the correct type, e.g. EMAIL.
             Alias resolvedAlias = resolved.Alias;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Rpc;
@@ -49,42 +50,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Sets this account as a member's default account.
-        /// </summary>
-        /// <returns>a task</returns>
-        public Task SetAsDefault()
-        {
-            return client.SetDefaultAccount(Id());
-        }
-        
-        /// <summary>
-        /// Sets this account as a member's default account.
-        /// </summary>
-        /// <returns>a task</returns>
-        public void SetAsDefaultBlocking()
-        {
-            SetAsDefault().Wait();
-        }
-
-        /// <summary>
-        /// Looks up if this account is default.
-        /// </summary>
-        /// <returns>true if this account is default; false otherwise.</returns>
-        public Task<bool> IsDefault()
-        {
-            return client.IsDefault(Id());
-        }
-        
-        /// <summary>
-        /// Looks up if this account is default.
-        /// </summary>
-        /// <returns>true if this account is default; false otherwise.</returns>
-        public bool IsDefaultBlocking()
-        {
-            return IsDefault().Result;
-        }
-
-        /// <summary>
         /// Gets an account name.
         /// </summary>
         /// <returns>account name</returns>
@@ -112,6 +77,52 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Looks up an account current balance.
+        /// </summary>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>the current balance</returns>
+        [Obsolete("GetCurrentBalance is deprecated. Use GetBalance(keyLevel) instead")]
+        public Task<Money> GetCurrentBalance(Level keyLevel)
+        {
+            return client.GetBalance(account.Id, keyLevel)
+                .Map(balance => balance.Current);
+        }
+        
+        /// <summary>
+        /// Looks up an account current balance.
+        /// </summary>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>the current balance</returns>
+        [Obsolete("GetCurrentBalanceBlocking is deprecated. Use GetBalanceBlocking(keyLevel).Current instead")]
+        public Money GetCurrentBalanceBlocking(Level keyLevel)
+        {
+            return GetCurrentBalance(keyLevel).Result;
+        }
+
+        /// <summary>
+        /// Looks up an account available balance.
+        /// </summary>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>the available balance</returns>
+        [Obsolete("GetAvailableBalance is deprecated. Use GetBalance(keyLevel) instead.")]
+        public Task<Money> GetAvailableBalance(Level keyLevel)
+        {
+            return client.GetBalance(account.Id, keyLevel)
+                .Map(balance => balance.Available);
+        }
+        
+        /// <summary>
+        /// Looks up an account available balance.
+        /// </summary>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>the available balance</returns>
+        [Obsolete("GetAvailableBalanceBlocking is deprecated. Use GetBalanceBlocking(keyLevel).Available instead.")]
+        public Money GetAvailableBalanceBlocking(Level keyLevel)
+        {
+            return GetAvailableBalance(keyLevel).Result;
+        }
+
+        /// <summary>
         /// Looks up an account balance.
         /// </summary>
         /// <param name="keyLevel">key level</param>
@@ -129,48 +140,6 @@ namespace Tokenio
         public Balance GetBalanceBlocking(Level keyLevel)
         {
             return GetBalance(keyLevel).Result;
-        }
-
-        /// <summary>
-        /// Looks up an account current balance.
-        /// </summary>
-        /// <param name="keyLevel">key level</param>
-        /// <returns>the current balance</returns>
-        public Task<Money> GetCurrentBalance(Level keyLevel)
-        {
-            return client.GetBalance(account.Id, keyLevel)
-                .Map(balance => balance.Current);
-        }
-        
-        /// <summary>
-        /// Looks up an account current balance.
-        /// </summary>
-        /// <param name="keyLevel">key level</param>
-        /// <returns>the current balance</returns>
-        public Money GetCurrentBalanceBlocking(Level keyLevel)
-        {
-            return GetCurrentBalance(keyLevel).Result;
-        }
-
-        /// <summary>
-        /// Looks up an account available balance.
-        /// </summary>
-        /// <param name="keyLevel">key level</param>
-        /// <returns>the available balance</returns>
-        public Task<Money> GetAvailableBalance(Level keyLevel)
-        {
-            return client.GetBalance(account.Id, keyLevel)
-                .Map(balance => balance.Available);
-        }
-        
-        /// <summary>
-        /// Looks up an account available balance.
-        /// </summary>
-        /// <param name="keyLevel">key level</param>
-        /// <returns>the available balance</returns>
-        public Money GetAvailableBalanceBlocking(Level keyLevel)
-        {
-            return GetAvailableBalance(keyLevel).Result;
         }
 
         /// <summary>
@@ -212,6 +181,15 @@ namespace Tokenio
             Level keyLevel)
         {
             return client.GetTransactions(account.Id, limit, keyLevel, offset);
+        }
+        
+        /// <summary>
+        /// Returns ProtoAccount object
+        /// </summary>
+        /// <returns> the ProtoAccount object</returns>
+        public ProtoAccount toProto()
+        {
+            return account;
         }
         
         /// <summary>
