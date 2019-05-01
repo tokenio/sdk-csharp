@@ -28,7 +28,8 @@ namespace Test
             {
                 // use uppercase to test normalization
                 Value = Util.Nonce().ToUpper() + "+noverify@example.com",
-                Type = Email
+                Type = Email,
+                Realm = "token"
             };
         }
 
