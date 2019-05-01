@@ -34,11 +34,9 @@ namespace Tokenio
         
         public static string HashAlias(Alias alias)
         {
-            var realm = alias.Realm;
-            alias.Realm = "";
-            var encoded = Base58.Encode(Sha256Hash(Encoding.UTF8.GetBytes(ToJson(alias))));
-            alias.Realm = realm;
-            return encoded;
+            var aliasClone = alias.Clone();
+            aliasClone.Realm = "";
+            return Base58.Encode(Sha256Hash(Encoding.UTF8.GetBytes(ToJson(aliasClone))));
         }
 
         public static string NormalizeAndHashAlias(Alias alias)
