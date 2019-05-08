@@ -3,7 +3,7 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using TokenRequest = Tokenio.TokenRequest;
 
-namespace samples
+namespace Sample
 {
     public class StoreAndRetrieveTokenRequestSample
     {

@@ -1,41 +1,37 @@
-using System;
-using NUnit.Framework;
-using samples;
+using Sample;
+using Xunit;
 using Tokenio;
-using Tokenio.Proto.Common.TokenProtos;
 using Member = Tokenio.Member;
 using static Test.TestUtil;
 using TokenRequest = Tokenio.TokenRequest;
 
 namespace Test
 {
-    [TestFixture]
     public class StoreAndRetrieveTokenRequestSampleTest
     {
         private static readonly TokenClient tokenClient = NewSdkInstance();
 
         private Member member;
-        
-        [SetUp]
-        public void Init()
+
+        public StoreAndRetrieveTokenRequestSampleTest()
         {
             member = tokenClient.CreateMemberBlocking(Alias());
         }
 
-        [Test]
+        [Fact]
         public void StoreAndRetrieveAccessToken()
         {
             var requestId = StoreAndRetrieveTokenRequestSample.StoreAccessTokenRequest(member);
             TokenRequest tokenRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
-            Assert.IsNotNull(tokenRequest);
+            Assert.NotNull(tokenRequest);
         }
-        
-        [Test]
+
+        [Fact]
         public void StoreAndRetrieveTransferToken()
         {
             var requestId = StoreAndRetrieveTokenRequestSample.StoreTransferTokenRequest(member);
             TokenRequest tokenRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
-            Assert.IsNotNull(tokenRequest);
+            Assert.NotNull(tokenRequest);
         }
     }
 }

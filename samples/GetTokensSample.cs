@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Tokenio;
 using Tokenio.Proto.Common.TokenProtos;
 
-namespace samples
+namespace Sample
 {
     public class GetTokensSample
     {

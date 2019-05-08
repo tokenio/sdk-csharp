@@ -1,9 +1,9 @@
 ﻿using Tokenio;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace samples
+namespace Sample
 {
     public class GetTransactionsSample
     {
@@ -15,7 +15,7 @@ namespace samples
         {
             var accounts = payer.GetAccounts().Result;
             var accountId = accounts[0].Id();
-            foreach (var transaction in payer.GetTransactions(accountId, 10, Standard, null).Result.List)
+            foreach (var transaction in payer.GetTransactions(accountId, 10, Key.Types.Level.Standard, null).Result.List)
             {
                 DisplayTransaction(
                     transaction.Amount.Currency,
@@ -39,7 +39,7 @@ namespace samples
             var accountId = accounts[0].Id();
 
             var transactionId = transfer.TransactionId;
-            var transaction = payer.GetTransaction(accountId, transactionId, Standard).Result;
+            var transaction = payer.GetTransaction(accountId, transactionId, Key.Types.Level.Standard).Result;
             return transaction;
         }
 
@@ -51,7 +51,7 @@ namespace samples
         {
             var account = payer.GetAccounts().Result[0];
 
-            foreach (var transaction in account.GetTransactions(null, 10, Standard).Result.List)
+            foreach (var transaction in account.GetTransactions(null, 10, Key.Types.Level.Standard).Result.List)
             {
                 DisplayTransaction(
                     transaction.Amount.Currency,
@@ -74,7 +74,7 @@ namespace samples
             var account = payer.GetAccounts().Result[0];
 
             var txnId = transfer.TransactionId;
-            var transaction = account.GetTransaction(txnId, Standard).Result;
+            var transaction = account.GetTransaction(txnId, Key.Types.Level.Standard).Result;
             return transaction;
         }
 

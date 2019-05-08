@@ -543,9 +543,7 @@ namespace Tokenio
                     new AsyncMetadataInterceptor(metadata =>
                     {
                         metadata.Add("token-sdk", "csharp");
-                        metadata.Add(
-                            "token-sdk-version",
-                            Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                        metadata.Add("token-sdk-version", "1.2.2"); //TODO
                         metadata.Add("token-dev-key", devKey);
                         return metadata;
                     })

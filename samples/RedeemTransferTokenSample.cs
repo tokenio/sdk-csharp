@@ -2,9 +2,8 @@
 using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
-using static Tokenio.Proto.Common.AccountProtos.BankAccount.Types;
 
-namespace samples
+namespace Sample
 {
     public class RedeemTransferTokenSample
     {
@@ -24,7 +23,7 @@ namespace samples
                 {
                     Account = new BankAccount
                     {
-                        Token = new Token
+                        Token = new BankAccount.Types.Token
                         {
                             MemberId = payee.MemberId(),
                             AccountId = accountId

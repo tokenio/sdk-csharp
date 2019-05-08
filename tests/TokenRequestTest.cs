@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using NUnit.Framework;
+using Xunit;
 using Tokenio;
 using Tokenio.Proto.Common.TokenProtos;
 using static Test.TestUtil;
 using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types;
-using TokenRequest = Tokenio.Proto.Common.TokenProtos.TokenRequest;
 
 namespace Test
 {
-    [TestFixture]
     public class TokenRequestTest
     {
         private static readonly string tokenUrl = "https://token.io";
@@ -17,13 +15,12 @@ namespace Test
 
         private Member member;
 
-        [SetUp]
-        public void Init()
+        public TokenRequestTest()
         {
             member = tokenClient.CreateMemberBlocking(Alias());
         }
 
-        [Test]
+        [Fact]
         public void AddAndGetTransferTokenRequest()
         {
             var storedPayload = new TokenRequestPayload
@@ -50,13 +47,13 @@ namespace Test
             };
 
             var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
-            Assert.IsNotEmpty(requestId);
+            Assert.NotEmpty(requestId);
             var retrievedRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
-            Assert.AreEqual(storedPayload, retrievedRequest.GetTokenRequestPayload());
-            Assert.AreEqual(storedOptions, retrievedRequest.GetTokenRequestOptions());
+            Assert.Equal(storedPayload, retrievedRequest.GetTokenRequestPayload());
+            Assert.Equal(storedOptions, retrievedRequest.GetTokenRequestOptions());
         }
 
-        [Test]
+        [Fact]
         public void AddAndGetAccessTokenRequest()
         {
             IList<ResourceType> types = new List<ResourceType>();
@@ -84,22 +81,22 @@ namespace Test
             };
             
             var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
-            Assert.IsNotEmpty(requestId);
+            Assert.NotEmpty(requestId);
 
             var retrievedRequest = tokenClient.RetrieveTokenRequestBlocking(requestId);
-            Assert.AreEqual(storedPayload, retrievedRequest.GetTokenRequestPayload());
-            Assert.AreEqual(storedOptions, retrievedRequest.GetTokenRequestOptions());
+            Assert.Equal(storedPayload, retrievedRequest.GetTokenRequestPayload());
+            Assert.Equal(storedOptions, retrievedRequest.GetTokenRequestOptions());
         }
 
         
-        [Test]
+        [Fact]
         public void AddAndGetTokenRequest_NotFound()
         {
             Assert.Throws<AggregateException>(() => tokenClient.RetrieveTokenRequestBlocking("bogus"));
             Assert.Throws<AggregateException>(() => tokenClient.RetrieveTokenRequestBlocking(member.MemberId()));
         }
         
-        [Test]
+        [Fact]
         public void AddAndGetTokenRequest_WrongMember()
         {
             var storedPayload = new TokenRequestPayload

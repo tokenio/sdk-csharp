@@ -2,7 +2,7 @@
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
 
-namespace samples
+namespace Sample
 {
     public class GetTransfersSample
     {

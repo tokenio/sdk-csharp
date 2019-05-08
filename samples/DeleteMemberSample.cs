@@ -1,6 +1,6 @@
 using Tokenio;
 
-namespace samples
+namespace Sample
 {
     /// <summary>
     /// Deletes the member.

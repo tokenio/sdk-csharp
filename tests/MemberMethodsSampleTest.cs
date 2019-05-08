@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using samples;
+﻿using Sample;
+using Xunit;
 using Tokenio;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Security;
@@ -8,20 +8,18 @@ using Member = Tokenio.Member;
 
 namespace Test
 {
-    [TestFixture]
     public class MemberMethodsSampleTest
     {
         private static readonly TokenClient tokenClient = NewSdkInstance();
 
-        private Member member;
+        private readonly Member member;
 
-        [SetUp]
-        public void Init()
+        public MemberMethodsSampleTest()
         {
             member = tokenClient.CreateMemberBlocking(Alias());
         }
-        
-        [Test]
+
+        [Fact]
         public void keys()
         {
             IKeyStore keyStore = new InMemoryKeyStore();
@@ -29,13 +27,13 @@ namespace Test
             MemberMethodsSample.keys(crypto, member);
         }
 
-        [Test]
+        [Fact]
         public void profiles()
         {
             Profile profile = MemberMethodsSample.profiles(member);
-            
-            Assert.IsNotEmpty(profile.DisplayNameFirst);
-            Assert.IsNotEmpty(profile.DisplayNameLast);
+
+            Assert.NotEmpty(profile.DisplayNameFirst);
+            Assert.NotEmpty(profile.DisplayNameLast);
         }
     }
 }

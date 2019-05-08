@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using NUnit.Framework;
+using Xunit;
 using Tokenio;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
@@ -8,8 +9,7 @@ using KeyPair = Tokenio.Security.KeyPair;
 
 namespace Test.Security
 {
-    [TestFixture]
-    public class UnsecuredFileSystemKeyStoreTest
+    public class UnsecuredFileSystemKeyStoreTest : IDisposable
     {
         private readonly string directory = "./testKeys";
 
@@ -21,8 +21,7 @@ namespace Test.Security
         private readonly KeyPair lowOld = TestUtil.GenerateKeyPair(Low);
         private readonly KeyPair lowNew = TestUtil.GenerateKeyPair(Low);
 
-        [SetUp]
-        public void Setup()
+        public UnsecuredFileSystemKeyStoreTest()
         {
             var keyStore = new UnsecuredFileSystemKeyStore(directory);
             keyStore.Put(memberId1, standard);
@@ -30,35 +29,34 @@ namespace Test.Security
             keyStore.Put(memberId1, lowNew);
             keyStore.Put(memberId2, privileged);
 
-            Assert.AreEqual(standard, keyStore.GetByLevel(memberId1, Standard));
-            Assert.AreEqual(lowNew, keyStore.GetByLevel(memberId1, Low));
-            CollectionAssert.AreEquivalent(
+            Assert.Equal(standard, keyStore.GetByLevel(memberId1, Standard));
+            Assert.Equal(lowNew, keyStore.GetByLevel(memberId1, Low));
+            CollectionAssert.Equivalent(
                 keyStore.KeyList(memberId1),
                 new List<KeyPair> {standard, lowNew, lowOld});
 
-            Assert.AreEqual(privileged, keyStore.GetByLevel(memberId2, Privileged));
-            Assert.AreEqual(privileged, keyStore.GetById(memberId2, privileged.Id));
+            Assert.Equal(privileged, keyStore.GetByLevel(memberId2, Privileged));
+            Assert.Equal(privileged, keyStore.GetById(memberId2, privileged.Id));
         }
 
-        [Test]
+        public void Dispose()
+        {
+            Directory.Delete(directory, true);
+        }
+        
+        [Fact]
         public void ReadFromFile()
         {
             var keyStore = new UnsecuredFileSystemKeyStore(directory);
 
-            Assert.AreEqual(standard, keyStore.GetByLevel(memberId1, Standard));
-            Assert.AreEqual(lowNew, keyStore.GetByLevel(memberId1, Low));
-            CollectionAssert.AreEquivalent(
+            Assert.Equal(standard, keyStore.GetByLevel(memberId1, Standard));
+            Assert.Equal(lowNew, keyStore.GetByLevel(memberId1, Low));
+            CollectionAssert.Equivalent(
                 keyStore.KeyList(memberId1),
                 new List<KeyPair> {standard, lowNew, lowOld});
 
-            Assert.AreEqual(privileged, keyStore.GetByLevel(memberId2, Privileged));
-            Assert.AreEqual(privileged, keyStore.GetById(memberId2, privileged.Id));
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            Directory.Delete(directory, true);
+            Assert.Equal(privileged, keyStore.GetByLevel(memberId2, Privileged));
+            Assert.Equal(privileged, keyStore.GetById(memberId2, privileged.Id));
         }
     }
 }

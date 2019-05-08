@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using Tokenio;
-using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.NotificationProtos;
-using Tokenio.Proto.Common.TokenProtos;
 
-namespace samples
+namespace Sample
 {
     public class NotifySample
     {

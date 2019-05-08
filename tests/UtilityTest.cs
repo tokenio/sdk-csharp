@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using NUnit.Framework;
+using Xunit;
 using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
@@ -10,10 +10,9 @@ using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types.Resource.Types;
 
 namespace Test
 {
-    [TestFixture]
     public class UtilityTest
     {
-        [Test]
+        [Fact]
         public void JsonSerializer()
         {
             var payload = new TokenPayload
@@ -35,10 +34,10 @@ namespace Test
                 RefId = "refId"
             };
             var expected = "{\"access\":{\"resources\":[{\"allAddresses\":{}}]},\"refId\":\"refId\",\"to\":{\"id\":\"memberId\"}}";
-            Assert.AreEqual(expected, Util.ToJson(payload));
+            Assert.Equal(expected, Util.ToJson(payload));
         }
 
-        [Test]
+        [Fact]
         public void HashAlias()
         {
             var alias = new Alias
@@ -46,14 +45,14 @@ namespace Test
                 Type = Email,
                 Value = "bob@token.io"
             };
-            Assert.AreEqual(Util.NormalizeAndHashAlias(alias), "HHzc3XVck27qD2gadGVzjffaBZrU8ZLEd2jmtcyPKeev");
+            Assert.Equal(Util.NormalizeAndHashAlias(alias), "HHzc3XVck27qD2gadGVzjffaBZrU8ZLEd2jmtcyPKeev");
         }
 
-        [Test]
+        [Fact]
         public void Base58Hashing()
         {
             var result = Base58.Encode(Encoding.UTF8.GetBytes("bob@token.io"));
-            Assert.AreEqual("2rjpGWoxbc8ASyDVx", result);
+            Assert.Equal("2rjpGWoxbc8ASyDVx", result);
         }
     }
 }

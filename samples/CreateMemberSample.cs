@@ -1,9 +1,8 @@
 ﻿using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Security;
-using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 
-namespace samples
+namespace Sample
 {
     public class CreateMemberSample
     {
@@ -20,7 +19,7 @@ namespace samples
 
             var alias = new Alias
             {
-                Type = Email,
+                Type = Alias.Types.Type.Email,
                 Value = Util.Nonce() + "+noverify@example.com"
             };
 
