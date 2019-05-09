@@ -7,7 +7,7 @@ using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Security;
 using Member = Tokenio.Member;
 
-namespace samples
+namespace Sample
 {
     public class MemberMethodsSample
     {

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using Xunit;
 using Tokenio;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Security;
@@ -8,86 +9,85 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
 namespace Test
 {
-    [TestFixture]
     public class MemberRegistrationTest
     {
         private static readonly TokenClient tokenClient = NewSdkInstance();
 
-        [Test]
+        [Fact]
         public void CreateMember()
         {
             var alias = Alias();
             var member = tokenClient.CreateMemberBlocking(alias);
-            Assert.AreEqual(3, member.GetKeysBlocking().Count);
+            Assert.Equal(3, member.GetKeysBlocking().Count);
         }
 
-        [Test]
+        [Fact]
         public void CreateMember_noAlias()
         {
             var member = tokenClient.CreateMemberBlocking();
-            CollectionAssert.IsEmpty(member.GetAliasesBlocking());
-            Assert.AreEqual(3, member.GetKeysBlocking().Count);
+            Assert.Empty(member.GetAliasesBlocking());
+            Assert.Equal(3, member.GetKeysBlocking().Count);
         }
 
-        [Test]
+        [Fact]
         public void LoginMember()
         {
             var member = tokenClient.CreateMemberBlocking(Alias());
 
             var loggedIn = tokenClient.GetMemberBlocking(member.MemberId());
-            CollectionAssert.AreEquivalent(member.GetAliasesBlocking(), loggedIn.GetAliasesBlocking());
-            CollectionAssert.AreEquivalent(member.GetKeysBlocking(), loggedIn.GetKeysBlocking());
+            CollectionAssert.Equivalent(member.GetAliasesBlocking(), loggedIn.GetAliasesBlocking());
+            CollectionAssert.Equivalent(member.GetKeysBlocking(), loggedIn.GetKeysBlocking());
         }
 
-        [Test]
+        [Fact]
         public void AddAlias()
         {
             var alias1 = Alias();
             var alias2 = Alias();
 
             var member = tokenClient.CreateMemberBlocking(alias1);
-            CollectionAssert.AreEquivalent(
+            CollectionAssert.Equivalent(
                 new[] {alias1.ToNormalized()},
                 member.GetAliasesBlocking());
 
             member.AddAliasBlocking(alias2);
-            CollectionAssert.AreEquivalent(
-                new[] {alias1.ToNormalized(), alias2.ToNormalized()},
-                member.GetAliasesBlocking());
+            CollectionAssert.Equivalent(
+                new[] {alias1.ToNormalized(), alias2.ToNormalized()}.AsEnumerable(),
+                member.GetAliasesBlocking().AsEnumerable());
         }
 
-        [Test]
+        [Fact]
         public void RemoveAlias()
         {
             var alias1 = Alias();
             var alias2 = Alias();
 
             var member = tokenClient.CreateMemberBlocking(alias1);
-            CollectionAssert.AreEquivalent(new[] {alias1.ToNormalized()}, member.GetAliasesBlocking());
+            CollectionAssert.Equivalent(new[] {alias1.ToNormalized()}, member.GetAliasesBlocking());
 
             member.AddAliasBlocking(alias2);
-            CollectionAssert.AreEquivalent(new[] {alias1.ToNormalized(), alias2.ToNormalized()}, member.GetAliasesBlocking());
+            CollectionAssert.Equivalent(new[] {alias1.ToNormalized(), alias2.ToNormalized()}, member.GetAliasesBlocking());
 
             member.RemoveAliasBlocking(alias2);
-            CollectionAssert.AreEquivalent(new[] {alias1.ToNormalized()}, member.GetAliasesBlocking());
+            CollectionAssert.Equivalent(new[] {alias1.ToNormalized()}, member.GetAliasesBlocking());
         }
 
-        [Test]
+        [Fact]
         public void AliasDoesNotExist()
         {
             var alias = Alias();
-            Assert.IsNull(tokenClient.ResolveAliasBlocking(alias));
+            Assert.Null(tokenClient.ResolveAliasBlocking(alias));
         }
 
-        [Test]
+        [Fact]
         public void AliasExists()
         {
             var alias = Alias();
             tokenClient.CreateMemberBlocking(alias);
-            Assert.IsNotNull(tokenClient.ResolveAliasBlocking(alias));
+            Assert.NotNull(tokenClient.ResolveAliasBlocking(alias));
         }
 
-        [Test]
+        [Fact]
         public void Recovery()
         {
             var alias = Alias();
@@ -100,17 +100,17 @@ namespace Test
                 verificationId,
                 "code");
 
-            Assert.AreEqual(member.MemberId(), recovered.MemberId());
-            Assert.AreEqual(3, recovered.GetKeysBlocking().Count);
-            Assert.IsEmpty(recovered.GetAliasesBlocking());
+            Assert.Equal(member.MemberId(), recovered.MemberId());
+            Assert.Equal(3, recovered.GetKeysBlocking().Count);
+            Assert.Empty(recovered.GetAliasesBlocking());
             Assert.False(tokenClient.AliasExistsBlocking(alias));
 
             recovered.VerifyAliasBlocking(verificationId, "code");
             Assert.True(tokenClient.AliasExistsBlocking(alias));
-            CollectionAssert.AreEquivalent(new[] {alias.ToNormalized()}, recovered.GetAliasesBlocking(), "NOT equivalent");
+            CollectionAssert.Equivalent(new[] {alias.ToNormalized()}, recovered.GetAliasesBlocking());
         }
 
-        [Test]
+        [Fact]
         public void Recovery_withSecondaryAgent()
         {
             var alias = Alias();
@@ -148,14 +148,14 @@ namespace Test
                 key,
                 cryptoEngine);
 
-            Assert.AreEqual(member.MemberId(), recovered.MemberId());
-            Assert.AreEqual(3, recovered.GetKeysBlocking().Count);
-            Assert.IsEmpty(recovered.GetAliasesBlocking());
+            Assert.Equal(member.MemberId(), recovered.MemberId());
+            Assert.Equal(3, recovered.GetKeysBlocking().Count);
+            Assert.Empty(recovered.GetAliasesBlocking());
             Assert.False(tokenClient.AliasExistsBlocking(alias));
 
             recovered.VerifyAliasBlocking(verificationId, "code");
             Assert.True(tokenClient.AliasExistsBlocking(alias));
-            CollectionAssert.AreEquivalent(new[] {alias.ToNormalized()}, recovered.GetAliasesBlocking());
+            CollectionAssert.Equivalent(new[] {alias.ToNormalized()}, recovered.GetAliasesBlocking());
         }
     }
 }

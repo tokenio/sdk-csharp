@@ -2,7 +2,7 @@
 using Tokenio.Proto.Common.MoneyProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace samples
+namespace Sample
 {
     public class RedeemAccessTokenSample
     {

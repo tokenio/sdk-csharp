@@ -1,7 +1,7 @@
 ﻿using Tokenio;
 using Tokenio.Proto.Common.TokenProtos;
 
-namespace samples
+namespace Sample
 {
     /// <summary>
     /// Cancels a transfer token.

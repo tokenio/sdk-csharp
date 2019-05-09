@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography;
-using NUnit.Framework;
+using Xunit;
 using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Security;
@@ -8,22 +8,20 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
 namespace Test.Security
 {
-    [TestFixture]
     public class CryptoEngineTest
     {
         private string memberId;
         private IKeyStore keyStore;
         private ICryptoEngine cryptoEngine;
 
-        [SetUp]
-        public void Setup()
+        public CryptoEngineTest()
         {
             memberId = Util.Nonce();
             keyStore = new InMemoryKeyStore();
             cryptoEngine = new TokenCryptoEngine(memberId, keyStore);
         }
         
-        [Test]
+        [Fact]
         public void VerifierTest()
         {
             var signature = "tPmCXbpIf-lR2sOJrlB3wviI-mybLwKomo6Vh3Lxaf9RmS7FDiL5zdDxa8m5JvoVBMW4MnqHn5zUaKecESjjBQ";
@@ -32,7 +30,7 @@ namespace Test.Security
             verifier.Verify(payload, signature);
         }
 
-        [Test]
+        [Fact]
         public void SignAndVerify_string()
         {
             cryptoEngine.GenerateKey(Privileged);
@@ -43,7 +41,7 @@ namespace Test.Security
             verifier.Verify(payload, signature);
         }
         
-        [Test]
+        [Fact]
         public void SignAndVerify_protobuf()
         {
             cryptoEngine.GenerateKey(Privileged);
@@ -54,7 +52,7 @@ namespace Test.Security
             verifier.Verify(payload, signature);
         }
 
-        [Test]
+        [Fact]
         public void WrongKey()
         {
             var oldKey = cryptoEngine.GenerateKey(Privileged);

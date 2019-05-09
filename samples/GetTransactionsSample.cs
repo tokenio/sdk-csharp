@@ -3,7 +3,7 @@ using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace samples
+namespace Sample
 {
     public class GetTransactionsSample
     {

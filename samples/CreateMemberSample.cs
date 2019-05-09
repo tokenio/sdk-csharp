@@ -3,7 +3,7 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 
-namespace samples
+namespace Sample
 {
     public class CreateMemberSample
     {

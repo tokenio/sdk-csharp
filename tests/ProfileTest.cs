@@ -1,6 +1,6 @@
 ﻿using System;
 using Google.Protobuf;
-using NUnit.Framework;
+using Xunit;
 using Tokenio;
 using Tokenio.Proto.Common.MemberProtos;
 using static Test.TestUtil;
@@ -8,20 +8,18 @@ using static Tokenio.Proto.Common.MemberProtos.ProfilePictureSize;
 
 namespace Test
 {
-    [TestFixture]
     public class ProfileTest
     {
         private static readonly TokenClient tokenClient = NewSdkInstance();
         
         private Tokenio.Member member;
 
-        [SetUp]
-        public void Init()
+        public ProfileTest()
         {
             member = tokenClient.CreateMemberBlocking(Alias());
         }
         
-        [Test]
+        [Fact]
         public void SetProfileBlocking()
         {
             var inProfile = new Profile
@@ -31,11 +29,11 @@ namespace Test
             };
             var backProfile = member.SetProfileBlocking(inProfile);
             var outProfile = member.GetProfileBlocking(member.MemberId());
-            Assert.AreEqual(inProfile, backProfile);
-            Assert.AreEqual(backProfile, outProfile);
+            Assert.Equal(inProfile, backProfile);
+            Assert.Equal(backProfile, outProfile);
         }
 
-        [Test]
+        [Fact]
         public void UpdateProfile()
         {
             var firstProfile = new Profile
@@ -45,7 +43,7 @@ namespace Test
             };
             var backProfile = member.SetProfileBlocking(firstProfile);
             var outProfile = member.GetProfileBlocking(member.MemberId());
-            Assert.AreEqual(backProfile, outProfile);
+            Assert.Equal(backProfile, outProfile);
             
             var secondProfile = new Profile
             {
@@ -53,10 +51,10 @@ namespace Test
             };
             backProfile = member.SetProfileBlocking(secondProfile);
             outProfile = member.GetProfileBlocking(member.MemberId());
-            Assert.AreEqual(backProfile, outProfile);
+            Assert.Equal(backProfile, outProfile);
         }
 
-        [Test]
+        [Fact]
         public void ReadProfile_notYours()
         {
             var inProfile = new Profile
@@ -68,10 +66,10 @@ namespace Test
 
             var otherMember = tokenClient.CreateMemberBlocking();
             var outProfile = otherMember.GetProfileBlocking(member.MemberId());
-            Assert.AreEqual(inProfile, outProfile);
+            Assert.Equal(inProfile, outProfile);
         }
 
-        [Test]
+        [Fact]
         public void GetProfilePictureBlocking()
         {
             // "The tiniest gif ever" , a 1x1 gif
@@ -83,22 +81,22 @@ namespace Test
             var otherMember = tokenClient.CreateMemberBlocking();
             var blob = otherMember.GetProfilePictureBlocking(member.MemberId(), Original);
             var tinyGifString = ByteString.CopyFrom(tinyGif);
-            Assert.AreEqual(tinyGifString, blob.Payload.Data);
+            Assert.Equal(tinyGifString, blob.Payload.Data);
 
             // Because our example picture is so small, asking for a "small" version
             // gets us the original
             var sameBlob = otherMember.GetProfilePictureBlocking(member.MemberId(), Small);
-            Assert.AreEqual(tinyGifString, sameBlob.Payload.Data);
+            Assert.Equal(tinyGifString, sameBlob.Payload.Data);
         }
 
-        [Test]
+        [Fact]
         public void GetNoProfilePicture()
         {
             var blob = member.GetProfilePictureBlocking(member.MemberId(), Original);
-            Assert.AreEqual(blob.Id, string.Empty);
+            Assert.Equal(blob.Id, string.Empty);
         }
 
-        [Test]
+        [Fact]
         public void GetPictureProfile()
         {
             // "The tiniest gif ever" , a 1x1 gif
@@ -117,13 +115,13 @@ namespace Test
             member.SetProfilePictureBlocking("image/gif", tinyGif);
             var outProfile = otherMember.GetProfileBlocking(member.MemberId());
             
-            Assert.IsNotEmpty(outProfile.OriginalPictureId);
-            Assert.AreEqual(outProfile.DisplayNameFirst, inProfile.DisplayNameFirst);
-            Assert.AreEqual(outProfile.DisplayNameLast, inProfile.DisplayNameLast);
+            Assert.NotEmpty(outProfile.OriginalPictureId);
+            Assert.Equal(outProfile.DisplayNameFirst, inProfile.DisplayNameFirst);
+            Assert.Equal(outProfile.DisplayNameLast, inProfile.DisplayNameLast);
 
             var tinyGifString = ByteString.CopyFrom(tinyGif);
             var blob = otherMember.GetBlobBlocking(outProfile.OriginalPictureId);
-            Assert.AreEqual(tinyGifString, blob.Payload.Data);
+            Assert.Equal(tinyGifString, blob.Payload.Data);
         }
     }
 }

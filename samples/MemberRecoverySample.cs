@@ -8,7 +8,7 @@ using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace samples
+namespace Sample
 {
     public class MemberRecoverySample
     {

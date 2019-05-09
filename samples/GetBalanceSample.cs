@@ -5,7 +5,7 @@ using Tokenio;
 using Tokenio.Proto.Common.TransactionProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace samples
+namespace Sample
 {
     /// <summary>
     /// Two ways to get balances of a member's bank accounts.

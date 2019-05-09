@@ -4,7 +4,7 @@ using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using static Tokenio.Proto.Common.AccountProtos.BankAccount.Types;
 
-namespace samples
+namespace Sample
 {
     public class RedeemTransferTokenSample
     {

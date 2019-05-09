@@ -55,7 +55,7 @@ def generate_protos_cmd(path_to_protos, out_dir)
 
     # Path where Cocoapods downloads protoc and the gRPC plugin.
 
-    protoc_dir = "./packages/Grpc.Tools.1.11.0/tools/" + ((RUBY_PLATFORM.include?"linux") ? "linux_x64" : "macosx_x64")
+    protoc_dir = "./tools/" + ((RUBY_PLATFORM.include?"linux") ? "linux_x64" : "macosx_x64")
     protoc = "#{protoc_dir}/protoc"
     plugin = "#{protoc_dir}/grpc_csharp_plugin"
 

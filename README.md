@@ -18,18 +18,26 @@ Install `Mono` from [here](https://www.mono-project.com/download/stable/).
 
 ### On OSX
 
-Make sure you have `ruby` and `curl` installed.
+Make sure you have `ruby` installed.
 
-To build the SDK and run tests:
+Build the protobuf classes if you haven't:
 
-        ./build.sh
-        
+		ruby build_proto.rb
+
+To build the solution:
+
+        dotnet build
+
+To run the tests:
+
+		dotnet test
+
 ## Using the SDK
 
 To use the SDK, add the [Nuget](https://www.nuget.org/packages/Token.SDK.Net/) package as a dependency to your project file:
 
 <div class="codediv"><pre>
 &lt;ItemGroup>
-    &lt;PackageReference Include="Token.SDK.Net" Version="1.2.0" />
+    &lt;PackageReference Include="Token.SDK.Net" Version="2.0.0-beta1" />
 &lt;/ItemGroup>
 </pre></div>
