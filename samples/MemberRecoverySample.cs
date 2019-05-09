@@ -5,6 +5,8 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
+using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
 namespace Sample
 {
@@ -62,7 +64,7 @@ namespace Sample
         /// </summary>
         /// <param name="authorization">client's claim to be some member</param>
         /// <returns>if authorization seems legitimate, return signature; else error</returns>
-        public Signature GetRecoveryAgentSignature(MemberRecoveryOperation.Types.Authorization authorization)
+        public Signature GetRecoveryAgentSignature(Authorization authorization)
         {
             var isCorrect = CheckMemberId(authorization.MemberId);
             if (isCorrect)
@@ -86,7 +88,7 @@ namespace Sample
             var memberId = tokenClient.GetMemberId(alias).Result;
 
             var cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
-            var newKey = cryptoEngine.GenerateKey(Key.Types.Level.Privileged);
+            var newKey = cryptoEngine.GenerateKey(Privileged);
 
             var verificationId = tokenClient.BeginRecovery(alias).Result;
             var authorization = tokenClient.CreateRecoveryAuthorization(memberId, newKey).Result;

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Tokenio;
-using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TransactionProtos;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
 namespace Sample
 {
@@ -24,7 +24,7 @@ namespace Sample
             var accounts = member.GetAccounts().Result;
             foreach (var account in accounts)
             {
-                var balance = member.GetBalanceBlocking(account.Id(), Key.Types.Level.Standard).Current;
+                var balance = member.GetBalanceBlocking(account.Id(), Standard).Current;
                 if (sums.ContainsKey(balance.Currency))
                 {
                     sums[balance.Currency] += Convert.ToDouble(balance.Value);
@@ -50,7 +50,7 @@ namespace Sample
                 .Select(account => account.Id())
                 .ToList();
 
-            var balances = member.GetBalances(accountIds, Key.Types.Level.Standard).Result;
+            var balances = member.GetBalances(accountIds, Standard).Result;
 
             return balances;
         }

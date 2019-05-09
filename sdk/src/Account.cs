@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.TransactionProtos;

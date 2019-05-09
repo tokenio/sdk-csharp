@@ -1,6 +1,6 @@
 ﻿using Tokenio;
 using Tokenio.Proto.Common.MoneyProtos;
-using Tokenio.Proto.Common.SecurityProtos;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
 namespace Sample
 {
@@ -19,7 +19,7 @@ namespace Sample
             var grantor = grantee.ForAccessToken(tokenId, customerInitiated);
             var accounts = grantor.GetAccounts().Result;
 
-            Money balance0 = accounts[0].GetBalance(Key.Types.Level.Standard).Result.Current;
+            Money balance0 = accounts[0].GetBalance(Standard).Result.Current;
             return balance0;
         }
     }

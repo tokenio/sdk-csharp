@@ -141,7 +141,8 @@ namespace Tokenio
         /// will be created with the member</param>
         /// <param name="createMemberType">the type of member to register</param>
         /// <returns>the created member</returns>
-        public Task<Member> CreateMember(Alias alias = null,
+        public Task<Member> CreateMember(
+            Alias alias = null,
             CreateMemberType createMemberType = CreateMemberType.Personal)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
@@ -828,7 +829,8 @@ namespace Tokenio
                     new AsyncMetadataInterceptor(metadata =>
                     {
                         metadata.Add("token-sdk", "csharp");
-                        metadata.Add("token-sdk-version",
+                        metadata.Add(
+                            "token-sdk-version",
                             Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
                         metadata.Add("token-dev-key", devKey);
                         return metadata;
