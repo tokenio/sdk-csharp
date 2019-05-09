@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -11,7 +8,6 @@ using Tokenio.Proto.Common.AddressProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
-using Xunit;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 
 namespace Test

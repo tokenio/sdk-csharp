@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
@@ -9,9 +7,9 @@ namespace Tokenio
     public class TokenRequest
     {
         private TokenRequestPayload tokenRequestPayload;
-        private Proto.Common.TokenProtos.TokenRequestOptions tokenRequestOptions;
+        private TokenRequestOptions tokenRequestOptions;
 
-        public Proto.Common.TokenProtos.TokenRequestOptions GetTokenRequestOptions()
+        public TokenRequestOptions GetTokenRequestOptions()
         {
             return tokenRequestOptions;
         }
@@ -45,10 +43,10 @@ namespace Tokenio
 
         private TokenRequest(
             TokenRequestPayload payload,
-            Proto.Common.TokenProtos.TokenRequestOptions options)
+            TokenRequestOptions options)
         {
-            this.tokenRequestOptions = options;
-            this.tokenRequestPayload = payload;
+            tokenRequestOptions = options;
+            tokenRequestPayload = payload;
         }
 
         /// <summary>
@@ -59,7 +57,7 @@ namespace Tokenio
         /// <returns></returns>
         public static TokenRequest fromProtos(
             TokenRequestPayload tokenRequestPayload,
-            Proto.Common.TokenProtos.TokenRequestOptions tokenRequestOptions)
+            TokenRequestOptions tokenRequestOptions)
         {
             return new TokenRequest(tokenRequestPayload, tokenRequestOptions);
         }
@@ -67,16 +65,16 @@ namespace Tokenio
         public class Builder<T> where T : Builder<T>
         {
             protected TokenRequestPayload requestPayload;
-            protected Proto.Common.TokenProtos.TokenRequestOptions requestOptions;
+            protected TokenRequestOptions requestOptions;
             protected string oauthState;
             protected string csrfToken;
 
             public Builder()
             {
-                this.requestOptions = new Proto.Common.TokenProtos.TokenRequestOptions();
-                this.requestPayload = new TokenRequestPayload();
-                this.requestOptions.From = new TokenMember();
-                this.requestPayload.To = new TokenMember();
+                requestOptions = new TokenRequestOptions();
+                requestPayload = new TokenRequestPayload();
+                requestOptions.From = new TokenMember();
+                requestPayload.To = new TokenMember();
             }
 
             /// <summary>
@@ -86,7 +84,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetBankId(string bankId)
             {
-                this.requestOptions.BankId = bankId;
+                requestOptions.BankId = bankId;
                 return (T)this;
             }
 
@@ -97,7 +95,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetFromMemberId(string fromMemberId)
             {
-                this.requestOptions.From.Id = fromMemberId;
+                requestOptions.From.Id = fromMemberId;
                 return (T)this;
             }
 
@@ -108,7 +106,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetFromAlias(Alias fromAlias)
             {
-                this.requestOptions.From.Alias = fromAlias;
+                requestOptions.From.Alias = fromAlias;
                 return (T)this;
             }
 
@@ -119,7 +117,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetSourceAccount(string sourceAccountId)
             {
-                this.requestOptions.SourceAccountId = sourceAccountId;
+                requestOptions.SourceAccountId = sourceAccountId;
                 return (T)this;
             }
 
@@ -131,7 +129,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetReceiptRequested(bool receiptRequested)
             {
-                this.requestOptions.ReceiptRequested = receiptRequested;
+                requestOptions.ReceiptRequested = receiptRequested;
                 return (T)this;
             }
 
@@ -142,7 +140,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetUserRefId(string refId)
             {
-                this.requestPayload.UserRefId = refId;
+                requestPayload.UserRefId = refId;
                 return (T)this;
             }
 
@@ -153,7 +151,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetCustomizationId(string customizationId)
             {
-                this.requestPayload.CustomizationId = customizationId;
+                requestPayload.CustomizationId = customizationId;
                 return (T)this;
             }
 
@@ -164,7 +162,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetRedirectUrl(string redirectUrl)
             {
-                this.requestPayload.RedirectUrl = redirectUrl;
+                requestPayload.RedirectUrl = redirectUrl;
                 return (T)this;
             }
 
@@ -175,7 +173,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetRefId(string refId)
             {
-                this.requestPayload.RefId = refId;
+                requestPayload.RefId = refId;
                 return (T)this;
             }
 
@@ -186,7 +184,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetToAlias(Alias toAlias)
             {
-                this.requestPayload.To.Alias = toAlias;
+                requestPayload.To.Alias = toAlias;
                 return (T)this;
             }
 
@@ -197,7 +195,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetToMemberId(string memberId)
             {
-                this.requestPayload.To.Id = memberId;
+                requestPayload.To.Id = memberId;
                 return (T)this;
             }
 
@@ -208,7 +206,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetActingAs(ActingAs actingAs)
             {
-                this.requestPayload.ActingAs = actingAs;
+                requestPayload.ActingAs = actingAs;
                 return (T)this;
             }
 
@@ -219,7 +217,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetDescription(string description)
             {
-                this.requestPayload.Description = description;
+                requestPayload.Description = description;
                 return (T)this;
             }
 
@@ -231,7 +229,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public T SetState(string state)
             {
-                this.oauthState = state;
+                oauthState = state;
                 return (T)this;
             }
 
@@ -254,7 +252,7 @@ namespace Tokenio
             public TokenRequest build()
             {
                 string serializeState = TokenRequestState.Create(
-                    this.csrfToken == null ? "" : Util.HashString(this.csrfToken),
+                    csrfToken == null ? "" : Util.HashString(csrfToken),
                     oauthState ?? "").Serialize();
                 requestPayload.CallbackState = serializeState;
                 return new TokenRequest(
@@ -268,7 +266,7 @@ namespace Tokenio
         {
             public AccessBuilder(params TokenRequestPayload.Types.AccessBody.Types.ResourceType[] resources)
             {
-                this.requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
+                requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
                 {
                     Type = { resources }
                 };
@@ -279,7 +277,7 @@ namespace Tokenio
         {
             public TransferBuilder(double amount, string currency)
             {
-                this.requestPayload.TransferBody = new TokenRequestPayload.Types.TransferBody
+                requestPayload.TransferBody = new TokenRequestPayload.Types.TransferBody
                 {
                     LifetimeAmount = amount.ToString("F"),
                     Currency = currency
@@ -294,7 +292,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public TransferBuilder SetDestinationCountry(string destinationCountry)
             {
-                this.requestPayload.DestinationCountry = destinationCountry;
+                requestPayload.DestinationCountry = destinationCountry;
                 return this;
             }
 
@@ -305,7 +303,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public TransferBuilder AddDestination(TransferEndpoint destination)
             {
-                this.requestPayload.TransferBody.Destinations.Add(destination);
+                requestPayload.TransferBody.Destinations.Add(destination);
                 return this;
             }
 
@@ -316,7 +314,7 @@ namespace Tokenio
             /// <returns>builder</returns>
             public TransferBuilder SetChargeAmount(double chargeAmount)
             {
-                this.requestPayload.TransferBody.Amount = chargeAmount.ToString("F");
+                requestPayload.TransferBody.Amount = chargeAmount.ToString("F");
                 return this;
             }
         }

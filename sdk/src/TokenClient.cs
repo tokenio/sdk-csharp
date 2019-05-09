@@ -41,7 +41,7 @@ namespace Tokenio
             this.cryptoEngineFactory = cryptoEngineFactory;
             this.tokenCluster = tokenCluster;
         }
-        
+
         /// <summary>
         /// Creates a new <see cref="Builder"/> instance that is used to configure and
         /// </summary>
@@ -50,7 +50,7 @@ namespace Tokenio
         {
             return new Builder();
         }
-        
+
         /// <summary>
         /// Creates a new instance of <see cref="TokenIO"/> that's configured to use
         /// the specified environment.
@@ -101,7 +101,7 @@ namespace Tokenio
             return unauthenticated.ResolveAlias(alias)
                 .Map(mem => mem != null);
         }
-        
+
         /// <summary>
         /// Checks if a given alias already exists.
         /// </summary>
@@ -123,7 +123,7 @@ namespace Tokenio
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetMemberId(alias);
         }
-        
+
         /// <summary>
         /// Looks up member id for a given alias.
         /// </summary>
@@ -141,7 +141,8 @@ namespace Tokenio
         /// will be created with the member</param>
         /// <param name="createMemberType">the type of member to register</param>
         /// <returns>the created member</returns>
-        public Task<Member> CreateMember(Alias alias = null, CreateMemberType createMemberType = CreateMemberType.Personal)
+        public Task<Member> CreateMember(Alias alias = null,
+            CreateMemberType createMemberType = CreateMemberType.Personal)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
@@ -196,7 +197,7 @@ namespace Tokenio
         {
             return CreateMember(alias, CreateMemberType.Business);
         }
-        
+
         /// <summary>
         /// Creates a new business-use Token member with a set of auto-generated keys and alias.
         /// </summary>
@@ -220,7 +221,7 @@ namespace Tokenio
                 .GetMember(memberId)
                 .Map(member => new Member(client));
         }
-        
+
         /// <summary>
         /// Return a Member set up to use some Token member's keys (assuming we have them).
         /// </summary>
@@ -241,10 +242,10 @@ namespace Tokenio
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.RetrieveTokenRequest(requestId)
                 .Map(tokenRequest => TokenRequest.fromProtos(
-                    tokenRequest.RequestPayload, 
+                    tokenRequest.RequestPayload,
                     tokenRequest.RequestOptions));
         }
-        
+
         /// <summary>
         /// Returns a token request for a specified token request id.
         /// </summary>
@@ -265,7 +266,7 @@ namespace Tokenio
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.BeginRecovery(alias);
         }
-        
+
         /// <summary>
         /// Begins account recovery.
         /// </summary>
@@ -318,7 +319,7 @@ namespace Tokenio
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetRecoveryAuthorization(verificationId, code, key);
         }
-        
+
         /// <summary>
         /// Gets recovery authorization from Token.
         /// </summary>
@@ -495,7 +496,7 @@ namespace Tokenio
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetBanks(ids, search, country, page, perPage, sort);
         }
-        
+
         /// <summary>
         /// Returns the first 200 available banks for linking.
         /// </summary>
@@ -641,7 +642,7 @@ namespace Tokenio
                     {
                         TokenId = parameters.TokenId,
                         //ToDo(RD-2410): Remove WebUtility.UrlEncode call. It's only for backward compatibility with the old Token Request Flow.
-                        State = WebUtility.UrlEncode(parameters.SerializedState) 
+                        State = WebUtility.UrlEncode(parameters.SerializedState)
                     };
 
                     Util.VerifySignature(member, payload, parameters.Signature);
@@ -663,7 +664,7 @@ namespace Tokenio
         {
             return ParseTokenRequestCallbackUrl(callbackUrl, csrfToken).Result;
         }
-        
+
         /// <summary>
         /// Returns a list of countries with Token-enabled banks.
         /// </summary>
@@ -674,7 +675,7 @@ namespace Tokenio
             UnauthenticatedClient unauthenticatedClient = ClientFactory.Unauthenticated(channel);
             return unauthenticatedClient.GetCountries(provider);
         }
-            
+
         /// <summary>
         /// Returns a list of countries with Token-enabled banks.
         /// </summary>
@@ -684,7 +685,7 @@ namespace Tokenio
         {
             return GetCountries(provider).Result;
         }
-        
+
         /// <summary>
         /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
@@ -710,7 +711,7 @@ namespace Tokenio
         {
             channel.Dispose();
         }
-        
+
         public class Builder
         {
             private static readonly string DEFAULT_DEV_KEY = "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI";
@@ -827,7 +828,8 @@ namespace Tokenio
                     new AsyncMetadataInterceptor(metadata =>
                     {
                         metadata.Add("token-sdk", "csharp");
-                        metadata.Add("token-sdk-version", "1.2.2"); //TODO
+                        metadata.Add("token-sdk-version",
+                            Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
                         metadata.Add("token-dev-key", devKey);
                         return metadata;
                     })
@@ -840,6 +842,5 @@ namespace Tokenio
                     tokenCluster ?? TokenCluster.SANDBOX);
             }
         }
-        
     }
 }
