@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Specialized;
+using System.Linq;
 using System.Web;
 using Google.Protobuf;
 using Tokenio.Exceptions;
@@ -12,10 +13,8 @@ namespace Tokenio
         private static readonly string STATE_FIELD = "state";
         private static readonly string SIGNATURE_FIELD = "signature";
 
-        public static TokenRequestCallbackParameters Create(string url)
+        public static TokenRequestCallbackParameters Create(NameValueCollection parameters)
         {
-            var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(url));
-            
             if (!parameters.AllKeys.Contains(TOKEN_ID_FIELD)
                 || !parameters.AllKeys.Contains(STATE_FIELD)
                 || !parameters.AllKeys.Contains(SIGNATURE_FIELD))

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Web;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Tokenio.Exceptions;
@@ -628,8 +630,8 @@ namespace Tokenio
             string callbackUrl,
             string csrfToken = "")
         {
-            var callbackParams = new Uri(callbackUrl).PathAndQuery;
-            return ParseTokenRequestCallbackParams(callbackParams, csrfToken);
+            var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(callbackUrl));
+            return ParseTokenRequestCallbackParams(parameters, csrfToken);
 
         }
 
@@ -656,7 +658,9 @@ namespace Tokenio
         /// <param name="callbackParams">the token request callback parameters</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
-        public Task<TokenRequestCallback> ParseTokenRequestCallbackParams(string callbackParams, string csrfToken)
+        public Task<TokenRequestCallback> ParseTokenRequestCallbackParams(
+            NameValueCollection callbackParams, 
+            string csrfToken)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetTokenMember()
@@ -689,7 +693,9 @@ namespace Tokenio
         /// <param name="callbackParams">the token request callback parameters</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
-        public TokenRequestCallback ParseTokenRequestCallbackParamsBlocking(string callbackParams, string csrfToken)
+        public TokenRequestCallback ParseTokenRequestCallbackParamsBlocking(
+            NameValueCollection callbackParams, 
+            string csrfToken)
         {
             return ParseTokenRequestCallbackParams(callbackParams, csrfToken).Result;
         }
