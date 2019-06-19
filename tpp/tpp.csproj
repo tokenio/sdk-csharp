@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Token.SDK.Net.tpp</AssemblyName>
+    <RootNamespace>Tokenio</RootNamespace>
+    <Copyright>Copyright 2019 Token, Inc</Copyright>
+    <Description>C# SDK for interacting with the Token System</Description>
+    <Company>Token, Inc</Company>
+    <Authors>Token, Inc</Authors>
+    <Version>2.0.0-beta1</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>
+    </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.7.0" />
+    <PackageReference Include="Grpc" Version="1.20.1" />
+    <PackageReference Include="Grpc.Core" Version="1.20.1" />
+    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.IdentityModel.Logging" Version="5.4.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.5" />
+    <PackageReference Include="System.Interactive.Async" Version="3.2.0" />
+    <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
+  </ItemGroup>
+ 
+  <ItemGroup>
+    <ProjectReference Include="..\core\core.csproj" />
+  </ItemGroup>
+</Project>
