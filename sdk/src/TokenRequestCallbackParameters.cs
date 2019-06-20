@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 using Google.Protobuf;
@@ -13,20 +14,20 @@ namespace Tokenio
         private static readonly string STATE_FIELD = "state";
         private static readonly string SIGNATURE_FIELD = "signature";
 
-        public static TokenRequestCallbackParameters Create(NameValueCollection parameters)
+        public static TokenRequestCallbackParameters Create(IDictionary<string,string> parameters)
         {
-            if (!parameters.AllKeys.Contains(TOKEN_ID_FIELD)
-                || !parameters.AllKeys.Contains(STATE_FIELD)
-                || !parameters.AllKeys.Contains(SIGNATURE_FIELD))
+            if (!parameters.ContainsKey(TOKEN_ID_FIELD)
+                || !parameters.ContainsKey(STATE_FIELD)
+                || !parameters.ContainsKey(SIGNATURE_FIELD))
             {
                 throw new InvalidTokenRequestQuery();
             }
 
             return new TokenRequestCallbackParameters
             {
-                TokenId = parameters.Get(TOKEN_ID_FIELD),
-                SerializedState = parameters.Get(STATE_FIELD),
-                Signature = JsonParser.Default.Parse<Signature>(parameters.Get(SIGNATURE_FIELD))
+                TokenId = parameters[TOKEN_ID_FIELD],
+                SerializedState = parameters[STATE_FIELD],
+                Signature = JsonParser.Default.Parse<Signature>(parameters[SIGNATURE_FIELD])
             };
         }
 
