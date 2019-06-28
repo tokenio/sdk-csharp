@@ -1,5 +1,8 @@
 ﻿namespace Tokenio.Security
 {
+    /// <summary>
+    /// Creates {@link CryptoEngine} instances bound to a given member id.
+    /// </summary>
     public interface ICryptoEngineFactory
     {
         /// <summary>

@@ -3,6 +3,10 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio.Rpc
 {
+    /// <summary>
+    /// Authentication context. Stores the values of On-Behalf-Of and Key-Level to be used for request
+    /// authentication and signing.
+    /// </summary>
     public class AuthenticationContext
     {
         private readonly string onBehalfOf = null;

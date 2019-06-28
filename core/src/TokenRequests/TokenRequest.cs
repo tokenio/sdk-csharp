@@ -1,8 +1,7 @@
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
-using Tokenio.Utils;
-using Tokenio.TokenRequests;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
+using Tokenio.Utils;
 
 
 namespace Tokenio.TokenRequests

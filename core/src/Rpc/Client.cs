@@ -146,29 +146,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Endorses a token.
-        /// </summary>
-        /// <param name="token">the token</param>
-        /// <param name="level">the key level to be used to endorse the token</param>
-        /// <returns>the result of the endorsement</returns>
-        public Task<TokenOperationResult> EndorseToken(Token token, Level level)
-        {
-            var signer = cryptoEngine.CreateSigner(level);
-            var request = new EndorseTokenRequest
-            {
-                TokenId = token.Id,
-                Signature = new Signature
-                {
-                    MemberId = MemberId,
-                    KeyId = signer.GetKeyId(),
-                    Signature_ = signer.Sign(Stringify(token, TokenAction.Endorsed))
-                }
-            };
-            return gateway(authenticationContext()).EndorseTokenAsync(request)
-                .ToTask(response => response.Result);
-        }
-
-        /// <summary>
         /// Signs a token payload.
         /// </summary>
         /// <param name="payload"></param>
@@ -216,20 +193,18 @@ namespace Tokenio.Rpc
         /// <summary>
         /// Look up account balance.
         /// </summary>
-        /// <param name="acountId">the account id</param>
+        /// <param name="accountId">the account id</param>
         /// <param name="keyLevel">the key level</param>
         /// <returns>the account balance</returns>
         /// <exception cref="StepUpRequiredException"></exception>
-        public Task<Balance> GetBalance(string acountId, Level keyLevel)
+        public Task<Balance> GetBalance(string accountId, Level keyLevel)
         {
-            var request = new GetBalanceRequest { AccountId = acountId };
+            var request = new GetBalanceRequest { AccountId = accountId };
             return gateway(authenticateOnBehalfOf(keyLevel)).GetBalanceAsync(request)
                 .ToTask(response =>
                 {
-                    var status = response.Status;
                     if (response.Status.Equals(RequestStatus.SuccessfulRequest))
                     {
-                        var bal = response.Balance;
                         return response.Balance;
                     }
 
@@ -249,7 +224,7 @@ namespace Tokenio.Rpc
             {
                 AccountId = { accountIds }
             };
-            return gateway(authenticationContext(keyLevel)).GetBalancesAsync(request)
+            return gateway(authenticateOnBehalfOf(keyLevel)).GetBalancesAsync(request)
                 .ToTask(response => (IList<Balance>)response.Response
                     .Where(res => res.Status.Equals(RequestStatus.SuccessfulRequest))
                     .Select(res => res.Balance)
@@ -333,7 +308,7 @@ namespace Tokenio.Rpc
                 Amount = amount
             };
 
-            return gateway(authenticationContext())
+            return gateway(authenticateOnBehalfOf())
                 .ConfirmFundsAsync(request)
                 .ToTask(response => response.FundsAvailable);
         }
@@ -412,7 +387,8 @@ namespace Tokenio.Rpc
         /// <returns>a list of aliases</returns>
         public Task<IList<Alias>> GetAliases()
         {
-            return gateway(authenticationContext()).GetAliasesAsync(new GetAliasesRequest())
+            var request = new GetAliasesRequest();
+            return gateway(authenticationContext()).GetAliasesAsync(request)
                 .ToTask(response => (IList<Alias>)response.Aliases);
         }
 
@@ -439,7 +415,7 @@ namespace Tokenio.Rpc
         /// <returns>the signature</returns>
         public Task<Signature> AuthorizeRecovery(Authorization authorization)
         {
-            var signer = cryptoEngine.CreateSigner(Level.Privileged);
+            var signer = cryptoEngine.CreateSigner(Level.Standard);
             return Task.FromResult(new Signature
             {
                 MemberId = MemberId,
@@ -560,38 +536,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Creates an access token with a token request id.
-        /// </summary>
-        /// <param name="payload">the access token payload</param>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the access token</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload, string tokenRequestId)
-        {
-            payload.From = new TokenMember { Id = MemberId };
-            var request = new CreateAccessTokenRequest
-            {
-                Payload = payload,
-                TokenRequestId = tokenRequestId
-            };
-            return gateway(authenticationContext()).CreateAccessTokenAsync(request)
-                .ToTask(response => response.Token);
-        }
-
-        /// <summary>
-        /// Cancels the existing token and creates a replacement for it. Supported
-        /// only for access tokens.
-        /// </summary>
-        /// <param name="tokenToCancel">the token to cancel</param>
-        /// <param name="tokenToCreate">the payload to create new token with</param>
-        /// <returns>the result of the replacement opration</returns>
-        public Task<TokenOperationResult> ReplaceToken(
-            Token tokenToCancel,
-            TokenPayload tokenToCreate)
-        {
-            return CancelAndReplace(tokenToCancel, new CreateToken { Payload = tokenToCreate });
-        }
-
-        /// <summary>
         /// Makes RPC to get default bank account for this member.
         /// </summary>
         /// <param name="memberId">the member id</param>
@@ -629,7 +573,33 @@ namespace Tokenio.Rpc
                 .Map(account => account.Id.Equals(accountId));
         }
 
+        /// <summary>
+        /// Gets a member's public profile.
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public Task<Profile> GetProfile(string memberId)
+        {
+            var request = new GetProfileRequest
+            {
+                MemberId = memberId
+            };
+            return gateway(authenticationContext())
+                .GetProfileAsync(request)
+                .ToTask(response => response.Profile);
+        }
 
+        public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
+        {
+            var request = new GetProfilePictureRequest
+            {
+                MemberId = memberId,
+                Size = size
+            };
+            return gateway(authenticationContext())
+                .GetProfilePictureAsync(request)
+                .ToTask(response => response.Blob);
+        }
 
         /// <summary>
         /// Creates a transfer redeeming a transfer token.
@@ -930,7 +900,11 @@ namespace Tokenio.Rpc
             return $"{Util.ToJson(payload)}.{action.ToString().ToLower()}";
         }
 
-        protected virtual AuthenticationContext authenticationContext(Level level = Level.Low)
+        protected virtual AuthenticationContext authenticationContext()
+        {
+           return authenticationContext(Level.Low);
+        }
+        protected AuthenticationContext authenticationContext(Level level)
         {
             return new AuthenticationContext(null, level, false, trackingMetadata);
         }

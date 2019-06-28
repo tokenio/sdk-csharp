@@ -3,6 +3,9 @@ using Tokenio.Proto.Common.SecurityProtos;
 
 namespace Tokenio
 {
+    /// <summary>
+    /// Information about a  device being provisioned.
+    /// </summary>
     public class DeviceInfo
     {
         /// <summary>

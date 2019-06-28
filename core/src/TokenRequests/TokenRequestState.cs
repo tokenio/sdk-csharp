@@ -17,6 +17,11 @@ namespace Tokenio.TokenRequests
             };
         }
 
+        /// <summary>
+        /// Parse a serialized state into a TokenRequestState instance.
+        /// </summary>
+        /// <returns>The from.</returns>
+        /// <param name="serialized">Serialized.</param>
         public static TokenRequestState ParseFrom(string serialized)
         {
             //ToDo(RD-2410): Remove WebUtility.UrlEncode call. It's only for backward compatibility with the old Token Request Flow.
@@ -29,6 +34,10 @@ namespace Tokenio.TokenRequests
 
         public string InnerState { get; set; }
 
+        /// <summary>
+        /// Serialize into JSON fomrat and encode.
+        /// </summary>
+        /// <returns>The serialize.</returns>
         public string Serialize()
         {
             var json =  JsonConvert.SerializeObject(this);

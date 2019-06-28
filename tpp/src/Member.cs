@@ -8,19 +8,23 @@ using Google.Protobuf.Collections;
 using log4net;
 using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Tpp.Rpc;
 using Tokenio.Utils;
-using TokenRequest=Tokenio.TokenRequests.TokenRequest;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
+using TokenRequest = Tokenio.TokenRequests.TokenRequest;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
-using Tokenio.Proto.Common.MoneyProtos;
 
 namespace Tokenio.Tpp
 {
+    /// <summary>
+    /// Represents a Member in the Token system. Each member has an active secret
+    /// and public key pair that is used to perform authentication.
+    /// </summary>
     public class Member : Tokenio.Member, IRepresentable
     {
         private static readonly ILog logger = LogManager
@@ -103,6 +107,12 @@ namespace Tokenio.Tpp
             SetProfilePicture(type, data).Wait();
         }
 
+        /// <summary>
+        /// Gets a member's public profile picture..
+        /// </summary>
+        /// <returns>blob with picture; empty blob (no fields set) if has no picture</returns>
+        /// <param name="memberId">member ID of member whose profile we want</param>
+        /// <param name="size"> Size category desired (small/medium/large/original).</param>
         public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
         {
             return client.GetProfilePicture(memberId, size);
@@ -184,7 +194,8 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
-        /// Creates a representable that acts as another member.
+        /// Creates a {@link Representable} that acts as another member using the access token
+        /// that was granted by that member.
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
         /// <param name="customerInitiated">whether the customer initiated the call</param>
@@ -192,7 +203,7 @@ namespace Tokenio.Tpp
         public IRepresentable ForAccessToken(string accessTokenId, bool customerInitiated = false)
         {
             Client cloned = client.ForAccessToken(accessTokenId, customerInitiated);
-            return new Member(accessTokenId,cloned);
+            return new Member(memberId,cloned);
         }
 
         /// <summary>
@@ -309,7 +320,7 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="token">the transfer token</param>
         /// <param name="amount">the amount to transfer</param>
-        /// <param name="currency">the currency</param>
+        /// <param name="currency">the currency e.g "EUR"</param>
         /// <param name="destination">the transfer instruction destination</param>
         /// <returns>a transfer record</returns>
         [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
@@ -430,19 +441,37 @@ namespace Tokenio.Tpp
             return RedeemTokenInternal(token, amount, currency, description, destination, refId);
         }
 
-
         /// <summary>
-        /// Redeems a transfer token.
+        /// Redeems the token.
         /// </summary>
-        /// <param name="token">the transfer token</param>
-        /// <param name="amount">the amount to transfer</param>
-        /// <param name="currency">the currency</param>
-        /// <param name="description">the description of the transfer</param>
-        /// <param name="destination">the transfer instruction destination</param>
-        /// <param name="refId">the reference id of the transfer</param>
-        /// <returns>a transfer record</returns>
-        /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
-        public Task<Transfer> RedeemTokenInternal(
+        /// <returns>The token.</returns>
+        /// <param name="token">Token.</param>
+        /// <param name="amount">Amount.</param>
+        /// <param name="currency">Currency.</param>
+        /// <param name="description">Description.</param>
+        /// <param name="refId">Reference identifier.</param>
+		public Task<Transfer> RedeemToken(
+		   Token token,
+		   double? amount,
+		   string currency = null,
+		   string description = null,
+		   string refId = null)
+		{
+			return RedeemTokenInternal(token, amount, currency, description, null, refId);
+		}
+
+		/// <summary>
+		/// Redeems a transfer token.
+		/// </summary>
+		/// <param name="token">the transfer token</param>
+		/// <param name="amount">the amount to transfer</param>
+		/// <param name="currency">the currency</param>
+		/// <param name="description">the description of the transfer</param>
+		/// <param name="destination">the transfer instruction destination</param>
+		/// <param name="refId">the reference id of the transfer</param>
+		/// <returns>a transfer record</returns>
+		/// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
+		public Task<Transfer> RedeemTokenInternal(
             Token token,
             double? amount,
             string currency,
@@ -700,13 +729,23 @@ namespace Tokenio.Tpp
             return RedeemToken(token, amount, currency, description, destination, refId).Result;
         }
 
-        /// <summary>
-        /// Stores a token request.
-        /// </summary>
-        /// <param name="requestPayload">the token request payload (immutable fields)</param>
-        /// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
-        /// <returns>an id to reference the token request</returns>
-        public Task<string> StoreTokenRequest(
+		public Transfer RedeemTokenBlocking(
+			Token token,
+			double? amount = null,
+			string currency = null,
+			string description = null,
+			string refId = null)
+		{
+			return RedeemToken(token, amount, currency, description, refId).Result;
+		}
+
+		/// <summary>
+		/// Stores a token request.
+		/// </summary>
+		/// <param name="requestPayload">the token request payload (immutable fields)</param>
+		/// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
+		/// <returns>an id to reference the token request</returns>
+		public Task<string> StoreTokenRequest(
             TokenRequestPayload requestPayload,
             Proto.Common.TokenProtos.TokenRequestOptions requestOptions)
         {
@@ -983,22 +1022,49 @@ namespace Tokenio.Tpp
             return TriggerTransactionStepUpNotification(accountId).Result;
         }
 
+
+        /// <summary>
+        /// Looks up a existing access token where the calling member is the grantor and given member is
+        /// the grantee.
+        /// </summary>
+        /// <returns>token returned by the server.</returns>
+        /// <param name="toMemberId">beneficiary of the active access token.</param>
         public Task<Token> GetActiveAccessToken(string toMemberId)
         {
             return client.GetActiveAccessToken(toMemberId);
         }
 
+
+        /// <summary>
+        /// Gets the active access token blocking.
+        /// </summary>
+        /// <returns>The active access token blocking.</returns>
+        /// <param name="toMemberId">token returned by the server.</param>
         public Token GetActiveAccessTokenBlocking(string toMemberId)
         {
             return GetActiveAccessToken(toMemberId).Result;
         }
 
+
+        /// <summary>
+        /// Creates a test bank account in a fake bank and links the account.
+        /// </summary>
+        /// <returns>The test bank account.</returns>
+        /// <param name="balance">Balance.</param>
+        /// <param name="currency">Currency  e.g. "EUR".</param>
         public Task<Account> CreateTestBankAccount(double balance, string currency)
         {
             return CreateTestBankAccountImpl(balance, currency)
                 .Map(acc => new Account(this, acc));
         }
 
+
+        /// <summary>
+        ///  Creates a test bank account in a fake bank and links the account.
+        /// </summary>
+        /// <returns>The linked account.</returns>
+        /// <param name="balance">account balance to set.</param>
+        /// <param name="currency">currency code, e.g. "EUR".</param>
         public Account CreateTestBankAccountBlocking(double balance, string currency)
         {
             return CreateTestBankAccount(balance, currency).Result;

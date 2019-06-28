@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tokenio.Tpp
+﻿namespace Tokenio.Tpp
 {
     public class Account : Tokenio.Account
     {

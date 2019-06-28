@@ -8,6 +8,10 @@ using Tokenio.Utils;
 
 namespace Tokenio.Rpc
 {
+    /// <summary>
+    /// gRPC interceptor that performs Token authentication by signing the request
+    /// with a member private key.
+    /// </summary>
     public class AsyncClientAuthenticator : Interceptor
     {
         private readonly string memberId;

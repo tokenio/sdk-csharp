@@ -7,13 +7,13 @@ using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
-using Tokenio.Tpp.Rpc;
 using Tokenio.Security;
 using Tokenio.TokenRequests;
+using Tokenio.Tpp.Rpc;
 using Tokenio.Tpp.TokenRequests;
 using Tokenio.Tpp.Utils;
-using WebUtility = System.Net.WebUtility;
 using TokenRequestStatePayload = Tokenio.Proto.Common.TokenProtos.TokenRequestStatePayload;
+using WebUtility = System.Net.WebUtility;
 
 
 namespace Tokenio.Tpp
@@ -23,15 +23,12 @@ namespace Tokenio.Tpp
         private static readonly string TOKEN_REQUEST_TEMPLATE =
             "https://{0}/request-token/{1}?state={2}";
 
-
-
         /// <summary>
         /// Creates an instance of a Token SDK.
         /// </summary>
         /// <param name="channel">the gRPC channel</param>
         /// <param name="cryptoEngineFactory">the crypto factory to create crypto engine</param>
         /// <param name="tokenCluster">the token cluster to connect to</param>
-
         public TokenClient(
              Tokenio.Rpc.ManagedChannel channel,
              ICryptoEngineFactory cryptoEngineFactory,
@@ -210,9 +207,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <returns>The recovery blocking.</returns>
         /// <param name="memberId">Member identifier.</param>
-        /// <param name="recoveryOperations">Recovery operations.</param>
-        /// <param name="privilegedKey">Privileged key.</param>
-        /// <param name="cryptoEngine">Crypto engine.</param>
+        /// <param name="recoveryOperations">the member Recovery operations.</param>
+        /// <param name="privilegedKey">the privileged public key in the member recovery operations</param>
+        /// <param name="cryptoEngine">New Crypto engine.</param>
         public Member CompleteRecoveryBlocking(
         string memberId,
         IList<MemberRecoveryOperation> recoveryOperations,
@@ -373,14 +370,6 @@ namespace Tokenio.Tpp
 
         public class Builder : Tokenio.TokenClient.Builder
         {
-
-            //public override Tokenio.TokenClient.Builder ConnectTo(TokenCluster cluster)
-            //{
-            //    this.tokenCluster = cluster;
-            //    this.hostName = cluster.Url;
-            //    return this;
-            //}
-
             public override Tokenio.TokenClient Build()
             {
                 var channel = new Channel(hostName, port, useSsl ? new SslCredentials() : ChannelCredentials.Insecure);
@@ -394,7 +383,11 @@ namespace Tokenio.Tpp
                                     "token-sdk-version",
                                     Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
                                 metadata.Add("token-dev-key", devKey);
+                                     if(featureCodes!=null){
+                                featureCodes.ForEach(f=>metadata.Add(FEATURE_CODE_KEY,f));
+                                     }
                                 return metadata;
+
                             })
                         };
                 var newChannel = new Tokenio.Rpc.ManagedChannel(channel, interceptors);
@@ -404,14 +397,6 @@ namespace Tokenio.Tpp
                     cryptoEngine ?? new TokenCryptoEngineFactory(new InMemoryKeyStore()),
                     tokenCluster ?? TokenCluster.SANDBOX);
             }
-
-
         }
-
-
-
     }
-
-
-
 }

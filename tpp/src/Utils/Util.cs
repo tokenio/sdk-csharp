@@ -1,17 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Google.Protobuf;
-using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Exceptions;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 namespace Tokenio.Tpp.Utils
 {
+    /// <summary>
+    /// Utility Methods
+    /// </summary>
     public class Util : Tokenio.Utils.Util
     {
+        /// <summary>
+        /// Gets the query string.
+        /// </summary>
+        /// <returns>The query string.</returns>
+        /// <param name="url">URL.</param>
         public static string GetQueryString(string url)
         {
             if (url == null)
@@ -22,6 +28,12 @@ namespace Tokenio.Tpp.Utils
             return splitted.Length == 1 ? splitted[0] : splitted[1];
         }
 
+        /// <summary>
+        /// Verify the signature of the payload.
+        /// </summary>
+        /// <param name="member">Member.</param>
+        /// <param name="payload">Payload.</param>
+        /// <param name="signature">Signature.</param>
         public static void VerifySignature(
             ProtoMember member,
             IMessage payload,

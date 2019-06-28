@@ -3,6 +3,9 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio.Security
 {
+    /// <summary>
+    /// Provides key storage primitives.
+    /// </summary>
     public interface IKeyStore
     {
         /// <summary>

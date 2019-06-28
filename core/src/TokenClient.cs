@@ -1,31 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
-using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Rpc;
 using Tokenio.Security;
-using Tokenio.TokenRequests;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using WebUtility = System.Net.WebUtility;
-using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 
 namespace Tokenio
 {
     public class TokenClient : IDisposable
     {
-        //private static readonly string TOKEN_REQUEST_TEMPLATE =
-        //"https://{0}/request-token/{1}?state={2}";
-
         protected readonly ManagedChannel channel;
         protected readonly TokenCluster tokenCluster;
         protected readonly ICryptoEngineFactory cryptoEngineFactory;
@@ -36,7 +30,7 @@ namespace Tokenio
         /// <param name="channel">the gRPC channel</param>
         /// <param name="cryptoEngineFactory">the crypto factory to create crypto engine</param>
         /// <param name="tokenCluster">the token cluster to connect to</param>
-        protected TokenClient(
+        public TokenClient(
             ManagedChannel channel,
             ICryptoEngineFactory cryptoEngineFactory,
             TokenCluster tokenCluster)
@@ -145,39 +139,7 @@ namespace Tokenio
         /// will be created with the member</param>
         /// <param name="createMemberType">the type of member to register</param>
         /// <returns>the created member</returns>
-        //public Task<Member> CreateMemberImpl(
-        //    Alias alias = null,
-        //    CreateMemberType createMemberType = CreateMemberType.Personal)
-        //{
-        //    var unauthenticated = ClientFactory.Unauthenticated(channel);
-        //    return unauthenticated
-        //        .CreateMemberId(createMemberType)
-        //        .FlatMap(memberId =>
-        //        {
-        //            var crypto = cryptoEngineFactory.Create(memberId);
-        //            var operations = new List<MemberOperation>
-        //            {
-        //                Util.ToAddKeyOperation(crypto.GenerateKey(Level.Privileged)),
-        //                Util.ToAddKeyOperation(crypto.GenerateKey(Level.Standard)),
-        //                Util.ToAddKeyOperation(crypto.GenerateKey(Level.Low))
-        //            };
-        //            var metadata = new List<MemberOperationMetadata>();
-        //            if (alias != null)
-        //            {
-        //                operations.Add(Util.ToAddAliasOperation(alias.ToNormalized()));
-        //                metadata.Add(Util.ToAddAliasMetadata(alias.ToNormalized()));
-        //            }
 
-        //            var signer = crypto.CreateSigner(Level.Privileged);
-        //            return unauthenticated.CreateMember(memberId, operations, metadata, signer);
-        //        })
-        //        .Map(member =>
-        //        {
-        //            var crypto = cryptoEngineFactory.Create(member.Id);
-        //            var client = ClientFactory.Authenticated(channel, member.Id, crypto);
-        //            return new Member(client);
-        //        });
-        //}
 
         public Task<Member> CreateMemberImpl(
         Alias alias,
@@ -367,7 +329,7 @@ namespace Tokenio
         public Task<Member> CompleteRecoveryWithDefaultRuleImpl(
             string memberId,
             string verificationId,
-            string code, TokenCryptoEngine cryptoEngine)
+            string code, ICryptoEngine cryptoEngine)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             //var cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
@@ -379,6 +341,7 @@ namespace Tokenio
                 });
         }
 
+       
 
         /// <summary>
         /// Returns the first 200 available banks for linking.
@@ -594,6 +557,9 @@ namespace Tokenio
             protected long timeoutMs;
             protected ICryptoEngineFactory cryptoEngine;
             protected string devKey;
+            protected List<string> featureCodes;
+            protected static readonly string FEATURE_CODE_KEY = "feature-codes";
+
 
             /// <summary>
             /// Creates new builder instance with the defaults initialized.
@@ -673,7 +639,13 @@ namespace Tokenio
                 return this;
             }
 
-          
+
+            public Builder withFeatureCodes(params string[]  featureCodes)
+            {
+                this.featureCodes = featureCodes.ToList();
+                return this;
+            }
+
             /// <summary>
             /// Sets the developer key to be used with the SDK.
             /// </summary>
@@ -702,6 +674,9 @@ namespace Tokenio
                             "token-sdk-version",
                             Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
                         metadata.Add("token-dev-key", devKey);
+                        if(featureCodes!=null){
+                            featureCodes.ForEach(f=>metadata.Add(FEATURE_CODE_KEY,f));
+                        }
                         return metadata;
                     })
                 };

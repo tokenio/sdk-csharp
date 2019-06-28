@@ -3,13 +3,24 @@ using Org.BouncyCastle.Security;
 using System.Collections.Generic;
 using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+
+
 namespace Tokenio.Security
 {
+    /// <summary>
+    /// Token implementation of the {@link CryptoEngine}. The keys are persisted
+    /// int he provided storage
+    /// </summary>
     public class TokenCryptoEngine : ICryptoEngine
     {
         private readonly IKeyStore keys;
         private readonly string memberId;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Tokenio.Security.TokenCryptoEngine"/> class.
+        /// </summary>
+        /// <param name="memberId">Member identifier.</param>
+        /// <param name="keys">Keys.</param>
         public TokenCryptoEngine(string memberId, IKeyStore keys)
         {
             this.keys = keys;
@@ -23,6 +34,16 @@ namespace Tokenio.Security
             var keyPair = generator.GenerateKeyPair().ParseEd25519KeyPair(level);
             keys.Put(memberId, keyPair);
             return keyPair.ToKey();
+        }
+
+        public Key GenerateKey(Level level, long expiresAtMs)
+        {
+            var generator = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
+            generator.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
+            var keyPair = generator.GenerateKeyPair().ParseEd25519KeyPair(level, expiresAtMs);
+            keys.Put(memberId, keyPair);
+            return keyPair.ToKey();
+
         }
 
         public ISigner CreateSigner(Level level)
@@ -43,20 +64,13 @@ namespace Tokenio.Security
             IList<KeyPair> secretKeys = keys.KeyList(memberId);
             foreach (KeyPair secretKey in secretKeys)
             {
-                publicKeys.Add(ToPublicKey(secretKey));
+                publicKeys.Add(secretKey.ToKey());
             }
             return publicKeys;
         }
+    
 
-        private Key ToPublicKey(KeyPair secretKey)
-        {
-            return new Key
-            {
-                Id = secretKey.Id,
-                Algorithm = secretKey.Algorithm,
-                Level = secretKey.Level,
-                PublicKey = secretKey.PublicKey.ToString()
-            };
-        }
+
+       
     }
 }

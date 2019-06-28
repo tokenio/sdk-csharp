@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
@@ -82,7 +81,7 @@ namespace Tokenio.Tpp
             string accountId,
             int limit,
             Level keyLevel,
-            string offset);
+            string offset = null);
         
         /// <summary>
         /// Looks up transactions for a given account.
@@ -96,7 +95,7 @@ namespace Tokenio.Tpp
             string accountId,
             int limit,
             Level keyLevel,
-            string offset);
+            string offset=null);
 
         /// <summary>
         /// Looks up an existing transaction for a given account.
@@ -135,5 +134,24 @@ namespace Tokenio.Tpp
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
         IList<TransferDestination> ResolveTransferDestinationsBlocking(string accountId);
+
+        /// <summary>
+        /// Confirms the funds.
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="amount"></param>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        Task<bool> ConfirmFunds(string accountId, double amount, string currency);
+
+        /// <summary>
+        /// Confirms the funds blocking.
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="amount"></param>
+        /// <param name="currency"></param>
+        /// <returns></returns>
+        bool ConfirmFundsBlocking(string accountId, double amount, string currency);
+
     }
 }

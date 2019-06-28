@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
+using Tokenio.Exceptions;
 using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
+using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Proto.Gateway;
-using Tokenio.Exceptions;
-using Tokenio.Security;
 using Tokenio.Rpc;
+using Tokenio.Security;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using static Tokenio.Proto.Gateway.GetTransfersRequest.Types;
 using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
-using Tokenio.Proto.Common.NotificationProtos;
 
 namespace Tokenio.Tpp.Rpc
 {
@@ -166,6 +166,16 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => response.TokenRequest.Id);
         }
 
+
+        /// <summary>
+        /// Creates the customization.
+        /// </summary>
+        /// <returns>The customization.</returns>
+        /// <param name="logo">Logo.</param>
+        /// <param name="colors">map of ARGB colors #AARRGGBB.</param>
+        /// <param name="consentText">Consent text.</param>
+        /// <param name="name">Display Name.</param>
+        /// <param name="appName">Corresponding App name.</param>
         public Task<string> CreateCustomization(
             Payload logo,
             MapField<string, string> colors,
@@ -186,6 +196,11 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => response.CustomizationId);
         }
 
+        /// <summary>
+        /// Looks up a existing token.
+        /// </summary>
+        /// <returns>The token returned by server.</returns>
+        /// <param name="tokenId">Token id</param>
         public Task<Token> GetToken(string tokenId)
         {
             var request = new GetTokenRequest { TokenId = tokenId };
@@ -267,11 +282,18 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => new PagedList<Transfer>(response.Transfers, response.Offset));
         }
 
+        /// <summary>
+        /// Sets security metadata included in all requests.
+        /// </summary>
+        /// <param name="securityMetadata">Security metadata.</param>
         public void SetSecurityMetadata(SecurityMetadata securityMetadata)
         {
             this.securityMetadata = securityMetadata;
         }
 
+        /// <summary>
+        /// Clears the security meta data.
+        /// </summary>
         public void ClearSecurityMetaData()
         {
             this.securityMetadata = new SecurityMetadata();
@@ -346,6 +368,12 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => response.Result);
         }
 
+
+        /// <summary>
+        /// Trigger a step up notification for balance requests.
+        /// </summary>
+        /// <returns>list of account ids.</returns>
+        /// <param name="accountIds">Account identifiers.</param>
         public Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds)
         {
             var request = new TriggerStepUpNotificationRequest
@@ -361,6 +389,12 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => response.Status);
         }
 
+
+        /// <summary>
+        /// Trigger a step up notification for transaction requests.
+        /// </summary>
+        /// <returns>notification setup.</returns>
+        /// <param name="accountId">account id</param>
         public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
         {
             var request = new TriggerStepUpNotificationRequest
@@ -381,6 +415,13 @@ namespace Tokenio.Tpp.Rpc
             return onBehalfOf;
         }
 
+
+        /// <summary>
+        /// Looks up a existing access token where the calling member is the grantor and given member is
+        /// the grantee.
+        /// </summary>
+        /// <returns>The active access token.</returns>
+        /// <param name="toMemberId">beneficiary of the active access token.</param>
         public Task<Token> GetActiveAccessToken(string toMemberId)
         {
             var request = new GetActiveAccessTokenRequest
