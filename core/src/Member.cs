@@ -10,6 +10,7 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
+using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Rpc;
 using Tokenio.Security;
 using Tokenio.Utils;
@@ -20,6 +21,10 @@ using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 namespace Tokenio
 {
+    /// <summary>
+    /// Represents a Member in the Token system. Each member has an active secret.
+    /// and public key pair that is used to perform authentication.
+    /// </summary>
     public class Member
     {
 
@@ -532,7 +537,7 @@ namespace Tokenio
             string accountId,
             int limit,
             Level keyLevel,
-            string offset)
+            string offset = null)
         {
             return client.GetTransactions(accountId, limit, keyLevel, offset);
         }
@@ -549,7 +554,7 @@ namespace Tokenio
             string accountId,
             int limit,
             Level keyLevel,
-            string offset)
+            string offset = null)
         {
             return GetTransactions(accountId, limit, keyLevel, offset).Result;
         }
@@ -562,7 +567,6 @@ namespace Tokenio
         /// <returns>the balance</returns>
         public Task<Balance> GetBalance(string accountId, Level keyLevel)
         {
-            var task = client.GetBalance(accountId, keyLevel);
             return client.GetBalance(accountId, keyLevel);
         }
 
@@ -574,8 +578,7 @@ namespace Tokenio
         /// <returns>the balance</returns>
         public Balance GetBalanceBlocking(string accountId, Level keyLevel)
         {
-            var result = GetBalance(accountId, keyLevel).Result;
-            return result;
+            return GetBalance(accountId, keyLevel).Result;
         }
 
         /// <summary>
@@ -690,6 +693,48 @@ namespace Tokenio
         public Signature SignTokenPayload(TokenPayload payload, Level keyLevel)
         {
             return client.SignTokenPayload(payload, keyLevel);
+        }
+
+        /// <summary>
+        /// Gets a member's public profile.
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public Task<Profile> GetProfile(string memberId)
+        {
+            return client.GetProfile(memberId);
+        }
+
+        /// <summary>
+        /// Gets a member's public profile.
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public Profile GetProfileBlocking(string memberId)
+        {
+            return GetProfile(memberId).Result;
+        }
+
+        /// <summary>
+        /// Gets a member's public profile picture.
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
+        {
+            return client.GetProfilePicture(memberId, size);
+        }
+
+        /// <summary>
+        /// Gets a member's public profile picture.
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public Blob GetProfilePictureBlocking(string memberId, ProfilePictureSize size)
+        {
+            return GetProfilePicture(memberId, size).Result;
         }
 
         /// <summary>

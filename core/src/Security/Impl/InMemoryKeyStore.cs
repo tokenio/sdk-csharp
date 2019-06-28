@@ -2,40 +2,59 @@
 using System.Collections.Generic;
 using System.Linq;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using Tokenio.Utils;
 
 namespace Tokenio.Security
 {
     public class InMemoryKeyStore : IKeyStore
     {
-        private readonly IDictionary<Tuple<string, Level>, KeyPair> latestKeys;
         private readonly IDictionary<Tuple<string, string>, KeyPair> allKeys;
 
         public InMemoryKeyStore()
         {
-            latestKeys = new Dictionary<Tuple<string, Level>, KeyPair>();
             allKeys = new Dictionary<Tuple<string, string>, KeyPair>();
         }
 
         public void Put(string memberId, KeyPair keyPair)
         {
-            latestKeys[new Tuple<string, Level>(memberId, keyPair.Level)] = keyPair;
+            if (keyPair.IsExpired())
+            {
+                throw new ArgumentException("Key " + keyPair.Id + " has expired");
+            }
             allKeys[new Tuple<string, string>(memberId, keyPair.Id)] = keyPair;
+
         }
 
         public KeyPair GetByLevel(string memberId, Level level)
         {
-            return latestKeys[new Tuple<string, Level>(memberId, level)];
+            var keys = allKeys.Where(entry => entry.Key.Item1 == memberId).ToList();
+            var keyByLevel = keys.Select(entry => entry.Value).Where(Key => Key.Level == level).First();
+            if (keyByLevel.IsExpired())
+            {
+                throw new ArgumentException("Key not found for level: " + level);
+            }
+            return keyByLevel;
         }
 
         public KeyPair GetById(string memberId, string keyId)
         {
-            return allKeys[new Tuple<string, string>(memberId, keyId)];
+            var key = allKeys[new Tuple<string, string>(memberId, keyId)];
+            if (key == null)
+            {
+                throw new ArgumentException("Key not found for id: " + keyId);
+            }
+            if (key.IsExpired())
+            {
+                throw new ArgumentException("Key with id: " + keyId + "has expired");
+            }
+            return key;
+
         }
 
         public IList<KeyPair> KeyList(string memberId)
         {
             return allKeys.Where(entry => entry.Key.Item1 == memberId)
-                .Select(entry => entry.Value)
+                .Select(entry => entry.Value).Where(key=>!key.IsExpired())
                 .ToList();
         }
     }

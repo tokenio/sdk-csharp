@@ -28,14 +28,30 @@ namespace Tokenio
                 publicKey);
         }
 
+        public static KeyPair ParseEd25519KeyPair(this AsymmetricCipherKeyPair ed25519KeyPair, Level level,long expiresAtMs)
+        {
+            var publicKey = ((Ed25519PublicKeyParameters)ed25519KeyPair.Public).GetEncoded();
+            var privateKey = ((Ed25519PrivateKeyParameters)ed25519KeyPair.Private).GetEncoded();
+            var id = Base64UrlEncoder.Encode(SHA256.Create().ComputeHash(publicKey)).Substring(0, 16);
+            return new KeyPair(
+                id,
+                level,
+                Algorithm.Ed25519,
+                privateKey,
+                publicKey, expiresAtMs);
+        }
+
         public static Key ToKey(this KeyPair keyPair)
         {
+
             return new Key
             {
                 Id = keyPair.Id,
                 PublicKey = Base64UrlEncoder.Encode(keyPair.PublicKey),
                 Level = keyPair.Level,
-                Algorithm = keyPair.Algorithm
+                Algorithm = keyPair.Algorithm,
+                ExpiresAtMs= keyPair.ExpiresAtMs
+
             };
         }
 

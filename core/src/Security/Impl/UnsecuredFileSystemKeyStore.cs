@@ -3,14 +3,24 @@ using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using System;
 
 namespace Tokenio.Security
 {
+    /// <summary>
+    /// A key store that uses the local file system for persistent storage.
+    /// Keys are stored in a single root directory, with a subdirectory containing each member's keys.
+    /// No support is provided for security of key files.
+    /// </summary>
     public class UnsecuredFileSystemKeyStore : IKeyStore
     {
         private readonly IDictionary<string, IList<KeyPair>> keys;
         private readonly string directory;
 
+        /// <summary>
+        /// Creates a new key store.
+        /// </summary>
+        /// <param name="directory">Directory.</param>
         public UnsecuredFileSystemKeyStore(string directory)
         {
             this.directory = directory;
@@ -34,6 +44,10 @@ namespace Tokenio.Security
 
         public void Put(string memberId, KeyPair keyPair)
         {
+            if (keyPair.IsExpired())
+            {
+                throw new ArgumentException("Key " + keyPair.Id + " has expired");
+            }
             var filePath = Path.Combine(directory, memberId.Replace(':', '_'));
 
             if (keys.ContainsKey(memberId))
@@ -52,17 +66,38 @@ namespace Tokenio.Security
 
         public KeyPair GetByLevel(string memberId, Level level)
         {
-            return keys[memberId].Last(key => key.Level.Equals(level));
+            var key = keys[memberId].Last(k => k.Level.Equals(level));
+            if (key.IsExpired())
+            {
+                throw new ArgumentException("Key not found for level: " + level);
+            }
+            return key;
         }
 
         public KeyPair GetById(string memberId, string keyId)
         {
-            return keys[memberId].First(key => key.Id.Equals(keyId));
+            var key = keys[memberId].First(k => k.Id.Equals(keyId));
+            if (key == null)
+            {
+                throw new ArgumentException("Key not found for id: " + keyId);
+            }
+            if (key.IsExpired())
+            {
+                throw new ArgumentException("Key with id: " + keyId + "has expired");
+            }
+            return key;
+
         }
 
+        /// <summary>
+        /// Get all of a member's keys.
+        /// </summary>
+        /// <returns>The keys.</returns>
+        /// <param name="memberId">Member identifier.</param>
         public IList<KeyPair> KeyList(string memberId)
         {
-            return keys[memberId];
+            return keys[memberId].Where(key=>!key.IsExpired()).ToList();
+
         }
     }
 }

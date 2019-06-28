@@ -16,6 +16,14 @@ namespace Tokenio.Security
         Key GenerateKey(Level level);
 
         /// <summary>
+        /// Generates the key.
+        /// </summary>
+        /// <returns>The key.</returns>
+        /// <param name="level">Level.</param>
+        /// <param name="expiresAtMs">Expires at ms.</param>
+        Key GenerateKey(Level level,long expiresAtMs);
+
+        /// <summary>
         /// Create a signer that signs data with the latest generated key of the specified level.
         /// </summary>
         /// <param name="level">the key level</param>
@@ -29,6 +37,10 @@ namespace Tokenio.Security
         /// <returns>the verifier</returns>
         IVerifier CreateVerifier(string keyId);
 
+        /// <summary>
+        /// Returns public keys that the CryptoEngine can use to sign.
+        /// </summary>
+        /// <returns>The public keys.</returns>
         IList<Key> GetPublicKeys();
     }
 }

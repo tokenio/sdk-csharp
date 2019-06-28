@@ -2,8 +2,8 @@
 using System.Web;
 using Google.Protobuf;
 using Tokenio.Exceptions;
-using Tokenio.Tpp.Utils;
 using Tokenio.Proto.Common.SecurityProtos;
+using Tokenio.Tpp.Utils;
 
 namespace Tokenio.Tpp.TokenRequests
 {
@@ -13,6 +13,12 @@ namespace Tokenio.Tpp.TokenRequests
         private static readonly string STATE_FIELD = "state";
         private static readonly string SIGNATURE_FIELD = "signature";
 
+        /// <summary>
+        /// Parses the token request callback URL's parameters. Extracts the state, the token ID, and
+        /// the signature over(state | token ID).
+        /// </summary>
+        /// <returns>The create.</returns>
+        /// <param name="url">URL.</param>
         public static TokenRequestCallbackParameters Create(string url)
         {
             var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(url));

@@ -6,21 +6,27 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Gateway;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Tokenio.Exceptions;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberOperationMetadata.Types;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 namespace Tokenio.Utils
 {
+    /// <summary>
+    /// Utility Methods
+    /// </summary>
     public class Util
     {
+        /// <summary>
+        /// Generates a random string 
+        /// </summary>
+        /// <returns>Generated Random string.</returns>
         public static string Nonce()
         {
             return Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 18);
@@ -54,6 +60,11 @@ namespace Tokenio.Utils
             return Convert.ToString(d, CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// Converts alias to AddAlias operation.
+        /// </summary>
+        /// <returns>member operation.</returns>
+        /// <param name="alias">Alias : alias to add.</param>
         public static MemberOperation ToAddAliasOperation(Alias alias)
         {
             return new MemberOperation
@@ -78,6 +89,11 @@ namespace Tokenio.Utils
             };
         }
 
+        /// <summary>
+        /// Converts alias to MemberOperationMetadata.
+        /// </summary>
+        /// <returns>member operation metadata</returns>
+        /// <param name="alias">Alias : alias to add.</param>
         public static MemberOperationMetadata ToAddAliasMetadata(Alias alias)
         {
             return new MemberOperationMetadata
@@ -90,6 +106,11 @@ namespace Tokenio.Utils
             };
         }
 
+        /// <summary>
+        /// Converts Key to AddKey operation.
+        /// </summary>
+        /// <returns>member operation.</returns>
+        /// <param name="key">Key : key to add</param>
         public static MemberOperation ToAddKeyOperation(Key key)
         {
             return new MemberOperation
@@ -101,6 +122,11 @@ namespace Tokenio.Utils
             };
         }
 
+        /// <summary>
+        /// Converts agent id to AddKey operation.
+        /// </summary>
+        /// <returns>member operation.</returns>
+        /// <param name="agentId">Agent identifier : agent id to add.</param>
         public static MemberOperation ToRecoveryAgentOperation(string agentId)
         {
 
@@ -232,6 +258,13 @@ namespace Tokenio.Utils
         private static byte[] Sha256Hash(byte[] payload)
         {
             return SHA256.Create().ComputeHash(payload);
+        }
+
+        public static long CurrentMillis()
+        {
+            DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            long currentTime = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
+            return currentTime;
         }
     }
 }

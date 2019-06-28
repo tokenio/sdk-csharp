@@ -1,12 +1,20 @@
-﻿using Grpc.Core.Interceptors;
-using Tokenio.Proto.Gateway;
-using Tokenio.Security;
+﻿using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
+using Tokenio.Security;
 
 namespace Tokenio.Tpp.Rpc
 {
+    /// <summary>
+    /// A factory class that is used to create {@link Client} and {@link UnauthenticatedClient}
+    /// instances..
+    /// </summary>
     public static class ClientFactory
     {
+        /// <summary>
+        /// Creates new unauthenticated client backed by the specified channel.
+        /// </summary>
+        /// <returns>Newly created client.</returns>
+        /// <param name="channel">RPC Channel to use.</param>
         public static UnauthenticatedClient Unauthenticated(ManagedChannel channel)
         {
             return new UnauthenticatedClient(new GatewayService.GatewayServiceClient(channel.BuildInvoker()));
