@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Token.SDK.Net.user</AssemblyName>
+    <AssemblyName>Token.SDK.Net.User</AssemblyName>
     <RootNamespace>Tokenio</RootNamespace>
     <Copyright>Copyright 2019 Token, Inc</Copyright>
     <Description>C# SDK for interacting with the Token System</Description>
