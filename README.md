@@ -18,19 +18,19 @@ Install `Mono` from [here](https://www.mono-project.com/download/stable/).
 
 ### On OSX
 
-Make sure you have `ruby` installed.
+Make sure you have `ruby` and `dotnet-sdk` installed.
 
 Build the protobuf classes if you haven't:
 
-		ruby build_proto.rb
+    ruby build_proto.rb
 
 To build the solution:
 
-        dotnet build
+    dotnet build
 
 To run the tests:
 
-		dotnet test
+    dotnet test
 
 ## Using the SDK
 

@@ -9,7 +9,6 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
 using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
-using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
@@ -23,7 +22,6 @@ using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using static Tokenio.Proto.Gateway.GatewayService;
 using static Tokenio.Proto.Gateway.GetTransfersRequest.Types;
-using static Tokenio.Proto.Gateway.ReplaceTokenRequest.Types;
 using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
@@ -297,84 +295,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Creates a new transfer token.
-        /// </summary>
-        /// <param name="payload">the transfer token payload</param>
-        /// <returns>the transfer token</returns>
-        /// <exception cref="TransferTokenException"></exception>
-        public Task<Token> CreateTransferToken(TokenPayload payload)
-        {
-            var request = new CreateTransferTokenRequest {Payload = payload};
-            return gateway(authenticationContext()).CreateTransferTokenAsync(request)
-                .ToTask(response =>
-                {
-                    if (response.Status != TransferTokenStatus.Success)
-                    {
-                        throw new TransferTokenException(response.Status);
-                    }
-
-                    return response.Token;
-                });
-        }
-
-        /// <summary>
-        /// Creates a new transfer token with a token request id.
-        /// </summary>
-        /// <param name="payload">the transfer token payload</param>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the transfer payload</returns>
-        /// <exception cref="TransferTokenException"></exception>
-        public Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId)
-        {
-            var request = new CreateTransferTokenRequest
-            {
-                Payload = payload,
-                TokenRequestId = tokenRequestId
-            };
-            return gateway(authenticationContext()).CreateTransferTokenAsync(request)
-                .ToTask(response =>
-                {
-                    if (response.Status != TransferTokenStatus.Success)
-                    {
-                        throw new TransferTokenException(response.Status);
-                    }
-
-                    return response.Token;
-                });
-        }
-
-        /// <summary>
-        /// Creates an access token.
-        /// </summary>
-        /// <param name="payload">the access token payload</param>
-        /// <returns>the access token</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload)
-        {
-            payload.From = new TokenMember {Id = MemberId};
-            var request = new CreateAccessTokenRequest {Payload = payload};
-            return gateway(authenticationContext()).CreateAccessTokenAsync(request)
-                .ToTask(response => response.Token);
-        }
-
-        /// <summary>
-        /// Creates an access token with a token request id.
-        /// </summary>
-        /// <param name="payload">the access token payload</param>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the access token</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload, string tokenRequestId)
-        {
-            payload.From = new TokenMember {Id = MemberId};
-            var request = new CreateAccessTokenRequest
-            {
-                Payload = payload,
-                TokenRequestId = tokenRequestId
-            };
-            return gateway(authenticationContext()).CreateAccessTokenAsync(request)
-                .ToTask(response => response.Token);
-        }
-
-        /// <summary>
         /// Looks up an existing token.
         /// </summary>
         /// <param name="tokenId">the token id</param>
@@ -416,29 +336,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Endorses a token.
-        /// </summary>
-        /// <param name="token">the token</param>
-        /// <param name="level">the key level to be used to endorse the token</param>
-        /// <returns>the result of the endorsement</returns>
-        public Task<TokenOperationResult> EndorseToken(Token token, Level level)
-        {
-            var signer = cryptoEngine.CreateSigner(level);
-            var request = new EndorseTokenRequest
-            {
-                TokenId = token.Id,
-                Signature = new Signature
-                {
-                    MemberId = MemberId,
-                    KeyId = signer.GetKeyId(),
-                    Signature_ = signer.Sign(Stringify(token, TokenAction.Endorsed))
-                }
-            };
-            return gateway(authenticationContext()).EndorseTokenAsync(request)
-                .ToTask(response => response.Result);
-        }
-
-        /// <summary>
         /// Cancels a token.
         /// </summary>
         /// <param name="token">the token to cancel</param>
@@ -458,20 +355,6 @@ namespace Tokenio.Rpc
             };
             return gateway(authenticationContext()).CancelTokenAsync(request)
                 .ToTask(response => response.Result);
-        }
-
-        /// <summary>
-        /// Cancels the existing token and creates a replacement for it. Supported
-        /// only for access tokens.
-        /// </summary>
-        /// <param name="tokenToCancel">the token to cancel</param>
-        /// <param name="tokenToCreate">the payload to create new token with</param>
-        /// <returns>the result of the replacement opration</returns>
-        public Task<TokenOperationResult> ReplaceToken(
-            Token tokenToCancel,
-            TokenPayload tokenToCreate)
-        {
-            return CancelAndReplace(tokenToCancel, new CreateToken {Payload = tokenToCreate});
         }
 
         /// <summary>
@@ -984,98 +867,16 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        public Task<IList<TransferEndpoint>> ResolveTransferDestination(string accountId)
+        public Task<IList<TransferDestination>> ResolveTransferDestinations(string accountId)
         {
             var request = new ResolveTransferDestinationsRequest {AccountId = accountId};
             return gateway(authenticateOnBehalfOf()).ResolveTransferDestinationsAsync(request)
-                .ToTask(response => (IList<TransferEndpoint>) response.Destinations);
-        }
-
-        /// <summary>
-        /// Adds a trusted beneficiary for whom the SCA will be skipped.
-        /// </summary>
-        /// <param name="payload">the trusted beneficiary payload</param>
-        /// <returns>a task</returns>
-        public Task AddTrustedBeneficiary(TrustedBeneficiary.Types.Payload payload)
-        {
-            var signer = cryptoEngine.CreateSigner(Level.Standard);
-            var request = new AddTrustedBeneficiaryRequest
-            {
-                TrustedBeneficiary = new TrustedBeneficiary
-                {
-                    Payload = payload,
-                    Signature = new Signature
-                    {
-                        KeyId = signer.GetKeyId(),
-                        MemberId = MemberId,
-                        Signature_ = signer.Sign(payload)
-                    }
-                }
-            };
-            return gateway(authenticationContext()).AddTrustedBeneficiaryAsync(request).ToTask();
-        }
-
-        /// <summary>
-        /// Removes a trusted beneficiary. 
-        /// </summary>
-        /// <param name="payload">the trusted beneficiary payload</param>
-        /// <returns>a task</returns>
-        public Task RemoveTrustedBeneficiary(TrustedBeneficiary.Types.Payload payload)
-        {
-            var signer = cryptoEngine.CreateSigner(Level.Standard);
-            var request = new RemoveTrustedBeneficiaryRequest
-            {
-                TrustedBeneficiary = new TrustedBeneficiary
-                {
-                    Payload = payload,
-                    Signature = new Signature
-                    {
-                        KeyId = signer.GetKeyId(),
-                        MemberId = MemberId,
-                        Signature_ = signer.Sign(payload)
-                    }
-                }
-            };
-            return gateway(authenticationContext()).RemoveTrustedBeneficiaryAsync(request).ToTask();
-        }
-
-        /// <summary>
-        /// Gets a list of all trusted beneficiaries.
-        /// </summary>
-        /// <returns>the list</returns>
-        public Task<IList<TrustedBeneficiary>> GetTrustedBeneficiaries()
-        {
-            var request = new GetTrustedBeneficiariesRequest();
-            return gateway(authenticationContext()).GetTrustedBeneficiariesAsync(request)
-                .ToTask(response => (IList<TrustedBeneficiary>) response.TrustedBeneficiaries);
+                .ToTask(response => (IList<TransferDestination>) response.TransferDestinations);
         }
 
         internal Client Clone()
         {
             return new Client(MemberId, cryptoEngine, channel);
-        }
-
-        private Task<TokenOperationResult> CancelAndReplace(
-            Token tokenToCancel,
-            CreateToken tokenToCreate)
-        {
-            var signer = cryptoEngine.CreateSigner(Level.Low);
-            var request = new ReplaceTokenRequest
-            {
-                CancelToken = new CancelToken
-                {
-                    TokenId = tokenToCancel.Id,
-                    Signature = new Signature
-                    {
-                        MemberId = MemberId,
-                        KeyId = signer.GetKeyId(),
-                        Signature_ = Stringify(tokenToCancel, TokenAction.Cancelled)
-                    }
-                },
-                CreateToken = tokenToCreate
-            };
-            return gateway(authenticationContext()).ReplaceTokenAsync(request)
-                .ToTask(response => response.Result);
         }
 
         private string Stringify(Token token, TokenAction action)

@@ -1,8 +1,6 @@
 ﻿using Tokenio;
-using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
-using static Tokenio.Proto.Common.AccountProtos.BankAccount.Types;
 
 namespace Sample
 {
@@ -18,19 +16,18 @@ namespace Sample
 
             var transferToken = payee.GetToken(tokenId).Result;
 
+            var transferDestination = new TransferDestination
+            {
+                Token = new TransferDestination.Types.Token
+                {
+                    MemberId = payee.MemberId(),
+                    AccountId = accountId
+                }
+            };
+            
             var transfer = payee.RedeemToken(
                 transferToken,
-                new TransferEndpoint
-                {
-                    Account = new BankAccount
-                    {
-                        Token = new Token
-                        {
-                            MemberId = payee.MemberId(),
-                            AccountId = accountId
-                        }
-                    }
-                },
+                transferDestination,
                 cartId).Result;
 
             return transfer;

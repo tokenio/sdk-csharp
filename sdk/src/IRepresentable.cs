@@ -126,14 +126,14 @@ namespace Tokenio
         /// Resolves transfer destinations for the given account.
         /// </summary>
         /// <param name="accountId">the account id</param>
-        /// <returns>a list of transfer endpoints</returns>
-        Task<IList<TransferEndpoint>> ResolveTransferDestinations(string accountId);
+        /// <returns>a list of transfer destinations</returns>
+        Task<IList<TransferDestination>> ResolveTransferDestinations(string accountId);
         
         /// <summary>
         /// Resolves transfer destinations for the given account.
         /// </summary>
         /// <param name="accountId">the account id</param>
-        /// <returns>a list of transfer endpoints</returns>
-        IList<TransferEndpoint> ResolveTransferDestinationsBlocking(string accountId);
+        /// <returns>a list of transfer destinations</returns>
+        IList<TransferDestination> ResolveTransferDestinationsBlocking(string accountId);
     }
 }

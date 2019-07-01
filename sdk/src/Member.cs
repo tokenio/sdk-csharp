@@ -869,12 +869,59 @@ namespace Tokenio
         /// Redeems a transfer token.
         /// </summary>
         /// <param name="token">the transfer token</param>
+        /// <param name="amount">the amount to transfer</param>
+        /// <param name="currency">the currency</param>
+        /// <param name="description">the description of the transfer</param>
+        /// <param name="destination">the transfer instruction destination</param>
+        /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(Token token)
+        /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
+        public Task<Transfer> RedeemToken(
+            Token token,
+            double? amount = null,
+            string currency = null,
+            string description = null,
+            TransferDestination destination = null,
+            string refId = null)
         {
-            return RedeemToken(token, null, null, null, null, null);
+            var payload = new TransferPayload
+            {
+                TokenId = token.Id,
+                Description = token.Payload.Description
+            };
+            if (destination != null)
+            {
+                payload.TransferDestinations.Add(destination);
+            }
+
+            if (amount.HasValue)
+            {
+                payload.Amount.Value = Util.DoubleToString(amount.Value);
+            }
+
+            if (currency != null)
+            {
+                payload.Amount.Currency = currency;
+            }
+
+            if (description != null)
+            {
+                payload.Description = description;
+            }
+
+            if (refId != null)
+            {
+                payload.RefId = refId;
+            }
+            else
+            {
+                logger.Warn("refId is not set. A random ID will be used.");
+                payload.RefId = Util.Nonce();
+            }
+
+            return client.CreateTransfer(payload);
         }
-        
+
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
@@ -883,20 +930,9 @@ namespace Tokenio
         /// <returns>a transfer record</returns>
         public Task<Transfer> RedeemToken(Token token, string refId)
         {
-            return RedeemToken(token, null, null, null, null, refId);
+            return RedeemTokenInternal(token, null, null, null, null, refId);
         }
-        
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">the transfer token</param>
-        /// <param name="destination">the transfer instruction destination</param>
-        /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(Token token, TransferEndpoint destination)
-        {
-            return RedeemToken(token, null, null, null, destination, null);
-        }
-        
+
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
@@ -906,8 +942,8 @@ namespace Tokenio
         /// <returns>a transfer record</returns>
         public Task<Transfer> RedeemToken(
             Token token,
-            TransferEndpoint destination,
-            string refId)
+            TransferDestination destination,
+            string refId = null)
         {
             return RedeemToken(token, null, null, null, destination, refId);
         }
@@ -916,53 +952,28 @@ namespace Tokenio
         /// Redeems a transfer token.
         /// </summary>
         /// <param name="token">the transfer token</param>
-        /// <param name="amount">the amount to transfer</param>
-        /// <param name="currency">the currency</param>
-        /// <param name="description">the description of the transfer</param>
+        /// <param name="destination">the transfer instruction destination</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(
-            Token token,
-            double? amount,
-            string currency,
-            string description)
+        [Obsolete]
+        public Task<Transfer> RedeemToken(Token token, TransferEndpoint destination)
         {
-            return RedeemToken(token, amount, currency, description, null, null);
+            return RedeemTokenInternal(token, null, null, null, destination, null);
         }
 
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
         /// <param name="token">the transfer token</param>
-        /// <param name="amount">the amount to transfer</param>
-        /// <param name="currency">the currency</param>
         /// <param name="destination">the transfer instruction destination</param>
+        /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
+        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
         public Task<Transfer> RedeemToken(
             Token token,
-            double? amount,
-            string currency,
-            TransferEndpoint destination)
+            TransferEndpoint destination,
+            string refId)
         {
-            return RedeemToken(token, amount, currency, null, destination, null);
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">the transfer token</param>
-        /// <param name="amount">the amount to transfer</param>
-        /// <param name="currency">the currency</param>
-        /// <param name="description">the description of the transfer</param>
-        /// <param name="destination">the transfer instruction destination</param>
-        /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(
-            Token token,
-            double? amount,
-            string currency,
-            string description,
-            TransferEndpoint destination)
-        {
-            return RedeemToken(token, amount, currency, description, destination, null);
+            return RedeemTokenInternal(token, null, null, null, destination, refId);
         }
 
         /// <summary>
@@ -976,7 +987,20 @@ namespace Tokenio
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
         /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
+        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
         public Task<Transfer> RedeemToken(
+            Token token,
+            double? amount,
+            string currency,
+            string description,
+            TransferEndpoint destination,
+            string refId)
+        {
+            return RedeemTokenInternal(token, amount, currency, description, destination, refId);
+        }
+
+        [Obsolete]
+        private Task<Transfer> RedeemTokenInternal(
             Token token,
             double? amount,
             string currency,
@@ -1021,15 +1045,27 @@ namespace Tokenio
 
             return client.CreateTransfer(payload);
         }
-        
+
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
         /// <param name="token">the transfer token</param>
+        /// <param name="amount">the amount to transfer</param>
+        /// <param name="currency">the currency</param>
+        /// <param name="description">the description of the transfer</param>
+        /// <param name="destination">the transfer instruction destination</param>
+        /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
-        public Transfer RedeemTokenBlocking(Token token)
+        /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
+        public Transfer RedeemTokenBlocking(
+            Token token,
+            double? amount = null,
+            string currency = null,
+            string description = null,
+            TransferDestination destination = null,
+            string refId = null)
         {
-            return RedeemToken(token).Result;
+            return RedeemToken(token, amount, currency, description, destination, refId).Result;
         }
         
         /// <summary>
@@ -1048,23 +1084,12 @@ namespace Tokenio
         /// </summary>
         /// <param name="token">the transfer token</param>
         /// <param name="destination">the transfer instruction destination</param>
-        /// <returns>a transfer record</returns>
-        public Transfer RedeemTokenBlocking(Token token, TransferEndpoint destination)
-        {
-            return RedeemToken(token, destination).Result;
-        }
-        
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">the transfer token</param>
-        /// <param name="destination">the transfer instruction destination</param>
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
         public Transfer RedeemTokenBlocking(
             Token token,
-            TransferEndpoint destination,
-            string refId)
+            TransferDestination destination,
+            string refId = null)
         {
             return RedeemToken(token, destination, refId).Result;
         }
@@ -1073,55 +1098,30 @@ namespace Tokenio
         /// Redeems a transfer token.
         /// </summary>
         /// <param name="token">the transfer token</param>
-        /// <param name="amount">the amount to transfer</param>
-        /// <param name="currency">the currency</param>
-        /// <param name="description">the description of the transfer</param>
+        /// <param name="destination">the transfer instruction destination</param>
         /// <returns>a transfer record</returns>
-        public Transfer RedeemTokenBlocking(
-            Token token,
-            double? amount,
-            string currency,
-            string description)
+        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
+        public Transfer RedeemTokenBlocking(Token token, TransferEndpoint destination)
         {
-            return RedeemToken(token, amount, currency, description).Result;
+            return RedeemToken(token, destination).Result;
         }
 
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
         /// <param name="token">the transfer token</param>
-        /// <param name="amount">the amount to transfer</param>
-        /// <param name="currency">the currency</param>
         /// <param name="destination">the transfer instruction destination</param>
+        /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
+        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
         public Transfer RedeemTokenBlocking(
             Token token,
-            double? amount,
-            string currency,
-            TransferEndpoint destination)
+            TransferEndpoint destination,
+            string refId)
         {
-            return RedeemToken(token, amount, currency, destination).Result;
+            return RedeemToken(token, destination, refId).Result;
         }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">the transfer token</param>
-        /// <param name="amount">the amount to transfer</param>
-        /// <param name="currency">the currency</param>
-        /// <param name="description">the description of the transfer</param>
-        /// <param name="destination">the transfer instruction destination</param>
-        /// <returns>a transfer record</returns>
-        public Transfer RedeemTokenBlocking(
-            Token token,
-            double? amount,
-            string currency,
-            string description,
-            TransferEndpoint destination)
-        {
-            return RedeemToken(token, amount, currency, description, destination).Result;
-        }
-
+        
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
@@ -1133,6 +1133,7 @@ namespace Tokenio
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
         /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
+        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
         public Transfer RedeemTokenBlocking(
             Token token,
             double? amount,
@@ -1327,9 +1328,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        public Task<IList<TransferEndpoint>> ResolveTransferDestinations(string accountId)
+        public Task<IList<TransferDestination>> ResolveTransferDestinations(string accountId)
         {
-            return client.ResolveTransferDestination(accountId);
+            return client.ResolveTransferDestinations(accountId);
         }
         
         /// <summary>
@@ -1337,7 +1338,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        public IList<TransferEndpoint> ResolveTransferDestinationsBlocking(string accountId)
+        public IList<TransferDestination> ResolveTransferDestinationsBlocking(string accountId)
         {
             return ResolveTransferDestinations(accountId).Result;
         }
