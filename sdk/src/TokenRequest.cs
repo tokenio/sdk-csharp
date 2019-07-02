@@ -1,3 +1,5 @@
+using System;
+using Google.Protobuf;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
@@ -301,6 +303,22 @@ namespace Tokenio
             /// </summary>
             /// <param name="destination">destination</param>
             /// <returns>builder</returns>
+            public TransferBuilder AddDestination(TransferDestination destination)
+            {
+                if (requestPayload.TransferBody.Instructions == null)
+                {
+                    requestPayload.TransferBody.Instructions = new TransferInstructions();                    
+                }             
+                requestPayload.TransferBody.Instructions.TransferDestinations.Add(destination);
+                return this;
+            }
+
+            /// <summary>
+            /// Adds a transfer destination to a transfer token request.
+            /// </summary>
+            /// <param name="destination">destination</param>
+            /// <returns>builder</returns>
+            [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
             public TransferBuilder AddDestination(TransferEndpoint destination)
             {
                 requestPayload.TransferBody.Destinations.Add(destination);

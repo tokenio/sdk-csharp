@@ -1,6 +1,7 @@
 using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
+using Tokenio.Proto.Common.TransferInstructionsProtos;
 using TokenRequest = Tokenio.TokenRequest;
 
 namespace Sample
@@ -26,6 +27,14 @@ namespace Sample
                 })
                 .SetBankId("iron")
                 .SetCsrfToken(Util.Nonce())
+                .AddDestination(new TransferDestination
+                {
+                    Sepa = new TransferDestination.Types.Sepa
+                    {
+                        Bic = "XUIWC2489",
+                        Iban = "DE89370400440532013000"
+                    }
+                })
                 .build();
 
             return payee.StoreTokenRequestBlocking(request);
