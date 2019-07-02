@@ -32,7 +32,7 @@ namespace Sample
                     Sepa = new TransferDestination.Types.Sepa
                     {
                         Bic = "XUIWC2489",
-                        Iban = "DE89 3704 0044 0532 0130 00"
+                        Iban = "DE89370400440532013000"
                     }
                 })
                 .build();
