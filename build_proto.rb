@@ -1,8 +1,9 @@
-#
+﻿#
 # Fetches specified proto files from the artifact repository.
 #
 TOKEN_PROTOS_VER = "1.1.120"
 RPC_PROTOS_VER = "1.1.44"
+
 
 require 'open-uri'
 require 'fileutils'
@@ -79,12 +80,20 @@ end
 fetch_protos();
 
 # Build the command that generates the protos.
-dir = "./sdk/generated"
-system("rm -rf #{dir}");
+core_dir = "./core/generated"
+sdk_dir = "./sdk/generated"
+system("rm -rf #{core_dir}");
+system("rm -rf #{sdk_dir}");
 
-gencommand = generate_protos_cmd("common", dir) +
-    generate_protos_cmd("common/google/api", dir) +
-    generate_protos_cmd("external/gateway", dir) +
-    generate_protos_cmd("extensions", dir);
+#
+gencommand = generate_protos_cmd("common", core_dir) +
+generate_protos_cmd("common/google/api", core_dir) +
+generate_protos_cmd("external/gateway", core_dir) +
+generate_protos_cmd("extensions", core_dir)+
+generate_protos_cmd("common", sdk_dir) +
+generate_protos_cmd("common/google/api", sdk_dir) +
+generate_protos_cmd("external/gateway", sdk_dir) +
+generate_protos_cmd("extensions", sdk_dir);
+
 
 system(gencommand)
