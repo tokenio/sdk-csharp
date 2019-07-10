@@ -146,7 +146,7 @@ namespace Tokenio
         /// <returns>the created member</returns>
         public Task<Member> CreateMember(
             Alias alias = null,
-            CreateMemberType createMemberType = CreateMemberType.Personal)
+            CreateMemberType createMemberType = CreateMemberType.Business)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
