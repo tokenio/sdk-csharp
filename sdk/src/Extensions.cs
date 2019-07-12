@@ -41,7 +41,12 @@ namespace Tokenio
 
         public static Alias ToNormalized(this Alias alias)
         {
-            return new Alias {  Value = alias.Value.ToLower().Trim(), Type = alias.Type, Realm = alias.Realm };
+            if (alias.Type.Equals(Eidas))
+            {
+                return alias;
+            }
+
+            return new Alias {Value = alias.Value.ToLower().Trim(), Type = alias.Type, Realm = alias.Realm};
         }
 
         public static async Task<TResult> Map<TSource, TResult>(
@@ -50,19 +55,19 @@ namespace Tokenio
         {
             return func.Invoke(await sourceTask);
         }
-        
+
         public static async Task<TResult> FlatMap<TSource, TResult>(
             this Task<TSource> sourceTask,
             Func<TSource, Task<TResult>> func)
         {
             return await func.Invoke(await sourceTask);
         }
-        
+
         public static async Task ToTask<TSource>(this AsyncUnaryCall<TSource> sourceAsync)
         {
             await sourceAsync.ResponseAsync;
         }
-        
+
         public static async Task<TResult> ToTask<TSource, TResult>(
             this AsyncUnaryCall<TSource> sourceAsync,
             Func<TSource, TResult> func)
