@@ -73,20 +73,23 @@ namespace Tokenio.User {
 					.Build();
 		}
 
-		/// <summary>
-		/// Creates a new Token member with a set of auto-generated keys, an alias, and member type.
-		/// </summary>
-		/// <param name="alias">nullable member alias to use, must be unique. If null, then no alias
-		/// will be created with the member</param>
-		/// <param name="createMemberType">the type of member to register</param>
-		/// <returns>the created member</returns>
-		public Task<Member> CreateMember(
-				Alias alias, string recoveryAgent = null) {
-			return CreateMemberImpl(alias, CreateMemberType.Personal, recoveryAgent)
+        /// <summary>
+        /// Creates a new Token member with a set of auto-generated keys, an alias, and member type.
+        /// </summary>
+        /// <returns>The member.</returns>
+        /// <param name="alias">Alias.</param>
+        /// <param name="recoveryAgent">Recovery agent.</param>
+        /// <param name="realmId">Realm identifier.</param>
+        public Task<Member> CreateMember(
+				Alias alias, 
+                string recoveryAgent = null,
+                string realmId=null) {
+			return CreateMemberImpl(alias, CreateMemberType.Personal, recoveryAgent,null,realmId)
 					.Map(member => {
 						var crypto = cryptoEngineFactory.Create(member.MemberId());
 						var client = ClientFactory.Authenticated(channel, member.MemberId(), crypto);
-						return new Member(member.MemberId(), client, browserFactory);
+						return new Member(member.MemberId(), client, tokenCluster,member.PartnerId()
+                            ,member.RealmId(), browserFactory);
 					});
 		}
 
@@ -101,24 +104,39 @@ namespace Tokenio.User {
 		public Member CreateMemberBlocking(
 				Alias alias,
 			   string recoveryAgent = null) {
-			return CreateMember(alias, recoveryAgent).Result;
+			return CreateMember(alias, null,recoveryAgent).Result;
 		}
 
-		/// <summary>
-		/// Sets up a member given a specific ID of a member that already exists in the system. If
-		/// the member ID already has keys, this will not succeed.Used for testing since this
-		/// gives more control over the member creation process.
-		/// </summary>
-		/// <returns>The up member.</returns>
-		/// <param name="memberId">Member identifier.</param>
-		/// <param name="alias">nullable member alias to use, must be unique. If null, then no alias will be created with the member</param>
-		public Task<Member> SetUpMember(string memberId,
+
+        /// <summary>
+        /// Creates the member in realm blocking.
+        /// </summary>
+        /// <returns>The member in realm blocking.</returns>
+        /// <param name="alias">Alias.</param>
+        /// <param name="realmId">Realm identifier.</param>
+        public Member CreateMemberInRealmBlocking(Alias alias, string realmId)
+        {
+            return CreateMember(alias, realmId, realmId).Result;
+        }
+
+
+
+        /// <summary>
+        /// Sets up a member given a specific ID of a member that already exists in the system. If
+        /// the member ID already has keys, this will not succeed.Used for testing since this
+        /// gives more control over the member creation process.
+        /// </summary>
+        /// <returns>The up member.</returns>
+        /// <param name="memberId">Member identifier.</param>
+        /// <param name="alias">nullable member alias to use, must be unique. If null, then no alias will be created with the member</param>
+        public Task<Member> SetUpMember(string memberId,
 				Alias alias) {
 			return SetUpMemberImpl(memberId, alias)
 					.Map(member => {
 						var crypto = cryptoEngineFactory.Create(member.MemberId());
 						var client = ClientFactory.Authenticated(channel, member.MemberId(), crypto);
-						return new Member(member.MemberId(), client, browserFactory);
+						return new Member(member.MemberId(), client,tokenCluster ,
+                            member.PartnerId(),member.RealmId(),browserFactory);
 					});
 		}
 
@@ -137,7 +155,9 @@ namespace Tokenio.User {
 			var client = ClientFactory.Authenticated(channel, memberId, crypto);
 			return GetMemberImpl(memberId, client)
 					.Map(member => {
-						return new Member(member.MemberId(), client, browserFactory);
+						return new Member(member.MemberId(), client,tokenCluster ,
+                            member.PartnerId(),
+                            member.RealmId(),browserFactory);
 					});
 		}
 
@@ -189,7 +209,9 @@ namespace Tokenio.User {
 			return CompleteRecoveryImpl(memberId, recoveryOperations, privilegedKey, cryptoEngine)
 					.Map(member => {
 						var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
-						return new Member(member.MemberId(), client, browserFactory);
+						return new Member(member.MemberId(), client,tokenCluster ,
+                            member.PartnerId(),
+                            member.RealmId(),browserFactory);
 					});
 		}
 
@@ -224,7 +246,9 @@ namespace Tokenio.User {
 			return CompleteRecoveryWithDefaultRuleImpl(memberId, verificationId, code, cryptoEngine)
 					.Map(member => {
 						var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
-						return new Member(member.MemberId(), client, browserFactory);
+						return new Member(member.MemberId(), client,tokenCluster ,
+                            member.PartnerId(),
+                            member.RealmId(),browserFactory);
 					});
 		}
 

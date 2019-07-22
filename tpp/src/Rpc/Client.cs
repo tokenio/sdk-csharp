@@ -12,6 +12,7 @@ using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
 using Tokenio.Security;
+using Tokenio.Proto.Common.EidasProtos;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using static Tokenio.Proto.Gateway.GetTransfersRequest.Types;
@@ -432,6 +433,26 @@ namespace Tokenio.Tpp.Rpc
             return gateway(authenticationContext())
                 .GetActiveAccessTokenAsync(request)
                 .ToTask(response => response.Token);
+        }
+
+        /// <summary>
+        /// Verifies eIDAS certificate.
+        /// </summary>
+        /// <returns>The eidas.</returns>
+        /// <param name="payload">payload payload containing member id and the certificate.</param>
+        /// <param name="signature">signature payload signed with the private key corresponding to the certificate.</param>
+        public Task VerifyEidas(
+            VerifyEidasPayload payload,
+            string signature)
+        {
+            var request = new VerifyEidasRequest() {
+
+                Payload= payload,
+                Signature= signature
+
+            };
+            return gateway(authenticationContext())
+                    .VerifyEidasAsync(request).ToTask();
         }
 
     }

@@ -77,13 +77,12 @@ namespace Tokenio.User {
 		/// <returns>The payload.</returns>
 		/// <param name="payload">Payload.</param>
 		public static AccessTokenBuilder FromPayload(TokenPayload payload) {
-			TokenPayload builder = payload;
-			builder.Access = new AccessBody() {
-			};
+            var builder=payload;
+            builder.Access = null;
 			builder.RefId = Util.Nonce();
 			return new AccessTokenBuilder(builder, null);
 		}
-
+        
 		public static AccessTokenBuilder FromTokenRequest(TokenRequest tokenRequest) {
 			if (!tokenRequest.RequestPayload.RequestBodyCase.Equals(RequestBodyCase.AccessBody)) {
 				throw new ArgumentException("Require token request with access body.");
@@ -121,12 +120,18 @@ namespace Tokenio.User {
 		/// <returns>The address.</returns>
 		/// <param name="addressId">Address identifier.</param>
 		public AccessTokenBuilder ForAddress(string addressId) {
-			payload.Access.Resources.Add(
+            var Access = payload.Access;
+            if (Access == null)
+            {
+                Access = new AccessBody();
+            }
+            Access.Resources.Add(
 					new AccessBody.Types.Resource {
 						Address = new AccessBody.Types.Resource.Types.Address {
 							AddressId = addressId
 						}
 					});
+            payload.Access = Access;
 			return this;
 		}
 
@@ -135,15 +140,19 @@ namespace Tokenio.User {
 		/// </summary>
 		/// <returns>The account.</returns>
 		/// <param name="accountId">Account identifier.</param>
-		public AccessTokenBuilder ForAccount(string accountId) {
-			var access = new AccessBody();
-			access.Resources.Add(new AccessBody.Types.Resource {
+		public AccessTokenBuilder   ForAccount(string accountId) {
+            var Access = payload.Access;
+            if (Access == null)
+            {
+                Access = new AccessBody();
+            }
+            Access.Resources.Add(new AccessBody.Types.Resource {
 				Account = new AccessBody.Types.Resource.Types.Account {
 					AccountId = accountId
 				}
 			});
-			payload.Access = access;
-			return this;
+            payload.Access = Access;
+            return this;
 		}
 
 		/// <summary>
@@ -152,12 +161,19 @@ namespace Tokenio.User {
 		/// <returns>The account transactions.</returns>
 		/// <param name="accountId">Account identifier.</param>
 		public AccessTokenBuilder ForAccountTransactions(string accountId) {
-			payload.Access.Resources.Add(new AccessBody.Types.Resource {
+            var Access = payload.Access;
+            if (Access == null)
+            {
+                Access = new AccessBody();
+            }
+            Access.Resources.Add(new AccessBody.Types.Resource {
 				Transactions = new AccessBody.Types.Resource.Types.AccountTransactions {
 					AccountId = accountId
 				}
 			});
-			return this;
+            payload.Access = Access;
+
+            return this;
 		}
 
 		/// <summary>
@@ -166,12 +182,19 @@ namespace Tokenio.User {
 		/// <returns>The account balances.</returns>
 		/// <param name="accountId">Account identifier.</param>
 		public AccessTokenBuilder ForAccountBalances(string accountId) {
-			payload.Access.Resources.Add(new AccessBody.Types.Resource {
+            var Access = payload.Access;
+            if (Access == null)
+            {
+                Access = new AccessBody();
+            }
+            Access.Resources.Add(new AccessBody.Types.Resource {
 				Balance = new AccessBody.Types.Resource.Types.AccountBalance {
 					AccountId = accountId
 				}
 			});
-			return this;
+            payload.Access = Access;
+
+            return this;
 		}
 
 		/// <summary>
@@ -180,12 +203,19 @@ namespace Tokenio.User {
 		/// <returns>The transfer destinations.</returns>
 		/// <param name="accountId">Account identifier.</param>
 		public AccessTokenBuilder ForTransferDestinations(string accountId) {
-			payload.Access.Resources.Add(new AccessBody.Types.Resource {
+            var Access = payload.Access;
+            if (Access == null)
+            {
+                Access = new AccessBody();
+            }
+            Access.Resources.Add(new AccessBody.Types.Resource {
 				TransferDestinations = new AccessBody.Types.Resource.Types.TransferDestinations {
 					AccountId = accountId
 				}
 			});
-			return this;
+            payload.Access = Access;
+
+            return this;
 		}
 
 		/// <summary>
@@ -195,13 +225,20 @@ namespace Tokenio.User {
 		/// <returns>{@link AccessTokenBuilder}</returns>
 		/// <param name="accountId">Account identifier.</param>
 		public AccessTokenBuilder ForFundsConfirmation(string accountId) {
-			payload.Access.Resources.Add(
+            var Access = payload.Access;
+            if (Access == null)
+            {
+                Access = new AccessBody();
+            }
+            Access.Resources.Add(
 					new AccessBody.Types.Resource {
 						FundsConfirmation = new AccessBody.Types.Resource.Types.FundsConfirmation {
 							AccountId = accountId
 						}
 					});
-			return this;
+            payload.Access = Access;
+
+            return this;
 		}
 
 		/// <summary>

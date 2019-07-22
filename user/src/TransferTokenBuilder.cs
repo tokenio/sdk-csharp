@@ -12,7 +12,8 @@ using static Tokenio.Proto.Common.AccountProtos.BankAccount.Types;
 using AccountCase = Tokenio.Proto.Common.AccountProtos.BankAccount.AccountOneofCase;
 using ProtoToken = Tokenio.Proto.Common.TokenProtos.Token;
 using TRANSFER_BODY = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.RequestBodyOneofCase;
-
+using TRANSFER = Tokenio.Proto.Common.TokenProtos.TokenPayload.BodyOneofCase;
+using Tokenio.Proto.Common.ProviderSpecific;
 namespace Tokenio.User {
 	/// <summary>
 	/// This class is used to build a transfer token. The required parameters are member, amount (which
@@ -48,7 +49,7 @@ namespace Tokenio.User {
 			};
 			if (member != null) {
 				From(member.MemberId());
-				IList<Alias> aliases = member.GetAliases().Result;
+				IList<Alias> aliases = member.GetAliasesBlocking();
 				if (aliases.Count > 0) {
 					payload.From.Alias = aliases[0];
 				}
@@ -64,9 +65,17 @@ namespace Tokenio.User {
 			if (tokenRequest.RequestPayload.RequestBodyCase != TRANSFER_BODY.TransferBody) {
 				throw new ArgumentException("Require token request with transfer body.");
 			}
-			var instructions = new TransferInstructions();
-			instructions.Destinations.Add(tokenRequest.RequestPayload.TransferBody.Destinations);
-			this.member = member;
+            if (tokenRequest.RequestPayload.To==null)
+            {
+                throw new ArgumentException("No payee on token request.");
+            }
+            var transferBody = tokenRequest.RequestPayload.TransferBody;
+            var instructions = transferBody.Instructions;
+            if (instructions == null)
+            { instructions = new TransferInstructions();
+                instructions.Destinations.Add(transferBody.Destinations);
+            }
+            this.member = member;
 			this.payload = new TokenPayload {
 				Version = "1.0",
 				RefId = tokenRequest.RequestPayload.RefId,
@@ -74,10 +83,11 @@ namespace Tokenio.User {
 				To = tokenRequest.RequestPayload.To,
 				Description = tokenRequest.RequestPayload.Description,
 				ReceiptRequested = tokenRequest.RequestOptions.ReceiptRequested,
-				Transfer = new TransferBody {
-					LifetimeAmount = tokenRequest.RequestPayload.TransferBody.LifetimeAmount,
-					Currency = tokenRequest.RequestPayload.TransferBody.Currency,
-					Amount = tokenRequest.RequestPayload.TransferBody.Amount,
+                TokenRequestId= tokenRequest.Id,
+                Transfer = new TransferBody {
+					LifetimeAmount = transferBody.LifetimeAmount,
+					Currency = transferBody.Currency,
+					Amount = transferBody.Amount,
 					Instructions = instructions
 				}
 			};
@@ -87,12 +97,35 @@ namespace Tokenio.User {
 			this.tokenRequestId = tokenRequest.Id;
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Tokenio.User.TransferTokenBuilder"/> class.
-		/// </summary>
-		/// <param name="amount">Amount.</param>
-		/// <param name="currency">Currency.</param>
-		public TransferTokenBuilder(double amount, string currency) : this(null, amount, currency) {
+
+        public TransferTokenBuilder(Member member, TokenPayload tokenPayload)
+        {
+            if (tokenPayload.BodyCase != TRANSFER.Transfer)
+            {
+                throw new ArgumentException("Require token payload with transfer body.");
+            }
+            if (tokenPayload.To == null)
+            {
+                throw new ArgumentException("No payee on token payload.");
+            }
+            this.member = member;
+            this.payload = tokenPayload;
+
+            if (this.payload.From == null)
+            {
+                this.payload.From = new TokenMember
+                {
+                    Id = member.MemberId()
+                };
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Tokenio.User.TransferTokenBuilder"/> class.
+        /// </summary>
+        /// <param name="amount">Amount.</param>
+        /// <param name="currency">Currency.</param>
+        public TransferTokenBuilder(double amount, string currency) : this(null, amount, currency) {
 		}
 
 		/// <summary>
@@ -231,7 +264,10 @@ namespace Tokenio.User {
 		/// <returns>The to alias.</returns>
 		/// <param name="toAlias">To alias.</param>
 		public TransferTokenBuilder SetToAlias(Alias toAlias) {
-			payload.To.Alias = toAlias;
+            payload.To = new TokenMember
+            {
+                Alias= toAlias
+            };
 			return this;
 		}
 
@@ -277,7 +313,8 @@ namespace Tokenio.User {
 				instructions.Metadata = new TransferInstructions.Types.Metadata { };
 			}
 			instructions.Metadata.TransferPurpose = purposeOfPayment;
-			return this;
+            payload.Transfer.Instructions = instructions;
+            return this;
 		}
 
 		/// <summary>
@@ -296,7 +333,8 @@ namespace Tokenio.User {
 		/// <param name="tokenRequestId">token request id</param>
 		/// <returns>builder</returns>
 		public TransferTokenBuilder SetTokenRequestId(string tokenRequestId) {
-			this.tokenRequestId = tokenRequestId;
+            payload.TokenRequestId = tokenRequestId;
+            this.tokenRequestId = tokenRequestId;
 			return this;
 		}
 
@@ -310,7 +348,33 @@ namespace Tokenio.User {
 			return this;
 		}
 
-		public TransferTokenBuilder From(string memberId) {
+        /// <summary>
+        /// Sets the provider transfer metadata.
+        /// </summary>
+        /// <returns>The provider transfer metadata.</returns>
+        /// <param name="metadata">Metadata.</param>
+        public TransferTokenBuilder SetProviderTransferMetadata(ProviderTransferMetadata metadata)
+        {
+            var instructions = payload.Transfer.Instructions;
+            if (instructions == null)
+            {
+                instructions = new TransferInstructions { };
+            }
+            if (instructions.Metadata == null)
+            {
+                instructions.Metadata = new TransferInstructions.Types.Metadata { };
+            }
+            instructions.Metadata.ProviderTransferMetadata= metadata;
+            payload.Transfer.Instructions = instructions;
+            return this;
+        }
+
+        /// <summary>
+        /// From the specified memberId.
+        /// </summary>
+        /// <returns>The from.</returns>
+        /// <param name="memberId">Member identifier.</param>
+        public TransferTokenBuilder From(string memberId) {
 			payload.From = new TokenMember {
 				Id = memberId
 			};

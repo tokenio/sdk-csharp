@@ -17,8 +17,8 @@ namespace Tokenio
     {
         public static KeyPair ParseEd25519KeyPair(this AsymmetricCipherKeyPair ed25519KeyPair, Level level)
         {
-            var publicKey = ((Ed25519PublicKeyParameters) ed25519KeyPair.Public).GetEncoded();
-            var privateKey = ((Ed25519PrivateKeyParameters) ed25519KeyPair.Private).GetEncoded();
+            var publicKey = ((Ed25519PublicKeyParameters)ed25519KeyPair.Public).GetEncoded();
+            var privateKey = ((Ed25519PrivateKeyParameters)ed25519KeyPair.Private).GetEncoded();
             var id = Base64UrlEncoder.Encode(SHA256.Create().ComputeHash(publicKey)).Substring(0, 16);
             return new KeyPair(
                 id,
@@ -28,7 +28,7 @@ namespace Tokenio
                 publicKey);
         }
 
-        public static KeyPair ParseEd25519KeyPair(this AsymmetricCipherKeyPair ed25519KeyPair, Level level,long expiresAtMs)
+        public static KeyPair ParseEd25519KeyPair(this AsymmetricCipherKeyPair ed25519KeyPair, Level level, long expiresAtMs)
         {
             var publicKey = ((Ed25519PublicKeyParameters)ed25519KeyPair.Public).GetEncoded();
             var privateKey = ((Ed25519PrivateKeyParameters)ed25519KeyPair.Private).GetEncoded();
@@ -50,14 +50,19 @@ namespace Tokenio
                 PublicKey = Base64UrlEncoder.Encode(keyPair.PublicKey),
                 Level = keyPair.Level,
                 Algorithm = keyPair.Algorithm,
-                ExpiresAtMs= keyPair.ExpiresAtMs
+                ExpiresAtMs = keyPair.ExpiresAtMs
 
             };
         }
 
         public static Alias ToNormalized(this Alias alias)
         {
-            return new Alias {  Value = alias.Value.ToLower().Trim(), Type = alias.Type, Realm = alias.Realm };
+            if (alias.Type.Equals(Eidas))
+            {
+                return alias;
+            }
+
+            return new Alias { Value = alias.Value.ToLower().Trim(), Type = alias.Type, Realm = alias.Realm };
         }
 
         public static async Task<TResult> Map<TSource, TResult>(
@@ -66,19 +71,19 @@ namespace Tokenio
         {
             return func.Invoke(await sourceTask);
         }
-        
+
         public static async Task<TResult> FlatMap<TSource, TResult>(
             this Task<TSource> sourceTask,
             Func<TSource, Task<TResult>> func)
         {
             return await func.Invoke(await sourceTask);
         }
-        
+
         public static async Task ToTask<TSource>(this AsyncUnaryCall<TSource> sourceAsync)
         {
             await sourceAsync.ResponseAsync;
         }
-        
+
         public static async Task<TResult> ToTask<TSource, TResult>(
             this AsyncUnaryCall<TSource> sourceAsync,
             Func<TSource, TResult> func)

@@ -37,7 +37,7 @@ namespace Tokenio.Utils
             var json = JsonFormatter.Default.Format(message);
             return NormalizeJson(json);
         }
-        
+
         public static string HashAlias(Alias alias)
         {
             var aliasClone = alias.Clone();
@@ -60,6 +60,7 @@ namespace Tokenio.Utils
             return Convert.ToString(d, CultureInfo.InvariantCulture);
         }
 
+
         /// <summary>
         /// Converts alias to AddAlias operation.
         /// </summary>
@@ -72,7 +73,9 @@ namespace Tokenio.Utils
                 AddAlias = new MemberAliasOperation
                 {
                     AliasHash = NormalizeAndHashAlias(alias),
-                    Realm = alias.Realm
+                    Realm = alias.Realm,
+                    RealmId = alias.RealmId
+
                 }
             };
         }
@@ -130,16 +133,19 @@ namespace Tokenio.Utils
         public static MemberOperation ToRecoveryAgentOperation(string agentId)
         {
 
-            var MemberRecoveryRulesOperation = new MemberRecoveryRulesOperation() {
+            var MemberRecoveryRulesOperation = new MemberRecoveryRulesOperation()
+            {
 
-                RecoveryRule = new RecoveryRule() { 
+                RecoveryRule = new RecoveryRule()
+                {
 
                     PrimaryAgent = agentId
-                
+
                 }
             };
-            return new MemberOperation() { 
-              RecoveryRules = MemberRecoveryRulesOperation
+            return new MemberOperation()
+            {
+                RecoveryRules = MemberRecoveryRulesOperation
             };
 
         }
@@ -174,7 +180,7 @@ namespace Tokenio.Utils
             {
                 MemberId = member.Id,
                 PrevHash = member.LastHash,
-                Operations = {operations}
+                Operations = { operations }
             };
 
             return new UpdateMemberRequest
@@ -186,7 +192,7 @@ namespace Tokenio.Utils
                     KeyId = signer.GetKeyId(),
                     Signature_ = signer.Sign(update)
                 },
-                Metadata = {metadata}
+                Metadata = { metadata }
             };
         }
 
@@ -203,7 +209,7 @@ namespace Tokenio.Utils
 
         public static long EpochTimeMillis()
         {
-            return (long) (DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
+            return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
         }
 
 
@@ -218,28 +224,28 @@ namespace Tokenio.Utils
         {
             switch (jToken.Type)
             {
-                 case JTokenType.Object:
-                     var jObj = (JObject) jToken;
-                     var sortedProperties = jObj.Properties().OrderBy(p => p.Name).ToList();
-                     jObj.RemoveAll();
+                case JTokenType.Object:
+                    var jObj = (JObject)jToken;
+                    var sortedProperties = jObj.Properties().OrderBy(p => p.Name).ToList();
+                    jObj.RemoveAll();
 
-                     foreach (var p in sortedProperties)
-                     {
-                         Sort(p.Value);
-                         jObj.Add(p);
-                     }
+                    foreach (var p in sortedProperties)
+                    {
+                        Sort(p.Value);
+                        jObj.Add(p);
+                    }
 
-                     break;
+                    break;
 
-                 case JTokenType.Array:
-                     foreach (var child in ((JArray) jToken).Children())
-                     {
-                         Sort(child);
-                     }
+                case JTokenType.Array:
+                    foreach (var child in ((JArray)jToken).Children())
+                    {
+                        Sort(child);
+                    }
 
-                     break;
+                    break;
 
-                 default: return;
+                default: return;
             }
         }
 

@@ -15,6 +15,7 @@ using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Tpp.Rpc;
 using Tokenio.Utils;
+using Tokenio.Proto.Common.EidasProtos;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using TokenRequest = Tokenio.TokenRequests.TokenRequest;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
@@ -33,15 +34,24 @@ namespace Tokenio.Tpp
         private readonly Client client;
 
         /// <summary>
-        /// Creates an instance of <see cref="Member"/>
+        /// Initializes a new instance of the <see cref="T:Tokenio.Tpp.Member"/> class.
         /// </summary>
-        /// <param name="client">the gRPC client</param>
+        /// <param name="memberId">Member identifier.</param>
+        /// <param name="client">Client.</param>
+        /// <param name="tokenCluster">Token cluster.</param>
+        /// <param name="partnerId">Partner identifier.</param>
+        /// <param name="realmId">Realm identifier.</param>
         public Member(string memberId,
-            Client client)
-            : base(memberId, client)
+            Client client,
+            TokenCluster tokenCluster,
+            string partnerId = null,
+            string realmId = null)
+            : base(memberId, client, tokenCluster,partnerId,realmId)
         {
             this.client = client;
         }
+
+       
 
         /// <summary>
         /// Replaces auth'd member's public profile.
@@ -203,7 +213,7 @@ namespace Tokenio.Tpp
         public IRepresentable ForAccessToken(string accessTokenId, bool customerInitiated = false)
         {
             Client cloned = client.ForAccessToken(accessTokenId, customerInitiated);
-            return new Member(memberId,cloned);
+            return new Member(memberId,cloned,tokenCluster,partnerId,realmId);
         }
 
         /// <summary>
@@ -1068,6 +1078,22 @@ namespace Tokenio.Tpp
         public Account CreateTestBankAccountBlocking(double balance, string currency)
         {
             return CreateTestBankAccount(balance, currency).Result;
+        }
+
+        /// <summary>
+        /// Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
+        ///of the alias.
+        ///An eIDAS-type alias containing auth number of the TPP should be added to the
+        ///member before making this call.The member must be under the realm of a bank.
+        /// </summary>
+        /// <returns>The eidas.</returns>
+        /// <param name="payload">payload payload containing the member id and the certificate in PEM format.</param>
+        /// <param name="signature">signature the payload signed with a private key corresponding to the certificate.</param>
+        public Task VerifyEidas(
+            VerifyEidasPayload payload,
+            string signature)
+        {
+            return client.VerifyEidas(payload, signature);
         }
     }
 }

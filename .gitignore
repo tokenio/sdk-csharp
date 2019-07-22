@@ -1,6 +1,7 @@
 **/bin/
 **/obj/
 sdk/generated
+core/generated/
 *.csproj.DotSettings
 **/*.proto
 !protos/common/google/protobuf/descriptor.proto

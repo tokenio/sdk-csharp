@@ -30,15 +30,31 @@ namespace Tokenio
 
         protected readonly string memberId;
         private readonly Client client;
+        protected readonly TokenCluster tokenCluster;
+        protected readonly string partnerId;
+        protected readonly string realmId;
+
 
         /// <summary>
         /// Creates an instance of <see cref="Member"/>
         /// </summary>
+        /// <param name="memberId">Member identifier.</param>
         /// <param name="client">the gRPC client</param>
-        public Member(string memberId, Client client)
+        /// <param name="tokenCluster">Token cluster.</param>
+        /// <param name="partnerId">Partner identifier.</param>
+        /// <param name="realmId">Realm identifier.</param>
+
+        public Member(string memberId, 
+            Client client, 
+            TokenCluster tokenCluster,
+            string partnerId,
+            string realmId)
         {
             this.memberId = memberId;
             this.client = client;
+            this.tokenCluster = tokenCluster;
+            this.partnerId = partnerId;
+            this.realmId = realmId;
         }
 
         /// <summary>
@@ -48,6 +64,33 @@ namespace Tokenio
         public string MemberId()
         {
             return memberId;
+        }
+
+        /// <summary>
+        /// Partners the identifier.
+        /// </summary>
+        /// <returns>The identifier.</returns>
+        public string PartnerId()
+        {
+            return partnerId;
+        }
+
+        /// <summary>
+        /// Realms the identifier.
+        /// </summary>
+        /// <returns>The identifier.</returns>
+        public string RealmId()
+        {
+            return realmId;
+        }
+
+        /// <summary>
+        /// Gets the token cluster.
+        /// </summary>
+        /// <returns>The token cluster.</returns>
+        public TokenCluster GetTokenCluster() {
+
+            return tokenCluster;
         }
 
         /// <summary>
@@ -167,11 +210,9 @@ namespace Tokenio
         /// <returns>a task</returns>
         public Task AddAliases(IList<Alias> aliases)
         {
-            return client.GetMember().FlatMap(member =>
-            {
+            
                 aliases = aliases.Select(alias =>
                 {
-                    var partnerId = member.PartnerId;
                     if (!string.IsNullOrEmpty(partnerId) && !partnerId.Equals("token"))
                     {
                         // Realm must equal member's partner ID if affiliated
@@ -181,12 +222,16 @@ namespace Tokenio
                         }
                         alias.Realm = partnerId;
                     }
+                    if (!string.IsNullOrEmpty(realmId)) {
+
+                        alias.Realm = realmId;
+                    }
+
                     return alias;
                 }).ToList();
                 var operations = aliases.Select(Util.ToAddAliasOperation).ToList();
                 var metadata = aliases.Select(Util.ToAddAliasMetadata).ToList();
                 return client.UpdateMember(operations, metadata);
-            });
         }
 
         /// <summary>
