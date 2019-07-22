@@ -97,7 +97,11 @@ namespace Tokenio.User {
 			this.tokenRequestId = tokenRequest.Id;
 		}
 
-
+        /// <summary>
+        /// Creates the builder object from a token payload
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="tokenPayload"></param>
         public TransferTokenBuilder(Member member, TokenPayload tokenPayload)
         {
             if (tokenPayload.BodyCase != TRANSFER.Transfer)
