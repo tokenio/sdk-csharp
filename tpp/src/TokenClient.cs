@@ -63,36 +63,51 @@ namespace Tokenio.Tpp
         }
 
 
-        /// <summary>
-        /// Creates the member.
-        /// </summary>
-        /// <returns>The member.</returns>
-        /// <param name="alias">Alias.</param>
-        /// <param name="recoveryAgent">Recovery agent.</param>
+      /// <summary>
+      /// Creates the member.
+      /// </summary>
+      /// <returns>The member.</returns>
+      /// <param name="alias">Alias.</param>
+      /// <param name="partnerId">Partner identifier.</param>
+      /// <param name="realmId">Realm identifier.</param>
         public Task<Member> CreateMember(
-          Alias alias, string recoveryAgent = null)
+          Alias alias,
+          string partnerId = null,
+          string realmId = null)
         {
-            return CreateMemberImpl(alias, CreateMemberType.Business, recoveryAgent)
+            return CreateMemberImpl(alias, CreateMemberType.Business, null,partnerId,realmId)
                 .Map(member =>
                 {
                     var crypto = cryptoEngineFactory.Create(member.MemberId());
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), crypto);
-                    return new Member(member.MemberId(), client);
+                    return new Member(member.MemberId(), client,tokenCluster,partnerId,realmId);
                 });
         }
 
 
-       /// <summary>
-       /// Creates the member blocking.
-       /// </summary>
-       /// <returns>The member blocking.</returns>
-       /// <param name="alias">Alias.</param>
-       /// <param name="recoveryAgent">Recovery agent.</param>
+      
+        /// <summary>
+        /// Creates the member blocking.
+        /// </summary>
+        /// <returns>The member blocking.</returns>
+        /// <param name="alias">Alias.</param>
+        /// <param name="partnerId">Partner identifier.</param>
         public Member CreateMemberBlocking(
           Alias alias,
-         string recoveryAgent = null)
+          string partnerId = null)
         {
-            return CreateMember(alias, recoveryAgent).Result;
+            return CreateMember(alias, partnerId,null).Result;
+        }
+
+        /// <summary>
+        /// Creates the member in realm blocking.
+        /// </summary>
+        /// <returns>The member in realm blocking.</returns>
+        /// <param name="alias">Alias.</param>
+        /// <param name="realmId">Realm identifier.</param>
+        public Member CreateMemberInRealmBlocking(Alias alias, string realmId)
+        {
+            return  CreateMember(alias, null, realmId).Result;
         }
 
 
@@ -110,7 +125,8 @@ namespace Tokenio.Tpp
                 {
                     var crypto = cryptoEngineFactory.Create(member.MemberId());
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), crypto);
-                    return new Member(member.MemberId(), client);
+                    return new Member(member.MemberId(), client,
+                        tokenCluster,member.PartnerId(),member.RealmId());
                 });
         }
 
@@ -141,7 +157,8 @@ namespace Tokenio.Tpp
              .Map(member =>
              {
 
-                 return new Member(member.MemberId(), client);
+                 return new Member(member.MemberId(), client,
+                     tokenCluster,member.PartnerId(),member.RealmId());
              });
         }
 
@@ -198,7 +215,8 @@ namespace Tokenio.Tpp
                 .Map(member =>
                 {
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
-                    return new Member(member.MemberId(), client);
+                    return new Member(member.MemberId(), client,
+                        tokenCluster,member.PartnerId(),member.RealmId());
                 });
         }
 
@@ -227,17 +245,18 @@ namespace Tokenio.Tpp
         /// <param name="code">the code</param>
         /// <returns>the new member</returns>
         public Task<Member> CompleteRecoveryWithDefaultRule(
-              string memberId,
-              string verificationId,
-              string code)
+                 string memberId,
+                string verificationId,
+                string code,
+                ICryptoEngine cryptoEngine)
         {
-            var cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
 
             return CompleteRecoveryWithDefaultRuleImpl(memberId, verificationId, code, cryptoEngine)
                 .Map(member =>
                 {
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
-                    return new Member(member.MemberId(), client);
+                    return new Member(member.MemberId(), client,
+                        tokenCluster,member.PartnerId(),member.RealmId());
                 });
         }
 
@@ -249,13 +268,12 @@ namespace Tokenio.Tpp
         /// <param name="verificationId">Verification identifier.</param>
         /// <param name="code">Code.</param>
         public Member CompleteRecoveryWithDefaultRuleBlocking(
-            string memberId,
-            string verificationId,
-            string code)
+                string memberId,
+                string verificationId,
+                string code,
+                ICryptoEngine cryptoEngine)
         {
-            return CompleteRecoveryWithDefaultRule(memberId, verificationId, code).Result;
-
-
+            return CompleteRecoveryWithDefaultRule(memberId, verificationId, code, cryptoEngine).Result;
         }
 
 

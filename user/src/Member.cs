@@ -10,7 +10,6 @@ using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
-using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.SubscriberProtos;
 using Tokenio.Proto.Common.TokenProtos;
@@ -18,43 +17,52 @@ using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.User.Browser;
 using Tokenio.User.Rpc;
-using Tokenio.Utils;
+using Tokenio.User.Utils;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
+using Notification = Tokenio.Proto.Common.NotificationProtos.Notification;
+using static Tokenio.Proto.Common.NotificationProtos.Notification.Types;
 
-namespace Tokenio.User {
-	/// <summary>
-	/// Represents a Member in the Token system. Each member has an active secret
-	/// and public key pair that is used to perform authentication.
-	/// </summary>
-	public class Member : Tokenio.Member {
+namespace Tokenio.User
+{
+    /// <summary>
+    /// Represents a Member in the Token system. Each member has an active secret
+    /// and public key pair that is used to perform authentication.
+    /// </summary>
+    public class Member : Tokenio.Member {
 		private static readonly ILog logger = LogManager
 				.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private readonly Client client;
 		private readonly IBrowserFactory browserFactory;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:Tokenio.User.Member"/> class.
-		/// </summary>
-		/// <param name="memberId">Member identifier.</param>
-		/// <param name="client">Client.</param>
-		/// <param name="browserFactory">Browser factory.</param>
-		public Member(
+    /// <summary>
+    /// Initializes a new instance of the <see cref="T:Tokenio.User.Member"/> class.
+    /// </summary>
+    /// <param name="memberId">Member identifier.</param>
+    /// <param name="client">Client.</param>
+    /// <param name="tokenCluster">Token cluster.</param>
+    /// <param name="partnerId">Partner identifier.</param>
+    /// <param name="realmId">Realm identifier.</param>
+    /// <param name="browserFactory">Browser factory.</param>
+        public Member(
 				string memberId,
 				Client client,
-				IBrowserFactory browserFactory) : base(memberId, client) {
+                TokenCluster tokenCluster,
+                string partnerId,
+                string realmId,
+                IBrowserFactory browserFactory) : base(memberId, client,tokenCluster,partnerId,realmId) {
 			this.client = client;
 			this.browserFactory = browserFactory;
 		}
 
-		/// <summary>
-		/// Looks up funding bank accounts linked to Token.
-		/// </summary>
-		/// <returns>a list of accounts</returns>
-		public Task<IList<Account>> GetAccounts() {
+        /// <summary>
+        /// Looks up funding bank accounts linked to Token.
+        /// </summary>
+        /// <returns>a list of accounts</returns>
+        public Task<IList<Account>> GetAccounts() {
 			return GetAccountsImpl()
 					.Map(accounts =>
 							(IList<Account>) accounts.Select(account =>
@@ -172,6 +180,11 @@ namespace Tokenio.User {
 			return GetTransfers(tokenId, offset, limit).Result;
 		}
 
+        /// <summary>
+        /// Prepares the transfer token.
+        /// </summary>
+        /// <returns>The transfer token.</returns>
+        /// <param name="transferTokenBuilder">Transfer token builder.</param>
 		public Task<PrepareTokenResult> PrepareTransferToken(
 				TransferTokenBuilder transferTokenBuilder) {
 			transferTokenBuilder.From(MemberId());
@@ -316,8 +329,7 @@ namespace Tokenio.User {
 		/// <param name="amount">amount</param>
 		/// <param name="currency">currency code, e.g. "USD"</param>
 		/// <returns>transfer token builder</returns>
-		[Obsolete("CreateTransferToken is deprecated.")]
-		public TransferTokenBuilder CreateTransferToken(double amount, string currency) {
+		public TransferTokenBuilder CreateTransferTokenBuilder(double amount, string currency) {
 			return new TransferTokenBuilder(this, amount, currency);
 		}
 
@@ -326,37 +338,68 @@ namespace Tokenio.User {
 		/// </summary>
 		/// <param name="tokenRequest">token request</param>
 		/// <returns>transfer token builder</returns>
-		public TransferTokenBuilder CreateTransferToken(Proto.Common.TokenProtos.TokenRequest tokenRequest) {
+		public TransferTokenBuilder CreateTransferTokenBuilder(TokenRequest tokenRequest) {
 			return new TransferTokenBuilder(this, tokenRequest);
 		}
 
-		/// <summary>
-		/// Creates a new transfer token from a token payload.
-		/// </summary>
-		/// <param name="payload">token request</param>
-		/// <returns>transfer token returned by the server</returns>
-		[Obsolete("CreateTransferToken is deprecated. Use CreateToken(TokenPayload,IList)} instead.")]
+        /// <summary>
+        /// Creates the transfer token builder.
+        /// </summary>
+        /// <returns>The transfer token builder.</returns>
+        /// <param name="payload">Payload.</param>
+        public TransferTokenBuilder CreateTransferTokenBuilder(TokenPayload payload)
+        {
+            return new TransferTokenBuilder(this, payload);
+        }
+
+        /// <summary>
+        /// Creates a new transfer token from a token payload.
+        /// </summary>
+        /// <param name="payload">token request</param>
+        /// <returns>transfer token returned by the server</returns>
+        [Obsolete("CreateTransferToken is deprecated. Use CreateToken(TokenPayload,IList)} instead.")]
 		public Task<Token> CreateTransferToken(TokenPayload payload) {
 			return client.CreateTransferToken(payload);
 		}
 
-		/// <summary>
-		/// Creates a new transfer token from a token payload.
-		/// </summary>
-		/// <param name="payload">token request</param>
-		/// <param name="tokenRequestId">token request</param>
-		/// <returns>transfer token returned by the server</returns>
-		[Obsolete("CreateTransferToken is deprecated. Use CreateToken(TokenPayload, IList, string) instead.")]
+        [Obsolete("CreateTransferToken is deprecated. Use createTransferTokenBuilder(TokenRequest) instead.")]
+
+        public TransferTokenBuilder CreateTransferToken(TokenRequest tokenRequest)
+        {
+            return CreateTransferTokenBuilder(tokenRequest);
+        }
+
+        /// <summary>
+        /// Creates the transfer token.
+        /// </summary>
+        /// <returns>The transfer token.</returns>
+        /// <param name="amount">Amount.</param>
+        /// <param name="currency">Currency.</param>
+        [Obsolete("CreateTransferToken is deprecated. Use createTransferTokenBuilder(double, String))} instead.")]
+
+        public TransferTokenBuilder CreateTransferToken(double amount, string currency)
+        {
+            return CreateTransferTokenBuilder(amount, currency);
+        }
+
+        /// <summary>
+        /// Creates a new transfer token from a token payload.
+        /// </summary>
+        /// <param name="payload">token request</param>
+        /// <param name="tokenRequestId">token request</param>
+        /// <returns>transfer token returned by the server</returns>
+        [Obsolete("CreateTransferToken is deprecated. Use CreateToken(TokenPayload, IList, string) instead.")]
 		public Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId) {
 			return client.CreateTransferToken(payload, tokenRequestId);
 		}
 
-		/// <summary>
-		/// Creates a new transfer token builder from a token request.
-		/// </summary>
-		/// <param name="tokenRequest">token request</param>
-		/// <returns>transfer token builder</returns>
-		public TransferTokenBuilder CreateTransferTokenBlocking(Proto.Common.TokenProtos.TokenRequest tokenRequest) {
+        /// <summary>
+        /// Creates a new transfer token builder from a token request.
+        /// </summary>
+        /// <param name="tokenRequest">token request</param>
+        /// <returns>transfer token builder</returns>
+        [Obsolete("CreateTransferToken is deprecated. Use createTransferTokenBuilder(TokenRequest) instead.")]
+        public TransferTokenBuilder CreateTransferTokenBlocking(TokenRequest tokenRequest) {
 			return CreateTransferToken(tokenRequest);
 		}
 
@@ -504,13 +547,32 @@ namespace Tokenio.User {
 			return GetReceiptContact().Result;
 		}
 
-		/// <summary>
-		/// Looks up a existing access token where the calling member is the grantor and given member is
-		/// the grantee.
-		/// </summary>
-		/// <param name="toMemberId">beneficiary of the active access token</param>
-		/// <returns>access token returned by the server</returns>
-		public Task<Token> GetActiveAccessToken(string toMemberId) {
+        /// <summary>
+        /// Sets the app callback URL.
+        /// </summary>
+        /// <returns>The app callback URL.</returns>
+        /// <param name="appCallbackUrl">App callback URL.</param>
+        public Task SetAppCallbackUrl(string appCallbackUrl)
+        {
+            return client.SetAppCallbackUrl(appCallbackUrl);
+        }
+
+        /// <summary>
+        /// Sets the app callback URL blocking.
+        /// </summary>
+        /// <param name="appCallbackUrl">App callback URL.</param>
+        public void SetAppCallbackUrlBlocking(string appCallbackUrl)
+        {
+            client.SetAppCallbackUrl(appCallbackUrl).Wait();
+        }
+
+        /// <summary>
+        /// Looks up a existing access token where the calling member is the grantor and given member is
+        /// the grantee.
+        /// </summary>
+        /// <param name="toMemberId">beneficiary of the active access token</param>
+        /// <returns>access token returned by the server</returns>
+        public Task<Token> GetActiveAccessToken(string toMemberId) {
 			return client.GetActiveAccessToken(toMemberId);
 		}
 
@@ -760,7 +822,7 @@ namespace Tokenio.User {
 				string description,
 				TransferDestination destination,
 				string refId) {
-			var payload = new TransferPayload {
+            var payload = new TransferPayload {
 				TokenId = token.Id,
 				Description = token.Payload.Description
 			};
@@ -786,6 +848,16 @@ namespace Tokenio.User {
 			return client.CreateTransfer(payload);
 		}
 
+        /// <summary>
+        /// Redeems the token.
+        /// </summary>
+        /// <returns>The token.</returns>
+        /// <param name="token">Token.</param>
+        /// <param name="amount">Amount.</param>
+        /// <param name="currency">Currency.</param>
+        /// <param name="description">Description.</param>
+        /// <param name="destination">Destination.</param>
+        /// <param name="refId">Reference identifier.</param>
 		[Obsolete("Use TransferDestination instead of TransferEndpoint.")]
 		public Task<Transfer> RedeemToken(
 				Token token,
@@ -1458,5 +1530,31 @@ namespace Tokenio.User {
 							new Account(this, acc, client))
 					.ToList());
 		}
-	}
+
+
+        /// <summary>
+        /// Updates the status of a notification.
+        /// </summary>
+        /// <param name="notificationId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public Task UpdateNotificationStatus(string notificationId, Status status)
+        {
+            return client.UpdateNotificationStatus(notificationId, status);
+        }
+
+        /// <summary>
+        /// Updates the status of a notification.
+        /// </summary>
+        /// <param name="notificationId"></param>
+        /// <param name="status"></param>
+        public void UpdateNotificationStatusBlocking(string notificationId, Status status)
+        {
+            UpdateNotificationStatus(notificationId, status).Wait();
+        }
+
+
+
+
+    }
 }

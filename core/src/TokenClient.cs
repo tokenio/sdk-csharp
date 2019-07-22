@@ -134,20 +134,26 @@ namespace Tokenio
 
         /// <summary>
         /// Creates a new Token member with a set of auto-generated keys, an alias, and member type.
+        /// Impl method returns incomplete member object that can be used for its instance
+        /// fields but will not be able to make calls
         /// </summary>
-        /// <param name="alias">nullable member alias to use, must be unique. If null, then no alias
-        /// will be created with the member</param>
-        /// <param name="createMemberType">the type of member to register</param>
-        /// <returns>the created member</returns>
-
+        /// <returns>newly created member</returns>
+        /// <param name="alias">Alias.</param>
+        /// <param name="createMemberType">Create member type.</param>
+        /// <param name="recoveryAgent">Recovery agent.</param>
+        /// <param name="partnerId">Partner identifier.</param>
+        /// <param name="realmId">Realm identifier.</param>
 
         public Task<Member> CreateMemberImpl(
         Alias alias,
-        CreateMemberType createMemberType,string recoveryAgent)
+        CreateMemberType createMemberType,
+        string recoveryAgent,
+        string partnerId=null,
+        string realmId=null)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
-                .CreateMemberId(createMemberType)
+                .CreateMemberId(createMemberType,null,partnerId,realmId)
                 .FlatMap(memberId =>
                 {
                     return SetUpMemberImpl(memberId, alias, recoveryAgent);
@@ -162,9 +168,9 @@ namespace Tokenio
         /// <param name="memberId">Member identifier.</param>
         /// <param name="alias">Alias.</param>
         /// <param name="agent">Agent.</param>
-        protected Task<Member> SetUpMemberImpl(string memberId, Alias alias,
-                                                         
-                                                          string agent = null)
+        protected Task<Member> SetUpMemberImpl(string memberId,
+             Alias alias,
+             string agent = null)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return (agent == null ? unauthenticated.GetDefaultAgent() 
@@ -193,7 +199,7 @@ namespace Tokenio
                      return mem;
                  }).Map(member =>
                  {
-                     return new Member(member.Id,null);
+                     return new Member(member.Id,null,tokenCluster,member.PartnerId,member.RealmId);
                  });
         }
 
@@ -210,7 +216,8 @@ namespace Tokenio
         {
             return client
                 .GetMember(memberId)
-                .Map(member => new Member(memberId,null));
+                .Map(member => new Member(member.Id, null, 
+                tokenCluster, member.PartnerId, member.RealmId));
         }
 
 
@@ -314,8 +321,8 @@ namespace Tokenio
                 .CompleteRecovery(memberId, recoveryOperations, privilegedKey, cryptoEngine)
                 .Map(member =>
                 {
-                    return new Member(memberId,null);
-                });
+                    return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
+               });
         }
 
 
@@ -337,7 +344,8 @@ namespace Tokenio
                 .CompleteRecoveryWithDefaultRule(memberId, verificationId, code, cryptoEngine)
                 .Map(member =>
                 {
-                return new Member(memberId, null);
+                return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
+
                 });
         }
 

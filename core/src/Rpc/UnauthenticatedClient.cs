@@ -98,16 +98,25 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Creates new member ID. After the method returns the ID is reserved on the server.
+        /// Creates the member identifier.
         /// </summary>
-        /// <param name="createMemberType">the type of member to register</param>
-        /// <returns>the created member ID</returns>
-        public Task<string> CreateMemberId(CreateMemberType createMemberType)
+        /// <returns>The member identifier.</returns>
+        /// <param name="createMemberType">Create member type.</param>
+        /// <param name="tokenRequestId">Token request identifier.</param>
+        /// <param name="partnerId">Partner identifier.</param>
+        /// <param name="realmId">Realm identifier.</param>
+        public Task<string> CreateMemberId(CreateMemberType createMemberType,
+            string tokenRequestId = null,
+            string partnerId=null,
+            string realmId=null)
         {
             var request = new CreateMemberRequest
             {
                 Nonce = Util.Nonce(),
-                MemberType = createMemberType
+                MemberType = createMemberType,
+                TokenRequestId= tokenRequestId??"",
+                PartnerId=partnerId??"",
+                RealmId=realmId??""
             };
             return gateway.CreateMemberAsync(request)
                 .ToTask(response => response.MemberId);
