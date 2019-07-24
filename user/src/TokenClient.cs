@@ -104,7 +104,7 @@ namespace Tokenio.User {
 		public Member CreateMemberBlocking(
 				Alias alias,
 			   string recoveryAgent = null) {
-			return CreateMember(alias, null,recoveryAgent).Result;
+			return CreateMember(alias, recoveryAgent, null).Result;
 		}
 
 
