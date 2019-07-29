@@ -866,7 +866,7 @@ namespace Tokenio
             /// <summary>
             /// Sets whether the connection will allow keep-alive pings.
             /// </summary>
-            /// <param name="keepAlive"></param>
+            /// <param name="keepAlive">whether keep-alive is enabled</param>
             /// <returns>this builder instance</returns>
             public Builder KeepAlive(bool keepAlive)
             {
@@ -877,7 +877,7 @@ namespace Tokenio
             /// <summary>
             /// Sets the keep-alive time in milliseconds.
             /// </summary>
-            /// <param name="keepAliveTimeMs"></param>
+            /// <param name="keepAliveTimeMs">keep-alive time in milliseconds</param>
             /// <returns>this builder instance</returns>
             public Builder KeepAliveTime(int keepAliveTimeMs)
             {
