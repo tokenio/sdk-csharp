@@ -633,7 +633,6 @@ namespace Tokenio
         {
             var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(callbackUrl));
             return ParseTokenRequestCallbackParams(parameters, csrfToken);
-
         }
 
         /// <summary>
@@ -660,7 +659,7 @@ namespace Tokenio
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public Task<TokenRequestCallback> ParseTokenRequestCallbackParams(
-            NameValueCollection callbackParams, 
+            NameValueCollection callbackParams,
             string csrfToken)
         {
             var parameters = callbackParams.AllKeys.ToDictionary(param => param, param => callbackParams[param]);
@@ -676,12 +675,12 @@ namespace Tokenio
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public TokenRequestCallback ParseTokenRequestCallbackParamsBlocking(
-            NameValueCollection callbackParams, 
+            NameValueCollection callbackParams,
             string csrfToken)
         {
             return ParseTokenRequestCallbackParams(callbackParams, csrfToken).Result;
         }
-        
+
         /// <summary>
         /// Parse the token request callback Parameter to extract the state and the token ID. Verify that the
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
@@ -691,7 +690,7 @@ namespace Tokenio
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public Task<TokenRequestCallback> ParseTokenRequestCallbackParams(
-            IDictionary<string, string> callbackParams, 
+            IDictionary<string, string> callbackParams,
             string csrfToken)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
@@ -716,7 +715,7 @@ namespace Tokenio
                     return TokenRequestCallback.Create(parameters.TokenId, state.InnerState);
                 });
         }
-        
+
         /// <summary>
         /// Parse the token request callback Parameter to extract the state and the token ID. Verify that the
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
@@ -726,7 +725,7 @@ namespace Tokenio
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public TokenRequestCallback ParseTokenRequestCallbackParamsBlocking(
-            IDictionary<string, string> callbackParams, 
+            IDictionary<string, string> callbackParams,
             string csrfToken)
         {
             return ParseTokenRequestCallbackParams(callbackParams, csrfToken).Result;
@@ -784,6 +783,8 @@ namespace Tokenio
             private static readonly string DEFAULT_DEV_KEY = "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI";
             private static readonly long DEFAULT_TIMEOUT_MS = 10_000L;
             private static readonly int DEFAULT_SSL_PORT = 443;
+            private static readonly int DEFAULT_KEEP_ALIVE_TIME_MS = 50_000;
+            private static readonly bool DEFAULT_KEEP_ALIVE_PERMIT_WITHOUT_CALLS = true;
 
             private int port;
             private bool useSsl;
@@ -792,6 +793,8 @@ namespace Tokenio
             private long timeoutMs;
             private ICryptoEngineFactory cryptoEngine;
             private string devKey;
+            private bool keepAlive = DEFAULT_KEEP_ALIVE_PERMIT_WITHOUT_CALLS;
+            private int keepAliveTimeMs = DEFAULT_KEEP_ALIVE_TIME_MS;
 
             /// <summary>
             /// Creates new builder instance with the defaults initialized.
@@ -861,6 +864,28 @@ namespace Tokenio
             }
 
             /// <summary>
+            /// Sets whether the connection will allow keep-alive pings.
+            /// </summary>
+            /// <param name="keepAlive">whether keep-alive is enabled</param>
+            /// <returns>this builder instance</returns>
+            public Builder KeepAlive(bool keepAlive)
+            {
+                this.keepAlive = keepAlive;
+                return this;
+            }
+            
+            /// <summary>
+            /// Sets the keep-alive time in milliseconds.
+            /// </summary>
+            /// <param name="keepAliveTimeMs">keep-alive time in milliseconds</param>
+            /// <returns>this builder instance</returns>
+            public Builder KeepAliveTime(int keepAliveTimeMs)
+            {
+                this.keepAliveTimeMs = keepAliveTimeMs;
+                return this;
+            }
+
+            /// <summary>
             /// Sets the crypto engine to be used with the SDK.
             /// </summary>
             /// <param name="cryptoEngineFactory">the crypto engine factory to use</param>
@@ -888,7 +913,14 @@ namespace Tokenio
             /// <returns>the <see cref="TokenClient"/> instance</returns>
             public TokenClient Build()
             {
-                var channel = new Channel(hostName, port, useSsl ? new SslCredentials() : ChannelCredentials.Insecure);
+                var channelOptions = new List<ChannelOption>();
+                channelOptions.Add(new ChannelOption("grpc.keepalive_permit_without_calls", keepAlive ? 1 : 0));
+                channelOptions.Add(new ChannelOption("grpc.keepalive_time_ms", keepAliveTimeMs));
+                var channel = new Channel(
+                    hostName,
+                    port,
+                    useSsl ? new SslCredentials() : ChannelCredentials.Insecure,
+                    channelOptions);
                 Interceptor[] interceptors =
                 {
                     new AsyncTimeoutInterceptor(timeoutMs),
