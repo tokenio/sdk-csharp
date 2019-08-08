@@ -8,7 +8,6 @@ namespace TokenioSample
 {
     public class GetTokensSampleTest
     {
-
         [Fact]
         public void GetTokenTest()
         {
@@ -31,7 +30,5 @@ namespace TokenioSample
 
             }
         }
-
-
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.BlobProtos;
+using Tokenio.Proto.Common.EidasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
@@ -12,7 +13,6 @@ using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
 using Tokenio.Security;
-using Tokenio.Proto.Common.EidasProtos;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using static Tokenio.Proto.Gateway.GetTransfersRequest.Types;
@@ -106,6 +106,12 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => response.Blob);
         }
 
+        /// <summary>
+        /// Creates a new instance with On-Behalf-Of authentication set.
+        /// </summary>
+        /// <param name="tokenId">access token ID to be used</param>
+        /// <param name="customerInitiated">whether the customer initiated the calls</param>
+        /// <returns>new client instance</returns>
         public Client ForAccessToken(string tokenId, bool customerInitiated)
         {
             Client updated = new Client(MemberId, cryptoEngine, channel);
@@ -351,7 +357,7 @@ namespace Tokenio.Tpp.Rpc
         /// Cancels a token.
         /// </summary>
         /// <param name="token">the token to cancel</param>
-        /// <returns>the result of the cancel operation</returns>
+        /// <returns>the result of the cancel operation, , returned by the server</returns>
         public Task<TokenOperationResult> CancelToken(Token token)
         {
             var signer = cryptoEngine.CreateSigner(Level.Low);
@@ -411,7 +417,7 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => response.Status);
         }
 
-        protected override  string GetOnBehalfOf()
+        protected override string GetOnBehalfOf()
         {
             return onBehalfOf;
         }
@@ -445,15 +451,15 @@ namespace Tokenio.Tpp.Rpc
             VerifyEidasPayload payload,
             string signature)
         {
-            var request = new VerifyEidasRequest() {
+            var request = new VerifyEidasRequest
+            {
 
-                Payload= payload,
-                Signature= signature
+                Payload = payload,
+                Signature = signature
 
             };
             return gateway(authenticationContext())
                     .VerifyEidasAsync(request).ToTask();
         }
-
     }
 }

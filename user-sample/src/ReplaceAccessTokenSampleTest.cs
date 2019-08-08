@@ -1,6 +1,4 @@
-﻿using System;
-using Tokenio.Proto.Common.AliasProtos;
-using Tokenio.Proto.Common.MoneyProtos;
+﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Xunit;
 using TokenClient = Tokenio.User.TokenClient;
@@ -10,7 +8,6 @@ namespace TokenioSample
 {
     public class ReplaceAccessTokenSampleTest
     {
-
         [Fact]
         public void getAccessTokensTest()
         {
@@ -25,7 +22,6 @@ namespace TokenioSample
                 Assert.Equal(foundToken.Id, createdToken.Id);
             }
         }
-
 
         [Fact]
         public void ReplaceAccessTokenTest()
@@ -45,6 +41,5 @@ namespace TokenioSample
 
             }
         }
-
     }
 }

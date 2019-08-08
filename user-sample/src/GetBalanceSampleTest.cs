@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Tokenio.Proto.Common.TransactionProtos;
 using Xunit;
 using TokenClient = Tokenio.User.TokenClient;
@@ -48,8 +47,8 @@ namespace TokenioSample
                 var balances = (List<Balance>)GetBalanceSample.MemberGetBalanceListSample(member);
 
                 Assert.Equal(balances.Count, 2);
-                Assert.True(balances.Exists(b => Double.Parse(b.Current.Value) == 500.0));
-                Assert.True(balances.Exists(b => Double.Parse(b.Current.Value) == 1000.0));
+                Assert.True(balances.Exists(b => double.Parse(b.Current.Value).Equals(500.0)));
+                Assert.True(balances.Exists(b => double.Parse(b.Current.Value).Equals(1000.0)));
 
             }
 

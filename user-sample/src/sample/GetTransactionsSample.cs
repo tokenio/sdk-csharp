@@ -8,12 +8,12 @@ using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {
-    public class GetTransactionsSample
+    public static class GetTransactionsSample
     {
         /// <summary>
-        /// Gets the transactions sample.
+        /// Illustrate Member.getTransactions
         /// </summary>
-        /// <param name="payer">Payer.</param>
+        /// <param name="payer">payer Token member</param>
         public static void getTransactionsSample(UserMember payer)
         {
             List<Account> accounts = payer.GetAccountsBlocking().ToList();
@@ -30,11 +30,11 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Gets the transaction sample.
+        /// Illustrate Member.getTransaction
         /// </summary>
-        /// <returns>The transaction sample.</returns>
-        /// <param name="payer">Payer.</param>
-        /// <param name="transfer">Transfer.</param>
+        /// <param name="payer">payer Token member</param>
+        /// <param name="transfer">recently-completed transfer</param>
+        /// <returns>a Transaction</returns>
         public static Transaction GetTransactionSample(
           UserMember payer,
           Transfer transfer)
@@ -48,9 +48,9 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Accounts the get transactions sample.
+        /// Illustrate Account.getTransactions
         /// </summary>
-        /// <param name="payer">Payer.</param>
+        /// <param name="payer">payer Token member</param>
         public static void AccountGetTransactionsSample(UserMember payer)
         {
             Account account = payer.GetAccountsBlocking()[0];
@@ -67,11 +67,11 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// /
+        /// Illustrate Account.getTransaction
         /// </summary>
-        /// <returns>The get transaction sample.</returns>
-        /// <param name="payer">Payer.</param>
-        /// <param name="transfer">Transfer.</param>
+        /// <param name="payer">payer Token member</param>
+        /// <param name="transfer">recently-completed transfer</param>
+        /// <returns>a Transaction</returns>
         public static Transaction AccountGetTransactionSample(
            UserMember payer,
            Transfer transfer)
@@ -84,18 +84,11 @@ namespace TokenioSample
         }
 
 
-        /// <summary>
-        /// Displaies the transaction.
-        /// </summary>
-        /// <param name="currency">Currency.</param>
-        /// <param name="value">Value.</param>
-        /// <param name="debitOrCredit">Debit or credit.</param>
-        /// <param name="status">Status.</param>
         private static void DisplayTransaction(
-            string currency,
-            string value,
-            TransactionType debitOrCredit,
-            TransactionStatus status)
+             string currency,
+             string value,
+             TransactionType debitOrCredit,
+             TransactionStatus status)
         {
         }
 

@@ -22,7 +22,8 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
-        /// Looks up member id for a given member ID.
+        /// Looks up member id for a given member ID. The user is defined by
+        /// the key used for authentication.
         /// </summary>
         /// <param name="memberId">the member ID to check</param>
         /// <returns>the member</returns>
@@ -58,7 +59,7 @@ namespace Tokenio.Tpp.Rpc
         /// Retrieves a transfer token request.
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the token request</returns>
+        /// <returns>token request that was stored with the request id</returns>
         public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId)
         {
             var request = new RetrieveTokenRequestRequest { RequestId = tokenRequestId };

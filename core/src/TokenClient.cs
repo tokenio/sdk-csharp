@@ -50,12 +50,12 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Creates a new instance of <see cref="TokenIO"/> that's configured to use
+        /// Creates a new instance of <see cref="TokenClient"/> that's configured to use
         /// the specified environment.
         /// </summary>
         /// <param name="cluster">the token cluster to connect to</param>
         /// <param name="developerKey">the developer key</param>
-        /// <returns>an instance of <see cref="TokenIO"/></returns>
+        /// <returns>an instance of <see cref="TokenClient"/></returns>
         public static TokenClient Create(TokenCluster cluster, string developerKey)
         {
             return NewBuilder()
@@ -148,17 +148,17 @@ namespace Tokenio
         Alias alias,
         CreateMemberType createMemberType,
         string recoveryAgent,
-        string partnerId=null,
-        string realmId=null)
+        string partnerId = null,
+        string realmId = null)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
-                .CreateMemberId(createMemberType,null,partnerId,realmId)
+                .CreateMemberId(createMemberType, null, partnerId, realmId)
                 .FlatMap(memberId =>
                 {
                     return SetUpMemberImpl(memberId, alias, recoveryAgent);
                 });
-               
+
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Tokenio
              string agent = null)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return (agent == null ? unauthenticated.GetDefaultAgent() 
+            return (agent == null ? unauthenticated.GetDefaultAgent()
                 : Task.Factory.StartNew(() => { return agent; }))
                  .FlatMap(agentId =>
                  {
@@ -195,11 +195,11 @@ namespace Tokenio
                      }
 
                      var signer = crypto.CreateSigner(Level.Privileged);
-                     var mem=  unauthenticated.CreateMember(memberId, operations, metadata, signer);
+                     var mem = unauthenticated.CreateMember(memberId, operations, metadata, signer);
                      return mem;
                  }).Map(member =>
                  {
-                     return new Member(member.Id,null,tokenCluster,member.PartnerId,member.RealmId);
+                     return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
                  });
         }
 
@@ -212,11 +212,11 @@ namespace Tokenio
         /// </summary>
         /// <param name="memberId">the member ID</param>
         /// <returns>the member</returns>
-        public  Task<Member> GetMemberImpl(string memberId,Client client)
+        public Task<Member> GetMemberImpl(string memberId, Client client)
         {
             return client
                 .GetMember(memberId)
-                .Map(member => new Member(member.Id, null, 
+                .Map(member => new Member(member.Id, null,
                 tokenCluster, member.PartnerId, member.RealmId));
         }
 
@@ -322,7 +322,7 @@ namespace Tokenio
                 .Map(member =>
                 {
                     return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
-               });
+                });
         }
 
 
@@ -344,12 +344,12 @@ namespace Tokenio
                 .CompleteRecoveryWithDefaultRule(memberId, verificationId, code, cryptoEngine)
                 .Map(member =>
                 {
-                return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
+                    return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
 
                 });
         }
 
-       
+
 
         /// <summary>
         /// Returns the first 200 available banks for linking.
@@ -541,7 +541,7 @@ namespace Tokenio
 
         public ICryptoEngineFactory GetCryptoEngineFactory()
         {
-            return this.cryptoEngineFactory; 
+            return this.cryptoEngineFactory;
         }
 
         public void Dispose()
@@ -648,7 +648,7 @@ namespace Tokenio
             }
 
 
-            public Builder withFeatureCodes(params string[]  featureCodes)
+            public Builder withFeatureCodes(params string[] featureCodes)
             {
                 this.featureCodes = featureCodes.ToList();
                 return this;

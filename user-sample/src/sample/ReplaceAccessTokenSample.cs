@@ -7,15 +7,18 @@ using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {
-    public class ReplaceAccessTokenSample
+    /// <summary>
+    /// Working with existing access tokens: finding and replacing.
+    /// </summary>
+    public static class ReplaceAccessTokenSample
     {
         /// <summary>
-        /// Finds the access token.
+        /// Finds a previously-created access token from grantor to grantee.
         /// </summary>
-        /// <returns>The access token.</returns>
-        /// <param name="tokenClient">Token client.</param>
-        /// <param name="grantor">Grantor.</param>
-        /// <param name="granteeAlias">Grantee alias.</param>
+        /// <param name="tokenClient">initialized SDK</param>
+        /// <param name="grantor">Token member granting access to her accounts</param>
+        /// <param name="granteeAlias">Token member alias acquiring information access</param>
+        /// <returns>an access Token</returns>
         public static Token FindAccessToken(
             TokenClient tokenClient,
             Member grantor,
@@ -28,12 +31,12 @@ namespace TokenioSample
 
 
         /// <summary>
-        /// Replaces the access token.
+        /// Replaces a previously-created access token.
         /// </summary>
-        /// <returns>The access token.</returns>
-        /// <param name="grantor">Grantor.</param>
-        /// <param name="granteeAlias">Grantee alias.</param>
-        /// <param name="oldToken">Old token.</param>
+        /// <param name="grantor">Token member granting access to her accounts</param>
+        /// <param name="granteeAlias">Token member alias acquiring information access</param>
+        /// <param name="oldToken">token to replace</param>
+        /// <returns>success or failure</returns>
         public static TokenOperationResult ReplaceAccessToken(
           UserMember grantor,
           Alias granteeAlias,

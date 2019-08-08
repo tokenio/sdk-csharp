@@ -40,7 +40,7 @@ namespace Tokenio.TokenRequests
         /// <returns>The serialize.</returns>
         public string Serialize()
         {
-            var json =  JsonConvert.SerializeObject(this);
+            var json = JsonConvert.SerializeObject(this);
             return Base64UrlEncoder.Encode(json);
         }
     }

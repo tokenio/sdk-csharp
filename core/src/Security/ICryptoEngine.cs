@@ -1,5 +1,5 @@
-﻿using Tokenio.Proto.Common.SecurityProtos;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio.Security
@@ -21,7 +21,7 @@ namespace Tokenio.Security
         /// <returns>The key.</returns>
         /// <param name="level">Level.</param>
         /// <param name="expiresAtMs">Expires at ms.</param>
-        Key GenerateKey(Level level,long expiresAtMs);
+        Key GenerateKey(Level level, long expiresAtMs);
 
         /// <summary>
         /// Create a signer that signs data with the latest generated key of the specified level.
@@ -29,7 +29,7 @@ namespace Tokenio.Security
         /// <param name="level">the key level</param>
         /// <returns>the signer</returns>
         ISigner CreateSigner(Level level);
-        
+
         /// <summary>
         /// Create a verifier that verifies signatures with a specific key.
         /// </summary>

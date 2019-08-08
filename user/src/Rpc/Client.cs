@@ -1,6 +1,6 @@
-﻿using Google.Protobuf.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Google.Protobuf.Collections;
 using Tokenio.Exceptions;
 using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.BlobProtos;
@@ -25,18 +25,18 @@ using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 namespace Tokenio.User.Rpc
 {
     /// <summary>
-    /// An authenticated RPC client that is used to talk to Token gateway.
-    /// The class is a thin wrapper on top of gRPC generated client.
-    /// Makes the API easier to use.
+    /// An authenticated RPC client that is used to talk to Token gateway. The
+    /// class is a thin wrapper on top of gRPC generated client. Makes the API
+    /// easier to use.
     /// </summary>
     public sealed class Client : Tokenio.Rpc.Client
     {
         /// <summary>
-        /// Instantiates a client.
+        /// Creates a client instance.
         /// </summary>
-        /// <param name = "memberId">The member id</param>
-        /// <param name = "cryptoEngine">The crypto engine used to sign for authentication, request, payloads, etc.</param>
-        /// <param name = "channel">Managed channel</param>
+        /// <param name = "memberId">member id</param>
+        /// <param name = "cryptoEngine">the crypto engine used to sign for authentication, request, payloads, etc</param>
+        /// <param name = "channel">managed channel</param>
         public Client(string memberId, ICryptoEngine cryptoEngine, ManagedChannel channel) : base(memberId, cryptoEngine, channel)
         {
         }
@@ -44,8 +44,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Replaces a member's public profile.
         /// </summary>
-        /// <param name = "profile">The profile to set</param>
-        /// <returns>The profile that was set</returns>
+        /// <param name = "profile">Profile to set</param>
+        /// <returns>task that completes when request handled</returns>
         public Task<Profile> SetProfile(Profile profile)
         {
             var request = new SetProfileRequest
@@ -57,11 +57,6 @@ namespace Tokenio.User.Rpc
                             response.Profile);
         }
 
-        /// <summary>
-        /// Gets a member's public profile.
-        /// </summary>
-        /// <param name = "memberId">The member id of the member</param>
-        /// <returns>The profile</returns>
         public Task<Profile> GetProfile(string memberId)
         {
             var request = new GetProfileRequest
@@ -76,8 +71,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Replaces a member's public profile picture.
         /// </summary>
-        /// <param name = "payload">The blob payload</param>
-        /// <returns>A task</returns>
+        /// <param name = "payload">Picture data</param>
+        /// <returns>task that completes when request handled</returns>
         public Task SetProfilePicture(Payload payload)
         {
             var request = new SetProfilePictureRequest
@@ -89,12 +84,6 @@ namespace Tokenio.User.Rpc
                     .ToTask();
         }
 
-        /// <summary>
-        /// Gets a member's public profile picture.
-        /// </summary>
-        /// <param name = "memberId">The member id</param>
-        /// <param name = "size">The desired size(small, medium, large, original)</param>
-        /// <returns>Blob with picture, or an empty blob (no fields set) if has no picture</returns>
         public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
         {
             var request = new GetProfilePictureRequest
@@ -111,8 +100,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Makes RPC to get default bank account for this member.
         /// </summary>
-        /// <param name = "memberId">The member id</param>
-        /// <returns>The bank account</returns>
+        /// <param name = "memberId">member id</param>
+        /// <returns>the bank account</returns>
         public Task<ProtoAccount> GetDefaultAccount(string memberId)
         {
             var request = new GetDefaultAccountRequest
@@ -128,8 +117,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Makes RPC to set default bank account.
         /// </summary>
-        /// <param name = "accountId">The account id</param>
-        /// <returns>A task</returns>
+        /// <param name = "accountId">the account id</param>
+        /// <returns>task indicating if the default bank account was successfully set</returns>
         public Task SetDefaultAccount(string accountId)
         {
             var request = new SetDefaultAccountRequest
@@ -145,8 +134,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Looks up if this account is default.
         /// </summary>
-        /// <param name = "accountId">The account id</param>
-        /// <returns>True if the account is default, otherwise False</returns>
+        /// <param name = "accountId">the bank account id</param>
+        /// <returns>true if the account is default; false otherwise</returns>
         public Task<bool> IsDefault(string accountId)
         {
             return GetDefaultAccount(MemberId)
@@ -157,8 +146,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Looks up an existing transfer.
         /// </summary>
-        /// <param name = "transferId">The transfer id</param>
-        /// <returns>The transfer record</returns>
+        /// <param name = "transferId">transfer id</param>
+        /// <returns>transfer record</returns>
         public Task<Transfer> GetTransfer(string transferId)
         {
             var request = new GetTransferRequest
@@ -174,10 +163,10 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Looks up a list of existing transfers.
         /// </summary>
-        /// <param name = "tokenId">Nullable token id</param>
-        /// <param name = "offset">Nullable offset to start at</param>
-        /// <param name = "limit">Max number of records to return</param>
-        /// <returns>Transfer record</returns>
+        /// <param name = "tokenId">optional token id to restrict the search</param>
+        /// <param name = "offset">optional offset to start at</param>
+        /// <param name = "limit">max number of records to return</param>
+        /// <returns>transfer record</returns>
         public Task<PagedList<Transfer>> GetTransfers(
                 string tokenId,
                 string offset,
@@ -210,8 +199,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Prepares the token, resolving the payload and determining the policy.
         /// </summary>
-        /// <param name = "payload">Token Payload.</param>
-        /// <returns>Resolved payload and policy</returns>
+        /// <param name = "payload">token payload</param>
+        /// <returns>resolved payload and policy</returns>
         public Task<PrepareTokenResult> PrepareToken(TokenPayload payload)
         {
             var request = new PrepareTokenRequest
@@ -225,12 +214,12 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Creates the token.
+        /// Creates a new token.
         /// </summary>
-        /// <param name = "payload">Payload.</param>
-        /// <param name = "tokenRequestId">Token request identifier.</param>
-        /// <param name = "signatures">Signatures.</param>
-        /// <returns>The token.</returns>
+        /// <param name = "payload">token payload</param>
+        /// <param name = "tokenRequestId">token request ID</param>
+        /// <param name = "signatures">list of token payload signatures</param>
+        /// <returns>token returned by server</returns>
         public Task<Token> CreateToken(
                 TokenPayload payload,
                 string tokenRequestId,
@@ -257,8 +246,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Creates a new transfer token.
         /// </summary>
-        /// <param name = "payload">The transfer token payload</param>
-        /// <returns>The transfer token returned by the server</returns>
+        /// <param name = "payload">transfer token payload</param>
+        /// <returns>transfer token returned by the server</returns>
         public Task<Token> CreateTransferToken(TokenPayload payload)
         {
             var request = new CreateTransferTokenRequest
@@ -278,11 +267,11 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Creates a new transfer token with a token request id.
+        /// Creates a new transfer token.
         /// </summary>
-        /// <param name = "payload">The transfer token payload</param>
-        /// <param name = "tokenRequestId">The token request id</param>
-        /// <returns>The transfer payload</returns>
+        /// <param name = "payload">transfer token payload</param>
+        /// <param name = "tokenRequestId">token request id</param>
+        /// <returns>transfer token returned by the server</returns>
         public Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId)
         {
             var request = new CreateTransferTokenRequest
@@ -303,33 +292,12 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Creates an access token.
+        /// Creates a new access token.
         /// </summary>
-        /// <param name = "payload">The access token payload</param>
-        /// <returns>The access token</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload)
-        {
-            payload.From = new TokenMember
-            {
-                Id = MemberId
-            };
-            var request = new CreateAccessTokenRequest
-            {
-                Payload = payload
-            };
-            return gateway(authenticationContext())
-                    .CreateAccessTokenAsync(request)
-                    .ToTask(response =>
-                            response.Token);
-        }
-
-        /// <summary>
-        /// Creates an access token with a token request id.
-        /// </summary>
-        /// <param name = "payload">The access token payload</param>
-        /// <param name = "tokenRequestId">The token request id</param>
-        /// <returns>The access token</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload, string tokenRequestId)
+        /// <param name = "payload">token payload</param>
+        /// <param name="tokenRequestId">token request id</param>
+        /// <returns>token returned by server</returns>
+        public Task<Token> CreateAccessToken(TokenPayload payload, string tokenRequestId = null)
         {
             payload.From = new TokenMember
             {
@@ -338,7 +306,7 @@ namespace Tokenio.User.Rpc
             var request = new CreateAccessTokenRequest
             {
                 Payload = payload,
-                TokenRequestId = tokenRequestId == null ? "" : tokenRequestId
+                TokenRequestId = tokenRequestId ?? ""
             };
             return gateway(authenticationContext())
                     .CreateAccessTokenAsync(request)
@@ -349,9 +317,9 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Endorses a token.
         /// </summary>
-        /// <param name = "token">The token</param>
-        /// <param name = "level">The key level to be used to endorse the token</param>
-        /// <returns>The result of the endorsement</returns>
+        /// <param name = "token">token to endorse</param>
+        /// <param name = "level">key level to be used to endorse the token</param>
+        /// <returns>result of the endorse operation, returned by the server</returns>
         public Task<TokenOperationResult> EndorseToken(Token token, Level level)
         {
             var signer = cryptoEngine.CreateSigner(level);
@@ -374,8 +342,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Cancels a token.
         /// </summary>
-        /// <param name = "token">The token to cancel</param>
-        /// <returns>The result of the cancel operation, returned by the server.</returns>
+        /// <param name = "token">token to cancel</param>
+        /// <returns>result of the cancel operation, returned by the server</returns>
         public Task<TokenOperationResult> CancelToken(Token token)
         {
             var signer = cryptoEngine.CreateSigner(Level.Low);
@@ -399,9 +367,9 @@ namespace Tokenio.User.Rpc
         /// Cancels the existing token and creates a replacement for it.
         /// Supported only for access tokens.
         /// </summary>
-        /// <param name = "tokenToCancel">The token to cancel</param>
-        /// <param name = "tokenToCreate">The payload to create new token with</param>
-        /// <returns>The result of the replacement opration</returns>
+        /// <param name = "tokenToCancel">old token to cancel</param>
+        /// <param name = "tokenToCreate">new token to create</param>
+        /// <returns>result of the replacement operation, returned by the server</returns>
         public Task<TokenOperationResult> ReplaceToken(
                 Token tokenToCancel,
                 TokenPayload tokenToCreate)
@@ -413,10 +381,11 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Looks up a existing access token where the calling member is the grantor and given member is the grantee.
+        /// Looks up a existing access token where the calling member is the grantor and given member is
+        /// the grantee.
         /// </summary>
-        /// <param name = "toMemberId">Beneficiary of the active access token</param>
-        /// <returns>Token returned by the server</returns>
+        /// <param name = "toMemberId">beneficiary of the active access token</param>
+        /// <returns>token returned by the server</returns>
         public Task<Token> GetActiveAccessToken(string toMemberId)
         {
             var request = new GetActiveAccessTokenRequest
@@ -432,8 +401,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Looks up a existing token.
         /// </summary>
-        /// <param name = "tokenId">Token id</param>
-        /// <returns>Token returned by the server</returns>
+        /// <param name = "tokenId">token id</param>
+        /// <returns>token returned by the server</returns>
         public Task<Token> GetToken(string tokenId)
         {
             var request = new GetTokenRequest
@@ -447,12 +416,12 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Looks up a existing access token where the calling member is the grantor and given member is the grantee.
+        /// Looks up a list of existing token.
         /// </summary>
-        /// <param name = "type">The token type</param>
-        /// <param name = "limit">The max number of records to return</param>
-        /// <param name = "offset">Nullable offset to start at</param>
-        /// <returns>The tokens in paged list</returns>
+        /// <param name = "type">token type</param>
+        /// <param name = "limit">max number of records to return</param>
+        /// <param name = "offset">optional offset to start at</param>
+        /// <returns>token returned by the server</returns>
         public Task<PagedList<Token>> GetTokens(
                 TokenType type,
                 int limit,
@@ -470,10 +439,10 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Creates a transfer redeeming a transfer token.
+        /// Redeems a transfer token.
         /// </summary>
-        /// <param name = "payload">The transfer payload</param>
-        /// <returns>Transfer record</returns>
+        /// <param name = "payload">transfer parameters, such as amount, currency, etc</param>
+        /// <returns>transfer record</returns>
         public Task<Transfer> CreateTransfer(TransferPayload payload)
         {
             var signer = cryptoEngine.CreateSigner(Level.Low);
@@ -496,8 +465,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Links a funding bank account to Token.
         /// </summary>
-        /// <param name = "authorization">An authorization to accounts, from the bank</param>
-        /// <returns>A list of linked accounts</returns>
+        /// <param name = "authorization">an authorization to accounts, from the bank</param>
+        /// <returns>list of linked accounts</returns>
         public Task<IList<ProtoAccount>> LinkAccounts(BankAuthorization authorization)
         {
             var request = new LinkAccountsRequest
@@ -513,8 +482,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Unlinks token accounts.
         /// </summary>
-        /// <param name = "accountIds">The account ids to unlink</param>
-        /// <returns>A task</returns>
+        /// <param name = "accountIds">account ids to unlink</param>
+        /// <returns>task</returns>
         public Task UnlinkAccounts(IList<string> accountIds)
         {
             var request = new UnlinkAccountsRequest
@@ -529,10 +498,10 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Unsubscribes from notifications.
+        /// Removes a subscriber, to stop receiving notifications.
         /// </summary>
-        /// <param name = "subscriberId">Subscriber identifier.</param>
-        /// <returns>The from notifications.</returns>
+        /// <param name = "subscriberId">id of the subscriber</param>
+        /// <returns>task</returns>
         public Task UnsubscribeFromNotifications(string subscriberId)
         {
             var request = new UnsubscribeFromNotificationsRequest
@@ -545,11 +514,11 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Gets the notifications.
+        /// Gets a list of the member's notifications.
         /// </summary>
-        /// <param name = "offset">Offset.</param>
-        /// <param name = "limit">Limit.</param>
-        /// <returns>The notifications.</returns>
+        /// <param name = "offset">offset to start</param>
+        /// <param name = "limit">how many notifications to get</param>
+        /// <returns>list of notifications</returns>
         public Task<PagedList<Notification>> GetNotifications(
                 int limit,
                 string offset = null)
@@ -566,10 +535,10 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Gets the notification.
+        /// Gets a notification.
         /// </summary>
-        /// <param name = "notificationId">Notification identifier.</param>
-        /// <returns>The notification.</returns>
+        /// <param name = "notificationId">id of the notification</param>
+        /// <returns>notification</returns>
         public Task<Notification> GetNotification(string notificationId)
         {
             var request = new GetNotificationRequest
@@ -585,16 +554,16 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Creates a subscriber to receive push notifications.
         /// </summary>
-        /// <param name = "handler">Specify the handler of the notifications.</param>
-        /// <param name = "handlerInstructions">Map of instructions for the handler</param>
-        /// <returns>Notification Subscriber.</returns>
+        /// <param name = "handler">specify the handler of the notifications</param>
+        /// <param name = "handlerInstructions">map of instructions for the handler</param>
+        /// <returns>n  otification subscriber</returns>
         public Task<Subscriber> SubscribeToNotifications(
                 string handler,
                 MapField<string, string> handlerInstructions)
         {
             var request = new SubscribeToNotificationsRequest
             {
-                Handler = handler,
+                Handler = handler
             };
             request.HandlerInstructions.Add(handlerInstructions);
             return gateway(authenticationContext())
@@ -604,12 +573,12 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Signs a token request state payload.
+        /// Sign with a Token signature a token request state payload.
         /// </summary>
-        /// <param name = "tokenRequestId">The token request id</param>
-        /// <param name = "tokenId">The token id</param>
-        /// <param name = "state">The state</param>
-        /// <returns>The signature</returns>
+        /// <param name = "tokenRequestId">token request id</param>
+        /// <param name = "tokenId">token id</param>
+        /// <param name = "state">state</param>
+        /// <returns>signature</returns>
         public Task<Signature> SignTokenRequestState(
                 string tokenRequestId,
                 string tokenId,
@@ -631,10 +600,10 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Gets the subscriber.
+        /// Gets a subscriber by Id.
         /// </summary>
-        /// <param name = "subscriberId">Subscriber identifier.</param>
-        /// <returns>The subscriber.</returns>
+        /// <param name = "subscriberId">subscriber id</param>
+        /// <returns>notification subscriber</returns>
         public Task<Subscriber> GetSubscriber(string subscriberId)
         {
             var request = new GetSubscriberRequest
@@ -648,9 +617,9 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Gets the subscribers.
+        /// Gets all subscribers for the member.
         /// </summary>
-        /// <returns>List of notification subscribers.</returns>
+        /// <returns>list of notification subscribers</returns>
         public Task<IList<Subscriber>> GetSubscribers()
         {
             var request = new GetSubscribersRequest();
@@ -663,8 +632,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Apply SCA for the given list of account IDs.
         /// </summary>
-        /// <param name = "accountIds">The list of account ids</param>
-        /// <returns>A task</returns>
+        /// <param name = "accountIds">list of account ids</param>
+        /// <returns>task</returns>
         public Task ApplySca(IList<string> accountIds)
         {
             var request = new ApplyScaRequest
@@ -681,7 +650,7 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Gets a member's receipt contact.
         /// </summary>
-        /// <returns>A task</returns>
+        /// <returns>receipt contact</returns>
         public Task<ReceiptContact> GetReceiptContact()
         {
             var request = new GetReceiptContactRequest();
@@ -694,8 +663,8 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Replaces member's recipt contact.
         /// </summary>
-        /// <param name = "contact">Contact.</param>
-        /// <returns>Completable that indicates whether the operation finished or had an error.</returns>
+        /// <param name = "contact">receipt contact to set</param>
+        /// <returns>task that indicates whether the operation finished or had an error</returns>
         public Task SetReceiptContact(ReceiptContact contact)
         {
             var request = new SetReceiptContactRequest
@@ -707,13 +676,7 @@ namespace Tokenio.User.Rpc
                     .ToTask();
         }
 
-        /// <summary>
-        /// Cancels the and replace.
-        /// </summary>
-        /// <returns>The and replace.</returns>
-        /// <param name="tokenToCancel">Token to cancel.</param>
-        /// <param name="tokenToCreate">Token to create.</param>
-		private Task<TokenOperationResult> CancelAndReplace(
+        private Task<TokenOperationResult> CancelAndReplace(
                 Token tokenToCancel,
                 CreateToken tokenToCreate)
         {
@@ -739,13 +702,13 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Sets the app callback URL.
+        /// Sets the app's callback url.
         /// </summary>
-        /// <returns>The app callback URL.</returns>
-        /// <param name="appCallbackUrl">App callback URL.</param>
+        /// <param name="appCallbackUrl">the app callback url to set</param>
+        /// <returns>task</returns>
         public Task SetAppCallbackUrl(string appCallbackUrl)
         {
-            var request = new SetAppCallbackUrlRequest()
+            var request = new SetAppCallbackUrlRequest
             {
 
                 AppCallbackUrl = appCallbackUrl
@@ -758,12 +721,12 @@ namespace Tokenio.User.Rpc
         /// <summary>
         /// Updates the status of a notification.
         /// </summary>
-        /// <param name="notificationId"></param>
-        /// <param name="status"></param>
-        /// <returns></returns>
+        /// <param name="notificationId">the notification id to update</param>
+        /// <param name="status">the status to update</param>
+        /// <returns>task</returns>
         public Task UpdateNotificationStatus(string notificationId, Status status)
         {
-            var request = new UpdateNotificationStatusRequest()
+            var request = new UpdateNotificationStatusRequest
             {
                 NotificationId = notificationId,
                 Status = status

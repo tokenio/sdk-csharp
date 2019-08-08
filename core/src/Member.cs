@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
+using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
-using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Rpc;
 using Tokenio.Security;
 using Tokenio.Utils;
@@ -39,13 +39,13 @@ namespace Tokenio
         /// Creates an instance of <see cref="Member"/>
         /// </summary>
         /// <param name="memberId">Member identifier.</param>
-        /// <param name="client">the gRPC client</param>
-        /// <param name="tokenCluster">Token cluster.</param>
-        /// <param name="partnerId">Partner identifier.</param>
-        /// <param name="realmId">Realm identifier.</param>
+        /// <param name="client">RPC client used to perform operations against the server</param>
+        /// <param name="tokenCluster">Token cluster, e.g. sandbox, production</param>
+        /// <param name="partnerId">member ID of the partner, if applicable</param>
+        /// <param name="realmId">the realm id</param>
 
-        public Member(string memberId, 
-            Client client, 
+        public Member(string memberId,
+            Client client,
             TokenCluster tokenCluster,
             string partnerId,
             string realmId)
@@ -60,7 +60,7 @@ namespace Tokenio
         /// <summary>
         /// Gets the member id.
         /// </summary>
-        /// <returns>the member id</returns>
+        /// <returns>a unique ID that identifies the member in the Token system</returns>
         public string MemberId()
         {
             return memberId;
@@ -69,16 +69,16 @@ namespace Tokenio
         /// <summary>
         /// Partners the identifier.
         /// </summary>
-        /// <returns>The identifier.</returns>
+        /// <returns>member ID</returns>
         public string PartnerId()
         {
             return partnerId;
         }
 
         /// <summary>
-        /// Realms the identifier.
+        /// Gets member ID of realm owner.
         /// </summary>
-        /// <returns>The identifier.</returns>
+        /// <returns> owner member ID</returns>
         public string RealmId()
         {
             return realmId;
@@ -88,7 +88,8 @@ namespace Tokenio
         /// Gets the token cluster.
         /// </summary>
         /// <returns>The token cluster.</returns>
-        public TokenCluster GetTokenCluster() {
+        public TokenCluster GetTokenCluster()
+        {
 
             return tokenCluster;
         }
@@ -132,9 +133,9 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Gets the fisrt alias owned by the user.
+        /// Gets the first alias owner by the user.
         /// </summary>
-        /// <returns>the alias</returns>
+        /// <returns>first alias owned by the user, or throws exception if no aliases are found</returns>
         public Task<Alias> GetFirstAlias()
         {
             return GetAliases().Map(aliases => aliases.Count > 0 ? aliases[0] : throw new NoAliasesFoundException(MemberId()));
@@ -143,7 +144,7 @@ namespace Tokenio
         /// <summary>
         /// Gets the fisrt alias owned by the user.
         /// </summary>
-        /// <returns>the alias</returns>
+        /// <returns>first alias owned by the user, or throws exception if not aliases are found</returns>
         public Alias GetFirstAliasBlocking()
         {
             return GetFirstAlias().Result;
@@ -152,7 +153,7 @@ namespace Tokenio
         /// <summary>
         /// Gets all public keys for this member.
         /// </summary>
-        /// <returns>a list of public keys</returns>
+        /// <returns>list of public keys that are approved for this member</returns>
         public Task<IList<Key>> GetKeys()
         {
             return client
@@ -163,14 +164,14 @@ namespace Tokenio
         /// <summary>
         /// Gets all public keys for this member.
         /// </summary>
-        /// <returns>a list of public keys</returns>
+        /// <returns>list of public keys that are approved for this member</returns>
         public IList<Key> GetKeysBlocking()
         {
             return GetKeys().Result;
         }
 
         /// <summary>
-        /// Looks up funding bank accounts linked to Token.
+        /// Links a funding bank account to Token and returns it to the caller.
         /// </summary>
         /// <returns>a list of accounts</returns>
         public Task<IList<Account>> GetAccountsImpl()
@@ -206,39 +207,39 @@ namespace Tokenio
         /// <summary>
         /// Adds new aliases for the member.
         /// </summary>
-        /// <param name="aliases"></param>
-        /// <returns>a task</returns>
+        /// <param name="aliases">aliases, e.g. 'john', must be unique</param>
+        /// <returns>a task that indicates whether the operation finished or had an error</returns>
         public Task AddAliases(IList<Alias> aliases)
         {
-            
-                aliases = aliases.Select(alias =>
+
+            aliases = aliases.Select(alias =>
+            {
+                if (!string.IsNullOrEmpty(partnerId) && !partnerId.Equals("token"))
                 {
-                    if (!string.IsNullOrEmpty(partnerId) && !partnerId.Equals("token"))
-                    {
                         // Realm must equal member's partner ID if affiliated
                         if (!string.IsNullOrEmpty(alias.Realm) && !alias.Realm.Equals(partnerId))
-                        {
-                            throw new InvalidRealmException(alias.Realm, partnerId);
-                        }
-                        alias.Realm = partnerId;
+                    {
+                        throw new InvalidRealmException(alias.Realm, partnerId);
                     }
-                    if (!string.IsNullOrEmpty(realmId)) {
+                    alias.Realm = partnerId;
+                }
+                if (!string.IsNullOrEmpty(realmId))
+                {
 
-                        alias.Realm = realmId;
-                    }
+                    alias.Realm = realmId;
+                }
 
-                    return alias;
-                }).ToList();
-                var operations = aliases.Select(Util.ToAddAliasOperation).ToList();
-                var metadata = aliases.Select(Util.ToAddAliasMetadata).ToList();
-                return client.UpdateMember(operations, metadata);
+                return alias;
+            }).ToList();
+            var operations = aliases.Select(Util.ToAddAliasOperation).ToList();
+            var metadata = aliases.Select(Util.ToAddAliasMetadata).ToList();
+            return client.UpdateMember(operations, metadata);
         }
 
         /// <summary>
         /// Adds new aliases for the member.
         /// </summary>
-        /// <param name="aliases"></param>
-        /// <returns>a task</returns>
+        /// <param name="aliases">aliases, e.g. 'john', must be unique</param>
         public void AddAliasesBlocking(IList<Alias> aliases)
         {
             AddAliases(aliases).Wait();
@@ -291,7 +292,7 @@ namespace Tokenio
         /// <returns>the updated member</returns>
         public Task<ProtoMember> AddRecoveryRule(RecoveryRule rule)
         {
-            return  client.UpdateMember(new List<MemberOperation>
+            return client.UpdateMember(new List<MemberOperation>
                     {
                         new MemberOperation
                         {
@@ -449,7 +450,6 @@ namespace Tokenio
         /// of valid keys for the member.
         /// </summary>
         /// <param name="keys">the keys to add</param>
-        /// <returns>a task</returns>
         public void ApproveKeysBlocking(IList<Key> keys)
         {
             ApproveKeys(keys).Wait();
@@ -460,7 +460,7 @@ namespace Tokenio
         /// of valid keys for the member.
         /// </summary>
         /// <param name="key">the key to add</param>
-        /// <returns>a task</returns>
+        /// <returns>a task that indicates whether the operation finished or had an error</returns>
         public Task ApproveKey(Key key)
         {
             return ApproveKeys(new List<Key> { key });
@@ -471,7 +471,7 @@ namespace Tokenio
         /// of valid keys for the member.
         /// </summary>
         /// <param name="key">the key to add</param>
-        /// <returns>a task</returns>
+        /// <returns>a task that indicates whether the operation finished or had an error</returns>
         public void ApproveKeyBlocking(Key key)
         {
             ApproveKey(key).Wait();
@@ -493,7 +493,7 @@ namespace Tokenio
         /// of valid keys for the member.
         /// </summary>
         /// <param name="keyPair">the keypair to add</param>
-        /// <returns>a task</returns>
+        /// <returns>a task that indicates whether the operation finished or had an error</returns>
         public void ApproveKeyBlocking(KeyPair keyPair)
         {
             ApproveKey(keyPair).Wait();
@@ -666,9 +666,9 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Confirms the funds blocking.
+        /// Confirm that the given account has sufficient funds to cover the charge
         /// </summary>
-        /// <returns><c>true</c>, if funds blocking was confirmed, <c>false</c> otherwise.</returns>
+        /// <returns>true if the account has sufficient funds to cover the charge.</returns>
         /// <param name="accountId">Account identifier.</param>
         /// <param name="amount">Amount.</param>
         /// <param name="currency">Currency.</param>
@@ -743,8 +743,8 @@ namespace Tokenio
         /// <summary>
         /// Gets a member's public profile.
         /// </summary>
-        /// <param name="memberId"></param>
-        /// <returns></returns>
+        /// <param name="memberId">member ID of member whose profile we want</param>
+        /// <returns>their profile</returns>
         public Task<Profile> GetProfile(string memberId)
         {
             return client.GetProfile(memberId);
@@ -753,8 +753,8 @@ namespace Tokenio
         /// <summary>
         /// Gets a member's public profile.
         /// </summary>
-        /// <param name="memberId"></param>
-        /// <returns></returns>
+        /// <param name="memberId">member ID of member whose profile we want</param>
+        /// <returns>their profile</returns>
         public Profile GetProfileBlocking(string memberId)
         {
             return GetProfile(memberId).Result;
@@ -763,9 +763,9 @@ namespace Tokenio
         /// <summary>
         /// Gets a member's public profile picture.
         /// </summary>
-        /// <param name="memberId"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <param name="memberId">member ID of member whose profile we want</param>
+        /// <param name="size">desired size category (small, medium, large, original)</param>
+        /// <returns>blob with picture; empty blob (no fields set) if has no picture</returns>
         public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
         {
             return client.GetProfilePicture(memberId, size);
@@ -774,9 +774,9 @@ namespace Tokenio
         /// <summary>
         /// Gets a member's public profile picture.
         /// </summary>
-        /// <param name="memberId"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <param name="memberId">member ID of member whose profile we want</param>
+        /// <param name="size">desired size category (small, medium, large, original)</param>
+        /// <returns>blob with picture; empty blob (no fields set) if has no picture</returns>
         public Blob GetProfilePictureBlocking(string memberId, ProfilePictureSize size)
         {
             return GetProfilePicture(memberId, size).Result;
@@ -800,6 +800,12 @@ namespace Tokenio
             client.ClearTrackingMetaData();
         }
 
+        /// <summary>
+        /// Creates a test bank account in a fake bank and links the account.
+        /// </summary>
+        /// <param name="balance">account balance to set</param>
+        /// <param name="currency">currency code, e.g. "EUR"</param>
+        /// <returns>the linked account</returns>
         protected Task<Account> CreateTestBankAccountImpl(
             double balance,
             string currency)

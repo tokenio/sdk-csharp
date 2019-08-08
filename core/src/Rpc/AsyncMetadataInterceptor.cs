@@ -8,10 +8,10 @@ namespace Tokenio.Rpc
     public class AsyncMetadataInterceptor : Interceptor
     {
         private readonly Func<Metadata, Metadata> interceptor;
-        
+
         public AsyncMetadataInterceptor(Func<Metadata, Metadata> interceptor)
         {
-            this.interceptor = GrpcPreconditions.CheckNotNull(interceptor, nameof (interceptor));
+            this.interceptor = GrpcPreconditions.CheckNotNull(interceptor, nameof(interceptor));
         }
 
         private ClientInterceptorContext<TRequest, TResponse> GetNewContext<TRequest, TResponse>(

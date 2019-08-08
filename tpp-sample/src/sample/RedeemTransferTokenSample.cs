@@ -1,28 +1,25 @@
-﻿using System;
-using Tokenio.Proto.Common.TransferProtos;
-using TokenClient = Tokenio.Tpp.TokenClient;
-using TppMember = Tokenio.Tpp.Member;
-using UserMember = Tokenio.User.Member;
-using Tokenio.Tpp.Utils;
+﻿using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
-using Tokenio.Proto.Common.AccountProtos;
+using Tokenio.Proto.Common.TransferProtos;
+using Tokenio.Tpp.Utils;
+using TppMember = Tokenio.Tpp.Member;
 
 namespace TokenioSample
 {
     /// <summary>
-    /// Redeem transfer token sample.
+    /// Redeems a transfer token.
     /// </summary>
-    public class RedeemTransferTokenSample
+    public static class RedeemTransferTokenSample
     {
 
         /// <summary>
         /// Redeems a transfer token to transfer money from payer bank account to payee bank account.
         /// </summary>
-        /// <returns>The transfer token.</returns>
-        /// <param name="payee">Payee.</param>
-        /// <param name="accountId">Account identifier.</param>
-        /// <param name="tokenId">Token identifier.</param>
+        /// <param name="payee">payee Token member</param>
+        /// <param name="accountId">account id of the payee</param>
+        /// <param name="tokenId">ID of the token to redeem</param>
+        /// <returns>a transfer Transfer</returns>
         public static Transfer RedeemTransferToken(
            TppMember payee,
            string accountId, // account ID of the payee
@@ -38,20 +35,20 @@ namespace TokenioSample
             Token transferToken = payee.GetTokenBlocking(tokenId);
 
             // Set token destination
-            TransferEndpoint tokenDestination = new TransferEndpoint()
+            TransferEndpoint tokenDestination = new TransferEndpoint
             {
 
-                Account = new BankAccount()
+                Account = new BankAccount
                 {
-                    Token = new BankAccount.Types.Token()
+                    Token = new BankAccount.Types.Token
                     {
                         MemberId = payee.MemberId(),
                         AccountId = accountId
                     }
-                },
+                }
             };
 
-          
+
 
             // Payee redeems a transfer token.
             // Money is transferred to a payee bank account.

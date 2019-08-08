@@ -7,6 +7,7 @@ using Google.Protobuf;
 using Google.Protobuf.Collections;
 using log4net;
 using Tokenio.Proto.Common.BlobProtos;
+using Tokenio.Proto.Common.EidasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.NotificationProtos;
@@ -15,7 +16,6 @@ using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Tpp.Rpc;
 using Tokenio.Utils;
-using Tokenio.Proto.Common.EidasProtos;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using TokenRequest = Tokenio.TokenRequests.TokenRequest;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
@@ -36,22 +36,22 @@ namespace Tokenio.Tpp
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Tokenio.Tpp.Member"/> class.
         /// </summary>
-        /// <param name="memberId">Member identifier.</param>
-        /// <param name="client">Client.</param>
-        /// <param name="tokenCluster">Token cluster.</param>
-        /// <param name="partnerId">Partner identifier.</param>
+        /// <param name="memberId">member ID</param>
+        /// <param name="client">RPC client used to perform operations against the server.</param>
+        /// <param name="tokenCluster">Token cluster, e.g. sandbox, production.</param>
+        /// <param name="partnerId">member ID of partner.</param>
         /// <param name="realmId">Realm identifier.</param>
         public Member(string memberId,
             Client client,
             TokenCluster tokenCluster,
             string partnerId = null,
             string realmId = null)
-            : base(memberId, client, tokenCluster,partnerId,realmId)
+            : base(memberId, client, tokenCluster, partnerId, realmId)
         {
             this.client = client;
         }
 
-       
+
 
         /// <summary>
         /// Replaces auth'd member's public profile.
@@ -93,6 +93,12 @@ namespace Tokenio.Tpp
             return GetProfile(memberId).Result;
         }
 
+        /// <summary>
+        /// Replaces auth'd member's public profile picture.
+        /// </summary>
+        /// <param name="type">MIME type of picture</param>
+        /// <param name="data">image data</param>
+        /// <returns>task that indicates whether the operation finished or had an error</returns>
         public Task SetProfilePicture(string type, byte[] data)
         {
             var payload = new Payload
@@ -213,7 +219,7 @@ namespace Tokenio.Tpp
         public IRepresentable ForAccessToken(string accessTokenId, bool customerInitiated = false)
         {
             Client cloned = client.ForAccessToken(accessTokenId, customerInitiated);
-            return new Member(memberId,cloned,tokenCluster,partnerId,realmId);
+            return new Member(memberId, cloned, tokenCluster, partnerId, realmId);
         }
 
         /// <summary>
@@ -439,6 +445,16 @@ namespace Tokenio.Tpp
             return client.CreateTransfer(payload);
         }
 
+        /// <summary>
+        /// Redeems a transfer token.
+        /// </summary>
+        /// <param name="token">transfer token to redeem</param>
+        /// <param name="amount">transfer amount</param>
+        /// <param name="currency">transfer currency code, e.g. "EUR"</param>
+        /// <param name="description">transfer description</param>
+        /// <param name="destination">the transfer instruction destination</param>
+        /// <param name="refId">transfer reference id</param>
+        /// <returns>transfer record</returns>
         [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
         public Task<Transfer> RedeemToken(
             Token token,
@@ -461,27 +477,27 @@ namespace Tokenio.Tpp
         /// <param name="description">Description.</param>
         /// <param name="refId">Reference identifier.</param>
 		public Task<Transfer> RedeemToken(
-		   Token token,
-		   double? amount,
-		   string currency = null,
-		   string description = null,
-		   string refId = null)
-		{
-			return RedeemTokenInternal(token, amount, currency, description, null, refId);
-		}
+           Token token,
+           double? amount,
+           string currency = null,
+           string description = null,
+           string refId = null)
+        {
+            return RedeemTokenInternal(token, amount, currency, description, null, refId);
+        }
 
-		/// <summary>
-		/// Redeems a transfer token.
-		/// </summary>
-		/// <param name="token">the transfer token</param>
-		/// <param name="amount">the amount to transfer</param>
-		/// <param name="currency">the currency</param>
-		/// <param name="description">the description of the transfer</param>
-		/// <param name="destination">the transfer instruction destination</param>
-		/// <param name="refId">the reference id of the transfer</param>
-		/// <returns>a transfer record</returns>
-		/// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
-		public Task<Transfer> RedeemTokenInternal(
+        /// <summary>
+        /// Redeems a transfer token.
+        /// </summary>
+        /// <param name="token">the transfer token</param>
+        /// <param name="amount">the amount to transfer</param>
+        /// <param name="currency">the currency</param>
+        /// <param name="description">the description of the transfer</param>
+        /// <param name="destination">the transfer instruction destination</param>
+        /// <param name="refId">the reference id of the transfer</param>
+        /// <returns>a transfer record</returns>
+        /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
+        public Task<Transfer> RedeemTokenInternal(
             Token token,
             double? amount,
             string currency,
@@ -502,7 +518,7 @@ namespace Tokenio.Tpp
             if (amount.HasValue)
             {
                 var money = new Money { Value = Util.DoubleToString(amount.Value) };
-                payload.Amount = money ;
+                payload.Amount = money;
             }
 
             if (currency != null)
@@ -739,23 +755,23 @@ namespace Tokenio.Tpp
             return RedeemToken(token, amount, currency, description, destination, refId).Result;
         }
 
-		public Transfer RedeemTokenBlocking(
-			Token token,
-			double? amount = null,
-			string currency = null,
-			string description = null,
-			string refId = null)
-		{
-			return RedeemToken(token, amount, currency, description, refId).Result;
-		}
+        public Transfer RedeemTokenBlocking(
+            Token token,
+            double? amount = null,
+            string currency = null,
+            string description = null,
+            string refId = null)
+        {
+            return RedeemToken(token, amount, currency, description, refId).Result;
+        }
 
-		/// <summary>
-		/// Stores a token request.
-		/// </summary>
-		/// <param name="requestPayload">the token request payload (immutable fields)</param>
-		/// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
-		/// <returns>an id to reference the token request</returns>
-		public Task<string> StoreTokenRequest(
+        /// <summary>
+        /// Stores a token request.
+        /// </summary>
+        /// <param name="requestPayload">the token request payload (immutable fields)</param>
+        /// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
+        /// <returns>an id to reference the token request</returns>
+        public Task<string> StoreTokenRequest(
             TokenRequestPayload requestPayload,
             Proto.Common.TokenProtos.TokenRequestOptions requestOptions)
         {
@@ -788,6 +804,7 @@ namespace Tokenio.Tpp
                 tokenRequest.Options);
         }
 
+        /// <summary>
         /// Stores a token request.
         /// </summary>
         /// <param name="tokenRequest">the token request</param>
@@ -800,7 +817,7 @@ namespace Tokenio.Tpp
 
 
         /// <summary>
-        /// Stores a token request.
+        /// Stores a token request. This can be retrieved later by the token request id.
         /// </summary>
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
@@ -811,7 +828,8 @@ namespace Tokenio.Tpp
                 tokenRequest.GetTokenRequestOptions());
         }
 
-        /// Stores a token request.
+        /// <summary>
+        /// Stores a token request to be retrieved later (possibly by another member).
         /// </summary>
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
@@ -931,7 +949,7 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
-        /// Looks up exsiting transfer tokens.
+        /// Looks up transfer tokens owned by the member.
         /// </summary>
         /// <param name="offset">nullable offset to start at</param>
         /// <param name="limit">the max number of records to return</param>
@@ -942,7 +960,7 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
-        /// Looks up exsiting transfer tokens.
+        /// Looks up tokens owned by the member.
         /// </summary>
         /// <param name="offset">nullable offset to start at</param>
         /// <param name="limit">the max number of records to return</param>
@@ -1015,7 +1033,7 @@ namespace Tokenio.Tpp
         /// <summary>
         /// Trigger a step up notification for transaction requests
         /// </summary>
-        /// <param name="accountIds">account ids</param>
+        /// <param name="accountId">account ids</param>
         /// <returns>notification status</returns>
         public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
         {
@@ -1025,7 +1043,7 @@ namespace Tokenio.Tpp
         /// <summary>
         /// Trigger a step up notification for transaction requests
         /// </summary>
-        /// <param name="accountIds">account ids</param>
+        /// <param name="accountId">account ids</param>
         /// <returns>notification status</returns>
         public NotifyStatus TriggerTransactionStepUpNotificationBlocking(string accountId)
         {
@@ -1046,7 +1064,8 @@ namespace Tokenio.Tpp
 
 
         /// <summary>
-        /// Gets the active access token blocking.
+        /// Looks up a existing access token where the calling member is the grantor and given member is
+        /// the grantee.
         /// </summary>
         /// <returns>The active access token blocking.</returns>
         /// <param name="toMemberId">token returned by the server.</param>

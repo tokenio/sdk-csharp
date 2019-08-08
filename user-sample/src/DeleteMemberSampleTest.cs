@@ -25,9 +25,7 @@ namespace TokenioSample
 
                     );
             }
-
         }
-
     }
 }
 

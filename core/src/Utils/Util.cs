@@ -133,17 +133,17 @@ namespace Tokenio.Utils
         public static MemberOperation ToRecoveryAgentOperation(string agentId)
         {
 
-            var MemberRecoveryRulesOperation = new MemberRecoveryRulesOperation()
+            var MemberRecoveryRulesOperation = new MemberRecoveryRulesOperation
             {
 
-                RecoveryRule = new RecoveryRule()
+                RecoveryRule = new RecoveryRule
                 {
 
                     PrimaryAgent = agentId
 
                 }
             };
-            return new MemberOperation()
+            return new MemberOperation
             {
                 RecoveryRules = MemberRecoveryRulesOperation
             };

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using Tokenio.Utils;
 
 namespace Tokenio.Security
 {
@@ -28,7 +27,7 @@ namespace Tokenio.Security
         public KeyPair GetByLevel(string memberId, Level level)
         {
             var keys = allKeys.Where(entry => entry.Key.Item1 == memberId).ToList();
-            var keyByLevel = keys.Select(entry => entry.Value).Where(Key => Key.Level == level).First();
+            var keyByLevel = keys.Select(entry => entry.Value).First(Key => Key.Level == level);
             if (keyByLevel.IsExpired())
             {
                 throw new ArgumentException("Key not found for level: " + level);
@@ -54,7 +53,7 @@ namespace Tokenio.Security
         public IList<KeyPair> KeyList(string memberId)
         {
             return allKeys.Where(entry => entry.Key.Item1 == memberId)
-                .Select(entry => entry.Value).Where(key=>!key.IsExpired())
+                .Select(entry => entry.Value).Where(key => !key.IsExpired())
                 .ToList();
         }
     }

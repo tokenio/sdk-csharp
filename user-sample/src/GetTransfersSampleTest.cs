@@ -10,7 +10,6 @@ namespace TokenioSample
 {
     public class GetTransfersSampleTest
     {
-
         [Fact]
         public void GetTransfersTest()
         {

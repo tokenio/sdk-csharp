@@ -1,6 +1,6 @@
-﻿using Org.BouncyCastle.Crypto.Parameters;
+﻿using System.Collections.Generic;
+using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
-using System.Collections.Generic;
 using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
@@ -68,9 +68,9 @@ namespace Tokenio.Security
             }
             return publicKeys;
         }
-    
 
 
-       
+
+
     }
 }

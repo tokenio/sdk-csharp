@@ -17,7 +17,7 @@ namespace Tokenio.Tpp.TokenRequests
         /// Parses the token request callback URL's parameters. Extracts the state, the token ID, and
         /// the signature over(state | token ID).
         /// </summary>
-        /// <returns>The create.</returns>
+        /// <returns>The TokenRequestCallbackParameters instance.</returns>
         /// <param name="url">URL.</param>
         public static TokenRequestCallbackParameters Create(string url)
         {

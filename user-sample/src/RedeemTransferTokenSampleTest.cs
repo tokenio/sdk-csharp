@@ -1,20 +1,21 @@
-﻿using System;
-using Tokenio;
+﻿using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Xunit;
 using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
+
 namespace TokenioSample
 {
     public class RedeemTransferTokenSampleTest
     {
 
-       [Fact]
-    public void RedeemPaymentTokenTest()
+        [Fact]
+        public void RedeemPaymentTokenTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient()) {
+            using (TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -29,7 +30,6 @@ namespace TokenioSample
                         token.Id);
                 Assert.NotNull(transfer);
             }
-            }
-
+        }
     }
 }

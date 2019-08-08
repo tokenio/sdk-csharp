@@ -7,14 +7,12 @@ using UserMember = Tokenio.User.Member;
 namespace TokenioSample
 {
     public class CancelTransferTokenSampleTest
-	{
-    /// <summary>
-    /// Cancels the transfer token by grantee test.
-    /// </summary>
-    [Fact]
-    public void CancelTransferTokenByGrantorTest()
+    {
+        [Fact]
+        public void CancelTransferTokenByGrantorTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient()) {
+            using (TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias granteeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(granteeAlias);
