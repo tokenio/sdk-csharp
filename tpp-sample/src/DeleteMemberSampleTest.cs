@@ -2,7 +2,6 @@
 using Xunit;
 using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
-using UserMember = Tokenio.User.Member;
 
 
 namespace TokenioSample

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
@@ -6,31 +7,30 @@ using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
-using UserMember = Tokenio.User.Member;
-using System.Linq;
+
 namespace TokenioSample
 {
+    /// <summary>
+    /// Illustrate steps of Member recovery.
+    /// </summary>
     public class MemberRecoverySample
     {
 
 
         public TppMember agentMember; /* used by complex recovery rule sample */
 
-        /// <summary>
-        /// Sets up default recovery rule.
-        /// </summary>
-        /// <param name="member">Member.</param>
         public void SetUpDefaultRecoveryRule(TppMember member)
         {
             member.UseDefaultRecoveryRuleBlocking();
         }
 
-       /// <summary>
-       /// Recovers the with default rule.
-       /// </summary>
-       /// <returns>The with default rule.</returns>
-       /// <param name="tokenClient">Token client.</param>
-       /// <param name="alias">Alias.</param>
+        /// <summary>
+        /// Recover previously-created member, assuming they were
+        /// configured with a "normal consumer" recovery rule.
+        /// </summary>
+        /// <param name="tokenClient">SDK client</param>
+        /// <param name="alias">alias of member to recoverWithDefaultRule</param>
+        /// <returns>recovered member</returns>
         public TppMember RecoverWithDefaultRule(TokenClient tokenClient, Alias alias)
         {
             string verificationId = tokenClient.BeginRecoveryBlocking(alias);
@@ -41,7 +41,7 @@ namespace TokenioSample
             // In the real world, we'd prompt the user to enter the code emailed to them.
             // Since our test member uses an auto-verify email address, any string will work,
             // so we use "1thru6".
-            TppMember recoveredMember = tokenClient. CompleteRecoveryWithDefaultRuleBlocking(
+            TppMember recoveredMember = tokenClient.CompleteRecoveryWithDefaultRuleBlocking(
                     memberId,
                     verificationId,
                     "1thru6",
@@ -55,12 +55,13 @@ namespace TokenioSample
 
         private void TellRecoveryAgentMemberId(string memberId) { } /* this simple sample uses a no op */
 
-       /// <summary>
-       /// Sets up complex recovery rule.
-       /// </summary>
-       /// <param name="newMember">New member.</param>
-       /// <param name="tokenClient">Token client.</param>
-       /// <param name="agentAlias">Agent alias.</param>
+        /// <summary>
+        /// Illustrate setting up a recovery rule more complex than "normal consumer"
+        /// mode, without the "normal consumer" shortcuts.
+        /// </summary>
+        /// <param name="newMember">newly-created member we are setting up</param>
+        /// <param name="tokenClient">SDK client</param>
+        /// <param name="agentAlias">Alias of recovery agent.</param>
         public void SetUpComplexRecoveryRule(
                 TppMember newMember,
                 TokenClient tokenClient,
@@ -75,7 +76,7 @@ namespace TokenioSample
 
             string agentId = tokenClient.GetMemberIdBlocking(agentAlias);
 
-            RecoveryRule recoveryRule = new RecoveryRule() { PrimaryAgent = agentId };
+            RecoveryRule recoveryRule = new RecoveryRule { PrimaryAgent = agentId };
 
             // This example doesn't call .setSecondaryAgents ,
             // but could have. If it had, then recovery would have
@@ -91,11 +92,11 @@ namespace TokenioSample
             return true;
         }
 
-       /// <summary>
-       /// Gets the recovery agent signature.
-       /// </summary>
-       /// <returns>The recovery agent signature.</returns>
-       /// <param name="authorization">Authorization.</param>
+        /// <summary>
+        /// Illustrate how a recovery agent signs an authorization.
+        /// </summary>
+        /// <param name="authorization">client's claim to be some member</param>
+        /// <returns>if authorization seems legitimate, return signature; else error</returns>
         public Signature getRecoveryAgentSignature(Authorization authorization)
         {
             // authorizeRecovery begin snippet to include in doc
@@ -111,11 +112,11 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Recovers the with complex rule.
+        /// Illustrate recovery using a not-normal-"consumer mode" recovery agent.
         /// </summary>
-        /// <returns>The with complex rule.</returns>
-        /// <param name="tokenClient">Token client.</param>
-        /// <param name="alias">Alias.</param>
+        /// <param name="tokenClient">SDK client</param>
+        /// <param name="alias">Alias of member to recover</param>
+        /// <returns>recovered member</returns>
         public TppMember RecoverWithComplexRule(
                 TokenClient tokenClient,
                 Alias alias)
@@ -136,7 +137,7 @@ namespace TokenioSample
 
             // We have all the signed authorizations we need.
             // (In this example, "all" is just one.)
-            MemberRecoveryOperation mro = new MemberRecoveryOperation()
+            MemberRecoveryOperation mro = new MemberRecoveryOperation
             {
                 Authorization = authorization,
                 AgentSignature = agentSignature

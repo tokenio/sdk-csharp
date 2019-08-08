@@ -13,7 +13,7 @@ namespace Tokenio.Security
         private readonly string keyId;
         private readonly Org.BouncyCastle.Crypto.ISigner signer;
 
-        public Ed25519Signer(string keyId,  byte[] privateKey)
+        public Ed25519Signer(string keyId, byte[] privateKey)
         {
             this.keyId = keyId;
             signer = SignerUtilities.GetSigner("Ed25519");

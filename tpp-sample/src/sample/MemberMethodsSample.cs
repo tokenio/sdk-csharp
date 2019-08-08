@@ -7,10 +7,10 @@ using Tokenio.Security;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
-using UserMember = Tokenio.User.Member;
+
 namespace TokenioSample
 {
-    public class MemberMethodsSample
+    public static class MemberMethodsSample
     {
 
         private static readonly byte[] PICTURE = Convert.FromBase64String(
@@ -29,14 +29,15 @@ namespace TokenioSample
                     + "AAAAAAAAAAAAAP/aAAgBAQABPxB//9k=");
 
         /// <summary>
-        /// Aliases the specified member.
+        /// Adds and removes an alias.
         /// </summary>
-        /// <param name="member">Member.</param>
+        /// <param name="member">member</param>
         public static void Aliases(TppMember member)
         {
-            Alias alias = new Alias() { 
-                    Type=Alias.Types.Type.Domain,
-                    Value= "verified-domain.com"
+            Alias alias = new Alias
+            {
+                Type = Alias.Types.Type.Domain,
+                Value = "verified-domain.com"
 
             };
             // add the alias
@@ -47,17 +48,17 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Resolves the alias.
+        /// Resolves a user's alias.
         /// </summary>
-        /// <param name="client">Client.</param>
+        /// <param name="client">token client</param>
         public static void ResolveAlias(TokenClient client)
         {
-            Alias alias = new Alias()
+            Alias alias = new Alias
             {
                 Value = "user-email@example.com"
 
             };
-           
+
 
             // If this call fails then the alias does not correspond to an existing member.
             TokenMember resolved = client.ResolveAliasBlocking(alias);
@@ -72,10 +73,10 @@ namespace TokenioSample
 
 
         /// <summary>
-        /// Keys the specified crypto and member.
+        /// Adds and removes keys.
         /// </summary>
-        /// <param name="crypto">Crypto.</param>
-        /// <param name="member">Member.</param>
+        /// <param name="crypto">crypto engine</param>
+        /// <param name="member">member</param>
         public static void Keys(ICryptoEngine crypto, TppMember member)
         {
             Key lowKey = crypto.GenerateKey(Level.Low);
@@ -90,14 +91,15 @@ namespace TokenioSample
 
 
         /// <summary>
-        /// Profiles the specified member.
+        /// Sets a profile name and picture.
         /// </summary>
-        /// <returns>The profiles.</returns>
-        /// <param name="member">Member.</param>
+        /// <param name="member">member</param>
+        /// <returns>profile</returns>
         public static Profile Profiles(TppMember member)
         {
-            Profile name = new Profile() { 
-                DisplayNameFirst= "Tycho",
+            Profile name = new Profile
+            {
+                DisplayNameFirst = "Tycho",
                 DisplayNameLast = "Nestoris"
             };
 

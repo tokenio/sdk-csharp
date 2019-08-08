@@ -1,22 +1,22 @@
-﻿using System;
-using Tokenio.Proto.Common.MoneyProtos;
-using TokenClient = Tokenio.Tpp.TokenClient;
-using TppMember = Tokenio.Tpp.Member;
-using UserMember = Tokenio.User.Member;
+﻿using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Tpp;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using TppMember = Tokenio.Tpp.Member;
 
 namespace TokenioSample
 {
-    public class RedeemAccessTokenSample
+    /// <summary>
+    /// Redeems an information access token.
+    /// </summary>
+    public static class RedeemAccessTokenSample
     {
 
         /// <summary>
-        /// Redeems the access token.
+        /// Redeems access token to acquire access to the grantor's account balances.
         /// </summary>
-        /// <returns>The access token.</returns>
-        /// <param name="grantee">Grantee.</param>
-        /// <param name="tokenId">Token identifier.</param>
+        /// <param name="grantee">grantee Token member</param>
+        /// <param name="tokenId">ID of the access token to redeem</param>
+        /// <returns>balance of one of grantor's acounts</returns>
         public static Money RedeemAccessToken(TppMember grantee, string tokenId)
         {
             // Specifies whether the request originated from a customer

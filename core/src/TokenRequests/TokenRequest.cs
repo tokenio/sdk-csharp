@@ -1,4 +1,5 @@
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.ProviderSpecific;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Utils;
@@ -31,7 +32,7 @@ namespace Tokenio.TokenRequests
         {
             return new AccessBuilder(resources);
         }
-        
+
         /// <summary>
         /// Create a new Builder instance for an transfer token request.
         /// </summary>
@@ -261,7 +262,7 @@ namespace Tokenio.TokenRequests
                     requestPayload,
                     requestOptions);
             }
-            
+
         }
 
         public class AccessBuilder : Builder<AccessBuilder>
@@ -310,6 +311,22 @@ namespace Tokenio.TokenRequests
             }
 
             /// <summary>
+            /// Adds a transfer destination to a transfer token request.
+            /// </summary>
+            /// <param name="destination">destination</param>
+            /// <returns>builder</returns>
+            public TransferBuilder AddDestination(TransferDestination destination)
+            {
+                var request = requestPayload.TransferBody;
+                if (request.Instructions == null)
+                {
+                    request.Instructions = new TransferInstructions();
+                }
+                request.Instructions.TransferDestinations.Add(destination);
+                return this;
+            }
+
+            /// <summary>
             /// Sets the maximum amount per charge on a transfer token request.
             /// </summary>
             /// <param name="chargeAmount">amount</param>
@@ -317,6 +334,21 @@ namespace Tokenio.TokenRequests
             public TransferBuilder SetChargeAmount(double chargeAmount)
             {
                 requestPayload.TransferBody.Amount = chargeAmount.ToString("F");
+                return this;
+            }
+
+            /// <summary>
+            /// Adds metadata for a specific provider.
+            /// </summary>
+            /// <param name="metadata">provider-specific metadata</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetProviderMetadata(ProviderTransferMetadata metadata)
+            {
+                var metaData = new TransferInstructions.Types.Metadata
+                {
+                    ProviderTransferMetadata = metadata
+                };
+                requestPayload.TransferBody.Instructions.Metadata = metaData;
                 return this;
             }
         }

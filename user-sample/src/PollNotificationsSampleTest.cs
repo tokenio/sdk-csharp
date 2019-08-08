@@ -1,5 +1,4 @@
-﻿using System;
-using Tokenio.Proto.Common.AliasProtos;
+﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
@@ -8,6 +7,7 @@ using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
+
 namespace TokenioSample
 {
     public class PollNotificationsSampleTest
@@ -26,9 +26,9 @@ namespace TokenioSample
                 Account account = LinkMemberAndBankSample.LinkBankAccounts(payer);
                 LinkMemberAndBankSample.LinkBankAccounts(payee);
 
-                TransferDestination tokenDestination = new TransferDestination()
+                TransferDestination tokenDestination = new TransferDestination
                 {
-                    Token = new TransferDestination.Types.Token()
+                    Token = new TransferDestination.Types.Token
                     {
                         MemberId = payee.MemberId()
                     }
@@ -49,7 +49,5 @@ namespace TokenioSample
             }
         }
     }
-
-
 }
 

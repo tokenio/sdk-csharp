@@ -1,24 +1,24 @@
-﻿using System;
-using Tokenio.Proto.Common.AliasProtos;
-using ResourceType = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types.ResourceType;
+﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.TokenRequests;
+using Tokenio.Tpp.Utils;
+using ResourceType = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types.ResourceType;
 using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
-using UserMember = Tokenio.User.Member;
-using Tokenio.Tpp.Utils;
-using Tokenio.Proto.Common.TransactionProtos;
 
 namespace TokenioSample
 {
-    public class StoreAndRetrieveTokenRequestSample
+    /// <summary>
+    /// Stores and retrieves a token request.
+    /// </summary>
+    public static class StoreAndRetrieveTokenRequestSample
     {
 
 
-       /// <summary>
-       /// Stores the transfer token request.
-       /// </summary>
-       /// <returns>The transfer token request.</returns>
-       /// <param name="payee">Payee.</param>
+        /// <summary>
+        /// Stores a transfer token request.
+        /// </summary>
+        /// <param name="payee">Payee Token member (the member requesting the transfer token be created)</param>
+        /// <returns>a token request id</returns>
         public static string StoreTransferTokenRequest(TppMember payee)
         {
             // Create token request to be stored
@@ -26,9 +26,11 @@ namespace TokenioSample
                     .SetToMemberId(payee.MemberId())
                     .SetDescription("Book purchase") // optional description
                     .SetRedirectUrl("https://token.io/callback") // callback URL
-                    .SetFromAlias(new Alias() { Value= "payer-alias@token.io",
-                                                Type=Alias.Types.Type.Email
-                                                })
+                    .SetFromAlias(new Alias
+                    {
+                        Value = "payer-alias@token.io",
+                        Type = Alias.Types.Type.Email
+                    })
                     .SetBankId("iron") // bank ID
                     .SetCsrfToken(Util.Nonce()) // nonce for CSRF check
                     .build();
@@ -37,18 +39,18 @@ namespace TokenioSample
             return payee.StoreTokenRequestBlocking(request);
         }
 
-      /// <summary>
-      /// Stores the access token request.
-      /// </summary>
-      /// <returns>The access token request.</returns>
-      /// <param name="grantee">Grantee.</param>
+        /// <summary>
+        /// Stores an access token request.
+        /// </summary>
+        /// <param name="grantee">Token member requesting the access token be created</param>
+        /// <returns>a token request id</returns>
         public static string StoreAccessTokenRequest(TppMember grantee)
         {
             // Create token request to be stored
             TokenRequest request = TokenRequest.AccessTokenRequestBuilder(ResourceType.Accounts, ResourceType.Balances)
                     .SetToMemberId(grantee.MemberId())
                     .SetRedirectUrl("https://token.io/callback") // callback URL
-                    .SetFromAlias(new Alias()
+                    .SetFromAlias(new Alias
                     {
                         Value = "grantor-alias@token.io",
                         Type = Alias.Types.Type.Email
@@ -60,12 +62,12 @@ namespace TokenioSample
             return grantee.StoreTokenRequestBlocking(request);
         }
 
-       /// <summary>
-       /// Retrieves the token request.
-       /// </summary>
-       /// <returns>The token request.</returns>
-       /// <param name="tokenClient">Token client.</param>
-       /// <param name="requestId">Request identifier.</param>
+        /// <summary>
+        /// Retrieves a token request.
+        /// </summary>
+        /// <param name="tokenClient">tokenIO instance to use</param>
+        /// <param name="requestId">id of request to retrieve</param>
+        /// <returns>token request that was stored with the request id</returns>
         public static TokenRequest RetrieveTokenRequest(
                 TokenClient tokenClient,
                 string requestId)

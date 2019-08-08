@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Tokenio.Proto.Common.MoneyProtos;
+﻿using System.Threading.Tasks;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Rpc;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 
 namespace Tokenio

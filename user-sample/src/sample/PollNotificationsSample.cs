@@ -1,27 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.User.Utils;
-using Tokenio;
 using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
-using Tokenio.User;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 namespace TokenioSample
 {
-    public class PollNotificationsSample
+    public static class PollNotificationsSample
     {
 
 
 
         /// <summary>
-        /// 
+        /// Creates and returns a new token member,
+        /// subscribed to notifications via a fake bank.
         /// </summary>
-        /// <param name="tokenClient"></param>
-        /// <returns></returns>
+        /// <param name="tokenClient">SDK client</param>
+        /// <returns>a new Member instance</returns>
         public static UserMember CreateMember(TokenClient tokenClient)
         {
             // Token members "in the real world" are set up to receive notifications:
@@ -33,7 +32,7 @@ namespace TokenioSample
             // to this member, we would get a NO_SUBSCRIBERS error.
             // We set up a fake bank subscription for testing
             // (but we wouldn't do this in production for "real-world" members).
-            Alias alias = new Alias()
+            Alias alias = new Alias
             {
                 Type = Alias.Types.Type.Email,
                 Value = "test-" + Util.Nonce() + "+noverify@token.io"
@@ -45,12 +44,11 @@ namespace TokenioSample
             return member;
         }
 
-        /**
-	     * Poll for notifications.
-	     *
-	     * @param member Whose notifications to poll for
-	     * @return a notification, maybe
-	     */
+        /// <summary>
+        /// Poll for notifications.
+        /// </summary>
+        /// <param name="member">Whose notifications to poll for</param>
+        /// <returns>a notification, maybe</returns>
         public static Notification Poll(UserMember member)
         {
             for (int retries = 0; retries < 5; retries++)
@@ -66,23 +64,19 @@ namespace TokenioSample
                     var bodyCase = Enum.Parse(typeof(NotifyBody.BodyOneofCase), notification.Content.Type.ToLower().Replace("_", ""), true);
                     switch (bodyCase)
                     {
-                        
+
                         case NotifyBody.BodyOneofCase.PayeeTransferProcessed:
-                            Console.WriteLine("Transfer processed:"+ notification);
+                            Console.WriteLine("Transfer processed:" + notification);
                             break;
                         default:
-                            Console.WriteLine("Got notification: "+ notification);
+                            Console.WriteLine("Got notification: " + notification);
                             break;
                     }
                     if (notification == null)
                     {
                         return new Notification();
                     }
-                    else
-                    {
-                        return notification;
-
-                    }
+                    return notification;
 
                 }
                 //getNotifications doc extract end

@@ -7,7 +7,7 @@ namespace Tokenio.Exceptions
     /// </summary>
     public class InvalidTokenRequestQuery : Exception
     {
-        public InvalidTokenRequestQuery() : base ("Invalid or missing parameters in token request query.")
+        public InvalidTokenRequestQuery() : base("Invalid or missing parameters in token request query.")
         {
         }
     }

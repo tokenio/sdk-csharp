@@ -7,7 +7,7 @@ namespace Tokenio.Rpc
     public class AsyncTimeoutInterceptor : Interceptor
     {
         private readonly long timeoutMs;
-        
+
         public AsyncTimeoutInterceptor(long timeoutMs)
         {
             this.timeoutMs = timeoutMs;
@@ -19,7 +19,7 @@ namespace Tokenio.Rpc
             AsyncUnaryCallContinuation<TRequest, TResponse> continuation)
         {
             var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
-            
+
             return continuation(
                 request,
                 new ClientInterceptorContext<TRequest, TResponse>(

@@ -1,21 +1,17 @@
-﻿using System;
+﻿using Tokenio;
 using Tokenio.Proto.Common.TokenProtos;
 using TppMember = Tokenio.Tpp.Member;
-using Tokenio.Proto.Common.MoneyProtos;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using System.Collections.Generic;
-using Tokenio;
 
 namespace TokenioSample
 {
-    public class GetTokensSample
+    public static class GetTokensSample
     {
         /// <summary>
-        /// Gets the token.
+        /// Gets a token by ID.
         /// </summary>
-        /// <returns>The token.</returns>
-        /// <param name="member">Member.</param>
-        /// <param name="tokenId">Token identifier.</param>
+        /// <param name="member">member represented by the token (payer/payee/grantor/grantee)</param>
+        /// <param name="tokenId">token ID</param>
+        /// <returns>token</returns>
         public static Token GetToken(TppMember member, string tokenId)
         {
             Token token = member.GetTokenBlocking(tokenId);
@@ -31,10 +27,10 @@ namespace TokenioSample
 
 
         /// <summary>
-        /// Gets the transfer tokens.
+        /// Gets a list of transfer tokens associated with a member.
         /// </summary>
-        /// <returns>The transfer tokens.</returns>
-        /// <param name="member">Member.</param>
+        /// <param name="member">member</param>
+        /// <returns>paged list of transfer tokens</returns>
         public static PagedList<Token> GetTransferTokens(TppMember member)
         {
             // last 10 tokens and offset that can be used to get the next 10
@@ -44,10 +40,10 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Gets the access tokens.
+        /// Gets a list of access tokens associated with the member.
         /// </summary>
-        /// <returns>The access tokens.</returns>
-        /// <param name="member">Member.</param>
+        /// <param name="member">member</param>
+        /// <returns>paged list of access tokens</returns>
         public static PagedList<Token> GetAccessTokens(TppMember member)
         {
             // last 10 tokens and offset that can be used to get the next 10

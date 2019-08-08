@@ -13,7 +13,8 @@
         /// to persist the keys.
         /// </summary>
         /// <param name="keyStore">Key store.</param>
-        public TokenCryptoEngineFactory(IKeyStore keyStore) {
+        public TokenCryptoEngineFactory(IKeyStore keyStore)
+        {
             this.keyStore = keyStore;
         }
 

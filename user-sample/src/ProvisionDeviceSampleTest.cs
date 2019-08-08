@@ -1,5 +1,4 @@
-﻿using System;
-using Tokenio.Proto.Common.AliasProtos;
+﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Xunit;
 using TokenClient = Tokenio.User.TokenClient;
@@ -9,7 +8,6 @@ namespace TokenioSample
 {
     public class ProvisionDeviceSampleTest
     {
-
         [Fact]
         public void provisionDevice()
         {

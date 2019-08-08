@@ -1,24 +1,26 @@
-﻿using System;
-using Tokenio.Proto.Common.TokenProtos;
-using TokenClient = Tokenio.Tpp.TokenClient;
+﻿using Tokenio.Proto.Common.TokenProtos;
 using TppMember = Tokenio.Tpp.Member;
 
 namespace TokenioSample
 {
-	public class CancelTransferTokenSample
-	{
-		/// <summary>
+    /// <summary>
+    /// Cancels a transfer token.
+    /// </summary>
+    public static class CancelTransferTokenSample
+    {
+        /// <summary>
         /// Cancels the transfer token.
         /// </summary>
-        /// <returns>The transfer token.</returns>
-        /// <param name="payee">Payee.</param>
-        /// <param name="tokenId">Token identifier.</param>
-         public static TokenOperationResult CancelTransferToken(TppMember payee, string tokenId) {
-        // Retrieve a transfer token to cancel.
-        Token transferToken = payee.GetTokenBlocking(tokenId);
+        /// <param name="payee">payee Token member</param>
+        /// <param name="tokenId">token ID to cancel</param>
+        /// <returns>operation result</returns>
+        public static TokenOperationResult CancelTransferToken(TppMember payee, string tokenId)
+        {
+            // Retrieve a transfer token to cancel.
+            Token transferToken = payee.GetTokenBlocking(tokenId);
 
-        // Cancel transfer token.
-        return payee.CancelTokenBlocking(transferToken);
+            // Cancel transfer token.
+            return payee.CancelTokenBlocking(transferToken);
+        }
     }
-	}
 }

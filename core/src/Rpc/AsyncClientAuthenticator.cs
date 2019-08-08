@@ -38,7 +38,7 @@ namespace Tokenio.Rpc
             var signer = crypto.CreateSigner(keyLevel);
             var payload = new GrpcAuthPayload
             {
-                Request = ByteString.CopyFrom(((IMessage) request).ToByteArray()),
+                Request = ByteString.CopyFrom(((IMessage)request).ToByteArray()),
                 CreatedAtMs = now
             };
             var signature = signer.Sign(payload);

@@ -2,11 +2,11 @@
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Grpc.Core;
-using Tokenio.Proto.Common.AliasProtos;
-using Tokenio.Proto.Common.SecurityProtos;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
+using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;

@@ -9,7 +9,7 @@ namespace Tokenio
         public PagedBanks(GetBanksResponse response)
         {
             Banks = response.Banks;
-            
+
             var paging = response.Paging;
             Page = paging.Page;
             PerPage = paging.PerPage;
@@ -23,17 +23,17 @@ namespace Tokenio
         /// Index of current page.
         /// </summary>
         public int Page { get; }
-        
+
         /// <summary>
         /// Number of records per page.
         /// </summary>
         public int PerPage { get; }
-        
+
         /// <summary>
         /// Number of pages in total.
         /// </summary>
         public int PageCount { get; }
-        
+
         /// <summary>
         /// Number of records in total.
         /// </summary>

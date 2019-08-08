@@ -1,13 +1,9 @@
 ﻿using System;
-using TokenClient = Tokenio.User.TokenClient;
-using UserMember = Tokenio.User.Member;
+using System.Threading;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Utils;
-using Tokenio.Proto.Common.TokenProtos;
-using Tokenio.User;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using System.Collections.Generic;
-using System.Threading;
+using TokenClient = Tokenio.User.TokenClient;
+using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {
@@ -16,21 +12,21 @@ namespace TokenioSample
         private static string DEV_KEY = "f3982819-5d8d-4123-9601-886df2780f42";
         private static string TOKEN_REALM = "token";
 
-      
+
         /// <summary>
         /// Generates random user name to be used for testing.
         /// </summary>
         /// <returns>The alias.</returns>
         public static Alias RandomAlias()
         {
-            return new Alias()
+            return new Alias
             {
                 Value = "alias-" + Util.Nonce().ToLower() + "+noverify@example.com",
                 Type = Alias.Types.Type.Email,
                 Realm = TOKEN_REALM
-                
-                
-                
+
+
+
             };
         }
 
@@ -44,7 +40,7 @@ namespace TokenioSample
             return TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
         }
 
-       
+
 
         /// <summary>
         /// Creates the member and link accounts.
@@ -131,7 +127,7 @@ namespace TokenioSample
                         Thread.Sleep((int)sleepFor);
                         return;
                     }
-                    catch (ThreadInterruptedException e)
+                    catch (ThreadInterruptedException)
                     {
                         interrupted = true;
                         sleepFor = end - CurrentMillis();

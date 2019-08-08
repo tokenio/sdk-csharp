@@ -8,8 +8,6 @@ namespace TokenioSample
 {
     public class NotifySampleTest
     {
-
-
         [Fact]
         public void NotifyPaymentRequestSampleTest()
         {
@@ -28,7 +26,6 @@ namespace TokenioSample
                         payerAlias);
                 Assert.NotNull(status);
             }
-
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
+
 namespace TokenioSample
 {
     public class LinkMemberAndBankSampleTest

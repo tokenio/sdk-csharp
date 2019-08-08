@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using System;
 
 namespace Tokenio.Security
 {
@@ -56,7 +56,7 @@ namespace Tokenio.Security
             }
             else
             {
-                keys[memberId] = new List<KeyPair> {keyPair};
+                keys[memberId] = new List<KeyPair> { keyPair };
                 var newFile = File.Create(filePath);
                 newFile.Close();
             }
@@ -96,7 +96,7 @@ namespace Tokenio.Security
         /// <param name="memberId">Member identifier.</param>
         public IList<KeyPair> KeyList(string memberId)
         {
-            return keys[memberId].Where(key=>!key.IsExpired()).ToList();
+            return keys[memberId].Where(key => !key.IsExpired()).ToList();
 
         }
     }

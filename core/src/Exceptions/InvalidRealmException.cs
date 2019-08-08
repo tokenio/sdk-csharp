@@ -9,7 +9,7 @@ namespace Tokenio.Exceptions
         /// </summary>
         /// <param name="actual">Actual.</param>
         /// <param name="expected">Expected.</param>
-        public InvalidRealmException(string actual, string expected) 
+        public InvalidRealmException(string actual, string expected)
             : base($"Invalid realm {actual}; expected {expected}")
         {
         }

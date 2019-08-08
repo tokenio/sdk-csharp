@@ -1,13 +1,16 @@
-﻿using System;
-using TppMember = Tokenio.Tpp.Member;
+﻿using TppMember = Tokenio.Tpp.Member;
 
 namespace TokenioSample
 {
     /// <summary>
-    /// Delete member sample.
+    /// Deletes a member.
     /// </summary>
-    public class DeleteMemberSample
+    public static class DeleteMemberSample
     {
+        /// <summary>
+        /// Deletes a member.
+        /// </summary>
+        /// <param name="member">member</param>
         public static void DeleteMember(TppMember member)
         {
             member.DeleteMember();

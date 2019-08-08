@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TokenioSample
 {
-   public static  class SampleExtensions
+    public static  class SampleExtensions
     {
         public static TValue GetValueOrDefault<TKey, TValue>(
          this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))

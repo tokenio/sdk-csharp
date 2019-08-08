@@ -3,14 +3,17 @@ using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {
-    public class CancelAccessTokenSample
+    /// <summary>
+    /// Cancels an access token.
+    /// </summary>
+    public static class CancelAccessTokenSample
     {
         /// <summary>
-        /// Cancels the access token.
+        /// Cancels an access token.
         /// </summary>
-        /// <returns>The access token.</returns>
-        /// <param name="grantee">Grantee.</param>
-        /// <param name="tokenId">Token identifier.</param>
+        /// <param name="grantor">grantor Token member</param>
+        /// <param name="tokenId">token ID to cancel</param>
+        /// <returns>operation result</returns>
         public static TokenOperationResult CancelAccessToken(UserMember grantor, string tokenId)
         {
             // Retrieve an access token to cancel.

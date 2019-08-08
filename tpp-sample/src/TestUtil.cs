@@ -1,13 +1,11 @@
 ﻿using System;
-using TppMember = Tokenio.Tpp.Member;
-using TokenClient = Tokenio.Tpp.TokenClient;
-using UserMember = Tokenio.User.Member;
 using Tokenio.Proto.Common.AliasProtos;
-using Tokenio.Utils;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.User;
+using Tokenio.Utils;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using System.Collections.Generic;
+using TokenClient = Tokenio.Tpp.TokenClient;
+using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {
@@ -16,26 +14,13 @@ namespace TokenioSample
         private static string DEV_KEY = "f3982819-5d8d-4123-9601-886df2780f42";
         private static string TOKEN_REALM = "token";
 
-        public TestUtil()
-        {
-        }
-        /// <summary>
-        /// Randoms the alphabetic.
-        /// </summary>
-        /// <returns>The alphabetic.</returns>
-        /// <param name="size">Size.</param>
-        private static string RandomAlphabetic(int size)
-        {
-            return Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, size);
-        }
-
         /// <summary>
         /// Generates random user name to be used for testing.
         /// </summary>
         /// <returns>The alias.</returns>
         public static Alias RandomAlias()
         {
-            return new Alias()
+            return new Alias
             {
                 Value = "alias-" + Util.Nonce().ToLower() + "+noverify@example.com",
                 Type = Alias.Types.Type.Domain,
@@ -74,7 +59,7 @@ namespace TokenioSample
         /// <param name="accountId">Account identifier.</param>
         /// <param name="granteeAlias">Grantee alias.</param>
         public static Token CreateAccessToken(
-             UserMember  grantor,
+             UserMember grantor,
           string accountId,
           Alias granteeAlias)
         {
@@ -111,7 +96,7 @@ namespace TokenioSample
             // We don't have a db, so we fake it with a random string:
             string purchaseId = Tokenio.User.Utils.Util.Nonce();
 
-            TransferTokenBuilder builder= payer.CreateTransferToken(
+            TransferTokenBuilder builder = payer.CreateTransferToken(
                     100.0, // amount
                     "EUR");
             // Create a transfer token.
@@ -130,7 +115,7 @@ namespace TokenioSample
             // Payer endorses a token to a payee by signing it
             // with her secure private key.
             transferToken = payer.EndorseTokenBlocking(
-                    transferToken,Level.Standard).Token;
+                    transferToken, Level.Standard).Token;
 
             return transferToken;
         }
@@ -140,8 +125,5 @@ namespace TokenioSample
         {
             return Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, size);
         }
-
-
-       
     }
 }

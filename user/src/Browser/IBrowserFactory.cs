@@ -1,12 +1,14 @@
-﻿namespace Tokenio.User.Browser {
-	/// <summary>
-	/// A Browser factory.
-	/// </summary>
-	public interface IBrowserFactory {
-		/// <summary>
-		/// Creates a new Browser.
-		/// </summary>
-		/// <returns>A new browser</returns>
-		IBrowser Create();
-	}
+﻿namespace Tokenio.User.Browser
+{
+    /// <summary>
+    /// A browser factory.
+    /// </summary>
+    public interface IBrowserFactory
+    {
+        /// <summary>
+        /// Creates a new browser.
+        /// </summary>
+        /// <returns>a new browser</returns>
+        IBrowser Create();
+    }
 }

@@ -9,27 +9,27 @@ using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 namespace TokenioSample
 {
+    /// <summary>
+    /// Illustrate steps of Member recovery.
+    /// </summary>
     public class MemberRecoverySample
     {
 
 
         public UserMember agentMember; /* used by complex recovery rule sample */
 
-        /// <summary>
-        /// Sets up default recovery rule.
-        /// </summary>
-        /// <param name="member">Member.</param>
         public void SetUpDefaultRecoveryRule(UserMember member)
         {
             member.UseDefaultRecoveryRuleBlocking();
         }
 
         /// <summary>
-        /// Recovers the with default rule.
+        /// Recover previously-created member, assuming they were
+        /// configured with a "normal consumer" recovery rule.
         /// </summary>
-        /// <returns>The with default rule.</returns>
-        /// <param name="tokenClient">Token client.</param>
-        /// <param name="alias">Alias.</param>
+        /// <param name="tokenClient">SDK client</param>
+        /// <param name="alias">alias of member to recoverWithDefaultRule</param>
+        /// <returns>recovered member</returns>
         public UserMember RecoverWithDefaultRule(TokenClient tokenClient, Alias alias)
         {
             string verificationId = tokenClient.BeginRecoveryBlocking(alias);
@@ -55,11 +55,12 @@ namespace TokenioSample
         private void TellRecoveryAgentMemberId(string memberId) { } /* this simple sample uses a no op */
 
         /// <summary>
-        /// Sets up complex recovery rule.
+        /// Illustrate setting up a recovery rule more complex than "normal consumer"
+        /// mode, without the "normal consumer" shortcuts.
         /// </summary>
-        /// <param name="newMember">New member.</param>
-        /// <param name="tokenClient">Token client.</param>
-        /// <param name="agentAlias">Agent alias.</param>
+        /// <param name="newMember">newly-created member we are setting up</param>
+        /// <param name="tokenClient">SDK client</param>
+        /// <param name="agentAlias">Alias of recovery agent.</param>
         public void SetUpComplexRecoveryRule(
                 UserMember newMember,
                 TokenClient tokenClient,
@@ -74,7 +75,7 @@ namespace TokenioSample
 
             string agentId = tokenClient.GetMemberIdBlocking(agentAlias);
 
-            RecoveryRule recoveryRule = new RecoveryRule() { PrimaryAgent = agentId };
+            RecoveryRule recoveryRule = new RecoveryRule { PrimaryAgent = agentId };
 
             // This example doesn't call .setSecondaryAgents ,
             // but could have. If it had, then recovery would have
@@ -91,10 +92,10 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Gets the recovery agent signature.
+        /// Illustrate how a recovery agent signs an authorization.
         /// </summary>
-        /// <returns>The recovery agent signature.</returns>
-        /// <param name="authorization">Authorization.</param>
+        /// <param name="authorization">client's claim to be some member</param>
+        /// <returns>if authorization seems legitimate, return signature; else error</returns>
         public Signature GetRecoveryAgentSignature(Authorization authorization)
         {
             // authorizeRecovery begin snippet to include in doc
@@ -110,11 +111,11 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Recovers the with complex rule.
+        /// Illustrate recovery using a not-normal-"consumer mode" recovery agent.
         /// </summary>
-        /// <returns>The with complex rule.</returns>
-        /// <param name="tokenClient">Token client.</param>
-        /// <param name="alias">Alias.</param>
+        /// <param name="tokenClient">SDK client</param>
+        /// <param name="alias">Alias of member to recover</param>
+        /// <returns>recovered member</returns>
         public UserMember RecoverWithComplexRule(
                 TokenClient tokenClient,
                 Alias alias)
@@ -135,7 +136,7 @@ namespace TokenioSample
 
             // We have all the signed authorizations we need.
             // (In this example, "all" is just one.)
-            MemberRecoveryOperation mro = new MemberRecoveryOperation()
+            MemberRecoveryOperation mro = new MemberRecoveryOperation
             {
                 Authorization = authorization,
                 AgentSignature = agentSignature

@@ -1,12 +1,13 @@
-﻿using System;
-using Tokenio.Proto.Common.AliasProtos;
+﻿using Tokenio.Proto.Common.AliasProtos;
 using Xunit;
 using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
-using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {
+    /// <summary>
+    /// Tests for member-recovery sample code.
+    /// </summary>
     public class MemberRecoverySampleTest
     {
         [Fact]

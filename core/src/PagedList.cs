@@ -11,7 +11,7 @@ namespace Tokenio
         }
 
         public IList<T> List { get; }
-        
+
         public string Offset { get; }
     }
 }

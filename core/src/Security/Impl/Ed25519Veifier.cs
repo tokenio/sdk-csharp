@@ -18,7 +18,7 @@ namespace Tokenio.Security
             signer = SignerUtilities.GetSigner("Ed25519");
             signer.Init(false, new Ed25519PublicKeyParameters(publicKey, 0));
         }
-        
+
         public Ed25519Veifier(string publicKey) : this(Base64UrlEncoder.DecodeBytes(publicKey))
         {
         }

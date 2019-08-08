@@ -1,13 +1,16 @@
-﻿using System;
-using UserMember = Tokenio.User.Member;
+﻿using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {
     /// <summary>
-    /// Delete member sample.
+    /// Deletes a member.
     /// </summary>
-    public class DeleteMemberSample
+    public static class DeleteMemberSample
     {
+        /// <summary>
+        /// Deletes a member.
+        /// </summary>
+        /// <param name="member">member</param>
         public static void DeleteMember(UserMember member)
         {
             member.DeleteMember();

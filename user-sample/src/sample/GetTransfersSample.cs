@@ -5,12 +5,12 @@ using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {
-    public class GetTransfersSample
+    public static class GetTransfersSample
     {
         /// <summary>
-        /// Gets the transfer sample.
+        /// Illustrate Member.getTransfers
         /// </summary>
-        /// <param name="payer">Payer.</param>
+        /// <param name="payer">payer Token member</param>
         public static void GetTransfers_Sample(UserMember payer)
         {
             var accounts = payer.GetAccountsBlocking();
@@ -27,9 +27,9 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Gets the transfer tokens sample.
+        /// Illustrate Member.getTransferTokens
         /// </summary>
-        /// <param name="payer">Payer.</param>
+        /// <param name="payer">payer Token member</param>
         public static void GetTransferTokensSample(
             UserMember payer)
         {
@@ -46,11 +46,11 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Gets the transfer sample.
+        /// Illustrate Member.getTransfer
         /// </summary>
-        /// <returns>The transfer sample.</returns>
-        /// <param name="payer">Payer.</param>
-        /// <param name="transferId">Transfer identifier.</param>
+        /// <param name="payer">payer Token member</param>
+        /// <param name="transferId">id of a transfer</param>
+        /// <returns>a Transfer</returns>
         public static Transfer GetTransferSample(
             UserMember payer,
             string transferId)
@@ -59,22 +59,12 @@ namespace TokenioSample
             return transfer;
         }
 
-        /// <summary>
-        /// Displaies the transfer.
-        /// </summary>
-        /// <param name="status">Status.</param>
-        /// <param name="description">Description.</param>
         private static void DisplayTransfer(
            TransactionStatus status,
            string description)
         {
         }
 
-        /// <summary>
-        /// Displaies the transfer token.
-        /// </summary>
-        /// <param name="currency">Currency.</param>
-        /// <param name="value">Value.</param>
         private static void DisplayTransferToken(
            string currency, string value)
         {

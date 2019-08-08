@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Tokenio.User;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.TransactionProtos;
+using Tokenio.User;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
@@ -11,10 +11,15 @@ namespace TokenioSample
 
 {
     /// <summary>
-    /// Get balance sample.
+    /// Two ways to get balances of a member's bank accounts.
     /// </summary>
-    public class GetBalanceSample
+    public static class GetBalanceSample
     {
+        /// <summary>
+        /// Get a member's balances.
+        /// </summary>
+        /// <param name="member">Member.</param>
+        /// <returns>map currency: total</returns>
         public static IDictionary<string, double> MemberGetBalanceSample(UserMember member)
         {
             Dictionary<string, double> sums = new Dictionary<string, double>();
@@ -31,10 +36,10 @@ namespace TokenioSample
         }
 
         /// <summary>
-        /// Accounts the get balance sample.
+        /// Get a member's balances.
         /// </summary>
-        /// <returns>The get balance sample.</returns>
         /// <param name="member">Member.</param>
+        /// <returns>map currency: total</returns>
         public static IDictionary<string, double> AccountGetBalanceSample(UserMember member)
         {
             Dictionary<string, double> sums = new Dictionary<string, double>();
@@ -52,6 +57,11 @@ namespace TokenioSample
 
         }
 
+        /// <summary>
+        /// Get a member's list of balances.
+        /// </summary>
+        /// <param name="member">Member.</param>
+        /// <returns>list of balances</returns>
         public static IList<Balance> MemberGetBalanceListSample(UserMember member)
         {
             List<string> accountIds = member

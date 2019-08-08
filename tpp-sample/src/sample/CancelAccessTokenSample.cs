@@ -3,14 +3,17 @@ using TppMember = Tokenio.Tpp.Member;
 
 namespace TokenioSample
 {
-    public class CancelAccessTokenSample
+    /// <summary>
+    /// Cancels an access token.
+    /// </summary>
+    public static class CancelAccessTokenSample
     {
         /// <summary>
         /// Cancels the access token.
         /// </summary>
-        /// <returns>The access token.</returns>
-        /// <param name="grantee">Grantee.</param>
-        /// <param name="tokenId">Token identifier.</param>
+        /// <param name="grantee">grantee Token member</param>
+        /// <param name="tokenId">token ID to cancel</param>
+        /// <returns>operation result</returns>
         public static TokenOperationResult CancelAccessToken(TppMember grantee, string tokenId)
         {
             // Retrieve an access token to cancel.

@@ -1,5 +1,4 @@
-﻿using System;
-using Tokenio;
+﻿using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;

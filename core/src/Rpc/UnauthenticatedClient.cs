@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BankProtos;
 using Tokenio.Proto.Common.MemberProtos;
@@ -13,7 +14,6 @@ using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
-using Tokenio.Exceptions;
 
 namespace Tokenio.Rpc
 {
@@ -48,10 +48,10 @@ namespace Tokenio.Rpc
         public ResolveAliasRequest GetDefaultAgentRequest()
         {
 
-            return new ResolveAliasRequest()
+            return new ResolveAliasRequest
             {
 
-                Alias = new Alias()
+                Alias = new Alias
                 {
                     Type = Alias.Types.Type.Domain,
                     Value = "token.io"
@@ -93,8 +93,8 @@ namespace Tokenio.Rpc
         {
             var request = new ResolveAliasRequest { Alias = alias };
             return gateway.ResolveAliasAsync(request)
-                .ToTask(response => response.Member!=null?
-                response.Member.Id:throw new  MemberNotFoundException(alias));
+                .ToTask(response => response.Member != null ?
+                response.Member.Id : throw new MemberNotFoundException(alias));
         }
 
         /// <summary>
@@ -107,16 +107,16 @@ namespace Tokenio.Rpc
         /// <param name="realmId">Realm identifier.</param>
         public Task<string> CreateMemberId(CreateMemberType createMemberType,
             string tokenRequestId = null,
-            string partnerId=null,
-            string realmId=null)
+            string partnerId = null,
+            string realmId = null)
         {
             var request = new CreateMemberRequest
             {
                 Nonce = Util.Nonce(),
                 MemberType = createMemberType,
-                TokenRequestId= tokenRequestId??"",
-                PartnerId=partnerId??"",
-                RealmId=realmId??""
+                TokenRequestId = tokenRequestId ?? "",
+                PartnerId = partnerId ?? "",
+                RealmId = realmId ?? ""
             };
             return gateway.CreateMemberAsync(request)
                 .ToTask(response => response.MemberId);
@@ -202,7 +202,7 @@ namespace Tokenio.Rpc
             ICryptoEngine cryptoEngine)
         {
             var operations = recoveryOperations.Select(re => new MemberOperation { Recover = re }).ToList();
-          
+
             operations.Add(Util.ToAddKeyOperation(privilegedKey));
             operations.Add(Util.ToAddKeyOperation(cryptoEngine.GenerateKey(Level.Standard)));
             operations.Add(Util.ToAddKeyOperation(cryptoEngine.GenerateKey(Level.Low)));

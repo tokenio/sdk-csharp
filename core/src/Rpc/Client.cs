@@ -39,9 +39,9 @@ namespace Tokenio.Rpc
     {
         protected readonly ICryptoEngine cryptoEngine;
         protected readonly ManagedChannel channel;
-        protected bool customerInitiated = false;
+        protected bool customerInitiated;
         protected SecurityMetadata trackingMetadata = new SecurityMetadata();
-        protected string onBehalfOf = null;
+        protected string onBehalfOf;
 
         /// <summary>
         /// Instantiates a client.
@@ -902,7 +902,7 @@ namespace Tokenio.Rpc
 
         protected virtual AuthenticationContext authenticationContext()
         {
-           return authenticationContext(Level.Low);
+            return authenticationContext(Level.Low);
         }
         protected AuthenticationContext authenticationContext(Level level)
         {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using Tokenio.Utils;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio.Security
 {
@@ -72,9 +72,10 @@ namespace Tokenio.Security
         /// Checks whether a key has expired.
         /// </summary>
         /// <returns><c>true</c>, if expired was ised, <c>false</c> otherwise.</returns>
-        public bool IsExpired() {
+        public bool IsExpired()
+        {
 
-            return ExpiresAtMs !=0  && ExpiresAtMs < Util.CurrentMillis();
+            return ExpiresAtMs != 0 && ExpiresAtMs < Util.CurrentMillis();
         }
 
 
@@ -85,7 +86,7 @@ namespace Tokenio.Security
                 return false;
             }
 
-            var other = (KeyPair) obj;
+            var other = (KeyPair)obj;
 
             return Id.Equals(other.Id)
                    && Level.Equals(other.Level)

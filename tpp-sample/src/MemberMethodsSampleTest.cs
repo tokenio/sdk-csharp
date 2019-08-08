@@ -1,10 +1,8 @@
-﻿using System;
-using Tokenio.Proto.Common.MemberProtos;
+﻿using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Security;
 using Xunit;
 using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
-using UserMember = Tokenio.User.Member;
 
 namespace TokenioSample
 {

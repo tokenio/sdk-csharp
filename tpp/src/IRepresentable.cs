@@ -16,7 +16,7 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <returns>a list of accounts</returns>
         Task<IList<Account>> GetAccounts();
-        
+
         /// <summary>
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
@@ -29,7 +29,7 @@ namespace Tokenio.Tpp
         /// <param name="accountId">the account id</param>
         /// <returns>the account</returns>
         Task<Account> GetAccount(string accountId);
-        
+
         /// <summary>
         /// Looks up a funding bank account linked to Token.
         /// </summary>
@@ -44,7 +44,7 @@ namespace Tokenio.Tpp
         /// <param name="keyLevel">the key level</param>
         /// <returns>the balance</returns>
         Task<Balance> GetBalance(string accountId, Level keyLevel);
-        
+
         /// <summary>
         /// Looks up account balance.
         /// </summary>
@@ -60,7 +60,7 @@ namespace Tokenio.Tpp
         /// <param name="keyLevel">the key level</param>
         /// <returns>a list of balances</returns>
         Task<IList<Balance>> GetBalances(IList<string> accountIds, Level keyLevel);
-        
+
         /// <summary>
         /// Looks up balances for a list of accounts.
         /// </summary>
@@ -82,7 +82,7 @@ namespace Tokenio.Tpp
             int limit,
             Level keyLevel,
             string offset = null);
-        
+
         /// <summary>
         /// Looks up transactions for a given account.
         /// </summary>
@@ -95,7 +95,7 @@ namespace Tokenio.Tpp
             string accountId,
             int limit,
             Level keyLevel,
-            string offset=null);
+            string offset = null);
 
         /// <summary>
         /// Looks up an existing transaction for a given account.
@@ -108,7 +108,7 @@ namespace Tokenio.Tpp
             string accountId,
             string transactionId,
             Level keyLevel);
-        
+
         /// <summary>
         /// Looks up an existing transaction for a given account.
         /// </summary>
@@ -127,7 +127,7 @@ namespace Tokenio.Tpp
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
         Task<IList<TransferDestination>> ResolveTransferDestinations(string accountId);
-        
+
         /// <summary>
         /// Resolves transfer destinations for the given account.
         /// </summary>
@@ -138,19 +138,19 @@ namespace Tokenio.Tpp
         /// <summary>
         /// Confirms the funds.
         /// </summary>
-        /// <param name="accountId"></param>
-        /// <param name="amount"></param>
-        /// <param name="currency"></param>
-        /// <returns></returns>
+        /// <param name="accountId">account ID</param>
+        /// <param name="amount">charge amount</param>
+        /// <param name="currency">charge currency</param>
+        /// <returns>true if the account has sufficient funds to cover the charge</returns>
         Task<bool> ConfirmFunds(string accountId, double amount, string currency);
 
         /// <summary>
-        /// Confirms the funds blocking.
+        /// Confirm that the given account has sufficient funds to cover the charge.
         /// </summary>
         /// <param name="accountId"></param>
         /// <param name="amount"></param>
         /// <param name="currency"></param>
-        /// <returns></returns>
+        /// <returns>true if the account has sufficient funds to cover the charge</returns>
         bool ConfirmFundsBlocking(string accountId, double amount, string currency);
 
     }
