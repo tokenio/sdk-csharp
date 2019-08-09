@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -o errexit
+
+rm -rf html
+doxygen Doxyfile
+python refactor_docs.py
