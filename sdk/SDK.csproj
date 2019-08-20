@@ -7,7 +7,7 @@
     <Description>C# SDK for interacting with the Token System</Description>
     <Company>Token, Inc</Company>
     <Authors>Token, Inc</Authors>
-    <Version>2.0.0-beta1</Version>
+    <Version>2.0.0-beta8</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>
