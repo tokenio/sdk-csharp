@@ -400,7 +400,14 @@ namespace Tokenio.Tpp
             /// <returns></returns>
             public override Tokenio.TokenClient Build()
             {
-                var channel = new Channel(hostName, port, useSsl ? new SslCredentials() : ChannelCredentials.Insecure);
+                var channelOptions = new List<ChannelOption>();
+                channelOptions.Add(new ChannelOption("grpc.keepalive_permit_without_calls", keepAlive ? 1 : 0));
+                channelOptions.Add(new ChannelOption("grpc.keepalive_time_ms", keepAliveTimeMs));
+                var channel = new Channel(
+                    hostName,
+                    port,
+                    useSsl ? new SslCredentials() : ChannelCredentials.Insecure,
+                    channelOptions);
                 Interceptor[] interceptors =
                 {
                             new Tokenio.Rpc.AsyncTimeoutInterceptor(timeoutMs),
