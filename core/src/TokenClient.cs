@@ -557,6 +557,8 @@ namespace Tokenio
             private static readonly string DEFAULT_DEV_KEY = "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI";
             private static readonly long DEFAULT_TIMEOUT_MS = 10_000L;
             private static readonly int DEFAULT_SSL_PORT = 443;
+            private static readonly int DEFAULT_KEEP_ALIVE_TIME_MS = 50_000;
+            private static readonly bool DEFAULT_KEEP_ALIVE_PERMIT_WITHOUT_CALLS = true;
 
             protected int port;
             protected bool useSsl;
@@ -567,6 +569,9 @@ namespace Tokenio
             protected string devKey;
             protected List<string> featureCodes;
             protected static readonly string FEATURE_CODE_KEY = "feature-codes";
+            protected bool keepAlive = DEFAULT_KEEP_ALIVE_PERMIT_WITHOUT_CALLS;
+            protected int keepAliveTimeMs = DEFAULT_KEEP_ALIVE_TIME_MS;
+
 
 
             /// <summary>
@@ -665,13 +670,44 @@ namespace Tokenio
                 return this;
             }
 
+
+            /// <summary>
+            /// Sets whether the connection will allow keep-alive pings.
+            /// </summary>
+            /// <param name="keepAlive">whether keep-alive is enabled</param>
+            /// <returns>this builder instance</returns>
+            public Builder KeepAlive(bool keepAlive)
+            {
+                this.keepAlive = keepAlive;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the keep-alive time in milliseconds.
+            /// </summary>
+            /// <param name="keepAliveTimeMs">keep-alive time in milliseconds</param>
+            /// <returns>this builder instance</returns>
+            public Builder KeepAliveTime(int keepAliveTimeMs)
+            {
+                this.keepAliveTimeMs = keepAliveTimeMs;
+                return this;
+            }
+
             /// <summary>
             /// Builds and returns a new <see cref="TokenClient"/> instance.
             /// </summary>
             /// <returns>the <see cref="TokenClient"/> instance</returns>
             public virtual TokenClient Build()
             {
-                var channel = new Channel(hostName, port, useSsl ? new SslCredentials() : ChannelCredentials.Insecure);
+                var channelOptions = new List<ChannelOption>();
+                channelOptions.Add(new ChannelOption("grpc.keepalive_permit_without_calls", keepAlive ? 1 : 0));
+                channelOptions.Add(new ChannelOption("grpc.keepalive_time_ms", keepAliveTimeMs));
+                var channel = new Channel(
+                    hostName,
+                    port,
+                    useSsl ? new SslCredentials() : ChannelCredentials.Insecure,
+                    channelOptions);
+
                 Interceptor[] interceptors =
                 {
                     new AsyncTimeoutInterceptor(timeoutMs),
