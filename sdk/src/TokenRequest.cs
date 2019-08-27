@@ -335,6 +335,27 @@ namespace Tokenio
                 requestPayload.TransferBody.Amount = chargeAmount.ToString("F");
                 return this;
             }
+
+            /// <summary>
+            /// Optional. Set the bearer for any Foreign Exchange fees incurred on the transfer.
+            /// </summary>
+            /// <param name="chargeBearer">Bearer of the charges for any Fees related to the transfer.</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetChargeBearer(ChargeBearer chargeBearer)
+            {
+                if (requestPayload.TransferBody.Instructions == null)
+                {
+                    requestPayload.TransferBody.Instructions = new TransferInstructions();
+                }
+
+                if (requestPayload.TransferBody.Instructions.Metadata == null)
+                {
+                    requestPayload.TransferBody.Instructions.Metadata = new TransferInstructions.Types.Metadata();
+                }
+
+                requestPayload.TransferBody.Instructions.Metadata.ChargeBearer = chargeBearer;
+                return this;
+            }
         }
     }
 }

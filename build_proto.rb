@@ -1,7 +1,7 @@
 #
 # Fetches specified proto files from the artifact repository.
 #
-TOKEN_PROTOS_VER = "1.1.120"
+TOKEN_PROTOS_VER = "1.2.14"
 RPC_PROTOS_VER = "1.1.44"
 
 require 'open-uri'
@@ -84,6 +84,7 @@ system("rm -rf #{dir}");
 
 gencommand = generate_protos_cmd("common", dir) +
     generate_protos_cmd("common/google/api", dir) +
+    generate_protos_cmd("common/provider", dir) +
     generate_protos_cmd("external/gateway", dir) +
     generate_protos_cmd("extensions", dir);
 
