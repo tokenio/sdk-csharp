@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Grpc.Core;
-using Grpc.Core.Interceptors;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
@@ -694,37 +693,38 @@ namespace Tokenio
             }
 
             /// <summary>
+            /// Get the headers.
+            /// </summary>
+            /// <returns>return metadata</returns>
+            protected Metadata GetHeaders()
+            {
+                Metadata metadata = new Metadata();
+                metadata.Add("token-sdk", "csharp");
+                metadata.Add(
+                "token-sdk-version",
+                Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+                metadata.Add("token-dev-key", devKey);
+                if (featureCodes != null)
+                {
+                    featureCodes.ForEach(f => metadata.Add(FEATURE_CODE_KEY, f));
+                }
+                return metadata;
+            }
+
+
+            /// <summary>
             /// Builds and returns a new <see cref="TokenClient"/> instance.
             /// </summary>
             /// <returns>the <see cref="TokenClient"/> instance</returns>
             public virtual TokenClient Build()
             {
-                var channelOptions = new List<ChannelOption>();
-                channelOptions.Add(new ChannelOption("grpc.keepalive_permit_without_calls", keepAlive ? 1 : 0));
-                channelOptions.Add(new ChannelOption("grpc.keepalive_time_ms", keepAliveTimeMs));
-                var channel = new Channel(
-                    hostName,
-                    port,
-                    useSsl ? new SslCredentials() : ChannelCredentials.Insecure,
-                    channelOptions);
-
-                Interceptor[] interceptors =
-                {
-                    new AsyncTimeoutInterceptor(timeoutMs),
-                    new AsyncMetadataInterceptor(metadata =>
-                    {
-                        metadata.Add("token-sdk", "csharp");
-                        metadata.Add(
-                            "token-sdk-version",
-                            Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
-                        metadata.Add("token-dev-key", devKey);
-                        if(featureCodes!=null){
-                            featureCodes.ForEach(f=>metadata.Add(FEATURE_CODE_KEY,f));
-                        }
-                        return metadata;
-                    })
-                };
-                var newChannel = new ManagedChannel(channel, interceptors);
+                var metadata = GetHeaders();
+                var newChannel = ManagedChannel.NewBuilder(hostName,port,useSsl)
+                    .WithTimeout(timeoutMs)
+                    .WithMetadata(metadata)
+                    .UseKeepAlive(keepAlive)
+                    .WithKeepAliveTime(keepAliveTimeMs)
+                    .Build();
 
                 return new TokenClient(
                     newChannel,

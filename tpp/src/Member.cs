@@ -436,6 +436,10 @@ namespace Tokenio.Tpp
             {
                 payload.RefId = refId;
             }
+            else if (!string.IsNullOrEmpty(token.Payload.RefId))
+            {
+                payload.RefId = token.Payload.RefId;
+            }
             else
             {
                 logger.Warn("refId is not set. A random ID will be used.");
@@ -537,17 +541,9 @@ namespace Tokenio.Tpp
             }
             else
             {
-                if (token.Payload.RefId != null)
-                {
-                    payload.RefId = token.Payload.RefId;
-                }
-                else
-                {
-                    logger.Warn("refId is not set. A random ID will be used.");
-                    payload.RefId = Util.Nonce();
-                }
+                logger.Warn("refId is not set. A random ID will be used.");
+                payload.RefId = Util.Nonce();
             }
-
             return client.CreateTransfer(payload);
         }
 

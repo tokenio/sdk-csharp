@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
-using Grpc.Core;
-using Grpc.Core.Interceptors;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
@@ -15,6 +12,7 @@ using Tokenio.User.Browser;
 using Tokenio.User.Rpc;
 using Tokenio.User.Utils;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using ManagedChannel = Tokenio.Rpc.ManagedChannel;
 using TokenRequest = Tokenio.TokenRequests.TokenRequest;
 
 namespace Tokenio.User
@@ -31,7 +29,7 @@ namespace Tokenio.User
         /// <param name="tokenCluster">token cluster</param>
         /// <param name="browserFactory">browser factory</param>
         public TokenClient(
-                 Tokenio.Rpc.ManagedChannel channel,
+                 ManagedChannel channel,
                  ICryptoEngineFactory cryptoEngineFactory,
                  TokenCluster tokenCluster, IBrowserFactory browserFactory) : base(channel, cryptoEngineFactory, tokenCluster)
         {
@@ -542,30 +540,14 @@ namespace Tokenio.User
 
             public override Tokenio.TokenClient Build()
             {
-                var channelOptions = new List<ChannelOption>();
-                channelOptions.Add(new ChannelOption("grpc.keepalive_permit_without_calls", keepAlive ? 1 : 0));
-                channelOptions.Add(new ChannelOption("grpc.keepalive_time_ms", keepAliveTimeMs));
-                var channel = new Channel(
-                    hostName,
-                    port,
-                    useSsl ? new SslCredentials() : ChannelCredentials.Insecure,
-                    channelOptions); Interceptor[] interceptors = {
-                    new Tokenio.Rpc.AsyncTimeoutInterceptor(timeoutMs),
-                    new Tokenio.Rpc.AsyncMetadataInterceptor(metadata =>
-                            {
-                                metadata.Add("token-sdk", "csharp");
-                                metadata.Add(
-                                        "token-sdk-version",
-                                        Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
-                                metadata.Add("token-dev-key", devKey);
-                                if(featureCodes != null) {
-                                    featureCodes.ForEach(f =>
-                                            metadata.Add(FEATURE_CODE_KEY,f));
-                                }
-                                return metadata;
-                    })
-                };
-                var newChannel = new Tokenio.Rpc.ManagedChannel(channel, interceptors);
+                var metadata = GetHeaders();
+                var newChannel = ManagedChannel.NewBuilder(hostName, port, useSsl)
+                    .WithTimeout(timeoutMs)
+                    .WithMetadata(metadata)
+                    .UseKeepAlive(keepAlive)
+                    .WithKeepAliveTime(keepAliveTimeMs)
+                    .Build();
+
                 return new TokenClient(
                         newChannel,
                         cryptoEngine ?? new TokenCryptoEngineFactory(new InMemoryKeyStore()),
