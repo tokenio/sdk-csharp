@@ -22,7 +22,7 @@ namespace TokenioSample
 
                 var key = Directory.CreateDirectory("./keys");
 
-                TokenClient tokenClient = (Tokenio.Tpp.TokenClient)TokenClient.NewBuilder()
+                TokenClient tokenClient = TokenClient.NewBuilder()
                .ConnectTo(Tokenio.TokenCluster.SANDBOX)
                .WithKeyStore(new UnsecuredFileSystemKeyStore(key.FullName))
                .Build();

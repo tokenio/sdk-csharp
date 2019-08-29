@@ -28,7 +28,7 @@ namespace Tokenio.Tpp
         /// <param name="cryptoEngineFactory">the crypto factory to create crypto engine</param>
         /// <param name="tokenCluster">the token cluster to connect to</param>
         public TokenClient(
-             Tokenio.Rpc.ManagedChannel channel,
+             ManagedChannel channel,
              ICryptoEngineFactory cryptoEngineFactory,
              TokenCluster tokenCluster)
              : base(channel, cryptoEngineFactory, tokenCluster) { }
@@ -53,7 +53,7 @@ namespace Tokenio.Tpp
         /// <returns>an instance of <see cref="TokenClient"/></returns>
         public static TokenClient Create(TokenCluster cluster, string developerKey)
         {
-            return (Tokenio.Tpp.TokenClient)NewBuilder()
+            return NewBuilder()
             .ConnectTo(cluster)
             .DeveloperKey(developerKey)
             .Build();
@@ -390,13 +390,13 @@ namespace Tokenio.Tpp
             return GetTokenRequestResult(tokenRequestId).Result;
         }
 
-        public class Builder : Tokenio.TokenClient.Builder
+        public class Builder : Builder<Builder>
         {
             /// <summary>
             /// Creates new builder instance with the defaults initialized.
             /// </summary>
             /// <returns></returns>
-            public override Tokenio.TokenClient Build()
+            public new TokenClient Build()
             {
                 var metadata = GetHeaders();
                 var newChannel = ManagedChannel.NewBuilder(hostName, port, useSsl)

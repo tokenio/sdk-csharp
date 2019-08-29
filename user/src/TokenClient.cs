@@ -54,7 +54,7 @@ namespace Tokenio.User
         /// <returns>{@link TokenClient} instance</returns>
         public static TokenClient Create(TokenCluster cluster)
         {
-            return (Tokenio.User.TokenClient)NewBuilder()
+            return NewBuilder()
                     .ConnectTo(cluster)
                     .Build();
         }
@@ -68,7 +68,7 @@ namespace Tokenio.User
         /// <returns>{@link TokenClient} instance</returns>
         public static TokenClient Create(TokenCluster cluster, string developerKey)
         {
-            return (Tokenio.User.TokenClient)NewBuilder()
+            return NewBuilder()
                     .ConnectTo(cluster)
                     .DeveloperKey(developerKey)
                     .Build();
@@ -523,7 +523,7 @@ namespace Tokenio.User
             UpdateTokenRequest(requestId, options).Wait();
         }
 
-        public class Builder : Tokenio.TokenClient.Builder
+        public class Builder : Builder<Builder>
         {
             private IBrowserFactory browserFactory;
 
@@ -532,13 +532,13 @@ namespace Tokenio.User
             /// </summary>
             /// <param name="browserFactory">browser factory</param>
             /// <returns>this builder instance</returns>
-            public Builder withBrowserFactory(IBrowserFactory browserFactory)
+            public Builder WithBrowserFactory(IBrowserFactory browserFactory)
             {
                 this.browserFactory = browserFactory;
                 return this;
             }
 
-            public override Tokenio.TokenClient Build()
+            public new TokenClient Build()
             {
                 var metadata = GetHeaders();
                 var newChannel = ManagedChannel.NewBuilder(hostName, port, useSsl)

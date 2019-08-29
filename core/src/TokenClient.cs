@@ -40,30 +40,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Creates a new <see cref="Builder"/> instance that is used to configure and
-        /// </summary>
-        /// <returns>the builder</returns>
-        public static Builder NewBuilder()
-        {
-            return new Builder();
-        }
-
-        /// <summary>
-        /// Creates a new instance of <see cref="TokenClient"/> that's configured to use
-        /// the specified environment.
-        /// </summary>
-        /// <param name="cluster">the token cluster to connect to</param>
-        /// <param name="developerKey">the developer key</param>
-        /// <returns>an instance of <see cref="TokenClient"/></returns>
-        public static TokenClient Create(TokenCluster cluster, string developerKey)
-        {
-            return NewBuilder()
-                .ConnectTo(cluster)
-                .DeveloperKey(developerKey)
-                .Build();
-        }
-
-        /// <summary>
         /// Resolve an alias to a TokenMember object, containing member ID and
         /// the alias with the correct type.
         /// </summary>
@@ -551,7 +527,7 @@ namespace Tokenio
 
 
 
-        public class Builder
+        public class Builder<T> where T : Builder<T>
         {
             private static readonly string DEFAULT_DEV_KEY = "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI";
             private static readonly long DEFAULT_TIMEOUT_MS = 10_000L;
@@ -571,8 +547,6 @@ namespace Tokenio
             protected bool keepAlive = DEFAULT_KEEP_ALIVE_PERMIT_WITHOUT_CALLS;
             protected int keepAliveTimeMs = DEFAULT_KEEP_ALIVE_TIME_MS;
 
-
-
             /// <summary>
             /// Creates new builder instance with the defaults initialized.
             /// </summary>
@@ -588,10 +562,10 @@ namespace Tokenio
             /// Sets the host name of the Token Gateway Service to connect to.
             /// </summary>
             /// <param name="hostName">the host name to set</param>
-            public Builder HostName(string hostName)
+            public T HostName(string hostName)
             {
                 this.hostName = hostName;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -599,11 +573,11 @@ namespace Tokenio
             /// </summary>
             /// <param name="port">the port number</param>
             /// <returns>this builder instance</returns>
-            public Builder Port(int port)
+            public T Port(int port)
             {
                 this.port = port;
                 this.useSsl = port == DEFAULT_SSL_PORT;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -611,11 +585,11 @@ namespace Tokenio
             /// </summary>
             /// <param name="cluster">the token cluster</param>
             /// <returns>this builder instance</returns>
-            public Builder ConnectTo(TokenCluster cluster)
+            public T ConnectTo(TokenCluster cluster)
             {
                 this.tokenCluster = cluster;
                 this.hostName = cluster.Url;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -623,10 +597,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="timeoutMs">the RPC call timeoutMs</param>
             /// <returns>this builder instance</returns>
-            public Builder Timeout(long timeoutMs)
+            public T Timeout(long timeoutMs)
             {
                 this.timeoutMs = timeoutMs;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -634,10 +608,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="keyStore">the key store to be used</param>
             /// <returns>this builder instance</returns>
-            public Builder WithKeyStore(IKeyStore keyStore)
+            public T WithKeyStore(IKeyStore keyStore)
             {
                 this.cryptoEngine = new TokenCryptoEngineFactory(keyStore);
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -645,17 +619,17 @@ namespace Tokenio
             /// </summary>
             /// <param name="cryptoEngineFactory">the crypto engine factory to use</param>
             /// <returns>this builder instance</returns>
-            public Builder WithCryptoEngine(ICryptoEngineFactory cryptoEngineFactory)
+            public T WithCryptoEngine(ICryptoEngineFactory cryptoEngineFactory)
             {
                 this.cryptoEngine = cryptoEngineFactory;
-                return this;
+                return (T)this;
             }
 
 
-            public Builder withFeatureCodes(params string[] featureCodes)
+            public T WithFeatureCodes(params string[] featureCodes)
             {
                 this.featureCodes = featureCodes.ToList();
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -663,10 +637,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="devKey">the developer key</param>
             /// <returns>this builder instance</returns>
-            public virtual Builder DeveloperKey(string devKey)
+            public T DeveloperKey(string devKey)
             {
                 this.devKey = devKey;
-                return this;
+                return (T)this;
             }
 
 
@@ -675,10 +649,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="keepAlive">whether keep-alive is enabled</param>
             /// <returns>this builder instance</returns>
-            public Builder KeepAlive(bool keepAlive)
+            public T KeepAlive(bool keepAlive)
             {
                 this.keepAlive = keepAlive;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -686,10 +660,10 @@ namespace Tokenio
             /// </summary>
             /// <param name="keepAliveTimeMs">keep-alive time in milliseconds</param>
             /// <returns>this builder instance</returns>
-            public Builder KeepAliveTime(int keepAliveTimeMs)
+            public T KeepAliveTime(int keepAliveTimeMs)
             {
                 this.keepAliveTimeMs = keepAliveTimeMs;
-                return this;
+                return (T)this;
             }
 
             /// <summary>
@@ -719,7 +693,7 @@ namespace Tokenio
             public virtual TokenClient Build()
             {
                 var metadata = GetHeaders();
-                var newChannel = ManagedChannel.NewBuilder(hostName,port,useSsl)
+                var newChannel = ManagedChannel.NewBuilder(hostName, port, useSsl)
                     .WithTimeout(timeoutMs)
                     .WithMetadata(metadata)
                     .UseKeepAlive(keepAlive)
