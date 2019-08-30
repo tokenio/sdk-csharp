@@ -63,30 +63,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Checks if a given alias already exists.
-        /// </summary>
-        /// <param name="alias">the alias to check</param>
-        /// <returns>true if alias exists, false otherwise</returns>
-        [Obsolete("Deprecated. Use ResolveAlias instead.")]
-        public Task<Boolean> AliasExists(Alias alias)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.ResolveAlias(alias)
-                .Map(mem => mem != null);
-        }
-
-        /// <summary>
-        /// Checks if a given alias already exists.
-        /// </summary>
-        /// <param name="alias">the alias to check</param>
-        /// <returns>true if alias exists, false otherwise</returns>
-        [Obsolete("Deprecated. Use ResolveAliasBlocking instead.")]
-        public bool AliasExistsBlocking(Alias alias)
-        {
-            return AliasExists(alias).Result;
-        }
-
-        /// <summary>
         /// Looks up member id for a given alias.
         /// </summary>
         /// <param name="alias">the alias to check</param>
