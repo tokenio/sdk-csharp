@@ -348,11 +348,11 @@ namespace Tokenio.User
         }
 
         /// <summary>
-        /// Sets the purpose of payment.
+        /// Sets the purpose code. Refer to ISO 20022 External Code Sets.
         /// </summary>
-        /// <param name="purposeOfPayment">purpose of payment</param>
+        /// <param name="purposeCode">purpose of payment</param>
         /// <returns>builder</returns>
-        public TransferTokenBuilder SetPurposeOfPayment(PurposeOfPayment purposeOfPayment)
+        public TransferTokenBuilder SetPurposeCode(string purposeCode)
         {
             var instructions = payload.Transfer.Instructions;
             if (instructions == null)
@@ -363,7 +363,7 @@ namespace Tokenio.User
             {
                 instructions.Metadata = new TransferInstructions.Types.Metadata { };
             }
-            instructions.Metadata.TransferPurpose = purposeOfPayment;
+            instructions.Metadata.PurposeCode = purposeCode;
             payload.Transfer.Instructions = instructions;
             return this;
         }

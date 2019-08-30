@@ -23,7 +23,7 @@ namespace TokenioSample
             }
         }
 
-		[Fact(Skip = "TO-DO : need to fix this test")]
+		[Fact]
 		public void ReplaceAccessTokenTest()
         {
             using (TokenClient tokenClient = TestUtil.CreateClient())
