@@ -28,7 +28,6 @@ namespace TokenioSample
             };
         }
 
-
         /// <summary>
         /// Creates the client.
         /// </summary>
@@ -44,7 +43,8 @@ namespace TokenioSample
         /// <returns>The user member.</returns>
         public static UserMember CreateUserMember()
         {
-            Tokenio.User.TokenClient client = Tokenio.User.TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
+            Tokenio.User.TokenClient
+                client = Tokenio.User.TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
             Alias alias = RandomAlias();
             UserMember member = client.CreateMemberBlocking(alias);
             member.CreateTestBankAccountBlocking(1000.0, "EUR");
@@ -59,23 +59,23 @@ namespace TokenioSample
         /// <param name="accountId">Account identifier.</param>
         /// <param name="granteeAlias">Grantee alias.</param>
         public static Token CreateAccessToken(
-             UserMember grantor,
-          string accountId,
-          Alias granteeAlias)
+            UserMember grantor,
+            string accountId,
+            Alias granteeAlias)
         {
             // Create an access token for the grantee to access bank
             // account names of the grantor.
             Token accessToken = grantor.CreateAccessTokenBlocking(
-                    AccessTokenBuilder
-                            .Create(granteeAlias)
-                            .ForAccount(accountId)
-                            .ForAccountBalances(accountId));
+                AccessTokenBuilder
+                    .Create(granteeAlias)
+                    .ForAccount(accountId)
+                    .ForAccountBalances(accountId));
 
             // Grantor endorses a token to a grantee by signing it
             // with her secure private key.
             accessToken = grantor.EndorseTokenBlocking(
-                    accessToken,
-                        Level.Standard).Token;
+                accessToken,
+                Level.Standard).Token;
 
             return accessToken;
         }
@@ -87,8 +87,8 @@ namespace TokenioSample
         /// <param name="payer">Payer.</param>
         /// <param name="payeeAlias">Payee alias.</param>
         public static Token CreateTransferToken(
-          UserMember payer,
-           Alias payeeAlias)
+            UserMember payer,
+            Alias payeeAlias)
         {
             // We'll use this as a reference ID. Normally, a payer who
             // explicitly sets a reference ID would use an ID from a db.
@@ -96,26 +96,23 @@ namespace TokenioSample
             // We don't have a db, so we fake it with a random string:
             string purchaseId = Tokenio.User.Utils.Util.Nonce();
 
-            TransferTokenBuilder builder = payer.CreateTransferToken(
-                    100.0, // amount
-                    "EUR");
             // Create a transfer token.
-            Token transferToken = payer.CreateTransferToken(
+            var tokenPayload = payer.CreateTransferTokenBuilder(
                     100.0, // amount
-                    "EUR")  // currency // source account:
-                    .SetAccountId(payer.GetAccountsBlocking()[0].Id())
-                    // payee token alias:
-                    .SetToAlias(payeeAlias)
-                    // optional description:
-                    .SetDescription("Book purchase")
-                    // ref id (if not set, will get random ID)
-                    .SetRefId(purchaseId)
-                    .ExecuteBlocking();
+                    "EUR") // currency // source account:
+                .SetAccountId(payer.GetAccountsBlocking()[0].Id())
+                // payee token alias:
+                .SetToAlias(payeeAlias)
+                // optional description:
+                .SetDescription("Book purchase")
+                // ref id (if not set, will get random ID)
+                .SetRefId(purchaseId)
+                .BuildPayload();
+            var transferToken = payer.CreateTransferTokenBlocking(tokenPayload);
 
             // Payer endorses a token to a payee by signing it
             // with her secure private key.
-            transferToken = payer.EndorseTokenBlocking(
-                    transferToken, Level.Standard).Token;
+            transferToken = payer.EndorseTokenBlocking(transferToken, Level.Standard).Token;
 
             return transferToken;
         }

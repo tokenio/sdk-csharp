@@ -72,7 +72,7 @@ namespace Tokenio.TokenRequests
             protected string oauthState;
             protected string csrfToken;
 
-            public Builder()
+            protected Builder()
             {
                 requestOptions = new TokenRequestOptions();
                 requestPayload = new TokenRequestPayload();
@@ -88,7 +88,7 @@ namespace Tokenio.TokenRequests
             public T SetBankId(string bankId)
             {
                 requestOptions.BankId = bankId;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -99,7 +99,7 @@ namespace Tokenio.TokenRequests
             public T SetFromMemberId(string fromMemberId)
             {
                 requestOptions.From.Id = fromMemberId;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -110,7 +110,7 @@ namespace Tokenio.TokenRequests
             public T SetFromAlias(Alias fromAlias)
             {
                 requestOptions.From.Alias = fromAlias;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -121,7 +121,7 @@ namespace Tokenio.TokenRequests
             public T SetSourceAccount(string sourceAccountId)
             {
                 requestOptions.SourceAccountId = sourceAccountId;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -133,7 +133,7 @@ namespace Tokenio.TokenRequests
             public T SetReceiptRequested(bool receiptRequested)
             {
                 requestOptions.ReceiptRequested = receiptRequested;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -144,7 +144,7 @@ namespace Tokenio.TokenRequests
             public T SetUserRefId(string refId)
             {
                 requestPayload.UserRefId = refId;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -155,7 +155,7 @@ namespace Tokenio.TokenRequests
             public T SetCustomizationId(string customizationId)
             {
                 requestPayload.CustomizationId = customizationId;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -166,7 +166,7 @@ namespace Tokenio.TokenRequests
             public T SetRedirectUrl(string redirectUrl)
             {
                 requestPayload.RedirectUrl = redirectUrl;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -177,7 +177,7 @@ namespace Tokenio.TokenRequests
             public T SetRefId(string refId)
             {
                 requestPayload.RefId = refId;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -188,7 +188,7 @@ namespace Tokenio.TokenRequests
             public T SetToAlias(Alias toAlias)
             {
                 requestPayload.To.Alias = toAlias;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -199,7 +199,7 @@ namespace Tokenio.TokenRequests
             public T SetToMemberId(string memberId)
             {
                 requestPayload.To.Id = memberId;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -210,7 +210,7 @@ namespace Tokenio.TokenRequests
             public T SetActingAs(ActingAs actingAs)
             {
                 requestPayload.ActingAs = actingAs;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -221,7 +221,7 @@ namespace Tokenio.TokenRequests
             public T SetDescription(string description)
             {
                 requestPayload.Description = description;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -233,7 +233,7 @@ namespace Tokenio.TokenRequests
             public T SetState(string state)
             {
                 oauthState = state;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -245,7 +245,7 @@ namespace Tokenio.TokenRequests
             public T SetCsrfToken(string csrfToken)
             {
                 this.csrfToken = csrfToken;
-                return (T)this;
+                return (T) this;
             }
 
             /// <summary>
@@ -262,7 +262,6 @@ namespace Tokenio.TokenRequests
                     requestPayload,
                     requestOptions);
             }
-
         }
 
         public class AccessBuilder : Builder<AccessBuilder>
@@ -271,7 +270,7 @@ namespace Tokenio.TokenRequests
             {
                 requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
                 {
-                    Type = { resources }
+                    Type = {resources}
                 };
             }
         }
@@ -283,7 +282,11 @@ namespace Tokenio.TokenRequests
                 requestPayload.TransferBody = new TokenRequestPayload.Types.TransferBody
                 {
                     LifetimeAmount = amount.ToString("F"),
-                    Currency = currency
+                    Currency = currency,
+                    Instructions = new TransferInstructions
+                    {
+                        Metadata = new TransferInstructions.Types.Metadata()
+                    }
                 };
             }
 
@@ -317,12 +320,7 @@ namespace Tokenio.TokenRequests
             /// <returns>builder</returns>
             public TransferBuilder AddDestination(TransferDestination destination)
             {
-                var request = requestPayload.TransferBody;
-                if (request.Instructions == null)
-                {
-                    request.Instructions = new TransferInstructions();
-                }
-                request.Instructions.TransferDestinations.Add(destination);
+                requestPayload.TransferBody.Instructions.TransferDestinations.Add(destination);
                 return this;
             }
 
@@ -344,11 +342,7 @@ namespace Tokenio.TokenRequests
             /// <returns>builder</returns>
             public TransferBuilder SetProviderMetadata(ProviderTransferMetadata metadata)
             {
-                var metaData = new TransferInstructions.Types.Metadata
-                {
-                    ProviderTransferMetadata = metadata
-                };
-                requestPayload.TransferBody.Instructions.Metadata = metaData;
+                requestPayload.TransferBody.Instructions.Metadata.ProviderTransferMetadata = metadata;
                 return this;
             }
         }

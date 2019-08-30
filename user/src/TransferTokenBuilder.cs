@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
 using log4net;
 using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.AliasProtos;
@@ -26,12 +25,12 @@ namespace Tokenio.User
     public sealed class TransferTokenBuilder
     {
         private static readonly ILog logger = LogManager
-                .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+            .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         private static readonly int REF_ID_MAX_LENGTH = 18;
         private readonly Member member;
+
         private readonly TokenPayload payload;
-        // Token request ID
-        private string tokenRequestId;
 
         /// <summary>
         /// Creates the builder object.
@@ -40,9 +39,9 @@ namespace Tokenio.User
         /// <param name="amount">lifetime amount of the token</param>
         /// <param name="currency">currency of the token</param>
         public TransferTokenBuilder(
-                Member member,
-                double amount,
-                string currency)
+            Member member,
+            double amount,
+            string currency)
         {
             this.member = member;
             this.payload = new TokenPayload
@@ -51,7 +50,11 @@ namespace Tokenio.User
                 Transfer = new TransferBody
                 {
                     Currency = currency,
-                    LifetimeAmount = amount.ToString()
+                    LifetimeAmount = amount.ToString(),
+                    Instructions = new TransferInstructions
+                    {
+                        Metadata = new TransferInstructions.Types.Metadata()
+                    }
                 }
             };
             if (member != null)
@@ -76,10 +79,12 @@ namespace Tokenio.User
             {
                 throw new ArgumentException("Require token request with transfer body.");
             }
+
             if (tokenRequest.RequestPayload.To == null)
             {
                 throw new ArgumentException("No payee on token request.");
             }
+
             var transferBody = tokenRequest.RequestPayload.TransferBody;
             var instructions = transferBody.Instructions;
             if (instructions == null)
@@ -87,6 +92,12 @@ namespace Tokenio.User
                 instructions = new TransferInstructions();
                 instructions.Destinations.Add(transferBody.Destinations);
             }
+
+            if (instructions.Metadata == null)
+            {
+                instructions.Metadata = new TransferInstructions.Types.Metadata();
+            }
+
             this.member = member;
             this.payload = new TokenPayload
             {
@@ -109,7 +120,6 @@ namespace Tokenio.User
             {
                 this.payload.ActingAs = tokenRequest.RequestPayload.ActingAs;
             }
-            this.tokenRequestId = tokenRequest.Id;
         }
 
         /// <summary>
@@ -123,10 +133,12 @@ namespace Tokenio.User
             {
                 throw new ArgumentException("Require token payload with transfer body.");
             }
+
             if (tokenPayload.To == null)
             {
                 throw new ArgumentException("No payee on token payload.");
             }
+
             this.member = member;
             this.payload = tokenPayload;
 
@@ -135,6 +147,14 @@ namespace Tokenio.User
                 this.payload.From = new TokenMember
                 {
                     Id = member.MemberId()
+                };
+            }
+
+            if (this.payload.Transfer.Instructions == null)
+            {
+                this.payload.Transfer.Instructions = new TransferInstructions
+                {
+                    Metadata = new TransferInstructions.Types.Metadata()
                 };
             }
         }
@@ -166,13 +186,8 @@ namespace Tokenio.User
                     }
                 }
             };
-            var instructions = payload.Transfer.Instructions;
-            if (instructions == null)
-            {
-                instructions = new TransferInstructions();
-            }
-            instructions.Source = source;
-            payload.Transfer.Instructions = instructions;
+
+            payload.Transfer.Instructions.Source = source;
             return this;
         }
 
@@ -184,17 +199,14 @@ namespace Tokenio.User
         /// <returns>builder</returns>
         public TransferTokenBuilder SetCustomAuthorization(string bankId, string authorization)
         {
-            payload.Transfer
-                    .Instructions
-                    .Source
-                    .Account = new BankAccount
-                    {
-                        Custom = new Custom
-                        {
-                            BankId = bankId,
-                            Payload = authorization
-                        }
-                    };
+            payload.Transfer.Instructions.Source.Account = new BankAccount
+            {
+                Custom = new Custom
+                {
+                    BankId = bankId,
+                    Payload = authorization
+                }
+            };
             return this;
         }
 
@@ -258,29 +270,9 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="source">the source</param>
         /// <returns>builder</returns>
-		public TransferTokenBuilder SetSource(TransferEndpoint source)
+        public TransferTokenBuilder SetSource(TransferEndpoint source)
         {
-            payload.Transfer
-                    .Instructions
-                    .Source = source;
-            return this;
-        }
-
-        /// <summary>
-        /// Adds a transfer destination.
-        /// </summary>
-        /// <param name="destination">destination</param>
-        /// <returns>builder</returns>
-        [Obsolete("AddDestination is Deprecated.")]
-        public TransferTokenBuilder AddDestination(TransferEndpoint destination)
-        {
-            var instructions = payload.Transfer.Instructions;
-            if (instructions == null)
-            {
-                instructions = new TransferInstructions();
-            }
-            instructions.Destinations.Add(destination);
-            payload.Transfer.Instructions = instructions;
+            payload.Transfer.Instructions.Source = source;
             return this;
         }
 
@@ -291,13 +283,7 @@ namespace Tokenio.User
         /// <returns>builder</returns>
         public TransferTokenBuilder AddDestination(TransferDestination destination)
         {
-            var instructions = payload.Transfer.Instructions;
-            if (instructions == null)
-            {
-                instructions = new TransferInstructions();
-            }
-            instructions.TransferDestinations.Add(destination);
-            payload.Transfer.Instructions = instructions;
+            payload.Transfer.Instructions.TransferDestinations.Add(destination);
             return this;
         }
 
@@ -339,10 +325,11 @@ namespace Tokenio.User
             if (refId.Length > REF_ID_MAX_LENGTH)
             {
                 throw new ArgumentException(string.Format(
-                        "The length of the refId is at most {0}, got: {1}",
-                        REF_ID_MAX_LENGTH,
-                        refId.Length));
+                    "The length of the refId is at most {0}, got: {1}",
+                    REF_ID_MAX_LENGTH,
+                    refId.Length));
             }
+
             payload.RefId = refId;
             return this;
         }
@@ -354,17 +341,7 @@ namespace Tokenio.User
         /// <returns>builder</returns>
         public TransferTokenBuilder SetPurposeCode(string purposeCode)
         {
-            var instructions = payload.Transfer.Instructions;
-            if (instructions == null)
-            {
-                instructions = new TransferInstructions { };
-            }
-            if (instructions.Metadata == null)
-            {
-                instructions.Metadata = new TransferInstructions.Types.Metadata { };
-            }
-            instructions.Metadata.PurposeCode = purposeCode;
-            payload.Transfer.Instructions = instructions;
+            payload.Transfer.Instructions.Metadata.PurposeCode = purposeCode;
             return this;
         }
 
@@ -387,7 +364,6 @@ namespace Tokenio.User
         public TransferTokenBuilder SetTokenRequestId(string tokenRequestId)
         {
             payload.TokenRequestId = tokenRequestId;
-            this.tokenRequestId = tokenRequestId;
             return this;
         }
 
@@ -409,17 +385,7 @@ namespace Tokenio.User
         /// <returns>the provider transfer metadata</returns>
         public TransferTokenBuilder SetProviderTransferMetadata(ProviderTransferMetadata metadata)
         {
-            var instructions = payload.Transfer.Instructions;
-            if (instructions == null)
-            {
-                instructions = new TransferInstructions { };
-            }
-            if (instructions.Metadata == null)
-            {
-                instructions.Metadata = new TransferInstructions.Types.Metadata { };
-            }
-            instructions.Metadata.ProviderTransferMetadata = metadata;
-            payload.Transfer.Instructions = instructions;
+            payload.Transfer.Instructions.Metadata.ProviderTransferMetadata = metadata;
             return this;
         }
 
@@ -443,47 +409,8 @@ namespace Tokenio.User
                 logger.Warn("refId is not set. A random ID will be used.");
                 payload.RefId = Util.Nonce();
             }
+
             return payload;
-        }
-
-        /// <summary>
-        /// DEPRECATED: Use {@link Member#prepareTransferToken(TransferTokenBuilder)} and
-        /// {@link Member#createToken(TokenPayload, List)} instead.
-        ///
-        /// <p>Executes the request asynchronously.</p>
-        /// </summary>
-        /// <returns>Token</returns>
-        [Obsolete("AddDestination is Deprecated. Use Member/PrepareTransferToken(TransferTokenBuilder) and Member/CreateToken(TokenPayload, List) instead.")]
-        public Task<ProtoToken> Execute()
-        {
-            AccountCase sourceCase =
-                    payload.Transfer.Instructions.Source.Account.AccountCase;
-            IList<AccountCase> list = new List<AccountCase> { AccountCase.Token, AccountCase.Bank };
-            if (!list.Contains(sourceCase))
-            {
-                throw new ArgumentException("No source on token");
-            }
-            if (payload.RefId.Length == 0)
-            {
-                logger.Warn("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce();
-            }
-            return member.CreateTransferToken(
-                    payload,
-                    tokenRequestId != null ? tokenRequestId : "");
-        }
-
-        /// <summary>
-        /// DEPRECATED: Use {@link Member#prepareTransferToken(TransferTokenBuilder)} and
-        /// {@link Member#createToken(TokenPayload, List)} instead.
-        ///
-        /// <p>Executes the request, creating a token.</p>
-        /// </summary>
-        /// <returns>Token</returns>
-        [Obsolete("AddDestination is Deprecated. Use Member/PrepareTransferToken(TransferTokenBuilder) and Member/CreateToken(TokenPayload, List) instead.")]
-        public ProtoToken ExecuteBlocking()
-        {
-            return Execute().Result;
         }
     }
 }

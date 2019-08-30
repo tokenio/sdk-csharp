@@ -15,10 +15,7 @@ namespace Tokenio.User
         private readonly TokenPayload payload;
 
         // Token request ID
-        internal string tokenRequestId
-        {
-            get;
-        }
+        internal string tokenRequestId { get; }
 
         private AccessTokenBuilder()
         {
@@ -32,7 +29,12 @@ namespace Tokenio.User
 
         private AccessTokenBuilder(TokenPayload tokenPayload, string tokenRequestId = null)
         {
-            this.payload = tokenPayload;
+            payload = tokenPayload;
+            if (payload.Access == null)
+            {
+                payload.Access = new AccessBody();
+            }
+
             this.tokenRequestId = tokenRequestId;
         }
 
@@ -91,10 +93,10 @@ namespace Tokenio.User
         /// <returns>instance of {@link AccessTokenBuilder}</returns>
         public static AccessTokenBuilder FromPayload(TokenPayload payload)
         {
-            var builder = payload;
-            builder.Access = null;
+            var builder = payload.Clone();
+            builder.Access = new AccessBody();
             builder.RefId = Util.Nonce();
-            return new AccessTokenBuilder(builder, null);
+            return new AccessTokenBuilder(builder);
         }
 
         /// <summary>
@@ -108,6 +110,7 @@ namespace Tokenio.User
             {
                 throw new ArgumentException("Require token request with access body.");
             }
+
             var builder = new TokenPayload
             {
                 Version = "1.0",
@@ -115,12 +118,14 @@ namespace Tokenio.User
                 From = tokenRequest.RequestOptions.From,
                 To = tokenRequest.RequestPayload.To,
                 Description = tokenRequest.RequestPayload.Description,
-                ReceiptRequested = tokenRequest.RequestOptions.ReceiptRequested
+                ReceiptRequested = tokenRequest.RequestOptions.ReceiptRequested,
+                Access = new AccessBody()
             };
             if (tokenRequest.RequestPayload.ActingAs != null)
             {
                 builder.ActingAs = tokenRequest.RequestPayload.ActingAs;
             }
+
             return new AccessTokenBuilder(builder, null);
         }
 
@@ -133,8 +138,10 @@ namespace Tokenio.User
         {
             if (refId.Length > REF_ID_MAX_LENGTH)
             {
-                throw new ArgumentException($"The length of the refId is at most {REF_ID_MAX_LENGTH}, got: {refId.Length}");
+                throw new ArgumentException(
+                    $"The length of the refId is at most {REF_ID_MAX_LENGTH}, got: {refId.Length}");
             }
+
             payload.RefId = refId;
             return this;
         }
@@ -146,20 +153,15 @@ namespace Tokenio.User
         /// <returns>{@link AccessTokenBuilder}</returns>
         public AccessTokenBuilder ForAddress(string addressId)
         {
-            var Access = payload.Access;
-            if (Access == null)
-            {
-                Access = new AccessBody();
-            }
-            Access.Resources.Add(
-                    new AccessBody.Types.Resource
+            payload.Access.Resources.Add(
+                new AccessBody.Types.Resource
+                {
+                    Address = new AccessBody.Types.Resource.Types.Address
                     {
-                        Address = new AccessBody.Types.Resource.Types.Address
-                        {
-                            AddressId = addressId
-                        }
-                    });
-            payload.Access = Access;
+                        AddressId = addressId
+                    }
+                });
+
             return this;
         }
 
@@ -170,19 +172,13 @@ namespace Tokenio.User
         /// <returns>{@link AccessTokenBuilder}</returns>
         public AccessTokenBuilder ForAccount(string accountId)
         {
-            var Access = payload.Access;
-            if (Access == null)
-            {
-                Access = new AccessBody();
-            }
-            Access.Resources.Add(new AccessBody.Types.Resource
+            payload.Access.Resources.Add(new AccessBody.Types.Resource
             {
                 Account = new AccessBody.Types.Resource.Types.Account
                 {
                     AccountId = accountId
                 }
             });
-            payload.Access = Access;
             return this;
         }
 
@@ -193,19 +189,13 @@ namespace Tokenio.User
         /// <returns>{@link AccessTokenBuilder}</returns>
         public AccessTokenBuilder ForAccountTransactions(string accountId)
         {
-            var Access = payload.Access;
-            if (Access == null)
-            {
-                Access = new AccessBody();
-            }
-            Access.Resources.Add(new AccessBody.Types.Resource
+            payload.Access.Resources.Add(new AccessBody.Types.Resource
             {
                 Transactions = new AccessBody.Types.Resource.Types.AccountTransactions
                 {
                     AccountId = accountId
                 }
             });
-            payload.Access = Access;
 
             return this;
         }
@@ -217,19 +207,13 @@ namespace Tokenio.User
         /// <returns>{@link AccessTokenBuilder}</returns>
         public AccessTokenBuilder ForAccountBalances(string accountId)
         {
-            var Access = payload.Access;
-            if (Access == null)
-            {
-                Access = new AccessBody();
-            }
-            Access.Resources.Add(new AccessBody.Types.Resource
+            payload.Access.Resources.Add(new AccessBody.Types.Resource
             {
                 Balance = new AccessBody.Types.Resource.Types.AccountBalance
                 {
                     AccountId = accountId
                 }
             });
-            payload.Access = Access;
 
             return this;
         }
@@ -241,19 +225,13 @@ namespace Tokenio.User
         /// <returns>{@link AccessTokenBuilder}</returns>
         public AccessTokenBuilder ForTransferDestinations(string accountId)
         {
-            var Access = payload.Access;
-            if (Access == null)
-            {
-                Access = new AccessBody();
-            }
-            Access.Resources.Add(new AccessBody.Types.Resource
+            payload.Access.Resources.Add(new AccessBody.Types.Resource
             {
                 TransferDestinations = new AccessBody.Types.Resource.Types.TransferDestinations
                 {
                     AccountId = accountId
                 }
             });
-            payload.Access = Access;
 
             return this;
         }
@@ -266,20 +244,14 @@ namespace Tokenio.User
         /// <returns>{@link AccessTokenBuilder}</returns>
         public AccessTokenBuilder ForFundsConfirmation(string accountId)
         {
-            var Access = payload.Access;
-            if (Access == null)
-            {
-                Access = new AccessBody();
-            }
-            Access.Resources.Add(
-                    new AccessBody.Types.Resource
+            payload.Access.Resources.Add(
+                new AccessBody.Types.Resource
+                {
+                    FundsConfirmation = new AccessBody.Types.Resource.Types.FundsConfirmation
                     {
-                        FundsConfirmation = new AccessBody.Types.Resource.Types.FundsConfirmation
-                        {
-                            AccountId = accountId
-                        }
-                    });
-            payload.Access = Access;
+                        AccountId = accountId
+                    }
+                });
 
             return this;
         }
@@ -319,6 +291,7 @@ namespace Tokenio.User
             {
                 throw new ArgumentException("At least one access resource must be set");
             }
+
             return payload;
         }
     }
