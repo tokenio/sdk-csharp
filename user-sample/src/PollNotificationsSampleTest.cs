@@ -34,7 +34,7 @@ namespace TokenioSample
                     }
                 };
 
-                TransferTokenBuilder builder = payer.CreateTransferToken(100.00, "EUR")
+                TransferTokenBuilder builder = payer.CreateTransferTokenBuilder(100.00, "EUR")
                         .SetAccountId(account.Id())
                         .SetToAlias(payeeAlias)
                         .AddDestination(tokenDestination);

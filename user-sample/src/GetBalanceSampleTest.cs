@@ -18,7 +18,7 @@ namespace TokenioSample
                 member.CreateTestBankAccountBlocking(1000.0, "EUR");
 
                 var sums = GetBalanceSample.MemberGetBalanceSample(member);
-                Assert.Equal(sums["EUR"], 1000.0);
+                Assert.Equal(1000.0, sums["EUR"]);
             }
         }
 
@@ -31,7 +31,7 @@ namespace TokenioSample
                 member.CreateTestBankAccountBlocking(1000.0, "EUR");
 
                 var sums = GetBalanceSample.AccountGetBalanceSample(member);
-                Assert.Equal(sums["EUR"], 1000.0);
+                Assert.Equal(1000.0, sums["EUR"]);
             }
         }
 
@@ -46,13 +46,11 @@ namespace TokenioSample
                 member.CreateTestBankAccountBlocking(500.0, "EUR");
                 var balances = (List<Balance>)GetBalanceSample.MemberGetBalanceListSample(member);
 
-                Assert.Equal(balances.Count, 2);
+                Assert.Equal(2, balances.Count);
                 Assert.True(balances.Exists(b => double.Parse(b.Current.Value).Equals(500.0)));
                 Assert.True(balances.Exists(b => double.Parse(b.Current.Value).Equals(1000.0)));
 
             }
-
-
         }
     }
 }

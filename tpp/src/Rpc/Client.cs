@@ -53,19 +53,7 @@ namespace Tokenio.Tpp.Rpc
             return gateway(authenticationContext()).SetProfileAsync(request)
                 .ToTask(response => response.Profile);
         }
-
-        /// <summary>
-        /// Gets a member's public profile.
-        /// </summary>
-        /// <param name="memberId">the member id of the member</param>
-        /// <returns>the profile</returns>
-        public Task<Profile> GetProfile(string memberId)
-        {
-            var request = new GetProfileRequest { MemberId = memberId };
-            return gateway(authenticationContext()).GetProfileAsync(request)
-                .ToTask(response => response.Profile);
-        }
-
+                
         /// <summary>
         /// Replaces a member's public profile picture.
         /// </summary>
@@ -75,23 +63,6 @@ namespace Tokenio.Tpp.Rpc
         {
             var request = new SetProfilePictureRequest { Payload = payload };
             return gateway(authenticationContext()).SetProfilePictureAsync(request).ToTask();
-        }
-
-        /// <summary>
-        /// Gets a member's public profile picture.
-        /// </summary>
-        /// <param name="memberId">the member id</param>
-        /// <param name="size">the desired size(small, medium, large, original)</param>
-        /// <returns>blob with picture; empty blob (no fields set) if has no picture</returns>
-        public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
-        {
-            var request = new GetProfilePictureRequest
-            {
-                MemberId = memberId,
-                Size = size
-            };
-            return gateway(authenticationContext()).GetProfilePictureAsync(request)
-                .ToTask(response => response.Blob);
         }
 
         /// <summary>
@@ -152,27 +123,6 @@ namespace Tokenio.Tpp.Rpc
             return gateway(authenticationContext()).StoreTokenRequestAsync(request)
                 .ToTask(response => response.TokenRequest.Id);
         }
-
-        /// <summary>
-        /// **DEPRECATED** Stores a transfer token request.
-        /// </summary>
-        /// <param name="payload">the transfer token payload</param>
-        /// <param name="options">a map of options</param>
-        /// <returns>an id to reference the token request</returns>
-        [Obsolete("Deprecated. Use StoreTokenRequest(TokenRequestPayload, TokenRequestOptions) instead.")]
-        public Task<string> StoreTokenRequest(
-            TokenPayload payload,
-            IDictionary<string, string> options)
-        {
-            var request = new StoreTokenRequestRequest
-            {
-                Payload = payload,
-                Options = { options }
-            };
-            return gateway(authenticationContext()).StoreTokenRequestAsync(request)
-                .ToTask(response => response.TokenRequest.Id);
-        }
-
 
         /// <summary>
         /// Creates the customization.
@@ -460,6 +410,28 @@ namespace Tokenio.Tpp.Rpc
             };
             return gateway(authenticationContext())
                     .VerifyEidasAsync(request).ToTask();
+        }
+
+        /// <summary>
+        /// Creates a transfer redeeming a transfer token.
+        /// </summary>
+        /// <param name="payload">the transfer payload</param>
+        /// <returns></returns>
+        public Task<Transfer> CreateTransfer(TransferPayload payload)
+        {
+            var signer = cryptoEngine.CreateSigner(Level.Low);
+            var request = new CreateTransferRequest
+            {
+                Payload = payload,
+                PayloadSignature = new Signature
+                {
+                    MemberId = MemberId,
+                    KeyId = signer.GetKeyId(),
+                    Signature_ = signer.Sign(payload)
+                }
+            };
+            return gateway(authenticationContext()).CreateTransferAsync(request)
+                .ToTask(response => response.Transfer);
         }
     }
 }

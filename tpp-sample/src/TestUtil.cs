@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.User;
 using Tokenio.Utils;
@@ -108,7 +110,7 @@ namespace TokenioSample
                 // ref id (if not set, will get random ID)
                 .SetRefId(purchaseId)
                 .BuildPayload();
-            var transferToken = payer.CreateTransferTokenBlocking(tokenPayload);
+            var transferToken = payer.CreateTokenBlocking(tokenPayload, new List<Signature>());
 
             // Payer endorses a token to a payee by signing it
             // with her secure private key.

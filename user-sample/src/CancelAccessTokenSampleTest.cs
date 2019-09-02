@@ -21,7 +21,7 @@ namespace TokenioSample
 
                 Token token = CreateAndEndorseAccessTokenSample.CreateAccessToken(grantor, accountId, granteeAlias);
                 TokenOperationResult result = CancelAccessTokenSample.CancelAccessToken(grantor, token.Id);
-                Assert.Equal(result.Status, TokenOperationResult.Types.Status.Success);
+                Assert.Equal(TokenOperationResult.Types.Status.Success, result.Status);
 
             }
         }

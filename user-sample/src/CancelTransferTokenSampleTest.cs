@@ -19,7 +19,7 @@ namespace TokenioSample
 
                 Token token = CreateAndEndorseTransferTokenSample.CreateTransferToken(payer, granteeAlias);
                 TokenOperationResult result = CancelTransferTokenSample.CancelTransferToken(payer, token.Id);
-                Assert.Equal(result.Status, TokenOperationResult.Types.Status.Success);
+                Assert.Equal(TokenOperationResult.Types.Status.Success, result.Status);
             }
         }
 

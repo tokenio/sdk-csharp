@@ -35,17 +35,15 @@ namespace TokenioSample
             Token transferToken = payee.GetTokenBlocking(tokenId);
 
             // Set token destination
-            TransferEndpoint tokenDestination = new TransferEndpoint
+            TransferDestination tokenDestination = new TransferDestination
             {
-
-                Account = new BankAccount
+               
+                Token = new TransferDestination.Types.Token
                 {
-                    Token = new BankAccount.Types.Token
-                    {
-                        MemberId = payee.MemberId(),
-                        AccountId = accountId
-                    }
-                }
+                    MemberId = payee.MemberId(),
+                    AccountId = accountId
+                }            
+                
             };
 
 

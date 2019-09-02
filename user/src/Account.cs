@@ -66,52 +66,5 @@ namespace Tokenio.User
         {
             return IsDefault().Result;
         }
-
-        /// <summary>
-        /// Looks up an account current balance.
-        /// </summary>
-        /// <param name = "keyLevel">key level</param>
-        /// <returns>account current balance</returns>
-        [Obsolete("GetCurrentBalance is deprecated. Use GetBalance(keyLevel) instead")]
-        public Task<Money> GetCurrentBalance(Level keyLevel)
-        {
-            return client.GetBalance(account.Id, keyLevel)
-                .Map(balance => balance.Current);
-        }
-
-        /// <summary>
-        /// Looks up an account current balance.
-        /// </summary>
-        /// <param name = "keyLevel">key level</param>
-        /// <returns>account current balance</returns>
-        [Obsolete("GetCurrentBalanceBlocking is deprecated. Use GetBalanceBlocking(keyLevel).Current instead")]
-        public Money GetCurrentBalanceBlocking(Level keyLevel)
-        {
-            return GetCurrentBalance(keyLevel).Result;
-        }
-
-        /// <summary>
-        /// Looks up an account available balance.
-        /// </summary>
-        /// <param name = "keyLevel">key level</param>
-        /// <returns>account available balance</returns>
-        [Obsolete("GetAvailableBalance is deprecated. Use GetBalance(keyLevel) instead.")]
-        public Task<Money> GetAvailableBalance(Level keyLevel)
-        {
-            return client.GetBalance(account.Id, keyLevel)
-                    .Map(balance =>
-                            balance.Available);
-        }
-
-        /// <summary>
-        /// Looks up an account available balance.
-        /// </summary>
-        /// <param name = "keyLevel">key level</param>
-        /// <returns>account available balance</returns>
-        [Obsolete("GetAvailableBalanceBlocking is deprecated. Use GetBalanceBlocking(keyLevel).Available instead.")]
-        public Money GetAvailableBalanceBlocking(Level keyLevel)
-        {
-            return GetAvailableBalance(keyLevel).Result;
-        }
     }
 }

@@ -26,7 +26,7 @@ namespace TokenioSample
 
 
             // Create a transfer token.
-            TransferTokenBuilder builder = payer.CreateTransferToken(
+            TransferTokenBuilder builder = payer.CreateTransferTokenBuilder(
                      10.0, // amount
                      "EUR")  // currency // source account:
                      .SetAccountId(payer.GetAccountsBlocking()[0].Id())

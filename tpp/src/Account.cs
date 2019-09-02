@@ -16,7 +16,7 @@
             this.member = member;
         }
 
-        public Member Member()
+        public new Member Member()
         {
             return member;
         }

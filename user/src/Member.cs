@@ -379,102 +379,7 @@ namespace Tokenio.User
         {
             return new TransferTokenBuilder(this, payload);
         }
-
-        /// <summary>
-        /// DEPRECATED: Use {@link Member#CreateToken(TokenPayload, List)} instead.
-        ///
-        /// <p>Creates a new transfer token from a token payload.</p>
-        /// </summary>
-        /// <param name="payload">transfer token payload</param>
-        /// <returns>transfer token returned by the server</returns>
-        [Obsolete("CreateTransferToken is deprecated. Use CreateToken(TokenPayload,IList)} instead.")]
-        public Task<Token> CreateTransferToken(TokenPayload payload)
-        {
-            return client.CreateTransferToken(payload);
-        }
-
-        /// <summary>
-        /// DEPRECATED: Use {@link Member#CreateTransferTokenBuilder(TokenRequest)} instead.
-        ///
-        /// <p>Creates a new transfer token builder from a token request.</p>
-        /// </summary>
-        /// <param name="tokenRequest">token request</param>
-        /// <returns>transfer token builder</returns>
-        [Obsolete("CreateTransferToken is deprecated. Use createTransferTokenBuilder(TokenRequest) instead.")]
-        public TransferTokenBuilder CreateTransferToken(TokenRequest tokenRequest)
-        {
-            return CreateTransferTokenBuilder(tokenRequest);
-        }
-
-        /// <summary>
-        /// DEPRECATED: Use {@link Member#CreateTransferTokenBuilder(double, string)} instead.
-        ///
-        /// <p>Creates a new transfer token builder.</p>
-        /// </summary>
-        /// <param name="amount">transfer amount</param>
-        /// <param name="currency">currency code, e.g. "USD"</param>
-        /// <returns>transfer token builder</returns>
-        [Obsolete("CreateTransferToken is deprecated. Use createTransferTokenBuilder(double, String))} instead.")]
-        public TransferTokenBuilder CreateTransferToken(double amount, string currency)
-        {
-            return CreateTransferTokenBuilder(amount, currency);
-        }
-
-        /// <summary>
-        /// DEPRECATED: Use {@link Member#CreateToken(TokenPayload, List, string)} instead.
-        ///
-        /// <p>Creates a new transfer token from a token payload.</p>
-        /// </summary>
-        /// <param name="payload">transfer token payload</param>
-        /// <param name="tokenRequestId">token request id</param>
-        /// <returns>transfer token returned by the server</returns>
-        [Obsolete("CreateTransferToken is deprecated. Use CreateToken(TokenPayload, IList, string) instead.")]
-        public Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId)
-        {
-            return client.CreateTransferToken(payload, tokenRequestId);
-        }
-
-        /// <summary>
-        /// DEPRECATED: Use {@link Member#CreateTransferTokenBuilder(TokenRequest)} instead.
-        ///
-        /// <p>Creates a new transfer token builder from a token request.</p>
-        /// </summary>
-        /// <param name="tokenRequest">token request</param>
-        /// <returns>transfer token builder</returns>
-        [Obsolete("CreateTransferToken is deprecated. Use createTransferTokenBuilder(TokenRequest) instead.")]
-        public TransferTokenBuilder CreateTransferTokenBlocking(TokenRequest tokenRequest)
-        {
-            return CreateTransferToken(tokenRequest);
-        }
-
-        /// <summary>
-        /// DEPRECATED: Use {@link Member#CreateTokenBlocking(TokenPayload, List)} instead.
-        ///
-        /// <p>Creates a new transfer token from a token payload.</p>
-        /// </summary>
-        /// <param name="payload">transfer token payload</param>
-        /// <returns>transfer token returned by the server</returns>
-		[Obsolete("CreateTransferToken is deprecated. Use CreateToken(TokenPayload, IList) instead.")]
-        public Token CreateTransferTokenBlocking(TokenPayload payload)
-        {
-            return CreateTransferToken(payload).Result;
-        }
-
-        /// <summary>
-        ///
-        /// DEPRECATED: Use {@link Member#CreateTokenBlocking(TokenPayload, List, string)} instead.
-        /// 
-        /// <p>Creates a new transfer token from a token payload.</p>
-        /// </summary>
-        /// <param name="payload">transfer token payload</param>
-        /// <param name="tokenRequestId">token request id</param>
-        /// <returns>transfer token returned by the server</returns>
-        [Obsolete("CreateTransferToken is deprecated. Use CreateToken(TokenPayload, IList, string) instead.")]
-        public Token CreateTransferTokenBlocking(TokenPayload payload, string tokenRequestId)
-        {
-            return CreateTransferToken(payload, tokenRequestId).Result;
-        }
-
+        
         /// <summary>
         /// Creates an access token built from a given {@link AccessTokenBuilder}.
         /// </summary>
@@ -765,34 +670,6 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="token">transfer token to redeem</param>
         /// <param name="destination">transfer instruction destination</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Task<Transfer> RedeemToken(Token token, TransferEndpoint destination)
-        {
-            return RedeemToken(token, null, null, null, destination, null);
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="destination">transfer instruction destination</param>
-        /// <param name="refId">transfer reference id</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Task<Transfer> RedeemToken(
-                Token token,
-                TransferEndpoint destination,
-                string refId)
-        {
-            return RedeemToken(token, null, null, null, destination, refId);
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="destination">transfer instruction destination</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
         public Task<Transfer> RedeemToken(
@@ -835,44 +712,6 @@ namespace Tokenio.User
                 TransferDestination destination)
         {
             return RedeemToken(token, amount, currency, null, destination, null);
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="amount">transfer amount</param>
-        /// <param name="currency">transfer currency code, e.g. "EUR"</param>
-        /// <param name="destination">transfer instruction destination</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Task<Transfer> RedeemToken(
-                Token token,
-                double? amount,
-                string currency,
-                TransferEndpoint destination)
-        {
-            return RedeemToken(token, amount, currency, null, destination, null);
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="amount">transfer amount</param>
-        /// <param name="currency">transfer currency code, e.g. "EUR"</param>
-        /// <param name="description">transfer description</param>
-        /// <param name="destination">transfer instruction destination</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Task<Transfer> RedeemToken(
-                Token token,
-                double? amount,
-                string currency,
-                string description,
-                TransferEndpoint destination)
-        {
-            return RedeemToken(token, amount, currency, description, destination, null);
         }
 
         /// <summary>
@@ -943,28 +782,6 @@ namespace Tokenio.User
                 payload.RefId = Util.Nonce();
             }
             return client.CreateTransfer(payload);
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="amount">transfer amount</param>
-        /// <param name="currency">transfer currency code, e.g. "EUR"</param>
-        /// <param name="description">transfer description</param>
-        /// <param name="destination">the transfer instruction destination</param>
-        /// <param name="refId">transfer reference id</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Task<Transfer> RedeemToken(
-        Token token,
-        double? amount,
-        string currency,
-        string description,
-        TransferEndpoint destination,
-        string refId)
-        {
-            return RedeemTokenInternal(token, amount, currency, description, destination, refId);
         }
 
         // Remove when deprecated TransferEndpoint methods are removed.
@@ -1050,39 +867,11 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="token">transfer token to redeem</param>
         /// <param name="destination">transfer instruction destination</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Transfer RedeemTokenBlocking(Token token, TransferEndpoint destination)
-        {
-            return RedeemToken(token, destination).Result;
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="destination">transfer instruction destination</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
         public Transfer RedeemTokenBlocking(
                 Token token,
                 TransferDestination destination,
-                string refId)
-        {
-            return RedeemToken(token, destination, refId).Result;
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="destination">transfer instruction destination</param>
-        /// <param name="refId">transfer reference id</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Transfer RedeemTokenBlocking(
-                Token token,
-                TransferEndpoint destination,
                 string refId)
         {
             return RedeemToken(token, destination, refId).Result;
@@ -1128,24 +917,6 @@ namespace Tokenio.User
         /// <param name="token">transfer token to redeem</param>
         /// <param name="amount">transfer amount</param>
         /// <param name="currency">transfer currency code, e.g. "EUR"</param>
-        /// <param name="destination">transfer instruction destination</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Transfer RedeemTokenBlocking(
-                Token token,
-                double? amount,
-                string currency,
-                TransferEndpoint destination)
-        {
-            return RedeemToken(token, amount, currency, destination).Result;
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="amount">transfer amount</param>
-        /// <param name="currency">transfer currency code, e.g. "EUR"</param>
         /// <param name="description">transfer description</param>
         /// <param name="destination">transfer instruction destination</param>
         /// <returns>transfer record</returns>
@@ -1167,26 +938,6 @@ namespace Tokenio.User
         /// <param name="currency">transfer currency code, e.g. "EUR"</param>
         /// <param name="description">transfer description</param>
         /// <param name="destination">transfer instruction destination</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Transfer RedeemTokenBlocking(
-                Token token,
-                double? amount,
-                string currency,
-                string description,
-                TransferEndpoint destination)
-        {
-            return RedeemToken(token, amount, currency, description, destination).Result;
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="amount">transfer amount</param>
-        /// <param name="currency">transfer currency code, e.g. "EUR"</param>
-        /// <param name="description">transfer description</param>
-        /// <param name="destination">transfer instruction destination</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
         public Transfer RedeemTokenBlocking(
@@ -1195,28 +946,6 @@ namespace Tokenio.User
                 string currency,
                 string description,
                 TransferDestination destination,
-                string refId)
-        {
-            return RedeemToken(token, amount, currency, description, destination, refId).Result;
-        }
-
-        /// <summary>
-        /// Redeems a transfer token.
-        /// </summary>
-        /// <param name="token">transfer token to redeem</param>
-        /// <param name="amount">transfer amount</param>
-        /// <param name="currency">transfer currency code, e.g. "EUR"</param>
-        /// <param name="description">transfer description</param>
-        /// <param name="destination">transfer instruction destination</param>
-        /// <param name="refId">transfer reference id</param>
-        /// <returns>transfer record</returns>
-        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
-        public Transfer RedeemTokenBlocking(
-                Token token,
-                double? amount,
-                string currency,
-                string description,
-                TransferEndpoint destination,
                 string refId)
         {
             return RedeemToken(token, amount, currency, description, destination, refId).Result;
@@ -1290,59 +1019,6 @@ namespace Tokenio.User
         }
 
         /// <summary>
-        /// Looks up current account balance.
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <param name="keyLevel">key level</param>
-        /// <returns>current balance</returns>
-        [Obsolete("GetCurrentBalance is deprecated. Use GetBalance(accountId, keyLevel) instead.")]
-        public Task<Money> GetCurrentBalance(string accountId, Level keyLevel)
-        {
-            return client.GetBalance(accountId, keyLevel)
-                    .Map(response =>
-                            response.Current);
-        }
-
-        /// <summary>
-        /// Looks up current account balance.
-        /// </summary>
-        /// <param name="accountId">account id</param>
-        /// <param name="keyLevel">key level</param>
-        /// <returns>balance</returns>
-        [Obsolete("GetCurrentBalanceBlocking is deprecated. Use GetBalanceBlocking(accountId, keyLevel).Current instead.")]
-        public Money GetCurrentBalanceBlocking(string accountId, Level keyLevel)
-        {
-            return GetCurrentBalance(accountId, keyLevel).Result;
-        }
-
-        /// <summary>
-        /// Looks up available account balance.
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <param name="keyLevel">key level</param>
-        /// <returns>available balance</returns>
-        [Obsolete("GetAvailableBalance is deprecated. Use GetBalance(accountId, keyLevel) instead.")]
-        public Task<Money> GetAvailableBalance(string accountId, Level keyLevel)
-        {
-            return client.GetBalance(accountId, keyLevel)
-                    .Map(response =>
-                            response.Available);
-        }
-
-        /// <summary>
-        /// Looks up available account balance.
-        /// </summary>
-        /// <param name="accountId">account id</param>
-        /// <param name="keyLevel">key level</param>
-        /// <returns>balance</returns>
-        [Obsolete("GetAvailableBalanceBlocking is deprecated. Use GetBalanceBlocking(accountId, keyLevel).Available instead.")]
-        public Money GetAvailableBalanceBlocking(string accountId, Level keyLevel)
-        {
-            return GetAvailableBalance(accountId, keyLevel).Result;
-        }
-
-
-        /// <summary>
         /// Removes all public keys that do not have a corresponding private key stored on
         /// the current device from the member.
         /// </summary>
@@ -1394,16 +1070,6 @@ namespace Tokenio.User
             return SetProfile(profile).Result;
         }
 
-        public Task<Profile> GetProfile(string memberId)
-        {
-            return client.GetProfile(memberId);
-        }
-
-        public Profile GetProfileBlocking(string memberId)
-        {
-            return GetProfile(memberId).Result;
-        }
-
         /// <summary>
         /// Replaces authenticated member's public profile picture.
         /// </summary>
@@ -1432,17 +1098,7 @@ namespace Tokenio.User
         {
             SetProfilePicture(type, data).Wait();
         }
-
-        public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
-        {
-            return client.GetProfilePicture(memberId, size);
-        }
-
-        public Blob GetProfilePictureBlocking(string memberId, ProfilePictureSize size)
-        {
-            return GetProfilePicture(memberId, size).Result;
-        }
-
+                
         /// <summary>
         /// Gets the notifications.
         /// </summary>

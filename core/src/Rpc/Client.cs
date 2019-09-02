@@ -324,19 +324,7 @@ namespace Tokenio.Rpc
             return gateway(authenticationContext()).GetBankInfoAsync(request)
                 .ToTask(response => response.Info);
         }
-
-        /// <summary>
-        /// Links a funding bank account to Token.
-        /// </summary>
-        /// <param name="authorization">an authorization to accounts, from the bank</param>
-        /// <returns>a list of linked accounts</returns>
-        public Task<IList<ProtoAccount>> LinkAccounts(BankAuthorization authorization)
-        {
-            var request = new LinkAccountsRequest { BankAuthorization = authorization };
-            return gateway(authenticationContext()).LinkAccountsAsync(request)
-                .ToTask(response => (IList<ProtoAccount>)response.Accounts);
-        }
-
+        
         /// <summary>
         /// Links a funding bank account to Token.
         /// </summary>
@@ -492,18 +480,6 @@ namespace Tokenio.Rpc
             this.trackingMetadata = new SecurityMetadata();
         }
 
-
-        /// <summary>
-        /// Unlinks token accounts.
-        /// </summary>
-        /// <param name="accountIds">the account ids to unlink</param>
-        /// <returns>a task</returns>
-        public Task UnlinkAccounts(IList<string> accountIds)
-        {
-            var request = new UnlinkAccountsRequest { AccountIds = { accountIds } };
-            return gateway(authenticationContext()).UnlinkAccountsAsync(request).ToTask();
-        }
-
         /// <summary>
         /// Update an existing token request.
         /// </summary>
@@ -534,45 +510,7 @@ namespace Tokenio.Rpc
             return gateway(authenticationContext()).CreateAccessTokenAsync(request)
                 .ToTask(response => response.Token);
         }
-
-        /// <summary>
-        /// Makes RPC to get default bank account for this member.
-        /// </summary>
-        /// <param name="memberId">the member id</param>
-        /// <returns>the bank account</returns>
-        public Task<ProtoAccount> GetDefaultAccount(string memberId)
-        {
-            var request = new GetDefaultAccountRequest { MemberId = memberId };
-            return gateway(authenticationContext()).GetDefaultAccountAsync(request)
-                .ToTask(response => response.Account);
-        }
-
-        /// <summary>
-        /// Makes RPC to set default bank account.
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <returns>a task</returns>
-        public Task SetDefaultAccount(string accountId)
-        {
-            var request = new SetDefaultAccountRequest
-            {
-                MemberId = MemberId,
-                AccountId = accountId
-            };
-            return gateway(authenticationContext()).SetDefaultAccountAsync(request).ToTask();
-        }
-
-        /// <summary>
-        /// Looks up if this account is default.
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <returns>true if the account is default; false otherwise</returns>
-        public Task<bool> IsDefault(string accountId)
-        {
-            return GetDefaultAccount(MemberId)
-                .Map(account => account.Id.Equals(accountId));
-        }
-
+      
         /// <summary>
         /// Gets a member's public profile.
         /// </summary>
@@ -599,28 +537,6 @@ namespace Tokenio.Rpc
             return gateway(authenticationContext())
                 .GetProfilePictureAsync(request)
                 .ToTask(response => response.Blob);
-        }
-
-        /// <summary>
-        /// Creates a transfer redeeming a transfer token.
-        /// </summary>
-        /// <param name="payload">the transfer payload</param>
-        /// <returns></returns>
-        public Task<Transfer> CreateTransfer(TransferPayload payload)
-        {
-            var signer = cryptoEngine.CreateSigner(Level.Low);
-            var request = new CreateTransferRequest
-            {
-                Payload = payload,
-                PayloadSignature = new Signature
-                {
-                    MemberId = MemberId,
-                    KeyId = signer.GetKeyId(),
-                    Signature_ = signer.Sign(payload)
-                }
-            };
-            return gateway(authenticationContext()).CreateTransferAsync(request)
-                .ToTask(response => response.Transfer);
         }
 
         /// <summary>
@@ -708,42 +624,6 @@ namespace Tokenio.Rpc
         {
             var request = new DeleteAddressRequest { AddressId = addressId };
             return gateway(authenticationContext()).DeleteAddressAsync(request).ToTask();
-        }
-
-        /// <summary>
-        /// Apply SCA for the given list of account IDs.
-        /// </summary>
-        /// <param name="accountIds">the list of account ids</param>
-        /// <returns>a task</returns>
-        public Task ApplySca(IList<string> accountIds)
-        {
-            var request = new ApplyScaRequest { AccountId = { accountIds } };
-            return gateway(authenticationContext(Level.Standard)).ApplyScaAsync(request).ToTask();
-        }
-
-        /// <summary>
-        /// Signs a token request state payload.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <param name="tokenId">the token id</param>
-        /// <param name="state">the state</param>
-        /// <returns>the signature</returns>
-        public Task<Signature> SignTokenRequestState(
-            string tokenRequestId,
-            string tokenId,
-            string state)
-        {
-            var request = new SignTokenRequestStateRequest
-            {
-                Payload = new TokenRequestStatePayload
-                {
-                    TokenId = tokenId,
-                    State = state
-                },
-                TokenRequestId = tokenRequestId
-            };
-            return gateway(authenticationContext()).SignTokenRequestStateAsync(request)
-                .ToTask(response => response.Signature);
         }
 
         /// <summary>

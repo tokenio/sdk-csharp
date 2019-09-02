@@ -49,7 +49,7 @@ namespace TokenioSample
                 MemberMethodsSample.Aliases(tokenClient, member);
                 List<Alias> aliases = member.GetAliasesBlocking().ToList();
 
-                Assert.Equal(aliases.Count, 1);
+                Assert.Equal(1, aliases.Count);
                 Assert.Contains("alias4", aliases[0].Value);
             }
         }

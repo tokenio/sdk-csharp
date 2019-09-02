@@ -56,18 +56,7 @@ namespace Tokenio.User.Rpc
                     .ToTask(response =>
                             response.Profile);
         }
-
-        public Task<Profile> GetProfile(string memberId)
-        {
-            var request = new GetProfileRequest
-            {
-                MemberId = memberId
-            };
-            return gateway(authenticationContext()).GetProfileAsync(request)
-                    .ToTask(response =>
-                            response.Profile);
-        }
-
+                
         /// <summary>
         /// Replaces a member's public profile picture.
         /// </summary>
@@ -82,19 +71,6 @@ namespace Tokenio.User.Rpc
             return gateway(authenticationContext())
                     .SetProfilePictureAsync(request)
                     .ToTask();
-        }
-
-        public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
-        {
-            var request = new GetProfilePictureRequest
-            {
-                MemberId = memberId,
-                Size = size
-            };
-            return gateway(authenticationContext())
-                    .GetProfilePictureAsync(request)
-                    .ToTask(response =>
-                            response.Blob);
         }
 
         /// <summary>

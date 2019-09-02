@@ -28,7 +28,7 @@ namespace TokenioSample
 
             foreach (Account account in accounts)
             {
-                Money balance = member.GetCurrentBalanceBlocking(account.Id(), Level.Standard);
+                Money balance = member.GetBalanceBlocking(account.Id(), Level.Standard).Current;
 
                 sums[balance.Currency] = Double.Parse(balance.Value) + SampleExtensions.GetValueOrDefault(sums, balance.Currency, 0.0);
             }
@@ -48,8 +48,7 @@ namespace TokenioSample
 
             foreach (Account account in accounts)
             {
-                Money balance = account.GetCurrentBalanceBlocking(Level.Standard);
-
+                Money balance = account.GetBalanceBlocking(Level.Standard).Current;
 
                 sums[balance.Currency] = Double.Parse(balance.Value) + SampleExtensions.GetValueOrDefault(sums, balance.Currency, 0.0);
             }
