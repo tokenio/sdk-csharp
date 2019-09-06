@@ -1,7 +1,7 @@
 ﻿#
 # Fetches specified proto files from the artifact repository.
 #
-TOKEN_PROTOS_VER = "1.2.16"
+TOKEN_PROTOS_VER = "1.2.17"
 RPC_PROTOS_VER = "1.1.46"
 
 

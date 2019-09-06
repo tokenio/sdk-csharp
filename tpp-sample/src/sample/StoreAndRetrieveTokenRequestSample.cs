@@ -12,8 +12,6 @@ namespace TokenioSample
     /// </summary>
     public static class StoreAndRetrieveTokenRequestSample
     {
-
-
         /// <summary>
         /// Stores a transfer token request.
         /// </summary>
@@ -33,7 +31,7 @@ namespace TokenioSample
                     })
                     .SetBankId("iron") // bank ID
                     .SetCsrfToken(Util.Nonce()) // nonce for CSRF check
-                    .build();
+                    .Build();
 
             // Store token request
             return payee.StoreTokenRequestBlocking(request);
@@ -57,7 +55,7 @@ namespace TokenioSample
                     })
                     .SetBankId("iron") // bank ID
                     .SetCsrfToken(Util.Nonce()) // nonce for CSRF check
-                    .build();
+                    .Build();
 
             return grantee.StoreTokenRequestBlocking(request);
         }
@@ -74,8 +72,5 @@ namespace TokenioSample
         {
             return tokenClient.RetrieveTokenRequestBlocking(requestId);
         }
-
-
-
     }
 }

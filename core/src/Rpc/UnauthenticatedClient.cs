@@ -53,7 +53,7 @@ namespace Tokenio.Rpc
 
                 Alias = new Alias
                 {
-                    Type = Alias.Types.Type.Domain,
+                    Type = Domain,
                     Value = "token.io"
                 }
 

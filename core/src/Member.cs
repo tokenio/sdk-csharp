@@ -211,7 +211,6 @@ namespace Tokenio
         /// <returns>a task that indicates whether the operation finished or had an error</returns>
         public Task AddAliases(IList<Alias> aliases)
         {
-
             aliases = aliases.Select(alias =>
             {
                 if (!string.IsNullOrEmpty(partnerId) && !partnerId.Equals("token"))
@@ -228,7 +227,6 @@ namespace Tokenio
 
                     alias.Realm = realmId;
                 }
-
                 return alias;
             }).ToList();
             var operations = aliases.Select(Util.ToAddAliasOperation).ToList();
@@ -602,6 +600,70 @@ namespace Tokenio
             string offset = null)
         {
             return GetTransactions(accountId, limit, keyLevel, offset).Result;
+        }
+        
+        /// <summary>
+        /// Looks up an existing standing order for a given account.
+        /// </summary>
+        /// <param name="accountId">the account ID</param>
+        /// <param name="standingOrderId">ID of the standing order</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>standing order record</returns>
+        public Task<StandingOrder> GetStandingOrder(
+            string accountId,
+            string standingOrderId,
+            Level keyLevel)
+        {
+            return client.GetStandingOrder(accountId, standingOrderId, keyLevel);
+        }
+
+        /// <summary>
+        /// Looks up an existing standing order for a given account.
+        /// </summary>
+        /// <param name="accountId">the account ID</param>
+        /// <param name="standingOrderId">ID of the standing order</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>standing order record</returns>
+        public StandingOrder GetStandingOrderBlocking(
+                string accountId,
+                string standingOrderId,
+                Level keyLevel)
+        {
+            return GetStandingOrder(accountId, standingOrderId, keyLevel).Result;
+        }
+        
+        /// <summary>
+        /// Looks up standing orders for a given account.
+        /// </summary>
+        /// <param name="accountId">the account ID</param>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>a paged list of standing order records</returns>
+        public Task<PagedList<StandingOrder>> GetStandingOrders(
+                string accountId,
+                int limit,
+                Level keyLevel,
+                string offset = null)
+        {
+            return client.GetStandingOrders(accountId, limit, keyLevel, offset);
+        }
+
+        /// <summary>
+        /// Looks up standing orders for a given account.
+        /// </summary>
+        /// <param name="accountId">the account ID</param>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>a paged list of standing order records</returns>
+        public PagedList<StandingOrder> GetStandingOrdersBlocking(
+                string accountId,
+                int limit,
+                Level keyLevel,
+                string offset = null)
+        {
+            return GetStandingOrders(accountId, limit, keyLevel, offset).Result;
         }
 
         /// <summary>

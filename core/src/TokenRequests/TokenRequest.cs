@@ -1,9 +1,12 @@
+using System;
+using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.ProviderSpecific;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Utils;
-
+using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types;
+using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types.AccountResourceList.Types;
 
 namespace Tokenio.TokenRequests
 {
@@ -28,9 +31,59 @@ namespace Tokenio.TokenRequests
         /// <param name="resources">access token resources</param>
         /// <returns>Builder instance</returns>
         public static AccessBuilder AccessTokenRequestBuilder(
-            params TokenRequestPayload.Types.AccessBody.Types.ResourceType[] resources)
+            params ResourceType[] resources)
         {
             return new AccessBuilder(resources);
+        }
+        
+        /// <summary>
+        /// Create a new Builder instance for an access token request with account-specific resources.
+        /// </summary>
+        /// <param name="list">list of account-specific access token resources</param>
+        /// <returns>Builder instance</returns>
+        public static AccessBuilder AccessTokenRequestBuilder(AccountResourceList list)
+        {
+            return new AccessBuilder(list);
+        }
+        
+        /// <summary>
+        /// Create a Builder instance for a funds confirmation request.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="account">the user's account</param>
+        /// <returns>Builder instance</returns>
+        public static AccessBuilder FundsConfirmationRequestBuilder(
+                string bankId,
+                BankAccount account)
+        {
+            return FundsConfirmationRequestBuilder(bankId, account, null);
+        }
+        
+        /// <summary>
+        /// Create a Builder instance for a funds confirmation request.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="account">the user's account</param>
+        /// <param name="data">optional customer data</param>
+        /// <returns>Builder instance</returns>
+        public static AccessBuilder FundsConfirmationRequestBuilder(
+                string bankId,
+                BankAccount account,
+                CustomerData data)
+        {
+            AccountResource builder = new AccountResource
+            {
+                BankAccount = account,
+                Type = AccountResourceType.AccountFundsConfirmation
+            };
+            if (data != null)
+            {
+                builder.CustomerData = data;
+            }
+            var list = new AccountResourceList();
+            list.Resources.Add(builder);
+            return new AccessBuilder(list)
+                    .SetBankId(bankId);
         }
 
         /// <summary>
@@ -58,7 +111,7 @@ namespace Tokenio.TokenRequests
         /// <param name="tokenRequestPayload">TokenRequestPayload</param>
         /// <param name="tokenRequestOptions">TokenRequestOptions</param>
         /// <returns></returns>
-        public static TokenRequest fromProtos(
+        public static TokenRequest FromProtos(
             TokenRequestPayload tokenRequestPayload,
             TokenRequestOptions tokenRequestOptions)
         {
@@ -88,7 +141,7 @@ namespace Tokenio.TokenRequests
             public T SetBankId(string bankId)
             {
                 requestOptions.BankId = bankId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -99,7 +152,7 @@ namespace Tokenio.TokenRequests
             public T SetFromMemberId(string fromMemberId)
             {
                 requestOptions.From.Id = fromMemberId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -110,7 +163,7 @@ namespace Tokenio.TokenRequests
             public T SetFromAlias(Alias fromAlias)
             {
                 requestOptions.From.Alias = fromAlias;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -121,7 +174,7 @@ namespace Tokenio.TokenRequests
             public T SetSourceAccount(string sourceAccountId)
             {
                 requestOptions.SourceAccountId = sourceAccountId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -133,7 +186,7 @@ namespace Tokenio.TokenRequests
             public T SetReceiptRequested(bool receiptRequested)
             {
                 requestOptions.ReceiptRequested = receiptRequested;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -144,7 +197,7 @@ namespace Tokenio.TokenRequests
             public T SetUserRefId(string refId)
             {
                 requestPayload.UserRefId = refId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -155,7 +208,7 @@ namespace Tokenio.TokenRequests
             public T SetCustomizationId(string customizationId)
             {
                 requestPayload.CustomizationId = customizationId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -166,7 +219,7 @@ namespace Tokenio.TokenRequests
             public T SetRedirectUrl(string redirectUrl)
             {
                 requestPayload.RedirectUrl = redirectUrl;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -177,7 +230,7 @@ namespace Tokenio.TokenRequests
             public T SetRefId(string refId)
             {
                 requestPayload.RefId = refId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -188,7 +241,7 @@ namespace Tokenio.TokenRequests
             public T SetToAlias(Alias toAlias)
             {
                 requestPayload.To.Alias = toAlias;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -199,7 +252,7 @@ namespace Tokenio.TokenRequests
             public T SetToMemberId(string memberId)
             {
                 requestPayload.To.Id = memberId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -210,7 +263,7 @@ namespace Tokenio.TokenRequests
             public T SetActingAs(ActingAs actingAs)
             {
                 requestPayload.ActingAs = actingAs;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -221,7 +274,7 @@ namespace Tokenio.TokenRequests
             public T SetDescription(string description)
             {
                 requestPayload.Description = description;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -233,7 +286,7 @@ namespace Tokenio.TokenRequests
             public T SetState(string state)
             {
                 oauthState = state;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -245,14 +298,14 @@ namespace Tokenio.TokenRequests
             public T SetCsrfToken(string csrfToken)
             {
                 this.csrfToken = csrfToken;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
             /// Builds the Token payload
             /// </summary>
             /// <returns>TokenRequest instance</returns>
-            public TokenRequest build()
+            public TokenRequest Build()
             {
                 string serializeState = TokenRequestState.Create(
                     csrfToken == null ? "" : Util.HashString(csrfToken),
@@ -266,11 +319,21 @@ namespace Tokenio.TokenRequests
 
         public class AccessBuilder : Builder<AccessBuilder>
         {
-            public AccessBuilder(params TokenRequestPayload.Types.AccessBody.Types.ResourceType[] resources)
+            public AccessBuilder(params ResourceType[] resources)
             {
+                var resourcesList = new ResourceTypeList();
+                resourcesList.Resources.Add(resources);
                 requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
                 {
-                    Type = {resources}
+                    ResourceTypeList = resourcesList
+                };
+            }
+
+            public AccessBuilder(AccountResourceList list)
+            {
+                this.requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
+                {
+                    AccountResourceList = list
                 };
             }
         }
@@ -336,13 +399,256 @@ namespace Tokenio.TokenRequests
             }
 
             /// <summary>
-            /// Adds metadata for a specific provider.
+            /// Sets the execution date of the transfer. Used for future-dated payments.
+            /// </summary>
+            /// <param name="executionDate">execution date</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetExecutionDate(DateTime executionDate)
+            {
+                this.requestPayload.TransferBody
+                        .ExecutionDate = executionDate.ToString(Util.BASIC_ISO_DATE);
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Adds metadata for a specific provider.
             /// </summary>
             /// <param name="metadata">provider-specific metadata</param>
             /// <returns>builder</returns>
             public TransferBuilder SetProviderMetadata(ProviderTransferMetadata metadata)
             {
                 requestPayload.TransferBody.Instructions.Metadata.ProviderTransferMetadata = metadata;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Set the bearer for any Foreign Exchange fees incurred on the transfer.
+            /// </summary>
+            /// <param name="chargeBearer">Bearer of the charges for any Fees related to the transfer.</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetChargeBearer(ChargeBearer chargeBearer)
+            {
+                this.requestPayload.TransferBody
+                        .Instructions
+                        .Metadata
+                        .ChargeBearer = chargeBearer;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Sets the ultimate party to which the money is due.
+            /// </summary>
+            /// <param name="ultimateCreditor">the ultimate creditor</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetUltimateCreditor(string ultimateCreditor)
+            {
+                this.requestPayload.TransferBody
+                        .Instructions
+                        .Metadata
+                        .UltimateCreditor = ultimateCreditor;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Sets ultimate party that owes the money to the (ultimate) creditor.
+            /// </summary>
+            /// <param name="ultimateDebtor">the ultimate debtor</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetUltimateDebtor(string ultimateDebtor)
+            {
+                this.requestPayload.TransferBody
+                        .Instructions
+                        .Metadata
+                        .UltimateCreditor = ultimateDebtor;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Sets the purpose code. Refer to ISO 20022 external code sets.
+            /// </summary>
+            /// <param name="purposeCode">the purpose code</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetPurposeCode(string purposeCode)
+            {
+                this.requestPayload.TransferBody
+                        .Instructions
+                        .Metadata
+                        .PurposeCode = purposeCode;
+                return this;
+            }
+            
+            /// <summary>
+            /// Optional. Sets whether CAF should be attempted before transfer.
+            /// </summary>
+            /// <param name="confirmFunds"> whether to attempt CAF before transfer</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetConfirmFunds(bool confirmFunds)
+            {
+                this.requestPayload.TransferBody
+                        .ConfirmFunds = confirmFunds;
+                return this;
+            }
+        }
+
+        public class StandingOrderBuilder : Builder<StandingOrderBuilder>
+        {
+            StandingOrderBuilder()
+            {
+                this.requestPayload.StandingOrderBody = new StandingOrderBody();
+            }
+
+            /// <summary>
+            /// Sets the amount per charge of the standing order.
+            /// </summary>
+            /// <param name="amount">amount per individual charge</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetAmount(double amount)
+            {
+                this.requestPayload.StandingOrderBody
+                        .Amount = amount.ToString();
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the currency for each charge in the standing order.
+            /// </summary>
+            /// <param name="currency">currency</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetCurrency(string currency)
+            {
+                this.requestPayload.StandingOrderBody
+                        .Currency = currency;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the frequency of the standing order. ISO 20022: DAIL, WEEK, TOWK,
+            /// MNTH, TOMN, QUTR, SEMI, YEAR
+            /// </summary>
+            /// <param name="frequency">frequency of the standing order</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetFrequency(string frequency)
+            {
+                this.requestPayload.StandingOrderBody
+                        .Frequency = frequency;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the start date of the standing order. ISO 8601: YYYY-MM-DD or YYYYMMDD.
+            /// </summary>
+            /// <param name="startDate">start date of the standing order</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetStartDate(string startDate)
+            {
+                this.requestPayload.StandingOrderBody
+                        .StartDate = startDate;
+                return this;
+            }
+
+            /// <summary>
+            /// Sets the end date of the standing order. ISO 8601: YYYY-MM-DD or YYYYMMDD.
+            /// If not specified, the standing order will occur indefinitely.
+            /// </summary>
+            /// <param name="endDate">end date of the standing order</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetEndDate(string endDate)
+            {
+                this.requestPayload.StandingOrderBody
+                        .EndDate = endDate;
+                return this;
+            }
+
+            /// <summary>
+            /// Adds a transfer destination to a transfer token request.
+            /// </summary>
+            /// <param name="destination">destination</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder AddDestination(TransferDestination destination)
+            {
+                this.requestPayload.StandingOrderBody.Instructions
+                        .TransferDestinations.Add(destination);
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Sets the destination country in order to narrow down
+            /// the country selection in the web-app UI.
+            /// </summary>
+            /// <param name="destinationCountry">destination country</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetDestinationCountry(string destinationCountry)
+            {
+                this.requestPayload.DestinationCountry = destinationCountry;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Sets the source account to bypass account selection.
+            /// </summary>
+            /// <param name="source">source</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetSource(TransferEndpoint source)
+            {
+                this.requestPayload.StandingOrderBody
+                        .Instructions
+                        .Source = source;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Adds metadata for a specific provider.
+            /// </summary>
+            /// <param name="metadata">provider-specific metadata</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetProviderTransferMetadata(ProviderTransferMetadata metadata)
+            {
+                this.requestPayload.StandingOrderBody
+                        .Instructions
+                        .Metadata
+                        .ProviderTransferMetadata = metadata;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Sets the ultimate party to which the money is due.
+            /// </summary>
+            /// <param name="ultimateCreditor">the ultimate creditor</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetUltimateCreditor(string ultimateCreditor)
+            {
+                this.requestPayload.TransferBody
+                        .Instructions
+                        .Metadata
+                        .UltimateCreditor = ultimateCreditor;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Sets ultimate party that owes the money to the (ultimate) creditor.
+            /// </summary>
+            /// <param name="ultimateDebtor">the ultimate debtor</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetUltimateDebtor(string ultimateDebtor)
+            {
+                this.requestPayload.TransferBody
+                        .Instructions
+                        .Metadata
+                        .UltimateCreditor = ultimateDebtor;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. Sets the purpose code. Refer to ISO 20022 external code sets.
+            /// </summary>
+            /// <param name="purposeCode">the purpose code</param>
+            /// <returns>builder</returns>
+            public StandingOrderBuilder SetPurposeCode(string purposeCode)
+            {
+                this.requestPayload.TransferBody
+                        .Instructions
+                        .Metadata
+                        .PurposeCode = purposeCode;
                 return this;
             }
         }

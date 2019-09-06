@@ -122,6 +122,58 @@ namespace Tokenio.Tpp
             Level keyLevel);
 
         /// <summary>
+        /// Looks up an existing standing order for a given account.
+        /// </summary>
+        /// <param name="accountId">the account ID</param>
+        /// <param name="standingOrderId">ID of the standing order</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>standing order record</returns>
+        Task<StandingOrder> GetStandingOrder(
+                string accountId,
+                string standingOrderId,
+                Level keyLevel);
+
+        /// <summary>
+        /// Looks up an existing standing order for a given account.
+        /// </summary>
+        /// <param name="accountId">the account ID</param>
+        /// <param name="standingOrderId">ID of the standing order</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>standing order record</returns>
+        StandingOrder GetStandingOrderBlocking(
+                string accountId,
+                string standingOrderId,
+                Level keyLevel);
+
+        /// <summary>
+        /// Looks up standing orders for a given account.
+        /// </summary>
+        /// <param name="accountId">the account ID</param>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>a paged list of standing order records</returns>
+        Task<PagedList<StandingOrder>> GetStandingOrders(
+                string accountId,
+                int limit,
+                Level keyLevel,
+                string offset = null);
+
+        /// <summary>
+        /// Looks up standing orders for a given account.
+        /// </summary>
+        /// <param name="accountId">the account ID</param>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>a paged list of standing order records</returns>
+        PagedList<StandingOrder> GetStandingOrdersBlocking(
+                string accountId,
+                int limit,
+                Level keyLevel,
+                string offset = null);
+
+        /// <summary>
         /// Resolves transfer destinations for the given account.
         /// </summary>
         /// <param name="accountId">the account id</param>

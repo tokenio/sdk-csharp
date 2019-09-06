@@ -15,7 +15,6 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
-using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.Utils;
@@ -163,7 +162,6 @@ namespace Tokenio.Rpc
             };
         }
 
-
         /// <summary>
         /// Looks up a linked funding account.
         /// </summary>
@@ -188,8 +186,6 @@ namespace Tokenio.Rpc
             return acc;
         }
 
-
-
         /// <summary>
         /// Look up account balance.
         /// </summary>
@@ -203,12 +199,15 @@ namespace Tokenio.Rpc
             return gateway(authenticateOnBehalfOf(keyLevel)).GetBalanceAsync(request)
                 .ToTask(response =>
                 {
-                    if (response.Status.Equals(RequestStatus.SuccessfulRequest))
+                    switch (response.Status)
                     {
-                        return response.Balance;
+                        case RequestStatus.SuccessfulRequest:
+                            return response.Balance;
+                        case RequestStatus.MoreSignaturesNeeded:
+                            throw new StepUpRequiredException("Balance step up required.");
+                        default:
+                            throw new RequestException(response.Status);
                     }
-
-                    throw new StepUpRequiredException("Balance step up required.");
                 });
         }
 
@@ -225,10 +224,24 @@ namespace Tokenio.Rpc
                 AccountId = { accountIds }
             };
             return gateway(authenticateOnBehalfOf(keyLevel)).GetBalancesAsync(request)
-                .ToTask(response => (IList<Balance>)response.Response
-                    .Where(res => res.Status.Equals(RequestStatus.SuccessfulRequest))
-                    .Select(res => res.Balance)
-                    .ToList());
+                .ToTask(response =>
+                {
+                    IList<Balance> balances = new List<Balance>();
+                    foreach (GetBalanceResponse getBalanceResponse in response.Response)
+                    {
+                        switch (getBalanceResponse.Status)
+                        {
+                            case RequestStatus.SuccessfulRequest:
+                                balances.Add(getBalanceResponse.Balance);
+                                break;
+                            case RequestStatus.MoreSignaturesNeeded:
+                                throw new StepUpRequiredException("Balance step up required.");
+                            default:
+                                throw new RequestException(getBalanceResponse.Status);
+                        }
+                    }
+                    return balances;
+                });
         }
 
         /// <summary>
@@ -252,12 +265,15 @@ namespace Tokenio.Rpc
             return gateway(authenticateOnBehalfOf(keyLevel)).GetTransactionAsync(request)
                 .ToTask(response =>
                 {
-                    if (response.Status.Equals(RequestStatus.SuccessfulRequest))
+                    switch (response.Status)
                     {
-                        return response.Transaction;
+                        case RequestStatus.SuccessfulRequest:
+                            return response.Transaction;
+                        case RequestStatus.MoreSignaturesNeeded:
+                            throw new StepUpRequiredException("Balance step up required.");
+                        default:
+                            throw new RequestException(response.Status);
                     }
-
-                    throw new StepUpRequiredException("Transaction step up required.");
                 });
         }
 
@@ -285,13 +301,84 @@ namespace Tokenio.Rpc
             return gateway(authenticateOnBehalfOf(keyLevel)).GetTransactionsAsync(request)
                 .ToTask(response =>
                 {
-                    if (response.Status.Equals(RequestStatus.SuccessfulRequest))
+                    switch (response.Status)
                     {
-                        return new PagedList<Transaction>(response.Transactions, response.Offset);
+                        case RequestStatus.SuccessfulRequest:
+                            return new PagedList<Transaction>(response.Transactions,response.Offset);
+                        case RequestStatus.MoreSignaturesNeeded:
+                            throw new StepUpRequiredException("Balance step up required.");
+                        default:
+                            throw new RequestException(response.Status);
                     }
-
-                    throw new StepUpRequiredException("Transactions step up required.");
                 });
+        }
+        
+        /// <summary>
+        /// Look up an existing standing order and return the response.
+        /// </summary>
+        /// <param name="accountId">account ID</param>
+        /// <param name="standingOrderId">standing order ID</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>transaction</returns>
+        public Task<StandingOrder> GetStandingOrder(
+            string accountId,
+            string standingOrderId,
+            Level keyLevel)
+        {
+            var request = new GetStandingOrderRequest
+            {
+                AccountId = accountId,
+                StandingOrderId = standingOrderId
+            };
+            return gateway(authenticateOnBehalfOf(keyLevel))
+                    .GetStandingOrderAsync(request)
+                    .ToTask(response =>
+                    {
+                        switch (response.Status)
+                        {
+                            case RequestStatus.SuccessfulRequest:
+                                return response.StandingOrder;
+                            case RequestStatus.MoreSignaturesNeeded:
+                                throw new StepUpRequiredException("Balance step up required.");
+                            default:
+                                throw new RequestException(response.Status);
+                        }
+                    });
+        }
+        
+        /// <summary>
+        /// Look up standing orders and return response.
+        /// </summary>
+        /// <param name="accountId">account ID</param>
+        /// <param name="limit">limit</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">offset</param>
+        /// <returns></returns>
+        public Task<PagedList<StandingOrder>> GetStandingOrders(
+                string accountId,
+                int limit,
+                Level keyLevel,
+                string offset = null)
+        {
+            var request = new GetStandingOrdersRequest
+            {
+                AccountId = accountId,
+                Page = PageBuilder(limit, offset)
+            };
+            return gateway(authenticateOnBehalfOf(keyLevel))
+                    .GetStandingOrdersAsync(request)
+                    .ToTask(response =>
+                    {
+                        switch (response.Status)
+                        {
+                            case RequestStatus.SuccessfulRequest:
+                                return new PagedList<StandingOrder>(response.StandingOrders, response.Offset);
+                            case RequestStatus.MoreSignaturesNeeded:
+                                throw new StepUpRequiredException("Balance step up required.");
+                            default:
+                                throw new RequestException(response.Status);
+                        }
+                    });
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using Tokenio.Proto.Common.EidasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.NotificationProtos;
+using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
@@ -340,7 +340,7 @@ namespace Tokenio.Tpp
 
             return client.CreateTransfer(payload);
         }
-               
+
         /// <summary>
         /// Redeems the token.
         /// </summary>
@@ -350,7 +350,7 @@ namespace Tokenio.Tpp
         /// <param name="currency">Currency.</param>
         /// <param name="description">Description.</param>
         /// <param name="refId">Reference identifier.</param>
-		public Task<Transfer> RedeemToken(
+        public Task<Transfer> RedeemToken(
            Token token,
            double? amount,
            string currency = null,
@@ -550,6 +550,26 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
+        /// Redeems a standing order token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>standing order submission</returns>
+        public Task<StandingOrderSubmission> RedeemStandingOrderToken(string tokenId)
+        {
+            return client.CreateStandingOrder(tokenId);
+        }
+
+        /// <summary>
+        /// Redeems a standing order token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>standing order submission</returns>
+        public StandingOrderSubmission RedeemStandingOrderTokenBlocking(string tokenId)
+        {
+            return RedeemStandingOrderToken(tokenId).Result;
+        }
+
+        /// <summary>
         /// Stores a token request.
         /// </summary>
         /// <param name="requestPayload">the token request payload (immutable fields)</param>
@@ -557,7 +577,7 @@ namespace Tokenio.Tpp
         /// <returns>an id to reference the token request</returns>
         public Task<string> StoreTokenRequest(
             TokenRequestPayload requestPayload,
-            Proto.Common.TokenProtos.TokenRequestOptions requestOptions)
+            TokenRequestOptions requestOptions)
         {
             return client.StoreTokenRequest(requestPayload, requestOptions);
         }
@@ -570,11 +590,11 @@ namespace Tokenio.Tpp
         /// <returns>an id to reference the token request</returns>
         public string StoreTokenRequestBlocking(
             TokenRequestPayload requestPayload,
-            Proto.Common.TokenProtos.TokenRequestOptions requestOptions)
+            TokenRequestOptions requestOptions)
         {
             return StoreTokenRequest(requestPayload, requestOptions).Result;
         }
-        
+
         /// <summary>
         /// Stores a token request. This can be retrieved later by the token request id.
         /// </summary>
@@ -656,6 +676,26 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
+        /// Looks up an existing Token standing order submission.
+        /// </summary>
+        /// <param name="submissionId">ID of the standing orde submission</param>
+        /// <returns>standing order submission</returns>
+        public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
+        {
+            return client.GetStandingOrderSubmission(submissionId);
+        }
+
+        /// <summary>
+        /// Looks up an existing Token standing order submission.
+        /// </summary>
+        /// <param name="submissionId">ID of the standing orde submission</param>
+        /// <returns>standing order submission</returns>
+        public StandingOrderSubmission GetStandingOrderSubmissionBlocking(string submissionId)
+        {
+            return GetStandingOrderSubmission(submissionId).Result;
+        }
+
+        /// <summary>
         /// Looks up existing token transfers.
         /// </summary>
         /// <param name="tokenId">nullable token id</param>
@@ -683,6 +723,32 @@ namespace Tokenio.Tpp
             int limit)
         {
             return GetTransfers(tokenId, offset, limit).Result;
+        }
+
+        /// <summary>
+        /// Looks up existing Token standing order submissions.
+        /// </summary>
+        /// <param name="limit">max number of submissions to return</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>standing order submissions</returns>
+        public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
+                int limit,
+                string offset = null)
+        {
+            return client.GetStandingOrderSubmissions(limit, offset);
+        }
+
+        /// <summary>
+        /// Looks up existing Token standing order submissions.
+        /// </summary>
+        /// <param name="limit">max number of submissions to return</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>standing order submissions</returns>
+        public PagedList<StandingOrderSubmission> GetStandingOrderSubmissionsBlocking(
+                int limit,
+                string offset = null)
+        {
+            return GetStandingOrderSubmissions(limit, offset).Result;
         }
 
         /// <summary>

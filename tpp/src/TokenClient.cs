@@ -13,7 +13,6 @@ using ManagedChannel = Tokenio.Rpc.ManagedChannel;
 using TokenRequestStatePayload = Tokenio.Proto.Common.TokenProtos.TokenRequestStatePayload;
 using WebUtility = System.Net.WebUtility;
 
-
 namespace Tokenio.Tpp
 {
     public class TokenClient : Tokenio.TokenClient
@@ -185,7 +184,7 @@ namespace Tokenio.Tpp
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.RetrieveTokenRequest(requestId)
-                .Map(tokenRequest => TokenRequest.fromProtos(
+                .Map(tokenRequest => TokenRequest.FromProtos(
                     tokenRequest.RequestPayload,
                     tokenRequest.RequestOptions));
         }

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Rpc;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
@@ -167,6 +168,62 @@ namespace Tokenio
             Level keyLevel)
         {
             return GetTransactions(offset, limit, keyLevel).Result;
+        }
+
+        /// <summary>
+        /// Looks up an existing standing order for a given account.
+        /// </summary>
+        /// <param name="standingOrderId">ID of the standing order</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>standing order record</returns>
+        public Task<StandingOrder> GetStandingOrder(
+            string standingOrderId,
+            Level keyLevel)
+        {
+            return client.GetStandingOrder(account.Id, standingOrderId, keyLevel);
+        }
+
+        /// <summary>
+        /// Looks up an existing standing order for a given account.
+        /// </summary>
+        /// <param name="standingOrderId">ID of the standing order</param>
+        /// <param name="keyLevel">key level</param>
+        /// <returns>standing order record</returns>
+        public StandingOrder GetStandingOrderBlocking(
+                string standingOrderId,
+                Level keyLevel)
+        {
+            return GetStandingOrder(standingOrderId, keyLevel).Result;
+        }
+        
+        /// <summary>
+        /// Looks up standing orders for a given account.
+        /// </summary>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>a paged list of standing order records</returns>
+        public Task<PagedList<StandingOrder>> GetStandingOrders(
+                int limit,
+                Level keyLevel,
+                string offset = null)
+        {
+            return client.GetStandingOrders(account.Id, limit, keyLevel, offset);
+        }
+
+        /// <summary>
+        /// Looks up standing orders for a given account.
+        /// </summary>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>a paged list of standing order records</returns>
+        public PagedList<StandingOrder> GetStandingOrdersBlocking(
+                int limit,
+                Level keyLevel,
+                string offset =null)
+        {
+            return GetStandingOrders(limit, keyLevel, offset).Result;
         }
 
         public override int GetHashCode()
