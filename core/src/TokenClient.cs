@@ -649,7 +649,7 @@ namespace Tokenio
             protected Metadata GetHeaders()
             {
                 Metadata metadata = new Metadata();
-                metadata.Add("token-sdk", "csharp");
+                metadata.Add("token-sdk", GetPlatform());
                 metadata.Add(
                 "token-sdk-version",
                 Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
@@ -661,6 +661,14 @@ namespace Tokenio
                 return metadata;
             }
 
+            /// <summary>
+            /// Gets the platform.
+            /// </summary>
+            /// <returns>the platform</returns>
+            protected virtual string GetPlatform()
+            {
+                throw new NotSupportedException();
+            }
 
             /// <summary>
             /// Builds and returns a new <see cref="TokenClient"/> instance.

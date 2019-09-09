@@ -391,6 +391,12 @@ namespace Tokenio.Tpp
 
         public class Builder : Builder<Builder>
         {
+            /// <inheritdoc />
+            protected override string GetPlatform()
+            {
+                return "csharp-tpp";
+            }
+
             /// <summary>
             /// Creates new builder instance with the defaults initialized.
             /// </summary>

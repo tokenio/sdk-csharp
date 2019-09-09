@@ -527,6 +527,12 @@ namespace Tokenio.User
         {
             private IBrowserFactory browserFactory;
 
+            /// <inheritdoc />
+            protected override string GetPlatform()
+            {
+                return "csharp-user";
+            }
+
             /// <summary>
             /// Sets the browser factory to be used with the SDK.
             /// </summary>
