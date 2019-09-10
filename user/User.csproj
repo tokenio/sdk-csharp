@@ -5,7 +5,7 @@
     <AssemblyName>Token.SDK.User</AssemblyName>
     <RootNamespace>Tokenio.User</RootNamespace>
     <Copyright>Copyright 2019 Token, Inc</Copyright>
-    <Description>C# SDK for interacting with the Token System</Description>
+    <Description>C# User SDK for interacting with the Token System</Description>
     <Company>Token, Inc</Company>
     <Authors>Token, Inc</Authors>
     <Version>0.0.1</Version>

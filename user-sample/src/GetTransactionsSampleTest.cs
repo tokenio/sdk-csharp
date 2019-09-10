@@ -58,7 +58,6 @@ namespace Tokenio.Sample.User
 
                 Assert.Equal(transaction.TokenId, token.Id);
             }
-
         }
     }
 }
