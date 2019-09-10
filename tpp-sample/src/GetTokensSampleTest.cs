@@ -2,10 +2,9 @@
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Xunit;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 using UserMember = Tokenio.User.Member;
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public class GetTokensSampleTest
     {
@@ -13,7 +12,7 @@ namespace TokenioSample
         [Fact]
         public void GetTokenTest()
         {
-            using  (TokenClient tokenClient = TestUtil.CreateClient()) {
+            using  (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
                 UserMember payer = TestUtil.CreateUserMember();
                 Alias payeeAlias = TestUtil.RandomAlias();
                 TppMember payee = tokenClient.CreateMemberBlocking(payeeAlias);

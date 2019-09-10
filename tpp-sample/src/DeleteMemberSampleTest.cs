@@ -1,17 +1,16 @@
 ﻿using System;
 using Xunit;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public class DeleteMemberSampleTest
     {
         [Fact]
         public void DeleteMemberTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 TppMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
 

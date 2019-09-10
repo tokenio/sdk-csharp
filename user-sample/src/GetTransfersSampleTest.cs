@@ -1,19 +1,17 @@
-﻿using Tokenio;
-using Tokenio.Proto.Common.AliasProtos;
+﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Xunit;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class GetTransfersSampleTest
     {
         [Fact]
         public void GetTransfersTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
@@ -36,7 +34,7 @@ namespace TokenioSample
         [Fact]
         public void GetTransferTokensTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
@@ -59,7 +57,7 @@ namespace TokenioSample
         [Fact]
         public void GetTransferTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();

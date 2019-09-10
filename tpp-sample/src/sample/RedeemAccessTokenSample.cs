@@ -1,9 +1,9 @@
 ﻿using Tokenio.Proto.Common.MoneyProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Tpp;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     /// <summary>
     /// Redeems an information access token.
@@ -29,7 +29,7 @@ namespace TokenioSample
             var accounts = grantor.GetAccountsBlocking();
 
             // Get the data we want
-            Money balance0 = accounts[0].GetBalanceBlocking(Level.Standard).Current;
+            Money balance0 = accounts[0].GetBalanceBlocking(Key.Types.Level.Standard).Current;
             // forAccessToken snippet end
             return balance0;
         }

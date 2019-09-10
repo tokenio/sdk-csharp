@@ -1,17 +1,16 @@
 ﻿using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Security;
 using Xunit;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public class MemberMethodsSampleTest
     {
         [Fact]
         public void KeysTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient()) {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
                 IKeyStore keyStore = new InMemoryKeyStore();
                 ICryptoEngine cryptoEngine = new TokenCryptoEngine("member-id", keyStore);
 
@@ -24,7 +23,7 @@ namespace TokenioSample
       [Fact]
     public void ProfilesTest()
         {
-            using  (TokenClient tokenClient = TestUtil.CreateClient()) {
+            using  (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
                 TppMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 Profile profile = MemberMethodsSample.Profiles(member);
 

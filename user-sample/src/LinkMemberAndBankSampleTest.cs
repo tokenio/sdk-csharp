@@ -1,15 +1,14 @@
 ﻿using Xunit;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class LinkMemberAndBankSampleTest
     {
         [Fact]
         public void LinkMemberAndBankTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
 

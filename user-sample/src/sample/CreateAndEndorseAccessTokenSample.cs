@@ -1,8 +1,8 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     /// <summary>
     /// Creates an information access token and endorses it to a grantee.
@@ -34,7 +34,7 @@ namespace TokenioSample
             // with her secure private key.
             accessToken = grantor.EndorseTokenBlocking(
                     accessToken,
-                        Level.Low).Token;
+                        Key.Types.Level.Low).Token;
 
             return accessToken;
         }

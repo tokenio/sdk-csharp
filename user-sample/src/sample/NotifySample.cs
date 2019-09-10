@@ -2,9 +2,8 @@
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.User.Utils;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public static class NotifySample
     {
@@ -18,7 +17,7 @@ namespace TokenioSample
         /// <param name="payerAlias">payer Token member alias</param>
         /// <returns>a transfer Token</returns>
         public static NotifyStatus NotifyPaymentRequest(
-           TokenClient tokenClient,
+           Tokenio.User.TokenClient tokenClient,
            UserMember payee,
            Alias payerAlias)
         {

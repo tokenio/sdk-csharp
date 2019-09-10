@@ -4,7 +4,7 @@ using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.User.Utils;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     /// <summary>
     /// Redeems a transfer token.

@@ -1,10 +1,10 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.User;
 using Tokenio.User.Utils;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     /// <summary>
     /// Creates a transfer token and endorses it to a payee.
@@ -42,7 +42,7 @@ namespace TokenioSample
             // Payer endorses a token to a payee by signing it
             // with her secure private key.
             Token transferToken = payer.CreateTokenBlocking(
-                    result.TokenPayload, Level.Low);
+                    result.TokenPayload, Key.Types.Level.Low);
 
             return transferToken;
         }

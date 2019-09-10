@@ -4,11 +4,9 @@ using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Security;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public static class MemberMethodsSample
     {
@@ -51,7 +49,7 @@ namespace TokenioSample
         /// Resolves a user's alias.
         /// </summary>
         /// <param name="client">token client</param>
-        public static void ResolveAlias(TokenClient client)
+        public static void ResolveAlias(Tokenio.Tpp.TokenClient client)
         {
             Alias alias = new Alias
             {
@@ -79,11 +77,11 @@ namespace TokenioSample
         /// <param name="member">member</param>
         public static void Keys(ICryptoEngine crypto, TppMember member)
         {
-            Key lowKey = crypto.GenerateKey(Level.Low);
+            Key lowKey = crypto.GenerateKey(Key.Types.Level.Low);
             member.ApproveKeyBlocking(lowKey);
 
-            Key standardKey = crypto.GenerateKey(Level.Standard);
-            Key privilegedKey = crypto.GenerateKey(Level.Privileged);
+            Key standardKey = crypto.GenerateKey(Key.Types.Level.Standard);
+            Key privilegedKey = crypto.GenerateKey(Key.Types.Level.Privileged);
             member.ApproveKeysBlocking(new[] { standardKey, privilegedKey });
 
             member.RemoveKeyBlocking(lowKey.Id);

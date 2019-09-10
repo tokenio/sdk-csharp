@@ -4,11 +4,9 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
-using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     /// <summary>
     /// Illustrate steps of Member recovery.
@@ -31,7 +29,7 @@ namespace TokenioSample
         /// <param name="tokenClient">SDK client</param>
         /// <param name="alias">alias of member to recoverWithDefaultRule</param>
         /// <returns>recovered member</returns>
-        public TppMember RecoverWithDefaultRule(TokenClient tokenClient, Alias alias)
+        public TppMember RecoverWithDefaultRule(Tokenio.Tpp.TokenClient tokenClient, Alias alias)
         {
             string verificationId = tokenClient.BeginRecoveryBlocking(alias);
             // recoverWithDefault begin snippet to include in docs
@@ -64,7 +62,7 @@ namespace TokenioSample
         /// <param name="agentAlias">Alias of recovery agent.</param>
         public void SetUpComplexRecoveryRule(
                 TppMember newMember,
-                TokenClient tokenClient,
+                Tokenio.Tpp.TokenClient tokenClient,
                 Alias agentAlias)
         {
             // setUpComplex begin snippet to include in docs
@@ -97,7 +95,7 @@ namespace TokenioSample
         /// </summary>
         /// <param name="authorization">client's claim to be some member</param>
         /// <returns>if authorization seems legitimate, return signature; else error</returns>
-        public Signature getRecoveryAgentSignature(Authorization authorization)
+        public Signature getRecoveryAgentSignature(MemberRecoveryOperation.Types.Authorization authorization)
         {
             // authorizeRecovery begin snippet to include in doc
             // "Remember" whether this person who claims to be member with
@@ -118,7 +116,7 @@ namespace TokenioSample
         /// <param name="alias">Alias of member to recover</param>
         /// <returns>recovered member</returns>
         public TppMember RecoverWithComplexRule(
-                TokenClient tokenClient,
+                Tokenio.Tpp.TokenClient tokenClient,
                 Alias alias)
         {
             // complexRecovery begin snippet to include in docs
@@ -128,7 +126,7 @@ namespace TokenioSample
             Key newKey = cryptoEngine.GenerateKey(Key.Types.Level.Privileged);
 
             string verificationId = tokenClient.BeginRecoveryBlocking(alias);
-            Authorization authorization = tokenClient.CreateRecoveryAuthorizationBlocking(
+            MemberRecoveryOperation.Types.Authorization authorization = tokenClient.CreateRecoveryAuthorizationBlocking(
                     memberId,
                     newKey);
 

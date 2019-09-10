@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Tokenio.Proto.Common.TransactionProtos;
 using Xunit;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class GetBalanceSampleTest
     {
@@ -12,7 +11,7 @@ namespace TokenioSample
         [Fact]
         public void MemberGetBalanceSampleTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 member.CreateTestBankAccountBlocking(1000.0, "EUR");
@@ -25,7 +24,7 @@ namespace TokenioSample
         [Fact]
         public void AccountGetBalanceSampleTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 member.CreateTestBankAccountBlocking(1000.0, "EUR");
@@ -38,7 +37,7 @@ namespace TokenioSample
         [Fact]
         public void MemberGetBalancesSampleTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 member.CreateTestBankAccountBlocking(1000.0, "EUR");

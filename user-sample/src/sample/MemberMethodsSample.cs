@@ -6,10 +6,8 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Security;
 using Tokenio.User.Utils;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public static class MemberMethodsSample
     {
@@ -35,7 +33,7 @@ namespace TokenioSample
         /// <param name="tokenClient">token client</param>
         /// <param name="member">member</param>
         /// <returns>resolved member ID and alias</returns>
-        public static TokenMember Aliases(TokenClient tokenClient, UserMember member)
+        public static TokenMember Aliases(Tokenio.User.TokenClient tokenClient, UserMember member)
         {
             Alias alias1 = member.GetFirstAliasBlocking();
 
@@ -82,11 +80,11 @@ namespace TokenioSample
         /// <param name="member">member</param>
         public static void Keys(ICryptoEngine crypto, UserMember member)
         {
-            Key lowKey = crypto.GenerateKey(Level.Low);
+            Key lowKey = crypto.GenerateKey(Key.Types.Level.Low);
             member.ApproveKeyBlocking(lowKey);
 
-            Key standardKey = crypto.GenerateKey(Level.Standard);
-            Key privilegedKey = crypto.GenerateKey(Level.Privileged);
+            Key standardKey = crypto.GenerateKey(Key.Types.Level.Standard);
+            Key privilegedKey = crypto.GenerateKey(Key.Types.Level.Privileged);
             member.ApproveKeysBlocking(new[] { standardKey, privilegedKey });
 
             member.RemoveKeyBlocking(lowKey.Id);

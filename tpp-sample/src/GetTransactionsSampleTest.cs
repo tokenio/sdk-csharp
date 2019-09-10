@@ -1,22 +1,20 @@
-﻿using Tokenio;
-using Tokenio.Proto.Common.AliasProtos;
+﻿using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Xunit;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public class GetTransactionsSampleTest
     {
         [Fact]
         public void GetTransactionsTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
             {
 
                 UserMember payer = TestUtil.CreateUserMember();
@@ -36,7 +34,7 @@ namespace TokenioSample
                 Transaction transaction = payer.GetTransactionBlocking(
                         payer.GetAccountsBlocking()[0].Id(),
                         transactionId,
-                        Level.Standard);
+                        Key.Types.Level.Standard);
                 Assert.Equal(transaction.TokenId, token.Id);
             }
         }
@@ -44,7 +42,7 @@ namespace TokenioSample
         [Fact]
         public void AccountGetTransactionsTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember payer = TestUtil.CreateUserMember();
                 Alias payeeAlias = TestUtil.RandomAlias();
@@ -62,7 +60,7 @@ namespace TokenioSample
                 Account account = payer.GetAccountsBlocking()[0];
                 Transaction transaction = account.GetTransactionBlocking(
                         transfer.TransactionId,
-                        Level.Standard);
+                        Key.Types.Level.Standard);
                 Assert.Equal(transaction.TokenId, token.Id);
             }
 

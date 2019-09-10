@@ -3,7 +3,7 @@ using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public static class GetTransfersSample
     {

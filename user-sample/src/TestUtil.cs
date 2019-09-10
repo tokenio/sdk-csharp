@@ -2,10 +2,9 @@
 using System.Threading;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Utils;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public abstract class TestUtil
     {
@@ -35,9 +34,9 @@ namespace TokenioSample
         /// Creates the client.
         /// </summary>
         /// <returns>The client.</returns>
-        public static TokenClient CreateClient()
+        public static Tokenio.User.TokenClient CreateClient()
         {
-            return TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
+            return Tokenio.User.TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
         }
 
 
@@ -47,7 +46,7 @@ namespace TokenioSample
         /// </summary>
         /// <returns>The member and link accounts.</returns>
         /// <param name="client">Client.</param>
-        public static UserMember CreateMemberAndLinkAccounts(TokenClient client)
+        public static UserMember CreateMemberAndLinkAccounts(Tokenio.User.TokenClient client)
         {
             Alias alias = RandomAlias();
             UserMember member = client.CreateMemberBlocking(alias);

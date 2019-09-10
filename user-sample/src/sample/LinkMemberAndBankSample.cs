@@ -1,6 +1,4 @@
-﻿using Tokenio.User;
-
-namespace TokenioSample
+﻿namespace Tokenio.Sample.User
 {
     /// <summary>
     /// Links a Token member and a bank.
@@ -17,7 +15,7 @@ namespace TokenioSample
         /// </summary>
         /// <param name="member">Token member to link to a bank</param>
         /// <returns>linked token accounts</returns>
-        public static Account LinkBankAccounts(Member member)
+        public static Tokenio.User.Account LinkBankAccounts(Tokenio.User.Member member)
         {
             return member.CreateTestBankAccountBlocking(1000.0, "EUR");
         }

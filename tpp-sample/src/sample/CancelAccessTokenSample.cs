@@ -1,7 +1,7 @@
 ﻿using Tokenio.Proto.Common.TokenProtos;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     /// <summary>
     /// Cancels an access token.

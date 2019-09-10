@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public static  class SampleExtensions
     {

@@ -1,17 +1,16 @@
 ﻿using System;
 using Xunit;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class DeleteMemberSampleTest
     {
         [Fact]
         public void CreatePaymentTokenTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember member = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
 

@@ -1,8 +1,7 @@
-﻿using Tokenio;
-using Tokenio.Proto.Common.TokenProtos;
+﻿using Tokenio.Proto.Common.TokenProtos;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public static class GetTokensSample
     {

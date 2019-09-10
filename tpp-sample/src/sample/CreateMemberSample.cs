@@ -2,10 +2,9 @@
 using System.IO;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Security;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public static class CreateMemberSample
     {
@@ -22,7 +21,7 @@ namespace TokenioSample
 
                 var key = Directory.CreateDirectory("./keys");
 
-                TokenClient tokenClient = TokenClient.NewBuilder()
+                Tokenio.Tpp.TokenClient tokenClient = Tokenio.Tpp.TokenClient.NewBuilder()
                .ConnectTo(Tokenio.TokenCluster.SANDBOX)
                .WithKeyStore(new UnsecuredFileSystemKeyStore(key.FullName))
                .Build();

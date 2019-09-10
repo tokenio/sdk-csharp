@@ -1,11 +1,10 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.User;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     /// <summary>
     /// Working with existing access tokens: finding and replacing.
@@ -20,8 +19,8 @@ namespace TokenioSample
         /// <param name="granteeAlias">Token member alias acquiring information access</param>
         /// <returns>an access Token</returns>
         public static Token FindAccessToken(
-            TokenClient tokenClient,
-            Member grantor,
+            Tokenio.User.TokenClient tokenClient,
+            UserMember grantor,
             Alias granteeAlias)
         {
             string granteeMemberId = tokenClient.GetMemberIdBlocking(granteeAlias);
@@ -54,7 +53,7 @@ namespace TokenioSample
                     .Token;
 
             // Endorse the new access token
-            TokenOperationResult status = grantor.EndorseTokenBlocking(newToken, Level.Standard);
+            TokenOperationResult status = grantor.EndorseTokenBlocking(newToken, Key.Types.Level.Standard);
 
             return status;
         }

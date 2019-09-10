@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Tokenio.Proto.Common.NotificationProtos;
 using TppMember = Tokenio.Tpp.Member;
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public static class NotifySample
     {

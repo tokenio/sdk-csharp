@@ -1,11 +1,10 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Xunit;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public class CancelAccessTokenSampleTest
     {
@@ -13,7 +12,7 @@ namespace TokenioSample
         public void CancelAccessTokenByGranteeTest()
         {
 
-           using  (TokenClient tokenClient = TestUtil.CreateClient()) {
+           using  (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
                 Tokenio.User.Member grantor = TestUtil.CreateUserMember();
                 string accountId = grantor.GetAccountsBlocking()[0].Id();
                 Alias granteeAlias = TestUtil.RandomAlias();

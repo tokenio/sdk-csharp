@@ -1,10 +1,9 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Xunit;
-using TokenClient = Tokenio.User.TokenClient;
 
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class CancelAccessTokenSampleTest
     {
@@ -12,7 +11,7 @@ namespace TokenioSample
         public void CancelAccessTokenByGrantorTest()
         {
 
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 Tokenio.User.Member grantor = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string accountId = grantor.CreateTestBankAccountBlocking(1000.0, "EUR").Id();

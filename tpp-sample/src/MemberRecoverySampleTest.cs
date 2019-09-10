@@ -1,9 +1,8 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
 using Xunit;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     /// <summary>
     /// Tests for member-recovery sample code.
@@ -13,7 +12,7 @@ namespace TokenioSample
         [Fact]
     public void RecoveryDefault()
         { // "normal consumer" recovery using "shortcuts"
-            using (TokenClient tokenClient = TestUtil.CreateClient()) {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
                 MemberRecoverySample mrs = new MemberRecoverySample();
 
                 // set up
@@ -21,7 +20,7 @@ namespace TokenioSample
                 TppMember originalMember = tokenClient.CreateMemberBlocking(originalAlias);
                 mrs.SetUpDefaultRecoveryRule(originalMember);
 
-                TokenClient otherTokenClient = TestUtil.CreateClient();
+                Tokenio.Tpp.TokenClient otherTokenClient = TestUtil.CreateClient();
                 TppMember recoveredMember = mrs.RecoverWithDefaultRule(
                         otherTokenClient,
                         originalAlias);
@@ -33,11 +32,11 @@ namespace TokenioSample
         [Fact]
         public void RecoveryComplex()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 MemberRecoverySample mrs = new MemberRecoverySample();
 
-                TokenClient agentTokenIO = TestUtil.CreateClient();
+                Tokenio.Tpp.TokenClient agentTokenIO = TestUtil.CreateClient();
                 Alias agentAlias = TestUtil.RandomAlias();
                 TppMember agentMember = agentTokenIO.CreateMemberBlocking(agentAlias);
 
@@ -49,7 +48,7 @@ namespace TokenioSample
                 mrs.SetUpComplexRecoveryRule(originalMember, tokenClient, agentAlias);
 
                 // recover
-                TokenClient otherTokenClient = TestUtil.CreateClient();
+                Tokenio.Tpp.TokenClient otherTokenClient = TestUtil.CreateClient();
                 TppMember recoveredMember = mrs.RecoverWithComplexRule(
                         otherTokenClient,
                         originalAlias);

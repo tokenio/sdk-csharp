@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
-using Tokenio.User;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public static class GetTransactionsSample
     {
@@ -16,9 +15,9 @@ namespace TokenioSample
         /// <param name="payer">payer Token member</param>
         public static void getTransactionsSample(UserMember payer)
         {
-            List<Account> accounts = payer.GetAccountsBlocking().ToList();
+            List<Tokenio.User.Account> accounts = payer.GetAccountsBlocking().ToList();
             string accountId = accounts[0].Id();
-            foreach (Transaction transaction in payer.GetTransactionsBlocking(accountId, 10, Level.Standard, null).List)
+            foreach (Transaction transaction in payer.GetTransactionsBlocking(accountId, 10, Key.Types.Level.Standard, null).List)
             {
                 DisplayTransaction(
                            transaction.Amount.Currency,
@@ -39,11 +38,11 @@ namespace TokenioSample
           UserMember payer,
           Transfer transfer)
         {
-            List<Account> accounts = payer.GetAccountsBlocking().ToList();
+            List<Tokenio.User.Account> accounts = payer.GetAccountsBlocking().ToList();
             string accountId = accounts[0].Id();
 
             string transactionId = transfer.TransactionId;
-            Transaction transaction = payer.GetTransactionBlocking(accountId, transactionId, Level.Standard);
+            Transaction transaction = payer.GetTransactionBlocking(accountId, transactionId, Key.Types.Level.Standard);
             return transaction;
         }
 
@@ -53,10 +52,10 @@ namespace TokenioSample
         /// <param name="payer">payer Token member</param>
         public static void AccountGetTransactionsSample(UserMember payer)
         {
-            Account account = payer.GetAccountsBlocking()[0];
+            Tokenio.User.Account account = payer.GetAccountsBlocking()[0];
 
 
-            foreach (Transaction transaction in account.GetTransactionsBlocking(null, 10, Level.Standard).List)
+            foreach (Transaction transaction in account.GetTransactionsBlocking(null, 10, Key.Types.Level.Standard).List)
             {
                 DisplayTransaction(
                            transaction.Amount.Currency,
@@ -76,10 +75,10 @@ namespace TokenioSample
            UserMember payer,
            Transfer transfer)
         {
-            Account account = payer.GetAccountsBlocking()[0];
+            Tokenio.User.Account account = payer.GetAccountsBlocking()[0];
 
             string txnId = transfer.TransactionId;
-            Transaction transaction = account.GetTransactionBlocking(txnId, Level.Standard);
+            Transaction transaction = account.GetTransactionBlocking(txnId, Key.Types.Level.Standard);
             return transaction;
         }
 

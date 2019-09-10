@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Tokenio.Proto.Common.MoneyProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TransactionProtos;
-using Tokenio.User;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 
 {
     /// <summary>
@@ -24,11 +23,11 @@ namespace TokenioSample
         {
             Dictionary<string, double> sums = new Dictionary<string, double>();
 
-            IList<Account> accounts = member.GetAccountsBlocking();
+            IList<Tokenio.User.Account> accounts = member.GetAccountsBlocking();
 
-            foreach (Account account in accounts)
+            foreach (Tokenio.User.Account account in accounts)
             {
-                Money balance = member.GetBalanceBlocking(account.Id(), Level.Standard).Current;
+                Money balance = member.GetBalanceBlocking(account.Id(), Key.Types.Level.Standard).Current;
 
                 sums[balance.Currency] = Double.Parse(balance.Value) + SampleExtensions.GetValueOrDefault(sums, balance.Currency, 0.0);
             }
@@ -44,11 +43,11 @@ namespace TokenioSample
         {
             Dictionary<string, double> sums = new Dictionary<string, double>();
 
-            IList<Account> accounts = member.GetAccountsBlocking();
+            IList<Tokenio.User.Account> accounts = member.GetAccountsBlocking();
 
-            foreach (Account account in accounts)
+            foreach (Tokenio.User.Account account in accounts)
             {
-                Money balance = account.GetBalanceBlocking(Level.Standard).Current;
+                Money balance = account.GetBalanceBlocking(Key.Types.Level.Standard).Current;
 
                 sums[balance.Currency] = Double.Parse(balance.Value) + SampleExtensions.GetValueOrDefault(sums, balance.Currency, 0.0);
             }
@@ -66,7 +65,7 @@ namespace TokenioSample
             List<string> accountIds = member
                     .GetAccountsBlocking().Select(acc => acc.Id()).ToList();
 
-            var balances = member.GetBalancesBlocking(accountIds, Level.Standard);
+            var balances = member.GetBalancesBlocking(accountIds, Key.Types.Level.Standard);
 
             return balances;
         }

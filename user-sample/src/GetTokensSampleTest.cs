@@ -2,16 +2,15 @@
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Xunit;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class GetTokensSampleTest
     {
         [Fact]
         public void GetTokenTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias granteeAlias = TestUtil.RandomAlias();

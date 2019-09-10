@@ -1,4 +1,4 @@
-﻿namespace TokenioSample
+﻿namespace Tokenio.Sample.Tpp
 {
     public class GetTransactionsSample
     {

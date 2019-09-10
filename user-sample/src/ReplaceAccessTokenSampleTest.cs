@@ -1,17 +1,16 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Xunit;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class ReplaceAccessTokenSampleTest
     {
         [Fact]
         public void getAccessTokensTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember grantor = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string accountId = grantor.CreateTestBankAccountBlocking(1000, "EUR").Id();
@@ -26,7 +25,7 @@ namespace TokenioSample
 		[Fact]
 		public void ReplaceAccessTokenTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember grantor = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string accountId = grantor.CreateTestBankAccountBlocking(1000, "EUR").Id();

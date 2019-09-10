@@ -3,7 +3,7 @@ using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public static class GetTransfersSample
     {

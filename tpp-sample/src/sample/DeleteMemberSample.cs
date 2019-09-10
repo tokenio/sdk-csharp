@@ -1,6 +1,6 @@
 ﻿using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     /// <summary>
     /// Deletes a member.

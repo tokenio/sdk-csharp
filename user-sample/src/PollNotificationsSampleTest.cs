@@ -1,14 +1,13 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.User;
 using Xunit;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class PollNotificationsSampleTest
     {
@@ -17,13 +16,13 @@ namespace TokenioSample
         public void NotifyPaymentRequestSampleTest()
         {
 
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
 
                 UserMember payee = PollNotificationsSample.CreateMember(tokenClient);
                 Alias payeeAlias = payee.GetFirstAliasBlocking();
-                Account account = LinkMemberAndBankSample.LinkBankAccounts(payer);
+                Tokenio.User.Account account = LinkMemberAndBankSample.LinkBankAccounts(payer);
                 LinkMemberAndBankSample.LinkBankAccounts(payee);
 
                 TransferDestination tokenDestination = new TransferDestination
@@ -40,7 +39,7 @@ namespace TokenioSample
                         .AddDestination(tokenDestination);
 
                 PrepareTokenResult result = payer.PrepareTransferTokenBlocking(builder);
-                Token token = payer.CreateTokenBlocking(result.TokenPayload, Level.Standard);
+                Token token = payer.CreateTokenBlocking(result.TokenPayload, Key.Types.Level.Standard);
                 Transfer transfer = payee.RedeemTokenBlocking(token);
 
                 var notification = PollNotificationsSample.Poll(payee);

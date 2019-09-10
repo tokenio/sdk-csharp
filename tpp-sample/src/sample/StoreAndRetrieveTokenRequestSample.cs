@@ -2,10 +2,9 @@
 using Tokenio.TokenRequests;
 using Tokenio.Tpp.Utils;
 using ResourceType = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types.ResourceType;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     /// <summary>
     /// Stores and retrieves a token request.
@@ -67,7 +66,7 @@ namespace TokenioSample
         /// <param name="requestId">id of request to retrieve</param>
         /// <returns>token request that was stored with the request id</returns>
         public static TokenRequest RetrieveTokenRequest(
-                TokenClient tokenClient,
+                Tokenio.Tpp.TokenClient tokenClient,
                 string requestId)
         {
             return tokenClient.RetrieveTokenRequestBlocking(requestId);

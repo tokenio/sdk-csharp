@@ -1,13 +1,11 @@
-﻿using Tokenio;
-using Tokenio.Proto.Common.AliasProtos;
+﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Xunit;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public class RedeemTransferTokenSampleTest
     {
@@ -15,7 +13,7 @@ namespace TokenioSample
         [Fact]
         public void RedeemPaymentTokenTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient()) {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
                UserMember payer = TestUtil.CreateUserMember();
                 Alias payeeAlias = TestUtil.RandomAlias();
                 TppMember payee = tokenClient.CreateMemberBlocking(payeeAlias);

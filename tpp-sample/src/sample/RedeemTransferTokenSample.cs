@@ -1,11 +1,10 @@
-﻿using Tokenio.Proto.Common.AccountProtos;
-using Tokenio.Proto.Common.TokenProtos;
+﻿using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Tpp.Utils;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     /// <summary>
     /// Redeems a transfer token.

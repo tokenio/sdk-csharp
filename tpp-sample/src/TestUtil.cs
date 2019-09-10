@@ -5,11 +5,9 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.User;
 using Tokenio.Utils;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public abstract class TestUtil
     {
@@ -34,9 +32,9 @@ namespace TokenioSample
         /// Creates the client.
         /// </summary>
         /// <returns>The client.</returns>
-        public static TokenClient CreateClient()
+        public static Tokenio.Tpp.TokenClient CreateClient()
         {
-            return TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
+            return Tokenio.Tpp.TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
         }
 
         /// <summary>
@@ -77,7 +75,7 @@ namespace TokenioSample
             // with her secure private key.
             accessToken = grantor.EndorseTokenBlocking(
                 accessToken,
-                Level.Standard).Token;
+                Key.Types.Level.Standard).Token;
 
             return accessToken;
         }
@@ -114,7 +112,7 @@ namespace TokenioSample
 
             // Payer endorses a token to a payee by signing it
             // with her secure private key.
-            transferToken = payer.EndorseTokenBlocking(transferToken, Level.Standard).Token;
+            transferToken = payer.EndorseTokenBlocking(transferToken, Key.Types.Level.Standard).Token;
 
             return transferToken;
         }

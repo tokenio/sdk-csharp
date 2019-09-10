@@ -1,7 +1,7 @@
 ﻿using Tokenio.Proto.Common.TokenProtos;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     /// <summary>
     /// Cancels an access token.

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Tokenio;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.User.Utils;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public static class PollNotificationsSample
     {
@@ -21,7 +19,7 @@ namespace TokenioSample
         /// </summary>
         /// <param name="tokenClient">SDK client</param>
         /// <returns>a new Member instance</returns>
-        public static UserMember CreateMember(TokenClient tokenClient)
+        public static UserMember CreateMember(Tokenio.User.TokenClient tokenClient)
         {
             // Token members "in the real world" are set up to receive notifications:
             // The Token mobile app, having created a new member, subscribes to

@@ -1,20 +1,18 @@
-﻿using Tokenio;
-using Tokenio.Proto.Common.AliasProtos;
+﻿using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Xunit;
-using TokenClient = Tokenio.User.TokenClient;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.User
 {
     public class GetTransactionsSampleTest
     {
         [Fact]
         public void GetTransactionsTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
 
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
@@ -40,7 +38,7 @@ namespace TokenioSample
         [Fact]
         public void AccountGetTransactionsTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();

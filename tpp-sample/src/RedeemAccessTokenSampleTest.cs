@@ -3,11 +3,10 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Xunit;
-using TokenClient = Tokenio.Tpp.TokenClient;
 using TppMember = Tokenio.Tpp.Member;
 using UserMember = Tokenio.User.Member;
 
-namespace TokenioSample
+namespace Tokenio.Sample.Tpp
 {
     public class RedeemAccessTokenSampleTest
     {
@@ -15,7 +14,7 @@ namespace TokenioSample
         [Fact]
         public void RedeemAccessTokenTest()
         {
-            using (TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember grantor = TestUtil.CreateUserMember();
                 string accountId = grantor.GetAccountsBlocking()[0].Id();
