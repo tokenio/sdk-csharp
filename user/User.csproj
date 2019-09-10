@@ -1,20 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <AssemblyName>Token.User.Net</AssemblyName>
-        <RootNamespace>Tokenio</RootNamespace>
-        <Copyright>Copyright 2019 Token, Inc</Copyright>
-        <Description>C# SDK for interacting with the Token System</Description>
-        <Company>Token, Inc</Company>
-        <Authors>Token, Inc</Authors>
-        <Version>0.0.1</Version>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
-        <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>
-    </PropertyGroup>
-    
-    <ItemGroup>
-        <ProjectReference Include="..\core\Core.csproj" />
-     </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Token.SDK.User</AssemblyName>
+    <RootNamespace>Tokenio</RootNamespace>
+    <Copyright>Copyright 2019 Token, Inc</Copyright>
+    <Description>C# SDK for interacting with the Token System</Description>
+    <Company>Token, Inc</Company>
+    <Authors>Token, Inc</Authors>
+    <Version>0.0.1</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\Core.csproj" />
+  </ItemGroup>
 </Project>

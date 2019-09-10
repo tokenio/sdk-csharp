@@ -14,7 +14,7 @@ namespace TokenioSample
 
             using (TokenClient tokenClient = TestUtil.CreateClient())
             {
-                Tokenio.User.Member grantor = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias()); ;
+                Tokenio.User.Member grantor = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string accountId = grantor.CreateTestBankAccountBlocking(1000.0, "EUR").Id();
                 Alias granteeAlias = TestUtil.RandomAlias();
                 Tokenio.User.Member grantee = tokenClient.CreateMemberBlocking(granteeAlias);
