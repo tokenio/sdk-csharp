@@ -4,7 +4,7 @@
     <AssemblyName>Token.SDK.TPP</AssemblyName>
     <RootNamespace>Tokenio.Tpp</RootNamespace>
     <Copyright>Copyright 2019 Token, Inc</Copyright>
-    <Description>C# TPP SDK for interacting with the Token System</Description>
+    <Description>TPP SDK for interacting with the Token System</Description>
     <Company>Token, Inc</Company>
     <Authors>Token, Inc</Authors>
     <Version>0.0.2</Version>
