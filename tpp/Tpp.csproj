@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Token.SDK.TPP</AssemblyName>
-    <RootNamespace>Tokenio</RootNamespace>
+    <RootNamespace>Tokenio.TPP</RootNamespace>
     <Copyright>Copyright 2019 Token, Inc</Copyright>
     <Description>C# SDK for interacting with the Token System</Description>
     <Company>Token, Inc</Company>

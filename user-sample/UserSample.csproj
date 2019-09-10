@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <RootNamespace>TokenioSample</RootNamespace>
+    <RootNamespace>Tokenio.Sample.User</RootNamespace>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
