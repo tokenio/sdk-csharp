@@ -7,10 +7,10 @@ using Google.Protobuf;
 using Google.Protobuf.Collections;
 using log4net;
 using Tokenio.Proto.BankLink;
-using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.SecurityProtos;
+using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.SubscriberProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
@@ -165,6 +165,26 @@ namespace Tokenio.User
         }
 
         /// <summary>
+        /// Looks up an existing Token standing order submission.
+        /// </summary>
+        /// <param name="submissionId">ID of the standing orde submission</param>
+        /// <returns>standing order submission</returns>
+        public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
+        {
+            return client.GetStandingOrderSubmission(submissionId);
+        }
+
+        /// <summary>
+        /// Looks up an existing Token standing order submission.
+        /// </summary>
+        /// <param name="submissionId">ID of the standing orde submission</param>
+        /// <returns>standing order submission</returns>
+        public StandingOrderSubmission GetStandingOrderSubmissionBlocking(string submissionId)
+        {
+            return GetStandingOrderSubmission(submissionId).Result;
+        }
+
+        /// <summary>
         /// Looks up existing token transfers.
         /// </summary>
         /// <param name="tokenId">optional token id to restrict the search</param>
@@ -192,6 +212,32 @@ namespace Tokenio.User
                 int limit)
         {
             return GetTransfers(tokenId, offset, limit).Result;
+        }
+
+        /// <summary>
+        /// Looks up existing Token standing order submissions.
+        /// </summary>
+        /// <param name="limit">max number of submissions to return</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>standing order submissions</returns>
+        public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
+                int limit,
+                string offset = null)
+        {
+            return client.GetStandingOrderSubmissions(limit, offset);
+        }
+
+        /// <summary>
+        /// Looks up existing Token standing order submissions.
+        /// </summary>
+        /// <param name="limit">max number of submissions to return</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>standing order submissions</returns>
+        public PagedList<StandingOrderSubmission> GetStandingOrderSubmissionsBlocking(
+                int limit,
+                string offset = null)
+        {
+            return GetStandingOrderSubmissions(limit, offset).Result;
         }
 
         /// <summary>
@@ -227,6 +273,32 @@ namespace Tokenio.User
         {
             accessTokenBuilder.From(MemberId());
             return client.PrepareToken(accessTokenBuilder.Build());
+        }
+
+        /// <summary>
+        /// Prepares a standing order token, returning the resolved token payload
+        /// and policy.
+        /// 
+        /// </summary>
+        /// <param name="builder">standing order token builder</param>
+        /// <returns>resolved token payload and policy</returns>
+        public Task<PrepareTokenResult> PrepareStandingOrderToken(
+                StandingOrderTokenBuilder builder)
+        {
+            return client.PrepareToken(builder.BuildPayload());
+        }
+
+        /// <summary>
+        /// Prepares a standing order token, returning the resolved token payload
+        /// and policy.
+        /// 
+        /// </summary>
+        /// <param name="builder">standing order token builder</param>
+        /// <returns>resolved token payload and policy</returns>
+        public PrepareTokenResult PrepareStandingOrderTokenBlocking(
+                StandingOrderTokenBuilder builder)
+        {
+            return PrepareStandingOrderToken(builder).Result;
         }
 
         /// <summary>
@@ -380,6 +452,68 @@ namespace Tokenio.User
             return new TransferTokenBuilder(this, payload);
         }
         
+        /// <summary>
+        /// Creates a new standing order token builder. Defines a standing order
+        /// for a fixed time span.
+        /// </summary>
+        /// <param name="amount">individual transfer amount</param>
+        /// <param name="currency">currency code, e.g. "USD"</param>
+        /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
+        ///              DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
+        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
+        /// <param name="endDate">end date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
+        /// <returns>standing order token builder</returns>
+        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(
+                double amount,
+                string currency,
+                string frequency,
+                string startDate,
+                string endDate)
+        {
+            return new StandingOrderTokenBuilder(
+                    this,
+                    amount,
+                    currency,
+                    frequency,
+                    startDate,
+                    endDate);
+        }
+
+        /// <summary>
+        /// Creates a new indefinite standing order token builder.
+        /// 
+        /// </summary>
+        /// <param name="amount">individual transfer amount</param>
+        /// <param name="currency">currency code, e.g. "USD"</param>
+        /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
+        ///              DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
+        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
+        /// <returns>standing order token builder</returns>
+        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(
+                double amount,
+                string currency,
+                string frequency,
+                string startDate)
+        {
+            return new StandingOrderTokenBuilder(
+                    this,
+                    amount,
+                    currency,
+                    frequency,
+                    startDate,
+                    null);
+        }
+
+        /// <summary>
+        /// Creates a new standing order token builder from a token request.
+        /// </summary>
+        /// <param name="tokenRequest">token request</param>
+        /// <returns>transfer token builder</returns>
+        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(TokenRequest tokenRequest)
+        {
+            return new StandingOrderTokenBuilder(tokenRequest);
+        }
+
         /// <summary>
         /// Creates an access token built from a given {@link AccessTokenBuilder}.
         /// </summary>
@@ -751,6 +885,11 @@ namespace Tokenio.User
                 TransferDestination destination,
                 string refId)
         {
+            if (token.Payload.Transfer == null)
+            {
+                throw new ArgumentException("Expected transfer token; found "
+                        + token.Payload.BodyCase);
+            }
             var payload = new TransferPayload
             {
                 TokenId = token.Id,
@@ -952,6 +1091,26 @@ namespace Tokenio.User
         }
 
         /// <summary>
+        /// Redeems a standing order token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>standing order submission</returns>
+        public Task<StandingOrderSubmission> RedeemStandingOrderToken(string tokenId)
+        {
+            return client.CreateStandingOrder(tokenId);
+        }
+
+        /// <summary>
+        /// Redeems a standing order token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>standing order submission</returns>
+        public StandingOrderSubmission RedeemStandingOrderTokenBlocking(string tokenId)
+        {
+            return RedeemStandingOrderToken(tokenId).Result;
+        }
+
+        /// <summary>
         /// Links a funding bank accounts to Token and returns it to the caller.
         /// </summary>
         /// <param name="authorization">an authorization to accounts, from the bank</param>
@@ -1098,7 +1257,7 @@ namespace Tokenio.User
         {
             SetProfilePicture(type, data).Wait();
         }
-                
+
         /// <summary>
         /// Gets the notifications.
         /// </summary>
@@ -1331,7 +1490,6 @@ namespace Tokenio.User
                             new Account(this, acc, client))
                     .ToList());
         }
-
 
         /// <summary>
         /// Updates the status of a notification.

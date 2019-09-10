@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Tokenio.Exceptions;
 using Tokenio.Proto.BankLink;
-using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
+using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.SubscriberProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferProtos;
@@ -56,7 +56,7 @@ namespace Tokenio.User.Rpc
                     .ToTask(response =>
                             response.Profile);
         }
-                
+
         /// <summary>
         /// Replaces a member's public profile picture.
         /// </summary>
@@ -137,12 +137,28 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
+        /// Looks up an existing Token standing order submission.
+        /// </summary>
+        /// <param name="submissionId">submission ID</param>
+        /// <returns>standing order submission record</returns>
+        public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
+        {
+            return gateway(authenticationContext())
+                    .GetStandingOrderSubmissionAsync(new GetStandingOrderSubmissionRequest
+                    {
+                        SubmissionId = submissionId
+                    })
+                    .ToTask(response => response.Submission);
+        }
+
+
+        /// <summary>
         /// Looks up a list of existing transfers.
         /// </summary>
         /// <param name = "tokenId">optional token id to restrict the search</param>
         /// <param name = "offset">optional offset to start at</param>
         /// <param name = "limit">max number of records to return</param>
-        /// <returns>transfer record</returns>
+        /// <returns>transfer records</returns>
         public Task<PagedList<Transfer>> GetTransfers(
                 string tokenId,
                 string offset,
@@ -171,6 +187,29 @@ namespace Tokenio.User.Rpc
                     .ToTask(response =>
                             new PagedList<Transfer>(response.Transfers, response.Offset));
         }
+        /// <summary>
+        /// Looks up a list of existing standing order submissions.
+        /// </summary>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <returns>standing order submissions</returns>
+        public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
+                int limit,
+                string offset = null)
+        {
+            GetStandingOrderSubmissionsRequest request = new GetStandingOrderSubmissionsRequest
+            {
+                Page = PageBuilder(limit, offset)
+            };
+
+            return gateway(authenticationContext())
+                    .GetStandingOrderSubmissionsAsync(request)
+                    .ToTask(response => new PagedList<StandingOrderSubmission>(
+                            response.Submissions,
+                            response.Offset));
+        }
+
+
 
         /// <summary>
         /// Prepares the token, resolving the payload and determining the policy.
@@ -437,6 +476,22 @@ namespace Tokenio.User.Rpc
                     .ToTask(response =>
                             response.Transfer);
         }
+
+        /// <summary>
+        /// Redeems a standing order token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>standing order submission</returns>
+        public Task<StandingOrderSubmission> CreateStandingOrder(string tokenId)
+        {
+            return gateway(authenticationContext())
+                    .CreateStandingOrderAsync(new CreateStandingOrderRequest
+                    {
+                        TokenId = tokenId
+                    })
+                    .ToTask(response => response.Submission);
+        }
+
 
         /// <summary>
         /// Links a funding bank account to Token.

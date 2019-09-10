@@ -9,6 +9,7 @@ using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.AccountProtos.BankAccount.Types;
+using static Tokenio.TokenRequests.TokenRequest;
 using AccountCase = Tokenio.Proto.Common.AccountProtos.BankAccount.AccountOneofCase;
 using ProtoToken = Tokenio.Proto.Common.TokenProtos.Token;
 using TRANSFER = Tokenio.Proto.Common.TokenProtos.TokenPayload.BodyOneofCase;
@@ -113,6 +114,7 @@ namespace Tokenio.User
                     LifetimeAmount = transferBody.LifetimeAmount,
                     Currency = transferBody.Currency,
                     Amount = transferBody.Amount,
+                    ConfirmFunds = transferBody.ConfirmFunds,
                     Instructions = instructions
                 }
             };
@@ -379,6 +381,18 @@ namespace Tokenio.User
         }
 
         /// <summary>
+        /// Sets the execution date of the transfer. Used for future-dated payments.
+        /// </summary>
+        /// <param name="executionDate">execution date</param>
+        /// <returns>builder</returns>
+        public TransferTokenBuilder SetExecutionDate(DateTime executionDate)
+        {
+            payload.Transfer
+                    .ExecutionDate = executionDate.ToString(Util.BASIC_ISO_DATE);
+            return this;
+        }
+
+        /// <summary>
         /// Sets provider transfer metadata.
         /// </summary>
         /// <param name="metadata">the metadata</param>
@@ -386,6 +400,46 @@ namespace Tokenio.User
         public TransferTokenBuilder SetProviderTransferMetadata(ProviderTransferMetadata metadata)
         {
             payload.Transfer.Instructions.Metadata.ProviderTransferMetadata = metadata;
+            return this;
+        }
+        
+        /// <summary>
+        /// Sets whether CAF should be attempted before transfer.
+        /// </summary>
+        /// <param name="confirmFunds">CAF flag</param>
+        /// <returns>builder</returns>
+        public TransferTokenBuilder SetConfirmFunds(bool confirmFunds)
+        {
+            payload.Transfer
+                    .ConfirmFunds = confirmFunds;
+            return this;
+        }
+
+        /// <summary>
+        /// Optional. Sets the ultimate party to which the money is due.
+        /// </summary>
+        /// <param name="ultimateCreditor">the ultimate creditor</param>
+        /// <returns>builder</returns>
+        public TransferTokenBuilder SetUltimateCreditor(string ultimateCreditor)
+        {
+            payload.Transfer
+                    .Instructions
+                    .Metadata
+                    .UltimateCreditor = ultimateCreditor;
+            return this;
+        }
+
+        /// <summary>
+        /// Optional. Sets ultimate party that owes the money to the (ultimate) creditor.
+        /// </summary>
+        /// <param name="ultimateDebtor">the ultimate debtor</param>
+        /// <returns>builder</returns>
+        public TransferTokenBuilder SetUltimateDebtor(string ultimateDebtor)
+        {
+            payload.Transfer
+                    .Instructions
+                    .Metadata
+                    .UltimateCreditor = ultimateDebtor;
             return this;
         }
 

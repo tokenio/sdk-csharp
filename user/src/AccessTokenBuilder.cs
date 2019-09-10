@@ -2,6 +2,7 @@
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.User.Utils;
+using static Tokenio.Proto.Common.TokenProtos.AccessBody.Types;
 using RequestBodyCase = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.RequestBodyOneofCase;
 
 namespace Tokenio.User
@@ -154,9 +155,9 @@ namespace Tokenio.User
         public AccessTokenBuilder ForAddress(string addressId)
         {
             payload.Access.Resources.Add(
-                new AccessBody.Types.Resource
+                new Resource
                 {
-                    Address = new AccessBody.Types.Resource.Types.Address
+                    Address = new Resource.Types.Address
                     {
                         AddressId = addressId
                     }
@@ -179,6 +180,25 @@ namespace Tokenio.User
                     AccountId = accountId
                 }
             });
+            return this;
+        }
+
+        /// <summary>
+        /// Grants access to a given account standing orders.
+        /// </summary>
+        /// <param name="accountId">account ID to grant access to standing orders</param>
+        /// <returns>AccessTokenBuilder</returns>
+        public AccessTokenBuilder ForAccountStandingOrders(string accountId)
+        {
+            payload
+                    .Access
+                    .Resources.Add(new Resource
+                    {
+                        StandingOrders = new Resource.Types.AccountStandingOrders
+                        {
+                            AccountId = accountId
+                        }
+                    });
             return this;
         }
 
@@ -275,7 +295,7 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="actingAs">entity the redeemer is acting on behalf of</param>
         /// <returns>{@link AccessTokenBuilder}</returns>
-        AccessTokenBuilder ActingAs(ActingAs actingAs)
+        internal AccessTokenBuilder ActingAs(ActingAs actingAs)
         {
             payload.ActingAs = actingAs;
             return this;

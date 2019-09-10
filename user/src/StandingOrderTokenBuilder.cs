@@ -154,9 +154,13 @@ namespace Tokenio
         /// <returns>builder</returns>
         public StandingOrderTokenBuilder SetSource(TransferEndpoint source)
         {
-            payload.StandingOrder
-                   .Instructions
-                   .Source = source;
+            var instructions = payload.StandingOrder.Instructions;
+            if (instructions == null)
+            {
+                instructions = new TransferInstructions();
+            }
+            instructions.Source = source;
+            payload.StandingOrder.Instructions = instructions;
             return this;
         }
 
@@ -195,7 +199,7 @@ namespace Tokenio
             var instructions = payload.StandingOrder.Instructions;
             if (instructions == null)
             {
-                instructions = new TransferInstructions { };
+                instructions = new TransferInstructions {};
             }
 
             instructions.TransferDestinations.Add(destination);

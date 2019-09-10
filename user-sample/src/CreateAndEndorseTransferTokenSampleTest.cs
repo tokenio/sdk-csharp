@@ -17,7 +17,6 @@ namespace Tokenio.Sample.User
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
                 Token token = CreateAndEndorseTransferTokenSample.CreateTransferToken(payer, payeeAlias);
                 Assert.NotNull(token);
-
             }
         }
     }
