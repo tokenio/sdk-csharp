@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User", "user\User.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "core\Core.csproj", "{A37F1CFE-4E5B-4C20-8419-39A0E5D7445C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User-sample", "user-sample\User-sample.csproj", "{AC504C4A-B526-4B35-90FF-780340B28208}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserSample", "user-sample\UserSample.csproj", "{AC504C4A-B526-4B35-90FF-780340B28208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tpp-sample", "tpp-sample\Tpp-sample.csproj", "{10409272-49DF-4243-8015-07692C3E0CDF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TppSample", "tpp-sample\TppSample.csproj", "{10409272-49DF-4243-8015-07692C3E0CDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tpp", "tpp\Tpp.csproj", "{EFA7309B-C0F8-499F-8496-44321155E363}"
 EndProject
