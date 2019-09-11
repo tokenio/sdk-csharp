@@ -1,49 +1,96 @@
-#!/bin/bash
-
+﻿#!/bin/bash
 set -o errexit
-if [ "$1" == "core" ]; then
-    rm -rf "../core/docs"
+
+if [ $# -eq 0 ]
+  then
+    rm -rf "core/html"
+    rm -rf "user/html"
+    rm -rf "tpp/html"
+    rm -rf "sdk/html"
+elif [ "$1" == "core" ]; then
+    rm -rf "core/html"
 elif [ "$1" == "user" ]; then
-    rm -rf "../user/docs"
+    rm -rf "user/html"
 elif [ "$1" == "tpp" ]; then
-    rm -rf "../tpp/docs"
+    rm -rf "tpp/html"
 elif [ "$1" == "sdk" ]; then
-    rm -rf "../sdk/docs"
+    rm -rf "sdk/html"
 fi
 
-# rm -rf html
 cp Doxyfile Doxyfile_temp
 
-if [ "$1" == "core" ]; then
-    echo "INPUT = ../core/src /n  ../../README.md" >> Doxyfile
+generate () {
+  doxygen Doxyfile
+  cp Doxyfile_temp Doxyfile
+}
+
+
+if [ $# -eq 0 ]
+  then
+    #core
+    echo "INPUT = ../core/src /n  ../README.md" >> Doxyfile
     echo "PROJECT_NAME = \".Net Core\" " >> Doxyfile
-    echo "OUTPUT_DIRECTORY  = ../core/docs" >> Doxyfile
-elif [ "$1" == "user" ]; then
-    echo "INPUT = ../user/src /n  ../../README.md" >> Doxyfile
+    echo "OUTPUT_DIRECTORY  = core" >> Doxyfile
+    generate
+
+    #user
+    echo "INPUT = ../user/src /n  ../README.md" >> Doxyfile
     echo "PROJECT_NAME = \".Net User\" " >> Doxyfile
-    echo "OUTPUT_DIRECTORY  = ../user/docs" >> Doxyfile
-elif [ "$1" == "tpp" ]; then
-    echo "INPUT = ../tpp/src /n  ../../README.md" >> Doxyfile
+    echo "OUTPUT_DIRECTORY  = user" >> Doxyfile
+    generate 
+
+    #tpp
+    echo "INPUT = ../tpp/src /n  ../README.md" >> Doxyfile
     echo "PROJECT_NAME = \".Net Tpp\" " >> Doxyfile
-    echo "OUTPUT_DIRECTORY  = ../tpp/docs" >> Doxyfile
-elif [ "$1" == "sdk" ]; then
-    echo "INPUT = ../sdk/src /n  ../../README.md" >> Doxyfile
+    echo "OUTPUT_DIRECTORY  = tpp" >> Doxyfile
+    generate 
+
+    #sdk
+    echo "INPUT = ../sdk/src /n  ../README.md" >> Doxyfile
     echo "PROJECT_NAME = \".Net SDK\" " >> Doxyfile
-    echo "OUTPUT_DIRECTORY  = ../sdk/docs" >> Doxyfile
-fi
+    echo "OUTPUT_DIRECTORY  = sdk" >> Doxyfile
+    generate
 
-doxygen Doxyfile
 
-cp Doxyfile_temp Doxyfile
-rm -rf Doxyfile_temp
 
-if [ "$1" == "core" ]; then
-    python refactor_docs.py "../core/docs"
+elif [ "$1" == "core" ]; then
+    echo "INPUT = ../core/src /n  ../README.md" >> Doxyfile
+    echo "PROJECT_NAME = \".Net Core\" " >> Doxyfile
+    echo "OUTPUT_DIRECTORY  = core" >> Doxyfile
+    generate
 elif [ "$1" == "user" ]; then
-    python refactor_docs.py "../user/docs"
+    echo "INPUT = ../user/src /n  ../README.md" >> Doxyfile
+    echo "PROJECT_NAME = \".Net User\" " >> Doxyfile
+    echo "OUTPUT_DIRECTORY  = user" >> Doxyfile
+    generate
 elif [ "$1" == "tpp" ]; then
-    python refactor_docs.py "../tpp/docs"
+    echo "INPUT = ../tpp/src /n  ../README.md" >> Doxyfile
+    echo "PROJECT_NAME = \".Net Tpp\" " >> Doxyfile
+    echo "OUTPUT_DIRECTORY  = tpp" >> Doxyfile
+    generate
 elif [ "$1" == "sdk" ]; then
-    python refactor_docs.py "../sdk/docs"
+    echo "INPUT = ../sdk/src /n  ../README.md" >> Doxyfile
+    echo "PROJECT_NAME = \".Net SDK\" " >> Doxyfile
+    echo "OUTPUT_DIRECTORY  = sdk" >> Doxyfile
+    generate
 fi
-#python refactor_docs.py
+
+
+
+if [ $# -eq 0 ]
+  then
+    python refactor_docs.py "core"
+    python refactor_docs.py "user"
+    python refactor_docs.py "tpp" 
+    python refactor_docs.py "sdk"
+elif [ "$1" == "core" ]; then
+    python refactor_docs.py "core"
+elif [ "$1" == "user" ]; then
+    python refactor_docs.py "user"
+elif [ "$1" == "tpp" ]; then
+    python refactor_docs.py "tpp"
+elif [ "$1" == "sdk" ]; then
+    python refactor_docs.py "sdk"
+fi
+
+ rm -rf Doxyfile_temp
