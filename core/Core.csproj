@@ -1,13 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Token.SDK.Net</AssemblyName>
+    <AssemblyName>Token.SDK.Core</AssemblyName>
     <RootNamespace>Tokenio</RootNamespace>
     <Copyright>Copyright 2019 Token, Inc</Copyright>
-    <Description>C# SDK for interacting with the Token System</Description>
+    <Description>Core SDK that serves as the base for other Token SDKs.</Description>
     <Company>Token, Inc</Company>
     <Authors>Token, Inc</Authors>
-    <Version>2.0.0-beta10</Version>
+    <Version>0.0.2</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>

@@ -1,8 +1,9 @@
 #
 # Fetches specified proto files from the artifact repository.
 #
-TOKEN_PROTOS_VER = "1.2.14"
-RPC_PROTOS_VER = "1.1.44"
+
+TOKEN_PROTOS_VER = "1.2.17"
+RPC_PROTOS_VER = "1.1.46"
 
 require 'open-uri'
 require 'fileutils'
@@ -35,6 +36,7 @@ def fetch_protos()
     file = download("io/token/proto", "tokenio-proto", "common", TOKEN_PROTOS_VER)
     puts("unzipping #{file}")
     system("unzip -d protos/common -o #{file} '*.proto'")
+    system("unzip -d protos/common -o #{file} 'provider/*.proto'")
     system("unzip -d protos/common -o #{file} 'google/api/*.proto'")
     system("rm -f #{file}");
 
@@ -79,13 +81,21 @@ end
 fetch_protos();
 
 # Build the command that generates the protos.
-dir = "./sdk/generated"
-system("rm -rf #{dir}");
+core_dir = "./core/generated"
+sdk_dir = "./sdk/generated"
+system("rm -rf #{core_dir}");
+system("rm -rf #{sdk_dir}");
 
-gencommand = generate_protos_cmd("common", dir) +
-    generate_protos_cmd("common/google/api", dir) +
-    generate_protos_cmd("common/provider", dir) +
-    generate_protos_cmd("external/gateway", dir) +
-    generate_protos_cmd("extensions", dir);
+#
+gencommand = generate_protos_cmd("common", core_dir) +
+generate_protos_cmd("common/provider", core_dir) +
+generate_protos_cmd("common/google/api", core_dir) +
+generate_protos_cmd("external/gateway", core_dir) +
+generate_protos_cmd("extensions", core_dir)+
+generate_protos_cmd("common", sdk_dir) +
+generate_protos_cmd("common/provider", sdk_dir) +
+generate_protos_cmd("common/google/api", sdk_dir) +
+generate_protos_cmd("external/gateway", sdk_dir) +
+generate_protos_cmd("extensions", sdk_dir);
 
 system(gencommand)
