@@ -39,7 +39,7 @@ namespace Tokenio.Rpc
         protected readonly ICryptoEngine cryptoEngine;
         protected readonly ManagedChannel channel;
         protected bool customerInitiated;
-        protected SecurityMetadata trackingMetadata = new SecurityMetadata();
+        private SecurityMetadata trackingMetadata = new SecurityMetadata();
         protected string onBehalfOf;
 
         /// <summary>
@@ -133,15 +133,40 @@ namespace Tokenio.Rpc
         /// <returns>a task</returns>
         public Task UseDefaultRecoveryRule()
         {
-            return gateway(authenticationContext()).GetDefaultAgentAsync(new GetDefaultAgentRequest())
-                .ToTask(response => new MemberOperation
+
+            ISigner signer = cryptoEngine.CreateSigner(Level.Privileged);
+            return GetMember(MemberId)
+                .FlatMap(member => gateway(authenticationContext())
+                .GetDefaultAgentAsync(new GetDefaultAgentRequest())
+                .ToTask(response =>
                 {
-                    RecoveryRules = new MemberRecoveryRulesOperation
+                    var operations = new MemberOperation
                     {
-                        RecoveryRule = new RecoveryRule { PrimaryAgent = response.MemberId }
+                        RecoveryRules = new MemberRecoveryRulesOperation
+                        {
+                            RecoveryRule = new RecoveryRule { PrimaryAgent = response.MemberId }
+                        }
+                    };
+                    return new MemberUpdate
+                    {
+                        PrevHash = member.LastHash,
+                        MemberId = member.Id,
+                        Operations = { operations }
+                    };
+                })
+                .Map(update => gateway(authenticationContext())
+                .UpdateMemberAsync(new UpdateMemberRequest
+                {
+                    Update = update,
+                    UpdateSignature = new Signature
+                    {
+                        KeyId = signer.GetKeyId(),
+                        MemberId = MemberId,
+                        Signature_ = signer.Sign(update)
                     }
                 })
-                .FlatMap(opration => UpdateMember(new List<MemberOperation> { opration }));
+                .ToTask())
+                );
         }
 
         /// <summary>
@@ -304,7 +329,7 @@ namespace Tokenio.Rpc
                     switch (response.Status)
                     {
                         case RequestStatus.SuccessfulRequest:
-                            return new PagedList<Transaction>(response.Transactions,response.Offset);
+                            return new PagedList<Transaction>(response.Transactions, response.Offset);
                         case RequestStatus.MoreSignaturesNeeded:
                             throw new StepUpRequiredException("Balance step up required.");
                         default:
@@ -312,7 +337,7 @@ namespace Tokenio.Rpc
                     }
                 });
         }
-        
+
         /// <summary>
         /// Look up an existing standing order and return the response.
         /// </summary>
@@ -345,7 +370,7 @@ namespace Tokenio.Rpc
                         }
                     });
         }
-        
+
         /// <summary>
         /// Look up standing orders and return response.
         /// </summary>
@@ -411,7 +436,7 @@ namespace Tokenio.Rpc
             return gateway(authenticationContext()).GetBankInfoAsync(request)
                 .ToTask(response => response.Info);
         }
-        
+
         /// <summary>
         /// Links a funding bank account to Token.
         /// </summary>
@@ -428,7 +453,6 @@ namespace Tokenio.Rpc
                     {
                         throw new BankAuthorizationRequiredException();
                     }
-
                     return (IList<ProtoAccount>)response.Accounts;
                 });
         }
@@ -597,7 +621,7 @@ namespace Tokenio.Rpc
             return gateway(authenticationContext()).CreateAccessTokenAsync(request)
                 .ToTask(response => response.Token);
         }
-      
+
         /// <summary>
         /// Gets a member's public profile.
         /// </summary>

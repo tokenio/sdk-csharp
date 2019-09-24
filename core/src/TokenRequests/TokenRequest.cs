@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Tokenio.Proto.Common.AccountProtos;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.ProviderSpecific;
@@ -35,7 +36,7 @@ namespace Tokenio.TokenRequests
         {
             return new AccessBuilder(resources);
         }
-        
+
         /// <summary>
         /// Create a new Builder instance for an access token request with account-specific resources.
         /// </summary>
@@ -45,7 +46,7 @@ namespace Tokenio.TokenRequests
         {
             return new AccessBuilder(list);
         }
-        
+
         /// <summary>
         /// Create a Builder instance for a funds confirmation request.
         /// </summary>
@@ -58,13 +59,13 @@ namespace Tokenio.TokenRequests
         {
             return FundsConfirmationRequestBuilder(bankId, account, null);
         }
-        
+
         /// <summary>
         /// Create a Builder instance for a funds confirmation request.
         /// </summary>
         /// <param name="bankId">bank ID</param>
         /// <param name="account">the user's account</param>
-        /// <param name="data">optional customer data</param>
+        /// <param name="data">customer data</param>
         /// <returns>Builder instance</returns>
         public static AccessBuilder FundsConfirmationRequestBuilder(
                 string bankId,
@@ -96,6 +97,52 @@ namespace Tokenio.TokenRequests
         {
             return new TransferBuilder(amount, currency);
         }
+
+        /// <summary>
+        /// Create a new Builder instance for a standing order token request.
+        /// 
+        /// </summary>
+        /// <param name="amount">amount per charge</param>
+        /// <param name="currency">currency per charge</param>
+        /// <param name="frequency">frequency of the standing order. ISO 20022: DAIL, WEEK, TOWK,
+        ///                     MNTH, TOMN, QUTR, SEMI, YEAR </param>
+        /// <param name="startDate">start date of the standing order. ISO 8601: YYYY-MM-DD or YYYYMMDD.</param>
+        /// <param name="endDate">end date of the standing order. ISO 8601: YYYY-MM-DD or YYYYMMDD.</param>
+        /// <param name="destinations">destination account of the standing order</param>
+        /// <returns>Builder instance</returns>
+        public static StandingOrderBuilder StandingOrderRequestBuilder(
+                double amount,
+                string currency,
+                string frequency,
+                string startDate,
+                string endDate,
+                IList<TransferDestination> destinations)
+        {
+            return new StandingOrderBuilder(
+                    amount,
+                    currency,
+                    frequency,
+                    startDate,
+                    endDate,
+                    destinations);
+        }
+
+        /// <summary>
+        /// Create a new Builder instance for a bulk transfer token request.
+        /// 
+        /// </summary>
+        /// <param name="transfers">transfers list of transfers</param>
+        /// <param name="totalAmount">total amount irrespective of currency. Used for redundancy check.</param>
+        /// <param name="source">source account for all transfer</param>
+        /// <returns>Builder instance</returns>
+        public static BulkTransferBuilder BulkTransferRequestBuilder(
+                IList<BulkTransferBody.Types.Transfer> transfers,
+                double totalAmount,
+                TransferEndpoint source)
+        {
+            return new BulkTransferBuilder(transfers, totalAmount, source);
+        }
+
 
         private TokenRequest(
             TokenRequestPayload payload,
@@ -406,7 +453,7 @@ namespace Tokenio.TokenRequests
             public TransferBuilder SetExecutionDate(DateTime executionDate)
             {
                 this.requestPayload.TransferBody
-                        .ExecutionDate = executionDate.ToString(Util.BASIC_ISO_DATE);
+                        .ExecutionDate = executionDate.ToString(Util.ISO_DATE);
                 return this;
             }
 
@@ -432,6 +479,20 @@ namespace Tokenio.TokenRequests
                         .Instructions
                         .Metadata
                         .ChargeBearer = chargeBearer;
+                return this;
+            }
+
+            /// <summary>
+            /// Optional. In the scenario where TPP wishes to know the user's selection of country and
+            /// bank, TPP should provide this url so that Token can make a call with relevant
+            /// information as parameters. TPP can use that information to set transfer destination.
+            /// </summary>
+            /// <param name="url">URL</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetSetTransferDestinationsUrl(string url)
+            {
+                this.requestPayload.TransferBody
+                        .SetTransferDestinationsUrl = url;
                 return this;
             }
 
@@ -476,7 +537,7 @@ namespace Tokenio.TokenRequests
                         .PurposeCode = purposeCode;
                 return this;
             }
-            
+
             /// <summary>
             /// Optional. Sets whether CAF should be attempted before transfer.
             /// </summary>
@@ -490,11 +551,49 @@ namespace Tokenio.TokenRequests
             }
         }
 
+        public class BulkTransferBuilder : Builder<BulkTransferBuilder>
+        {
+            internal BulkTransferBuilder(
+                    IList<BulkTransferBody.Types.Transfer> transfers,
+                    double totalAmount,
+                    TransferEndpoint source)
+            {
+                this.requestPayload.BulkTransferBody = new BulkTransferBody
+                {
+                    Transfers = { transfers },
+                    TotalAmount = totalAmount.ToString(),
+                    Source = source
+                };
+            }
+        }
+
         public class StandingOrderBuilder : Builder<StandingOrderBuilder>
         {
-            StandingOrderBuilder()
+            internal StandingOrderBuilder()
             {
                 this.requestPayload.StandingOrderBody = new StandingOrderBody();
+            }
+
+            internal StandingOrderBuilder(
+                double amount,
+                string currency,
+                string frequency,
+                string startDate,
+                string endDate,
+                IList<TransferDestination> destinations)
+            {
+                this.requestPayload.StandingOrderBody = new StandingOrderBody
+                {
+                    Amount = amount.ToString(),
+                    Currency = currency,
+                    Frequency = frequency,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Instructions = new TransferInstructions
+                    {
+                        TransferDestinations = { destinations }
+                    }
+                };
             }
 
             /// <summary>
@@ -560,7 +659,7 @@ namespace Tokenio.TokenRequests
             }
 
             /// <summary>
-            /// Adds a transfer destination to a transfer token request.
+            /// Adds a destination account to a standing order token request.
             /// </summary>
             /// <param name="destination">destination</param>
             /// <returns>builder</returns>
@@ -617,7 +716,7 @@ namespace Tokenio.TokenRequests
             /// <returns>builder</returns>
             public StandingOrderBuilder SetUltimateCreditor(string ultimateCreditor)
             {
-                this.requestPayload.TransferBody
+                this.requestPayload.StandingOrderBody
                         .Instructions
                         .Metadata
                         .UltimateCreditor = ultimateCreditor;
@@ -631,7 +730,7 @@ namespace Tokenio.TokenRequests
             /// <returns>builder</returns>
             public StandingOrderBuilder SetUltimateDebtor(string ultimateDebtor)
             {
-                this.requestPayload.TransferBody
+                this.requestPayload.StandingOrderBody
                         .Instructions
                         .Metadata
                         .UltimateCreditor = ultimateDebtor;
@@ -645,7 +744,7 @@ namespace Tokenio.TokenRequests
             /// <returns>builder</returns>
             public StandingOrderBuilder SetPurposeCode(string purposeCode)
             {
-                this.requestPayload.TransferBody
+                this.requestPayload.StandingOrderBody
                         .Instructions
                         .Metadata
                         .PurposeCode = purposeCode;

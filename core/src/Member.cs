@@ -171,7 +171,7 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Links a funding bank account to Token and returns it to the caller.
+        /// Looks up funding bank accounts linked to Token.
         /// </summary>
         /// <returns>a list of accounts</returns>
         public Task<IList<Account>> GetAccountsImpl()
@@ -215,8 +215,8 @@ namespace Tokenio
             {
                 if (!string.IsNullOrEmpty(partnerId) && !partnerId.Equals("token"))
                 {
-                        // Realm must equal member's partner ID if affiliated
-                        if (!string.IsNullOrEmpty(alias.Realm) && !alias.Realm.Equals(partnerId))
+                    // Realm must equal member's partner ID if affiliated
+                    if (!string.IsNullOrEmpty(alias.Realm) && !alias.Realm.Equals(partnerId))
                     {
                         throw new InvalidRealmException(alias.Realm, partnerId);
                     }
@@ -225,7 +225,7 @@ namespace Tokenio
                 if (!string.IsNullOrEmpty(realmId))
                 {
 
-                    alias.Realm = realmId;
+                    alias.RealmId = realmId;
                 }
                 return alias;
             }).ToList();
@@ -601,7 +601,7 @@ namespace Tokenio
         {
             return GetTransactions(accountId, limit, keyLevel, offset).Result;
         }
-        
+
         /// <summary>
         /// Looks up an existing standing order for a given account.
         /// </summary>
@@ -631,7 +631,7 @@ namespace Tokenio
         {
             return GetStandingOrder(accountId, standingOrderId, keyLevel).Result;
         }
-        
+
         /// <summary>
         /// Looks up standing orders for a given account.
         /// </summary>

@@ -9,9 +9,6 @@ using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.AccountProtos.BankAccount.Types;
-using static Tokenio.TokenRequests.TokenRequest;
-using AccountCase = Tokenio.Proto.Common.AccountProtos.BankAccount.AccountOneofCase;
-using ProtoToken = Tokenio.Proto.Common.TokenProtos.Token;
 using TRANSFER = Tokenio.Proto.Common.TokenProtos.TokenPayload.BodyOneofCase;
 using TRANSFER_BODY = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.RequestBodyOneofCase;
 
@@ -32,6 +29,9 @@ namespace Tokenio.User
         private readonly Member member;
 
         private readonly TokenPayload payload;
+
+        // Token request ID
+        private String tokenRequestId;
 
         /// <summary>
         /// Creates the builder object.
@@ -122,6 +122,16 @@ namespace Tokenio.User
             {
                 this.payload.ActingAs = tokenRequest.RequestPayload.ActingAs;
             }
+
+            string executionDate = tokenRequest.RequestPayload
+                .TransferBody
+                .ExecutionDate;
+            if (!string.IsNullOrEmpty(executionDate))
+            {
+                SetExecutionDate(executionDate);
+            }
+
+            this.tokenRequestId = tokenRequest.Id;
         }
 
         /// <summary>
@@ -366,6 +376,7 @@ namespace Tokenio.User
         public TransferTokenBuilder SetTokenRequestId(string tokenRequestId)
         {
             payload.TokenRequestId = tokenRequestId;
+            this.tokenRequestId = tokenRequestId;
             return this;
         }
 
@@ -382,13 +393,14 @@ namespace Tokenio.User
 
         /// <summary>
         /// Sets the execution date of the transfer. Used for future-dated payments.
+        /// Date should follow ISO 8601: YYYY-MM-DD format.
         /// </summary>
         /// <param name="executionDate">execution date</param>
         /// <returns>builder</returns>
-        public TransferTokenBuilder SetExecutionDate(DateTime executionDate)
+        public TransferTokenBuilder SetExecutionDate(string executionDate)
         {
             payload.Transfer
-                    .ExecutionDate = executionDate.ToString(Util.BASIC_ISO_DATE);
+                    .ExecutionDate = executionDate;
             return this;
         }
 
@@ -402,7 +414,7 @@ namespace Tokenio.User
             payload.Transfer.Instructions.Metadata.ProviderTransferMetadata = metadata;
             return this;
         }
-        
+
         /// <summary>
         /// Sets whether CAF should be attempted before transfer.
         /// </summary>

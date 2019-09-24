@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Tokenio.Exceptions;
@@ -134,6 +135,24 @@ namespace Tokenio.User.Rpc
                     .GetTransferAsync(request)
                     .ToTask(response =>
                             response.Transfer);
+        }
+
+        /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulkTransferId bulk transfer ID</param>
+        /// <returns>Looks up an existing bulk transfer.</returns>
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId)
+        {
+            var request = new GetBulkTransferRequest
+            {
+                BulkTransferId = bulkTransferId
+            };
+
+            return gateway(authenticationContext())
+                .GetBulkTransferAsync(request)
+                .ToTask(response =>
+                            response.BulkTransfer);
         }
 
         /// <summary>
@@ -287,6 +306,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "payload">transfer token payload</param>
         /// <param name = "tokenRequestId">token request id</param>
         /// <returns>transfer token returned by the server</returns>
+        [Obsolete("Deprecated")]
         public Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId)
         {
             var request = new CreateTransferTokenRequest
@@ -312,6 +332,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "payload">token payload</param>
         /// <param name="tokenRequestId">token request id</param>
         /// <returns>token returned by server</returns>
+        [Obsolete("Deprecated")]
         public Task<Token> CreateAccessToken(TokenPayload payload, string tokenRequestId = null)
         {
             payload.From = new TokenMember
@@ -475,6 +496,23 @@ namespace Tokenio.User.Rpc
                     .CreateTransferAsync(request)
                     .ToTask(response =>
                             response.Transfer);
+        }
+
+        /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>bulk transfer record </returns>
+        public Task<BulkTransfer> CreateBulkTransfer(string tokenId)
+        {
+            var request = new CreateBulkTransferRequest
+            {
+                TokenId = tokenId
+            };
+
+            return gateway(authenticationContext())
+                    .CreateBulkTransferAsync(request)
+                    .ToTask(response => response.Transfer);
         }
 
         /// <summary>

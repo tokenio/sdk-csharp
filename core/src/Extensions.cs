@@ -3,8 +3,12 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.X509;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
@@ -39,6 +43,21 @@ namespace Tokenio
                 Algorithm.Ed25519,
                 privateKey,
                 publicKey, expiresAtMs);
+        }
+
+        public static KeyPair ParseRsaKeyPair(this AsymmetricCipherKeyPair rsaKeyPair)
+        {
+            SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(rsaKeyPair.Public);
+            var publicKey = publicKeyInfo.ToAsn1Object().GetDerEncoded();
+            PrivateKeyInfo privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(rsaKeyPair.Private);
+            var privateKey = privateKeyInfo.ToAsn1Object().GetDerEncoded();
+            var id = Base64UrlEncoder.Encode(SHA1.Create().ComputeHash(publicKey)).Substring(0, 16);
+            return new KeyPair(
+                id,
+                0,
+                Algorithm.Rs256,
+                privateKey,
+                publicKey);
         }
 
         public static Key ToKey(this KeyPair keyPair)

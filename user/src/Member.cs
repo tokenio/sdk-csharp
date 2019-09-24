@@ -165,6 +165,26 @@ namespace Tokenio.User
         }
 
         /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulk transfer ID</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId)
+        {
+            return client.GetBulkTransfer(bulkTransferId);
+        }
+
+        /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulk transfer ID</param>
+        /// <returns>bulk transfer record</returns>
+        public BulkTransfer GetBulkTransferBlocking(string bulkTransferId)
+        {
+            return GetBulkTransfer(bulkTransferId).Result;
+        }
+
+        /// <summary>
         /// Looks up an existing Token standing order submission.
         /// </summary>
         /// <param name="submissionId">ID of the standing orde submission</param>
@@ -261,6 +281,30 @@ namespace Tokenio.User
                 TransferTokenBuilder transferTokenBuilder)
         {
             return PrepareTransferToken(transferTokenBuilder).Result;
+        }
+
+        /// <summary>
+        /// Prepares a bulk transfer token, returning the resolved token payload
+        /// and policy.
+        /// </summary>
+        /// <param name="builder">bulk transfer token builder</param>
+        /// <returns>resolved token payload and policy</returns>
+        public Task<PrepareTokenResult> PrepareBulkTransferToken(
+                BulkTransferTokenBuilder builder)
+        {
+            return client.PrepareToken(builder.BuildPayload());
+        }
+
+        /// <summary>
+        /// Prepares a bulk transfer token, returning the resolved token payload
+        /// and policy.
+        /// </summary>
+        /// <param name="builder">bulk transfer token builder</param>
+        /// <returns>resolved token payload and policy</returns>
+        public PrepareTokenResult PrepareBulkTransferTokenBlocking(
+                BulkTransferTokenBuilder builder)
+        {
+            return PrepareBulkTransferToken(builder).Result;
         }
 
         /// <summary>
@@ -451,7 +495,32 @@ namespace Tokenio.User
         {
             return new TransferTokenBuilder(this, payload);
         }
-        
+
+        /// <summary>
+        /// Creates a new bulk transfer token builder.
+        /// </summary>
+        /// <param name="transfers">list of transfers</param>
+        /// <param name="totalAmount">total amount irrespective of currency. Used for redundancy check.</param>
+        /// <param name="source">source account for all transfer</param>
+        /// <returns>bulk transfer token builder</returns>
+        public BulkTransferTokenBuilder CreateBulkTransferTokenBuilder(
+                List<BulkTransferBody.Types.Transfer> transfers,
+                double totalAmount,
+                TransferEndpoint source)
+        {
+            return new BulkTransferTokenBuilder(this, transfers, totalAmount, source);
+        }
+
+        /// <summary>
+        /// Creates a new bulk transfer token builder from a token request.
+        /// </summary>
+        /// <param name="tokenRequest">token request</param>
+        /// <returns>bulk transfer token builder</returns>
+        public BulkTransferTokenBuilder CreateBulkTransferTokenBuilder(TokenRequest tokenRequest)
+        {
+            return new BulkTransferTokenBuilder(tokenRequest);
+        }
+
         /// <summary>
         /// Creates a new standing order token builder. Defines a standing order
         /// for a fixed time span.
@@ -460,8 +529,8 @@ namespace Tokenio.User
         /// <param name="currency">currency code, e.g. "USD"</param>
         /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
         ///              DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
-        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
-        /// <param name="endDate">end date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
+        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD</param>
+        /// <param name="endDate">end date of the standing order: ISO 8601 YYYY-MM-DD</param>
         /// <returns>standing order token builder</returns>
         public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(
                 double amount,
@@ -487,7 +556,7 @@ namespace Tokenio.User
         /// <param name="currency">currency code, e.g. "USD"</param>
         /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
         ///              DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
-        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
+        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD</param>
         /// <returns>standing order token builder</returns>
         public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(
                 double amount,
@@ -915,6 +984,10 @@ namespace Tokenio.User
             {
                 payload.RefId = refId;
             }
+            else if (!string.IsNullOrEmpty(token.Payload.RefId) && amount == null)
+            {
+                payload.RefId = token.Payload.RefId;
+            }
             else
             {
                 logger.Warn("refId is not set. A random ID will be used.");
@@ -960,6 +1033,10 @@ namespace Tokenio.User
             if (refId != null)
             {
                 payload.RefId = refId;
+            }
+            else if (!string.IsNullOrEmpty(token.Payload.RefId) && amount == null)
+            {
+                payload.RefId = token.Payload.RefId;
             }
             else
             {
@@ -1088,6 +1165,26 @@ namespace Tokenio.User
                 string refId)
         {
             return RedeemToken(token, amount, currency, description, destination, refId).Result;
+        }
+
+        /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> RedeemBulkTransferToken(string tokenId)
+        {
+            return client.CreateBulkTransfer(tokenId);
+        }
+
+        /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>bulk transfer record</returns>
+        public BulkTransfer redeemBulkTransferTokenBlocking(string tokenId)
+        {
+            return RedeemBulkTransferToken(tokenId).Result;
         }
 
         /// <summary>

@@ -10,7 +10,7 @@ using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.User.Utils;
 using RequestBodyCase = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.RequestBodyOneofCase;
 
-namespace Tokenio
+namespace Tokenio.User
 {
     /// <summary>
     /// This class is used to build a transfer token.The required parameters are member, amount (which
@@ -199,7 +199,7 @@ namespace Tokenio
             var instructions = payload.StandingOrder.Instructions;
             if (instructions == null)
             {
-                instructions = new TransferInstructions {};
+                instructions = new TransferInstructions { };
             }
 
             instructions.TransferDestinations.Add(destination);
@@ -308,7 +308,7 @@ namespace Tokenio
         /// <returns>builder</returns>
         public StandingOrderTokenBuilder SetUltimateCreditor(string ultimateCreditor)
         {
-            payload.Transfer
+            payload.StandingOrder
                     .Instructions
                     .Metadata
                     .UltimateCreditor = ultimateCreditor;
@@ -322,7 +322,7 @@ namespace Tokenio
         /// <returns>builder</returns>
         public StandingOrderTokenBuilder SetUltimateDebtor(string ultimateDebtor)
         {
-            payload.Transfer
+            payload.StandingOrder
                     .Instructions
                     .Metadata
                     .UltimateDebtor = ultimateDebtor;
@@ -336,7 +336,7 @@ namespace Tokenio
         /// <returns>builder</returns>
         public StandingOrderTokenBuilder SetPurposeCode(string purposeCode)
         {
-            payload.Transfer
+            payload.StandingOrder
                     .Instructions
                     .Metadata
                     .PurposeCode = purposeCode;

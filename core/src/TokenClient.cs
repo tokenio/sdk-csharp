@@ -14,7 +14,6 @@ using Tokenio.Utils;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-
 namespace Tokenio
 {
     public class TokenClient : IDisposable
@@ -381,8 +380,66 @@ namespace Tokenio
             int? perPage,
             string sort)
         {
+            return GetBanks(ids, search, country, page, perPage, sort, null);
+        }
+
+        /// <summary>
+        /// Returns a list of token enabled banks.
+        /// </summary>
+        /// <param name="ids">the bank IDs to fetch</param>
+        /// <param name="search">the keyword to search the fields 'name' and 'identifier' for</param>
+        /// <param name="country">ISO 3166-1 alpha-2 country code of the banks</param>
+        /// <param name="page">the result page to retrieve</param>
+        /// <param name="perPage">max number of records per page, can be at most 200</param>
+        /// <param name="sort">the key to sort the results, one of: name, provider and country</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///   (case insensitive)</param>
+        /// <returns>banks with paging information</returns>
+        public Task<PagedBanks> GetBanks(
+                IList<string> ids,
+                string search,
+                string country,
+                int? page,
+                int? perPage,
+                string sort,
+                string provider)
+        {
+            return GetBanks(ids, search, country, page, perPage, sort, provider, null);
+        }
+
+        /// <summary>
+        /// Returns a list of token enabled banks.
+        /// </summary>
+        /// <param name="ids">the bank IDs to fetch</param>
+        /// <param name="search">the keyword to search the fields 'name' and 'identifier' for</param>
+        /// <param name="country">ISO 3166-1 alpha-2 country code of the banks</param>
+        /// <param name="page">the result page to retrieve</param>
+        /// <param name="perPage">max number of records per page, can be at most 200</param>
+        /// <param name="sort">the key to sort the results, one of: name, provider and country</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///   (case insensitive)</param>
+        /// <param name="bankFeaturesMap">If specified, return banks who meet the bank features requirement.</param>
+        /// <returns>banks with paging information</returns>
+        public Task<PagedBanks> GetBanks(
+                IList<string> ids,
+                string search,
+                string country,
+                int? page,
+                int? perPage,
+                string sort,
+                string provider,
+                IDictionary<string, bool> bankFeaturesMap)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetBanks(ids, search, country, page, perPage, sort);
+            return unauthenticated.GetBanks(
+                    ids,
+                    search,
+                    country,
+                    page,
+                    perPage,
+                    sort,
+                    provider,
+                    bankFeaturesMap);
         }
 
         /// <summary>

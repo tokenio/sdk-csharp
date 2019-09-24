@@ -9,6 +9,7 @@ using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.TokenProtos;
+using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
@@ -98,7 +99,7 @@ namespace Tokenio.Tpp.Rpc
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
         /// <param name="customerInitiated">whether the customer initiated the calls</param>
-        public void UseAccessToken(string accessTokenId, bool customerInitiated = false)
+        private void UseAccessToken(string accessTokenId, bool customerInitiated)
         {
             this.onBehalfOf = accessTokenId;
             this.customerInitiated = customerInitiated;
@@ -112,7 +113,7 @@ namespace Tokenio.Tpp.Rpc
         /// <returns>an id to reference the token request</returns>
         public Task<string> StoreTokenRequest(
             TokenRequestPayload payload,
-            Proto.Common.TokenProtos.TokenRequestOptions options)
+            TokenRequestOptions options)
         {
             var request = new StoreTokenRequestRequest
             {
@@ -122,6 +123,26 @@ namespace Tokenio.Tpp.Rpc
 
             return gateway(authenticationContext()).StoreTokenRequestAsync(request)
                 .ToTask(response => response.TokenRequest.Id);
+        }
+
+        /// <summary>
+        /// Sets destination accounts for once if it hasn't been set.
+        /// </summary>
+        /// <param name="tokenRequestId">token request Id</param>
+        /// <param name="transferDestinations">destination accounts</param>
+        /// <returns>Task that completes when request handled</returns>
+        public Task SetTokenRequestTransferDestinations(
+                string tokenRequestId,
+                IList<TransferDestination> transferDestinations)
+        {
+            return gateway(authenticationContext())
+            .SetTokenRequestTransferDestinationsAsync(
+                    new SetTokenRequestTransferDestinationsRequest
+                    {
+                        TokenRequestId = tokenRequestId,
+                        TransferDestinations = { transferDestinations }
+                    })
+            .ToTask();
         }
 
         /// <summary>
@@ -207,6 +228,21 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulk transfer ID</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId)
+        {
+            return gateway(authenticationContext())
+                    .GetBulkTransferAsync(new GetBulkTransferRequest
+                    {
+                        BulkTransferId = bulkTransferId
+                    })
+                    .ToTask(response => response.BulkTransfer);
+        }
+
+        /// <summary>
         /// Looks up an existing Token standing order submission.
         /// </summary>
         /// <param name="submissionId">submission ID</param>
@@ -279,17 +315,9 @@ namespace Tokenio.Tpp.Rpc
         /// Sets security metadata included in all requests.
         /// </summary>
         /// <param name="securityMetadata">Security metadata.</param>
-        public void SetSecurityMetadata(SecurityMetadata securityMetadata)
+        private void SetSecurityMetadata(SecurityMetadata securityMetadata)
         {
             this.securityMetadata = securityMetadata;
-        }
-
-        /// <summary>
-        /// Clears the security meta data.
-        /// </summary>
-        public void ClearSecurityMetaData()
-        {
-            this.securityMetadata = new SecurityMetadata();
         }
 
         /// <summary>
@@ -433,7 +461,7 @@ namespace Tokenio.Tpp.Rpc
         /// <returns>The eidas.</returns>
         /// <param name="payload">payload payload containing member id and the certificate.</param>
         /// <param name="signature">signature payload signed with the private key corresponding to the certificate.</param>
-        public Task VerifyEidas(
+        public Task<VerifyEidasResponse> VerifyEidas(
             VerifyEidasPayload payload,
             string signature)
         {
@@ -445,7 +473,8 @@ namespace Tokenio.Tpp.Rpc
 
             };
             return gateway(authenticationContext())
-                    .VerifyEidasAsync(request).ToTask();
+                    .VerifyEidasAsync(request)
+                    .ToTask(response => response);
         }
 
         /// <summary>
@@ -468,6 +497,21 @@ namespace Tokenio.Tpp.Rpc
             };
             return gateway(authenticationContext()).CreateTransferAsync(request)
                 .ToTask(response => response.Transfer);
+        }
+
+        /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId"> ID of token to redeem</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> CreateBulkTransfer(string tokenId)
+        {
+            return gateway(authenticationContext())
+                    .CreateBulkTransferAsync(new CreateBulkTransferRequest
+                    {
+                        TokenId = tokenId
+                    })
+                    .ToTask(response => response.Transfer);
         }
 
         /// <summary>

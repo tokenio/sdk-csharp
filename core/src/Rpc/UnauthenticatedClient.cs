@@ -285,23 +285,25 @@ namespace Tokenio.Rpc
             string country,
             int? page,
             int? perPage,
-            string sort)
+            string sort,
+            string provider,
+            IDictionary<string, bool> bankFeaturesMap)
         {
             var request = new GetBanksRequest();
 
             if (ids != null)
             {
-                request.Ids.Add(ids);
+                request.Filter.Ids.Add(ids);
             }
 
             if (search != null)
             {
-                request.Search = search;
+                request.Filter.Search = search;
             }
 
             if (country != null)
             {
-                request.Country = country;
+                request.Filter.Country = country;
             }
 
             if (page.HasValue)
@@ -317,6 +319,21 @@ namespace Tokenio.Rpc
             if (sort != null)
             {
                 request.Sort = sort;
+            }
+
+            if (provider != null)
+            {
+                request.Filter.Provider = provider;
+            }
+
+            if (bankFeaturesMap != null)
+            {
+                IDictionary<string, string> map = new Dictionary<string, string>();
+                foreach (var entry in bankFeaturesMap)
+                {
+                    map.Add(entry.Key, entry.Value.ToString());
+                }
+                request.Filter.RequiresBankFeatures.Add(map);
             }
 
             return gateway.GetBanksAsync(request)
@@ -343,7 +360,5 @@ namespace Tokenio.Rpc
             return gateway.GetBanksCountriesAsync(request)
                 .ToTask(response => (IList<string>)response.Countries);
         }
-
-
     }
 }

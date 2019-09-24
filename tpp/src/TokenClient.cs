@@ -347,8 +347,24 @@ namespace Tokenio.Tpp
                     };
 
                     Util.VerifySignature(member, payload, parameters.Signature);
-                    return TokenRequestCallback.Create(parameters.TokenId, state.InnerState);
+                    return TokenRequestCallback.Create(
+                        parameters.TokenId,
+                        state.InnerState);
                 });
+        }
+
+        /// <summary>
+        /// Parse the Set Transfer Destinations Url callback parameters to extract state,
+        /// region and supported.Check the CSRF token against the initial request and verify
+        /// the signature.
+        /// </summary>
+        /// <param name="url">token request callback url</param>
+        /// <returns>TokenRequestSetTransferDestinationUrl object containing the token id and
+        ///    the original state</returns>
+        public TokenRequestTransferDestinationsCallbackParameters ParseSetTransferDestinationsUrl(
+                 string url)
+        {
+            return TokenRequestTransferDestinationsCallbackParameters.Create(url);
         }
 
         /// <summary>

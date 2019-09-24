@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
+using Tokenio.Proto.Gateway;
 using Tokenio.Tpp.Rpc;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
@@ -328,7 +330,7 @@ namespace Tokenio.Tpp
             {
                 payload.RefId = refId;
             }
-            else if (!string.IsNullOrEmpty(token.Payload.RefId))
+            else if (!string.IsNullOrEmpty(token.Payload.RefId) && amount == null)
             {
                 payload.RefId = token.Payload.RefId;
             }
@@ -371,6 +373,7 @@ namespace Tokenio.Tpp
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
         /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
+        [Obsolete("Depricated")]
         public Task<Transfer> RedeemTokenInternal(
             Token token,
             double? amount,
@@ -408,6 +411,10 @@ namespace Tokenio.Tpp
             if (refId != null)
             {
                 payload.RefId = refId;
+            }
+            else if (!string.IsNullOrEmpty(token.Payload.RefId) && amount == null)
+            {
+                payload.RefId = token.Payload.RefId;
             }
             else
             {
@@ -550,6 +557,26 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> RedeemBulkTransferToken(string tokenId)
+        {
+            return client.CreateBulkTransfer(tokenId);
+        }
+
+        /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>bulk transfer record</returns>
+        public BulkTransfer RedeemBulkTransferTokenBlocking(string tokenId)
+        {
+            return RedeemBulkTransferToken(tokenId).Result;
+        }
+
+        /// <summary>
         /// Redeems a standing order token.
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
@@ -618,6 +645,31 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
+        /// Sets destination account for once if it hasn't been set.
+        /// </summary>
+        /// <param name="tokenRequestId">token request Id</param>
+        /// <param name="transferDestinations">destination account</param>
+        /// <returns>Task that completes when request handled</returns>
+        public Task SetTokenRequestTransferDestinations(
+                string tokenRequestId,
+                IList<TransferDestination> transferDestinations)
+        {
+            return client.SetTokenRequestTransferDestinations(tokenRequestId, transferDestinations);
+        }
+
+        /// <summary>
+        /// Sets destination account for once if it hasn't been set.
+        /// </summary>
+        /// <param name="tokenRequestId">token request Id</param>
+        /// <param name="transferDestinations">destination account</param>
+        public void SetTokenRequestTransferDestinationsBlocking(
+                string tokenRequestId,
+                IList<TransferDestination> transferDestinations)
+        {
+            SetTokenRequestTransferDestinations(tokenRequestId, transferDestinations).Wait();
+        }
+
+        /// <summary>
         /// Creates a customization
         /// </summary>
         /// <param name="logo">logo</param>
@@ -673,6 +725,26 @@ namespace Tokenio.Tpp
         public Transfer GetTransferBlocking(string transferId)
         {
             return GetTransfer(transferId).Result;
+        }
+
+        /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulk transfer ID</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId)
+        {
+            return client.GetBulkTransfer(bulkTransferId);
+        }
+
+        /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulk transfer ID</param>
+        /// <returns>bulk transfer record</returns>
+        public BulkTransfer GetBulkTransferBlocking(string bulkTransferId)
+        {
+            return GetBulkTransfer(bulkTransferId).Result;
         }
 
         /// <summary>
@@ -926,14 +998,18 @@ namespace Tokenio.Tpp
 
         /// <summary>
         /// Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
-        ///of the alias.
-        ///An eIDAS-type alias containing auth number of the TPP should be added to the
-        ///member before making this call.The member must be under the realm of a bank.
+        /// of the alias.Before making this call make sure that:<ul>
+        ///     <li>The member is under the realm of a bank(the one tpp tries to gain access to)</li>
+        ///     <li>An eIDAS-type alias with the value equal to auth number of the TPP is added
+        ///     to the member</li>
+        ///     <li>The realmId of the alias is equal to the member's realmId</li>
+        /// </ul>
         /// </summary>
         /// <returns>The eidas.</returns>
         /// <param name="payload">payload payload containing the member id and the certificate in PEM format.</param>
         /// <param name="signature">signature the payload signed with a private key corresponding to the certificate.</param>
-        public Task VerifyEidas(
+        /// <returns>a result of the verification process</returns>
+        public Task<VerifyEidasResponse> VerifyEidas(
             VerifyEidasPayload payload,
             string signature)
         {
