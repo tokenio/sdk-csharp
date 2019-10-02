@@ -5,17 +5,17 @@ using UserMember = Tokenio.User.Member;
 
 namespace Tokenio.Sample.User
 {
-    public class CreateAndEndorseTransferTokenSampleTest
+    public class CreateStandingOrderTokenSampleTest
     {
         [Fact]
-        public void CreatePaymentTokenTest()
+        public void CreateStandingOrderTokenTest()
         {
             using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
             {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
-                Token token = CreateAndEndorseTransferTokenSample.CreateTransferToken(payer, payeeAlias);
+                Token token = CreateStandingOrderTokenSample.CreateStandingOrderToken(payer, payeeAlias);
                 Assert.NotNull(token);
             }
         }

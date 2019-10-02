@@ -35,15 +35,15 @@ namespace Tokenio
         /// <param name="currency">currency of the token</param>
         /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
         ///            DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
-        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
-        /// <param name="endDate">end date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
+        /// <param name="startDate">start date of the standing order
+        /// <param name="endDate">end date of the standing order
         public StandingOrderTokenBuilder(
             Member member,
             double amount,
             string currency,
             string frequency,
-            string startDate,
-            string endDate = null)
+            DateTime startDate,
+            DateTime? endDate = null)
         {
             this.payload = new TokenPayload
             {
@@ -57,8 +57,8 @@ namespace Tokenio
                     Currency = currency,
                     Amount = amount.ToString(),
                     Frequency = frequency,
-                    StartDate = startDate,
-                    EndDate = endDate ?? ""
+                    StartDate = startDate.ToString("yyyy-MM-dd"),
+                    EndDate = endDate == null ? "" : endDate.Value.ToString("yyyy-MM-dd")
                 }
             };
 

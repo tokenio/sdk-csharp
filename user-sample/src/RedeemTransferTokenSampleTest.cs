@@ -1,4 +1,5 @@
 ﻿using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Xunit;
@@ -20,7 +21,7 @@ namespace Tokenio.Sample.User
 
                 Account payeeAccount = LinkMemberAndBankSample.LinkBankAccounts(payee);
 
-                Token token = CreateAndEndorseTransferTokenSample.CreateTransferToken(payer, payeeAlias);
+                Token token = CreateTransferTokenSample.CreateTransferToken(payer, payeeAlias, Key.Types.Level.Low);
 
                 Transfer transfer = RedeemTransferTokenSample.RedeemTransferToken(
                         payee,
