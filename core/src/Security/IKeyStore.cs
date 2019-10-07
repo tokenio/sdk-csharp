@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Security
-{
+namespace Tokenio.Security {
     /// <summary>
     /// Provides key storage primitives.
     /// </summary>
-    public interface IKeyStore
-    {
+    public interface IKeyStore {
         /// <summary>
         /// Puts a specified key pair into the storage.
         /// </summary>
         /// <param name="memberId">the member id</param>
         /// <param name="keyPair">the key paid</param>
-        void Put(string memberId, KeyPair keyPair);
+        void Put (string memberId, KeyPair keyPair);
 
         /// <summary>
         /// Gets a key pair of a specific level.
@@ -22,7 +20,7 @@ namespace Tokenio.Security
         /// <param name="level">the level of the key pair</param>
         /// <returns>the key pair</returns>
         /// <exception cref="KeyNotFoundException"></exception>>
-        KeyPair GetByLevel(string memberId, Level level);
+        KeyPair GetByLevel (string memberId, Level level);
 
         /// <summary>
         /// Gets a key pair of by its ID.
@@ -31,13 +29,13 @@ namespace Tokenio.Security
         /// <param name="keyId">the key id</param>
         /// <returns>the key pair</returns>
         /// <exception cref="KeyNotFoundException"></exception>>
-        KeyPair GetById(string memberId, string keyId);
+        KeyPair GetById (string memberId, string keyId);
 
         /// <summary>
         /// Get all of a member's keys.
         /// </summary>
         /// <param name="memberId">the member id</param>
         /// <returns>a list of key pairs</returns>
-        IList<KeyPair> KeyList(string memberId);
+        IList<KeyPair> KeyList (string memberId);
     }
 }

@@ -1,30 +1,23 @@
-﻿using System;
+using System;
 using Xunit;
 using UserMember = Tokenio.User.Member;
 
-
-namespace Tokenio.Sample.User
-{
-    public class DeleteMemberSampleTest
-    {
+namespace Tokenio.Sample.User {
+    public class DeleteMemberSampleTest {
         [Fact]
-        public void CreatePaymentTokenTest()
-        {
-            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
-            {
-                UserMember member = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
+        public void CreatePaymentTokenTest () {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient ()) {
+                UserMember member = TestUtil.CreateMemberAndLinkAccounts (tokenClient);
 
-                Assert.Equal(tokenClient.GetMemberBlocking(member.MemberId()).MemberId(), member.MemberId());
+                Assert.Equal (tokenClient.GetMemberBlocking (member.MemberId ()).MemberId (), member.MemberId ());
 
-                member.DeleteMemberBlocking();
+                member.DeleteMemberBlocking ();
 
+                Assert.Throws<AggregateException> (() =>
+                    tokenClient.GetMemberBlocking (member.MemberId ())
 
-                Assert.Throws<AggregateException>(() =>
-                    tokenClient.GetMemberBlocking(member.MemberId())
-
-                    );
+                );
             }
         }
     }
 }
-

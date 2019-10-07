@@ -1,14 +1,12 @@
-﻿using System.Linq;
+using System.Linq;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Security
-{
+namespace Tokenio.Security {
     /// <summary>
     /// Encapsulates Key pair.
     /// </summary>
-    public class KeyPair
-    {
+    public class KeyPair {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:Tokenio.Security.KeyPair"/> class.
         /// </summary>
@@ -17,13 +15,12 @@ namespace Tokenio.Security
         /// <param name="algorithm">Algorithm.</param>
         /// <param name="privateKey">Private key.</param>
         /// <param name="publicKey">Public key.</param>
-        public KeyPair(
+        public KeyPair (
             string id,
             Level level,
             Algorithm algorithm,
             byte[] privateKey,
-            byte[] publicKey)
-        {
+            byte[] publicKey) {
             Id = id;
             Level = level;
             Algorithm = algorithm;
@@ -40,14 +37,13 @@ namespace Tokenio.Security
         /// <param name="privateKey">Private key.</param>
         /// <param name="publicKey">Public key.</param>
         /// <param name="expiresAtMs">Expires at ms.</param>
-        public KeyPair(
-           string id,
-           Level level,
-           Algorithm algorithm,
-           byte[] privateKey,
-           byte[] publicKey,
-           long expiresAtMs)
-        {
+        public KeyPair (
+            string id,
+            Level level,
+            Algorithm algorithm,
+            byte[] privateKey,
+            byte[] publicKey,
+            long expiresAtMs) {
             Id = id;
             Level = level;
             Algorithm = algorithm;
@@ -72,33 +68,27 @@ namespace Tokenio.Security
         /// Checks whether a key has expired.
         /// </summary>
         /// <returns><c>true</c>, if expired was ised, <c>false</c> otherwise.</returns>
-        public bool IsExpired()
-        {
+        public bool IsExpired () {
 
-            return ExpiresAtMs != 0 && ExpiresAtMs < Util.CurrentMillis();
+            return ExpiresAtMs != 0 && ExpiresAtMs < Util.CurrentMillis ();
         }
 
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-            {
+        public override bool Equals (object obj) {
+            if (obj == null) {
                 return false;
             }
 
-            var other = (KeyPair)obj;
+            var other = (KeyPair) obj;
 
-            return Id.Equals(other.Id)
-                   && Level.Equals(other.Level)
-                   && Algorithm.Equals(other.Algorithm)
-                   && PrivateKey.SequenceEqual(other.PrivateKey)
-                   && PublicKey.SequenceEqual(other.PublicKey);
+            return Id.Equals (other.Id) &&
+                Level.Equals (other.Level) &&
+                Algorithm.Equals (other.Algorithm) &&
+                PrivateKey.SequenceEqual (other.PrivateKey) &&
+                PublicKey.SequenceEqual (other.PublicKey);
         }
 
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
+        public override int GetHashCode () {
+            return Id.GetHashCode ();
         }
     }
 }

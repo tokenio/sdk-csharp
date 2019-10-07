@@ -1,23 +1,20 @@
-﻿using Tokenio.Proto.Gateway;
+using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
 using Tokenio.Security;
 
-namespace Tokenio.Tpp.Rpc
-{
+namespace Tokenio.Tpp.Rpc {
     /// <summary>
     /// A factory class that is used to create {@link Client} and {@link UnauthenticatedClient}
     /// instances..
     /// </summary>
-    public static class ClientFactory
-    {
+    public static class ClientFactory {
         /// <summary>
         /// Creates new unauthenticated client backed by the specified channel.
         /// </summary>
         /// <returns>Newly created client.</returns>
         /// <param name="channel">RPC Channel to use.</param>
-        public static UnauthenticatedClient Unauthenticated(ManagedChannel channel)
-        {
-            return new UnauthenticatedClient(new GatewayService.GatewayServiceClient(channel.BuildInvoker()));
+        public static UnauthenticatedClient Unauthenticated (ManagedChannel channel) {
+            return new UnauthenticatedClient (new GatewayService.GatewayServiceClient (channel.BuildInvoker ()));
         }
 
         /// <summary>
@@ -28,12 +25,11 @@ namespace Tokenio.Tpp.Rpc
         /// <param name="memberId">the member id</param>
         /// <param name="crypto">the engine to use for signing requests, tokens, etc</param>
         /// <returns>the created client</returns>
-        public static Client Authenticated(
+        public static Client Authenticated (
             ManagedChannel channel,
             string memberId,
-            ICryptoEngine crypto)
-        {
-            return new Client(memberId, crypto, channel);
+            ICryptoEngine crypto) {
+            return new Client (memberId, crypto, channel);
         }
     }
 }

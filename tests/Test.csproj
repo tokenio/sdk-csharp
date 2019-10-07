@@ -13,4 +13,9 @@
     <ProjectReference Include="..\samples\Sample.csproj" />
     <ProjectReference Include="..\sdk\SDK.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

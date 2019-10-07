@@ -1,6 +1,3 @@
-﻿namespace Tokenio.Sample.Tpp
-{
-    public class GetTransactionsSample
-    {
-    }
+namespace Tokenio.Sample.Tpp {
+    public class GetTransactionsSample { }
 }

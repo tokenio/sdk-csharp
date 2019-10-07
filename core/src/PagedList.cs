@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace Tokenio
-{
-    public class PagedList<T>
-    {
-        public PagedList(IList<T> list, string offset)
-        {
+namespace Tokenio {
+    public class PagedList<T> {
+        public PagedList (IList<T> list, string offset) {
             List = list;
             Offset = offset;
         }

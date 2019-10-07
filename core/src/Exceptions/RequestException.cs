@@ -1,22 +1,18 @@
-﻿using System;
+using System;
 using Tokenio.Proto.Common.TransactionProtos;
 
-namespace Tokenio.Exceptions
-{
+namespace Tokenio.Exceptions {
     /// <summary>
     /// Generic request exception.
     /// </summary>
-    public class RequestException : Exception
-    {
+    public class RequestException : Exception {
         private readonly RequestStatus status;
 
-        public RequestException(RequestStatus status)
-        {
+        public RequestException (RequestStatus status) {
             this.status = status;
         }
 
-        public RequestStatus GetStatus()
-        {
+        public RequestStatus GetStatus () {
             return status;
         }
     }

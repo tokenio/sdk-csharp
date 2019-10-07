@@ -1,16 +1,13 @@
 using Tokenio.Proto.Common.SecurityProtos;
 
-namespace Tokenio.TokenRequests
-{
-    public class TokenRequestResult
-    {
+namespace Tokenio.TokenRequests {
+    public class TokenRequestResult {
         /// <summary>
         /// Creates an instance of <see cref="TokenRequestResult"/>.
         /// </summary>
         /// <param name="tokenId">token id</param>
         /// <param name="signature">token request state signature</param>
-        public TokenRequestResult(string tokenId, Signature signature)
-        {
+        public TokenRequestResult (string tokenId, Signature signature) {
             TokenId = tokenId;
             Signature = signature;
         }

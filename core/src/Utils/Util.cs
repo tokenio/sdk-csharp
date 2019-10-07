@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -16,81 +16,66 @@ using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberOperationMetadata.Types;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
-namespace Tokenio.Utils
-{
+namespace Tokenio.Utils {
     /// <summary>
     /// Utility Methods
     /// </summary>
-    public class Util
-    {
+    public class Util {
         public static readonly string ISO_DATE = "yyyy-MM-dd";
 
         /// <summary>
         /// Generates a random string 
         /// </summary>
         /// <returns>Generated Random string.</returns>
-        public static string Nonce()
-        {
-            return Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 18);
+        public static string Nonce () {
+            return Guid.NewGuid ().ToString ().Replace ("-", string.Empty).Substring (0, 18);
         }
 
-        public static string ToJson(IMessage message)
-        {
-            var json = JsonFormatter.Default.Format(message);
-            return NormalizeJson(json);
+        public static string ToJson (IMessage message) {
+            var json = JsonFormatter.Default.Format (message);
+            return NormalizeJson (json);
         }
 
-        public static string HashAlias(Alias alias)
-        {
-            var aliasClone = alias.Clone();
+        public static string HashAlias (Alias alias) {
+            var aliasClone = alias.Clone ();
             aliasClone.Realm = "";
-            return Base58.Encode(Sha256Hash(Encoding.UTF8.GetBytes(ToJson(aliasClone))));
+            return Base58.Encode (Sha256Hash (Encoding.UTF8.GetBytes (ToJson (aliasClone))));
         }
 
-        public static string NormalizeAndHashAlias(Alias alias)
-        {
-            return HashAlias(alias.ToNormalized());
+        public static string NormalizeAndHashAlias (Alias alias) {
+            return HashAlias (alias.ToNormalized ());
         }
 
-        public static string HashProto(IMessage message)
-        {
-            return Base58.Encode(Sha256Hash(message.ToByteArray()));
+        public static string HashProto (IMessage message) {
+            return Base58.Encode (Sha256Hash (message.ToByteArray ()));
         }
 
-        public static string DoubleToString(double d)
-        {
-            return Convert.ToString(d, CultureInfo.InvariantCulture);
+        public static string DoubleToString (double d) {
+            return Convert.ToString (d, CultureInfo.InvariantCulture);
         }
-
 
         /// <summary>
         /// Converts alias to AddAlias operation.
         /// </summary>
         /// <returns>member operation.</returns>
         /// <param name="alias">Alias : alias to add.</param>
-        public static MemberOperation ToAddAliasOperation(Alias alias)
-        {
-            return new MemberOperation
-            {
-                AddAlias = new MemberAliasOperation
-                {
-                    AliasHash = NormalizeAndHashAlias(alias),
+        public static MemberOperation ToAddAliasOperation (Alias alias) {
+            return new MemberOperation {
+                AddAlias = new MemberAliasOperation {
+                    AliasHash = NormalizeAndHashAlias (alias),
                     Realm = alias.Realm,
                     RealmId = alias.RealmId
 
-                }
+                    }
             };
         }
 
-        public static MemberOperation ToRemoveAliasOperation(Alias alias)
-        {
-            return new MemberOperation
-            {
-                RemoveAlias = new MemberAliasOperation
-                {
-                    AliasHash = NormalizeAndHashAlias(alias),
+        public static MemberOperation ToRemoveAliasOperation (Alias alias) {
+            return new MemberOperation {
+                RemoveAlias = new MemberAliasOperation {
+                    AliasHash = NormalizeAndHashAlias (alias),
                     Realm = alias.Realm
-                }
+                    }
             };
         }
 
@@ -99,15 +84,12 @@ namespace Tokenio.Utils
         /// </summary>
         /// <returns>member operation metadata</returns>
         /// <param name="alias">Alias : alias to add.</param>
-        public static MemberOperationMetadata ToAddAliasMetadata(Alias alias)
-        {
-            return new MemberOperationMetadata
-            {
-                AddAliasMetadata = new AddAliasMetadata
-                {
-                    Alias = alias.ToNormalized(),
-                    AliasHash = NormalizeAndHashAlias(alias)
-                }
+        public static MemberOperationMetadata ToAddAliasMetadata (Alias alias) {
+            return new MemberOperationMetadata {
+                AddAliasMetadata = new AddAliasMetadata {
+                    Alias = alias.ToNormalized (),
+                    AliasHash = NormalizeAndHashAlias (alias)
+                    }
             };
         }
 
@@ -116,14 +98,11 @@ namespace Tokenio.Utils
         /// </summary>
         /// <returns>member operation.</returns>
         /// <param name="key">Key : key to add</param>
-        public static MemberOperation ToAddKeyOperation(Key key)
-        {
-            return new MemberOperation
-            {
-                AddKey = new MemberAddKeyOperation
-                {
+        public static MemberOperation ToAddKeyOperation (Key key) {
+            return new MemberOperation {
+                AddKey = new MemberAddKeyOperation {
                     Key = key
-                }
+                    }
             };
         }
 
@@ -132,146 +111,121 @@ namespace Tokenio.Utils
         /// </summary>
         /// <returns>member operation.</returns>
         /// <param name="agentId">Agent identifier : agent id to add.</param>
-        public static MemberOperation ToRecoveryAgentOperation(string agentId)
-        {
+        public static MemberOperation ToRecoveryAgentOperation (string agentId) {
 
-            var MemberRecoveryRulesOperation = new MemberRecoveryRulesOperation
-            {
+            var MemberRecoveryRulesOperation = new MemberRecoveryRulesOperation {
 
-                RecoveryRule = new RecoveryRule
-                {
+                RecoveryRule = new RecoveryRule {
 
-                    PrimaryAgent = agentId
+                PrimaryAgent = agentId
 
                 }
             };
-            return new MemberOperation
-            {
+            return new MemberOperation {
                 RecoveryRules = MemberRecoveryRulesOperation
             };
 
         }
 
-
-        public static MemberOperation ToRemoveKeyOperation(string keyId)
-        {
-            return new MemberOperation
-            {
-                RemoveKey = new MemberRemoveKeyOperation
-                {
+        public static MemberOperation ToRemoveKeyOperation (string keyId) {
+            return new MemberOperation {
+                RemoveKey = new MemberRemoveKeyOperation {
                     KeyId = keyId
-                }
+                    }
             };
         }
 
-        public static UpdateMemberRequest ToUpdateMemberRequest(
+        public static UpdateMemberRequest ToUpdateMemberRequest (
             ProtoMember member,
             IList<MemberOperation> operations,
-            ISigner signer)
-        {
-            return ToUpdateMemberRequest(member, operations, signer, new List<MemberOperationMetadata>());
+            ISigner signer) {
+            return ToUpdateMemberRequest (member, operations, signer, new List<MemberOperationMetadata> ());
         }
 
-        public static UpdateMemberRequest ToUpdateMemberRequest(
+        public static UpdateMemberRequest ToUpdateMemberRequest (
             ProtoMember member,
             IList<MemberOperation> operations,
             ISigner signer,
-            IList<MemberOperationMetadata> metadata)
-        {
-            var update = new MemberUpdate
-            {
+            IList<MemberOperationMetadata> metadata) {
+            var update = new MemberUpdate {
                 MemberId = member.Id,
                 PrevHash = member.LastHash,
                 Operations = { operations }
             };
 
-            return new UpdateMemberRequest
-            {
+            return new UpdateMemberRequest {
                 Update = update,
-                UpdateSignature = new Signature
-                {
-                    MemberId = member.Id,
-                    KeyId = signer.GetKeyId(),
-                    Signature_ = signer.Sign(update)
-                },
-                Metadata = { metadata }
+                    UpdateSignature = new Signature {
+                        MemberId = member.Id,
+                        KeyId = signer.GetKeyId (),
+                        Signature_ = signer.Sign (update)
+                        },
+                        Metadata = { metadata }
             };
         }
 
-        public static async Task<KeyValuePair<T1, T2>> TwoTasks<T1, T2>(Task<T1> task1, Task<T2> task2)
-        {
-            await Task.WhenAll(task1, task2);
-            return new KeyValuePair<T1, T2>(task1.Result, task2.Result);
+        public static async Task<KeyValuePair<T1, T2>> TwoTasks<T1, T2> (Task<T1> task1, Task<T2> task2) {
+            await Task.WhenAll (task1, task2);
+            return new KeyValuePair<T1, T2> (task1.Result, task2.Result);
         }
 
-        public static string HashString(string str)
-        {
-            return ToBigEndianHex(Sha256Hash(Encoding.ASCII.GetBytes(str)));
+        public static string HashString (string str) {
+            return ToBigEndianHex (Sha256Hash (Encoding.ASCII.GetBytes (str)));
         }
 
-        public static long EpochTimeMillis()
-        {
-            return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
+        public static long EpochTimeMillis () {
+            return (long) (DateTime.UtcNow - new DateTime (1970, 1, 1)).TotalMilliseconds;
         }
 
-
-        public static string NormalizeJson(string json)
-        {
-            var jToken = JToken.Parse(json);
-            Sort(jToken);
-            return JsonConvert.SerializeObject(jToken, Formatting.None);
+        public static string NormalizeJson (string json) {
+            var jToken = JToken.Parse (json);
+            Sort (jToken);
+            return JsonConvert.SerializeObject (jToken, Formatting.None);
         }
 
-        private static void Sort(JToken jToken)
-        {
-            switch (jToken.Type)
-            {
+        private static void Sort (JToken jToken) {
+            switch (jToken.Type) {
                 case JTokenType.Object:
-                    var jObj = (JObject)jToken;
-                    var sortedProperties = jObj.Properties().OrderBy(p => p.Name).ToList();
-                    jObj.RemoveAll();
+                    var jObj = (JObject) jToken;
+                    var sortedProperties = jObj.Properties ().OrderBy (p => p.Name).ToList ();
+                    jObj.RemoveAll ();
 
-                    foreach (var p in sortedProperties)
-                    {
-                        Sort(p.Value);
-                        jObj.Add(p);
+                    foreach (var p in sortedProperties) {
+                        Sort (p.Value);
+                        jObj.Add (p);
                     }
 
                     break;
 
                 case JTokenType.Array:
-                    foreach (var child in ((JArray)jToken).Children())
-                    {
-                        Sort(child);
+                    foreach (var child in ((JArray) jToken).Children ()) {
+                        Sort (child);
                     }
 
                     break;
 
-                default: return;
+                default:
+                    return;
             }
         }
 
-        private static string ToBigEndianHex(byte[] bytes)
-        {
+        private static string ToBigEndianHex (byte[] bytes) {
             var hexDigits = "0123456789abcdef";
-            var sb = new StringBuilder(2 * bytes.Length);
-            foreach (var b in bytes)
-            {
-                sb.Append(hexDigits[(b >> 4) & 0xf]).Append(hexDigits[b & 0xf]);
+            var sb = new StringBuilder (2 * bytes.Length);
+            foreach (var b in bytes) {
+                sb.Append (hexDigits[(b >> 4) & 0xf]).Append (hexDigits[b & 0xf]);
             }
 
-            return sb.ToString();
+            return sb.ToString ();
         }
 
-        private static byte[] Sha256Hash(byte[] payload)
-        {
-            return SHA256.Create().ComputeHash(payload);
+        private static byte[] Sha256Hash (byte[] payload) {
+            return SHA256.Create ().ComputeHash (payload);
         }
 
-        public static long CurrentMillis()
-        {
-            DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            long currentTime = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
+        public static long CurrentMillis () {
+            DateTime Jan1st1970 = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            long currentTime = (long) (DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
             return currentTime;
         }
     }
