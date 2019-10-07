@@ -9,16 +9,20 @@ using Tokenio.Utils;
 using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types;
 using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types.AccountResourceList.Types;
 
-namespace Tokenio.TokenRequests {
-    public class TokenRequest {
+namespace Tokenio.TokenRequests
+{
+    public class TokenRequest
+    {
         private TokenRequestPayload tokenRequestPayload;
         private TokenRequestOptions tokenRequestOptions;
 
-        public TokenRequestOptions GetTokenRequestOptions () {
+        public TokenRequestOptions GetTokenRequestOptions()
+        {
             return tokenRequestOptions;
         }
 
-        public TokenRequestPayload GetTokenRequestPayload () {
+        public TokenRequestPayload GetTokenRequestPayload()
+        {
             return tokenRequestPayload;
         }
 
@@ -27,9 +31,10 @@ namespace Tokenio.TokenRequests {
         /// </summary>
         /// <param name="resources">access token resources</param>
         /// <returns>Builder instance</returns>
-        public static AccessBuilder AccessTokenRequestBuilder (
-            params ResourceType[] resources) {
-            return new AccessBuilder (resources);
+        public static AccessBuilder AccessTokenRequestBuilder(
+            params ResourceType[] resources)
+        {
+            return new AccessBuilder(resources);
         }
 
         /// <summary>
@@ -37,8 +42,9 @@ namespace Tokenio.TokenRequests {
         /// </summary>
         /// <param name="list">list of account-specific access token resources</param>
         /// <returns>Builder instance</returns>
-        public static AccessBuilder AccessTokenRequestBuilder (AccountResourceList list) {
-            return new AccessBuilder (list);
+        public static AccessBuilder AccessTokenRequestBuilder(AccountResourceList list)
+        {
+            return new AccessBuilder(list);
         }
 
         /// <summary>
@@ -47,10 +53,11 @@ namespace Tokenio.TokenRequests {
         /// <param name="bankId">bank ID</param>
         /// <param name="account">the user's account</param>
         /// <returns>Builder instance</returns>
-        public static AccessBuilder FundsConfirmationRequestBuilder (
+        public static AccessBuilder FundsConfirmationRequestBuilder(
             string bankId,
-            BankAccount account) {
-            return FundsConfirmationRequestBuilder (bankId, account, null);
+            BankAccount account)
+        {
+            return FundsConfirmationRequestBuilder(bankId, account, null);
         }
 
         /// <summary>
@@ -58,23 +65,26 @@ namespace Tokenio.TokenRequests {
         /// </summary>
         /// <param name="bankId">bank ID</param>
         /// <param name="account">the user's account</param>
-        /// <param name="customerData">customer data</param>
+        /// <param name="data">customer data</param>
         /// <returns>Builder instance</returns>
-        public static AccessBuilder FundsConfirmationRequestBuilder (
+        public static AccessBuilder FundsConfirmationRequestBuilder(
             string bankId,
             BankAccount account,
-            CustomerData customerData) {
-            AccountResource builder = new AccountResource {
+            CustomerData data)
+        {
+            AccountResource builder = new AccountResource
+            {
                 BankAccount = account,
                 Type = AccountResourceType.AccountFundsConfirmation
             };
-            if (customerData != null) {
-                builder.CustomerData = customerData;
+            if (data != null)
+            {
+                builder.CustomerData = data;
             }
-            var list = new AccountResourceList ();
-            list.Resources.Add (builder);
-            return new AccessBuilder (list)
-                .SetBankId (bankId);
+            var list = new AccountResourceList();
+            list.Resources.Add(builder);
+            return new AccessBuilder(list)
+                .SetBankId(bankId);
         }
 
         /// <summary>
@@ -83,8 +93,9 @@ namespace Tokenio.TokenRequests {
         /// <param name="amount">lifetime amount of the token request</param>
         /// <param name="currency">currency of the token request</param>
         /// <returns>Builder instance</returns>
-        public static TransferBuilder TransferTokenRequestBuilder (double amount, string currency) {
-            return new TransferBuilder (amount, currency);
+        public static TransferBuilder TransferTokenRequestBuilder(double amount, string currency)
+        {
+            return new TransferBuilder(amount, currency);
         }
 
         /// <summary>
@@ -99,14 +110,15 @@ namespace Tokenio.TokenRequests {
         /// <param name="endDate">end date of the standing order. ISO 8601: YYYY-MM-DD or YYYYMMDD.</param>
         /// <param name="destinations">destination account of the standing order</param>
         /// <returns>Builder instance</returns>
-        public static StandingOrderBuilder StandingOrderRequestBuilder (
+        public static StandingOrderBuilder StandingOrderRequestBuilder(
             double amount,
             string currency,
             string frequency,
             string startDate,
             string endDate,
-            IList<TransferDestination> destinations) {
-            return new StandingOrderBuilder (
+            IList<TransferDestination> destinations)
+        {
+            return new StandingOrderBuilder(
                 amount,
                 currency,
                 frequency,
@@ -123,16 +135,17 @@ namespace Tokenio.TokenRequests {
         /// <param name="totalAmount">total amount irrespective of currency. Used for redundancy check.</param>
         /// <param name="source">source account for all transfer</param>
         /// <returns>Builder instance</returns>
-        public static BulkTransferBuilder BulkTransferRequestBuilder (
+        public static BulkTransferBuilder BulkTransferRequestBuilder(
             IList<BulkTransferBody.Types.Transfer> transfers,
-            double totalAmount,
-            TransferEndpoint source) {
-            return new BulkTransferBuilder (transfers, totalAmount, source);
+            double totalAmount)
+        {
+            return new BulkTransferBuilder(transfers, totalAmount);
         }
 
-        private TokenRequest (
+        private TokenRequest(
             TokenRequestPayload payload,
-            TokenRequestOptions options) {
+            TokenRequestOptions options)
+        {
             tokenRequestOptions = options;
             tokenRequestPayload = payload;
         }
@@ -143,23 +156,26 @@ namespace Tokenio.TokenRequests {
         /// <param name="tokenRequestPayload">TokenRequestPayload</param>
         /// <param name="tokenRequestOptions">TokenRequestOptions</param>
         /// <returns></returns>
-        public static TokenRequest FromProtos (
+        public static TokenRequest FromProtos(
             TokenRequestPayload tokenRequestPayload,
-            TokenRequestOptions tokenRequestOptions) {
-            return new TokenRequest (tokenRequestPayload, tokenRequestOptions);
+            TokenRequestOptions tokenRequestOptions)
+        {
+            return new TokenRequest(tokenRequestPayload, tokenRequestOptions);
         }
 
-        public class Builder<T> where T : Builder<T> {
+        public class Builder<T> where T : Builder<T>
+        {
             protected TokenRequestPayload requestPayload;
             protected TokenRequestOptions requestOptions;
             protected string oauthState;
             protected string csrfToken;
 
-            protected Builder () {
-                requestOptions = new TokenRequestOptions ();
-                requestPayload = new TokenRequestPayload ();
-                requestOptions.From = new TokenMember ();
-                requestPayload.To = new TokenMember ();
+            protected Builder()
+            {
+                requestOptions = new TokenRequestOptions();
+                requestPayload = new TokenRequestPayload();
+                requestOptions.From = new TokenMember();
+                requestPayload.To = new TokenMember();
             }
 
             /// <summary>
@@ -167,9 +183,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="bankId">bank id</param>
             /// <returns>builder</returns>
-            public T SetBankId (string bankId) {
+            public T SetBankId(string bankId)
+            {
                 requestOptions.BankId = bankId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -177,9 +194,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="fromMemberId">payer/grantor member ID</param>
             /// <returns>builder</returns>
-            public T SetFromMemberId (string fromMemberId) {
+            public T SetFromMemberId(string fromMemberId)
+            {
                 requestOptions.From.Id = fromMemberId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -187,9 +205,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="fromAlias">payer/grantor alias</param>
             /// <returns>builder</returns>
-            public T SetFromAlias (Alias fromAlias) {
+            public T SetFromAlias(Alias fromAlias)
+            {
                 requestOptions.From.Alias = fromAlias;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -197,9 +216,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="sourceAccountId">source bank account ID</param>
             /// <returns>builder</returns>
-            public T SetSourceAccount (string sourceAccountId) {
+            public T SetSourceAccount(string sourceAccountId)
+            {
                 requestOptions.SourceAccountId = sourceAccountId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -208,9 +228,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="receiptRequested">receipt requested flag</param>
             /// <returns>builder</returns>
-            public T SetReceiptRequested (bool receiptRequested) {
+            public T SetReceiptRequested(bool receiptRequested)
+            {
                 requestOptions.ReceiptRequested = receiptRequested;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -218,9 +239,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="refId">user ref ID</param>
             /// <returns>builder</returns>
-            public T SetUserRefId (string refId) {
+            public T SetUserRefId(string refId)
+            {
                 requestPayload.UserRefId = refId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -228,9 +250,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="customizationId">customization ID</param>
             /// <returns>builder</returns>
-            public T SetCustomizationId (string customizationId) {
+            public T SetCustomizationId(string customizationId)
+            {
                 requestPayload.CustomizationId = customizationId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -238,9 +261,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="redirectUrl">redirect url</param>
             /// <returns>builder</returns>
-            public T SetRedirectUrl (string redirectUrl) {
+            public T SetRedirectUrl(string redirectUrl)
+            {
                 requestPayload.RedirectUrl = redirectUrl;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -248,9 +272,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="refId">token ref ID</param>
             /// <returns>builder</returns>
-            public T SetRefId (string refId) {
+            public T SetRefId(string refId)
+            {
                 requestPayload.RefId = refId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -258,9 +283,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="toAlias">to alias</param>
             /// <returns>builder</returns>
-            public T SetToAlias (Alias toAlias) {
+            public T SetToAlias(Alias toAlias)
+            {
                 requestPayload.To.Alias = toAlias;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -268,9 +294,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="memberId">memberId</param>
             /// <returns>builder</returns>
-            public T SetToMemberId (string memberId) {
+            public T SetToMemberId(string memberId)
+            {
                 requestPayload.To.Id = memberId;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -278,9 +305,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="actingAs">entity the redeemer is acting on behalf of</param>
             /// <returns>builder</returns>
-            public T SetActingAs (ActingAs actingAs) {
+            public T SetActingAs(ActingAs actingAs)
+            {
                 requestPayload.ActingAs = actingAs;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -288,9 +316,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="description">description</param>
             /// <returns>builder</returns>
-            public T SetDescription (string description) {
+            public T SetDescription(string description)
+            {
                 requestPayload.Description = description;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -299,9 +328,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="state">state</param>
             /// <returns>builder</returns>
-            public T SetState (string state) {
+            public T SetState(string state)
+            {
                 oauthState = state;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
@@ -310,49 +340,60 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="csrfToken">CSRF token</param>
             /// <returns>builder</returns>
-            public T SetCsrfToken (string csrfToken) {
+            public T SetCsrfToken(string csrfToken)
+            {
                 this.csrfToken = csrfToken;
-                return (T) this;
+                return (T)this;
             }
 
             /// <summary>
             /// Builds the Token payload
             /// </summary>
             /// <returns>TokenRequest instance</returns>
-            public TokenRequest Build () {
-                string serializeState = TokenRequestState.Create (
-                    csrfToken == null ? "" : Util.HashString (csrfToken),
-                    oauthState ?? "").Serialize ();
+            public TokenRequest Build()
+            {
+                string serializeState = TokenRequestState.Create(
+                    csrfToken == null ? "" : Util.HashString(csrfToken),
+                    oauthState ?? "").Serialize();
                 requestPayload.CallbackState = serializeState;
-                return new TokenRequest (
+                return new TokenRequest(
                     requestPayload,
                     requestOptions);
             }
         }
 
-        public class AccessBuilder : Builder<AccessBuilder> {
-            public AccessBuilder (params ResourceType[] resources) {
-                var resourcesList = new ResourceTypeList ();
-                resourcesList.Resources.Add (resources);
-                requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody {
+        public class AccessBuilder : Builder<AccessBuilder>
+        {
+            public AccessBuilder(params ResourceType[] resources)
+            {
+                var resourcesList = new ResourceTypeList();
+                resourcesList.Resources.Add(resources);
+                requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
+                {
                     ResourceTypeList = resourcesList
                 };
             }
 
-            public AccessBuilder (AccountResourceList list) {
-                this.requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody {
+            public AccessBuilder(AccountResourceList list)
+            {
+                this.requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
+                {
                     AccountResourceList = list
                 };
             }
         }
 
-        public class TransferBuilder : Builder<TransferBuilder> {
-            public TransferBuilder (double amount, string currency) {
-                requestPayload.TransferBody = new TokenRequestPayload.Types.TransferBody {
-                    LifetimeAmount = amount.ToString ("F"),
+        public class TransferBuilder : Builder<TransferBuilder>
+        {
+            public TransferBuilder(double amount, string currency)
+            {
+                requestPayload.TransferBody = new TokenRequestPayload.Types.TransferBody
+                {
+                    LifetimeAmount = amount.ToString("F"),
                     Currency = currency,
-                    Instructions = new TransferInstructions {
-                    Metadata = new TransferInstructions.Types.Metadata ()
+                    Instructions = new TransferInstructions
+                    {
+                        Metadata = new TransferInstructions.Types.Metadata()
                     }
                 };
             }
@@ -363,7 +404,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="destinationCountry">destination country</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetDestinationCountry (string destinationCountry) {
+            public TransferBuilder SetDestinationCountry(string destinationCountry)
+            {
                 requestPayload.DestinationCountry = destinationCountry;
                 return this;
             }
@@ -373,8 +415,9 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="destination">destination</param>
             /// <returns>builder</returns>
-            public TransferBuilder AddDestination (TransferEndpoint destination) {
-                requestPayload.TransferBody.Destinations.Add (destination);
+            public TransferBuilder AddDestination(TransferEndpoint destination)
+            {
+                requestPayload.TransferBody.Destinations.Add(destination);
                 return this;
             }
 
@@ -383,8 +426,9 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="destination">destination</param>
             /// <returns>builder</returns>
-            public TransferBuilder AddDestination (TransferDestination destination) {
-                requestPayload.TransferBody.Instructions.TransferDestinations.Add (destination);
+            public TransferBuilder AddDestination(TransferDestination destination)
+            {
+                requestPayload.TransferBody.Instructions.TransferDestinations.Add(destination);
                 return this;
             }
 
@@ -393,8 +437,9 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="chargeAmount">amount</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetChargeAmount (double chargeAmount) {
-                requestPayload.TransferBody.Amount = chargeAmount.ToString ("F");
+            public TransferBuilder SetChargeAmount(double chargeAmount)
+            {
+                requestPayload.TransferBody.Amount = chargeAmount.ToString("F");
                 return this;
             }
 
@@ -403,9 +448,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="executionDate">execution date</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetExecutionDate (DateTime executionDate) {
+            public TransferBuilder SetExecutionDate(DateTime executionDate)
+            {
                 this.requestPayload.TransferBody
-                    .ExecutionDate = executionDate.ToString (Util.ISO_DATE);
+                    .ExecutionDate = executionDate.ToString(Util.ISO_DATE);
                 return this;
             }
 
@@ -414,7 +460,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="metadata">provider-specific metadata</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetProviderMetadata (ProviderTransferMetadata metadata) {
+            public TransferBuilder SetProviderMetadata(ProviderTransferMetadata metadata)
+            {
                 requestPayload.TransferBody.Instructions.Metadata.ProviderTransferMetadata = metadata;
                 return this;
             }
@@ -424,7 +471,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="chargeBearer">Bearer of the charges for any Fees related to the transfer.</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetChargeBearer (ChargeBearer chargeBearer) {
+            public TransferBuilder SetChargeBearer(ChargeBearer chargeBearer)
+            {
                 this.requestPayload.TransferBody
                     .Instructions
                     .Metadata
@@ -439,7 +487,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="url">URL</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetSetTransferDestinationsUrl (string url) {
+            public TransferBuilder SetSetTransferDestinationsUrl(string url)
+            {
                 this.requestPayload.TransferBody
                     .SetTransferDestinationsUrl = url;
                 return this;
@@ -450,7 +499,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="ultimateCreditor">the ultimate creditor</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetUltimateCreditor (string ultimateCreditor) {
+            public TransferBuilder SetUltimateCreditor(string ultimateCreditor)
+            {
                 this.requestPayload.TransferBody
                     .Instructions
                     .Metadata
@@ -463,7 +513,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="ultimateDebtor">the ultimate debtor</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetUltimateDebtor (string ultimateDebtor) {
+            public TransferBuilder SetUltimateDebtor(string ultimateDebtor)
+            {
                 this.requestPayload.TransferBody
                     .Instructions
                     .Metadata
@@ -476,7 +527,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="purposeCode">the purpose code</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetPurposeCode (string purposeCode) {
+            public TransferBuilder SetPurposeCode(string purposeCode)
+            {
                 this.requestPayload.TransferBody
                     .Instructions
                     .Metadata
@@ -489,46 +541,59 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="confirmFunds"> whether to attempt CAF before transfer</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetConfirmFunds (bool confirmFunds) {
+            public TransferBuilder SetConfirmFunds(bool confirmFunds)
+            {
                 this.requestPayload.TransferBody
                     .ConfirmFunds = confirmFunds;
                 return this;
             }
         }
 
-        public class BulkTransferBuilder : Builder<BulkTransferBuilder> {
-            internal BulkTransferBuilder (
+        public class BulkTransferBuilder : Builder<BulkTransferBuilder>
+        {
+            internal BulkTransferBuilder(
                 IList<BulkTransferBody.Types.Transfer> transfers,
-                double totalAmount,
-                TransferEndpoint source) {
-                this.requestPayload.BulkTransferBody = new BulkTransferBody {
+                double totalAmount)
+            {
+                this.requestPayload.BulkTransferBody = new BulkTransferBody
+                {
                     Transfers = { transfers },
-                    TotalAmount = totalAmount.ToString (),
-                    Source = source
+                    TotalAmount = totalAmount.ToString(),
                 };
+            }
+
+            public BulkTransferBuilder SetSource(TransferEndpoint source)
+            {
+                this.requestPayload.BulkTransferBody.Source = source;
+                return this;
             }
         }
 
-        public class StandingOrderBuilder : Builder<StandingOrderBuilder> {
-            internal StandingOrderBuilder () {
-                this.requestPayload.StandingOrderBody = new StandingOrderBody ();
+        public class StandingOrderBuilder : Builder<StandingOrderBuilder>
+        {
+            internal StandingOrderBuilder()
+            {
+                this.requestPayload.StandingOrderBody = new StandingOrderBody();
             }
 
-            internal StandingOrderBuilder (
+            internal StandingOrderBuilder(
                 double amount,
                 string currency,
                 string frequency,
                 string startDate,
                 string endDate,
-                IList<TransferDestination> destinations) {
-                this.requestPayload.StandingOrderBody = new StandingOrderBody {
-                    Amount = amount.ToString (),
+                IList<TransferDestination> destinations)
+            {
+                this.requestPayload.StandingOrderBody = new StandingOrderBody
+                {
+                    Amount = amount.ToString(),
                     Currency = currency,
                     Frequency = frequency,
                     StartDate = startDate,
                     EndDate = endDate,
-                    Instructions = new TransferInstructions {
-                    TransferDestinations = { destinations }
+                    Instructions = new TransferInstructions
+                    {
+                        TransferDestinations = { destinations }
                     }
                 };
             }
@@ -538,9 +603,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="amount">amount per individual charge</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetAmount (double amount) {
+            public StandingOrderBuilder SetAmount(double amount)
+            {
                 this.requestPayload.StandingOrderBody
-                    .Amount = amount.ToString ();
+                    .Amount = amount.ToString();
                 return this;
             }
 
@@ -549,7 +615,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="currency">currency</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetCurrency (string currency) {
+            public StandingOrderBuilder SetCurrency(string currency)
+            {
                 this.requestPayload.StandingOrderBody
                     .Currency = currency;
                 return this;
@@ -561,7 +628,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="frequency">frequency of the standing order</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetFrequency (string frequency) {
+            public StandingOrderBuilder SetFrequency(string frequency)
+            {
                 this.requestPayload.StandingOrderBody
                     .Frequency = frequency;
                 return this;
@@ -572,7 +640,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="startDate">start date of the standing order</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetStartDate (string startDate) {
+            public StandingOrderBuilder SetStartDate(string startDate)
+            {
                 this.requestPayload.StandingOrderBody
                     .StartDate = startDate;
                 return this;
@@ -584,7 +653,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="endDate">end date of the standing order</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetEndDate (string endDate) {
+            public StandingOrderBuilder SetEndDate(string endDate)
+            {
                 this.requestPayload.StandingOrderBody
                     .EndDate = endDate;
                 return this;
@@ -595,9 +665,10 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="destination">destination</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder AddDestination (TransferDestination destination) {
+            public StandingOrderBuilder AddDestination(TransferDestination destination)
+            {
                 this.requestPayload.StandingOrderBody.Instructions
-                    .TransferDestinations.Add (destination);
+                    .TransferDestinations.Add(destination);
                 return this;
             }
 
@@ -607,7 +678,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="destinationCountry">destination country</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetDestinationCountry (string destinationCountry) {
+            public StandingOrderBuilder SetDestinationCountry(string destinationCountry)
+            {
                 this.requestPayload.DestinationCountry = destinationCountry;
                 return this;
             }
@@ -617,7 +689,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="source">source</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetSource (TransferEndpoint source) {
+            public StandingOrderBuilder SetSource(TransferEndpoint source)
+            {
                 this.requestPayload.StandingOrderBody
                     .Instructions
                     .Source = source;
@@ -629,7 +702,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="metadata">provider-specific metadata</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetProviderTransferMetadata (ProviderTransferMetadata metadata) {
+            public StandingOrderBuilder SetProviderTransferMetadata(ProviderTransferMetadata metadata)
+            {
                 this.requestPayload.StandingOrderBody
                     .Instructions
                     .Metadata
@@ -642,7 +716,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="ultimateCreditor">the ultimate creditor</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetUltimateCreditor (string ultimateCreditor) {
+            public StandingOrderBuilder SetUltimateCreditor(string ultimateCreditor)
+            {
                 this.requestPayload.StandingOrderBody
                     .Instructions
                     .Metadata
@@ -655,7 +730,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="ultimateDebtor">the ultimate debtor</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetUltimateDebtor (string ultimateDebtor) {
+            public StandingOrderBuilder SetUltimateDebtor(string ultimateDebtor)
+            {
                 this.requestPayload.StandingOrderBody
                     .Instructions
                     .Metadata
@@ -668,7 +744,8 @@ namespace Tokenio.TokenRequests {
             /// </summary>
             /// <param name="purposeCode">the purpose code</param>
             /// <returns>builder</returns>
-            public StandingOrderBuilder SetPurposeCode (string purposeCode) {
+            public StandingOrderBuilder SetPurposeCode(string purposeCode)
+            {
                 this.requestPayload.StandingOrderBody
                     .Instructions
                     .Metadata
