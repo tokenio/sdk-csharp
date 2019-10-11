@@ -1,0 +1,1069 @@
+{
+  "definitions": [
+    {
+      "protopath": "protos:/:common:/:google:/:protobuf:/:descriptor.proto",
+      "def": {
+        "enums": [
+          {
+            "name": "FieldDescriptorProto.Type",
+            "enum_fields": [
+              {
+                "name": "TYPE_DOUBLE",
+                "integer": 1
+              },
+              {
+                "name": "TYPE_FLOAT",
+                "integer": 2
+              },
+              {
+                "name": "TYPE_INT64",
+                "integer": 3
+              },
+              {
+                "name": "TYPE_UINT64",
+                "integer": 4
+              },
+              {
+                "name": "TYPE_INT32",
+                "integer": 5
+              },
+              {
+                "name": "TYPE_FIXED64",
+                "integer": 6
+              },
+              {
+                "name": "TYPE_FIXED32",
+                "integer": 7
+              },
+              {
+                "name": "TYPE_BOOL",
+                "integer": 8
+              },
+              {
+                "name": "TYPE_STRING",
+                "integer": 9
+              },
+              {
+                "name": "TYPE_GROUP",
+                "integer": 10
+              },
+              {
+                "name": "TYPE_MESSAGE",
+                "integer": 11
+              },
+              {
+                "name": "TYPE_BYTES",
+                "integer": 12
+              },
+              {
+                "name": "TYPE_UINT32",
+                "integer": 13
+              },
+              {
+                "name": "TYPE_ENUM",
+                "integer": 14
+              },
+              {
+                "name": "TYPE_SFIXED32",
+                "integer": 15
+              },
+              {
+                "name": "TYPE_SFIXED64",
+                "integer": 16
+              },
+              {
+                "name": "TYPE_SINT32",
+                "integer": 17
+              },
+              {
+                "name": "TYPE_SINT64",
+                "integer": 18
+              }
+            ]
+          },
+          {
+            "name": "FieldDescriptorProto.Label",
+            "enum_fields": [
+              {
+                "name": "LABEL_OPTIONAL",
+                "integer": 1
+              },
+              {
+                "name": "LABEL_REQUIRED",
+                "integer": 2
+              },
+              {
+                "name": "LABEL_REPEATED",
+                "integer": 3
+              }
+            ]
+          },
+          {
+            "name": "FileOptions.OptimizeMode",
+            "enum_fields": [
+              {
+                "name": "SPEED",
+                "integer": 1
+              },
+              {
+                "name": "CODE_SIZE",
+                "integer": 2
+              },
+              {
+                "name": "LITE_RUNTIME",
+                "integer": 3
+              }
+            ]
+          },
+          {
+            "name": "FieldOptions.CType",
+            "enum_fields": [
+              {
+                "name": "STRING"
+              },
+              {
+                "name": "CORD",
+                "integer": 1
+              },
+              {
+                "name": "STRING_PIECE",
+                "integer": 2
+              }
+            ]
+          },
+          {
+            "name": "FieldOptions.JSType",
+            "enum_fields": [
+              {
+                "name": "JS_NORMAL"
+              },
+              {
+                "name": "JS_STRING",
+                "integer": 1
+              },
+              {
+                "name": "JS_NUMBER",
+                "integer": 2
+              }
+            ]
+          }
+        ],
+        "messages": [
+          {
+            "name": "FileDescriptorSet",
+            "fields": [
+              {
+                "id": 1,
+                "name": "file",
+                "type": "FileDescriptorProto",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "FileDescriptorProto",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "package",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "dependency",
+                "type": "string",
+                "is_repeated": true
+              },
+              {
+                "id": 10,
+                "name": "public_dependency",
+                "type": "int32",
+                "is_repeated": true
+              },
+              {
+                "id": 11,
+                "name": "weak_dependency",
+                "type": "int32",
+                "is_repeated": true
+              },
+              {
+                "id": 4,
+                "name": "message_type",
+                "type": "DescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 5,
+                "name": "enum_type",
+                "type": "EnumDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 6,
+                "name": "service",
+                "type": "ServiceDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 7,
+                "name": "extension",
+                "type": "FieldDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 8,
+                "name": "options",
+                "type": "FileOptions"
+              },
+              {
+                "id": 9,
+                "name": "source_code_info",
+                "type": "SourceCodeInfo"
+              },
+              {
+                "id": 12,
+                "name": "syntax",
+                "type": "string"
+              }
+            ]
+          },
+          {
+            "name": "DescriptorProto",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "field",
+                "type": "FieldDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 6,
+                "name": "extension",
+                "type": "FieldDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 3,
+                "name": "nested_type",
+                "type": "DescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 4,
+                "name": "enum_type",
+                "type": "EnumDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 5,
+                "name": "extension_range",
+                "type": "ExtensionRange",
+                "is_repeated": true
+              },
+              {
+                "id": 8,
+                "name": "oneof_decl",
+                "type": "OneofDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 7,
+                "name": "options",
+                "type": "MessageOptions"
+              },
+              {
+                "id": 9,
+                "name": "reserved_range",
+                "type": "ReservedRange",
+                "is_repeated": true
+              },
+              {
+                "id": 10,
+                "name": "reserved_name",
+                "type": "string",
+                "is_repeated": true
+              }
+            ],
+            "messages": [
+              {
+                "name": "ExtensionRange",
+                "fields": [
+                  {
+                    "id": 1,
+                    "name": "start",
+                    "type": "int32"
+                  },
+                  {
+                    "id": 2,
+                    "name": "end",
+                    "type": "int32"
+                  }
+                ]
+              },
+              {
+                "name": "ReservedRange",
+                "fields": [
+                  {
+                    "id": 1,
+                    "name": "start",
+                    "type": "int32"
+                  },
+                  {
+                    "id": 2,
+                    "name": "end",
+                    "type": "int32"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "FieldDescriptorProto",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "number",
+                "type": "int32"
+              },
+              {
+                "id": 4,
+                "name": "label",
+                "type": "Label"
+              },
+              {
+                "id": 5,
+                "name": "type",
+                "type": "Type"
+              },
+              {
+                "id": 6,
+                "name": "type_name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "extendee",
+                "type": "string"
+              },
+              {
+                "id": 7,
+                "name": "default_value",
+                "type": "string"
+              },
+              {
+                "id": 9,
+                "name": "oneof_index",
+                "type": "int32"
+              },
+              {
+                "id": 10,
+                "name": "json_name",
+                "type": "string"
+              },
+              {
+                "id": 8,
+                "name": "options",
+                "type": "FieldOptions"
+              }
+            ]
+          },
+          {
+            "name": "OneofDescriptorProto",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "options",
+                "type": "OneofOptions"
+              }
+            ]
+          },
+          {
+            "name": "EnumDescriptorProto",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "value",
+                "type": "EnumValueDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 3,
+                "name": "options",
+                "type": "EnumOptions"
+              }
+            ]
+          },
+          {
+            "name": "EnumValueDescriptorProto",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "number",
+                "type": "int32"
+              },
+              {
+                "id": 3,
+                "name": "options",
+                "type": "EnumValueOptions"
+              }
+            ]
+          },
+          {
+            "name": "ServiceDescriptorProto",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "method",
+                "type": "MethodDescriptorProto",
+                "is_repeated": true
+              },
+              {
+                "id": 3,
+                "name": "options",
+                "type": "ServiceOptions"
+              }
+            ]
+          },
+          {
+            "name": "MethodDescriptorProto",
+            "fields": [
+              {
+                "id": 1,
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "id": 2,
+                "name": "input_type",
+                "type": "string"
+              },
+              {
+                "id": 3,
+                "name": "output_type",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "options",
+                "type": "MethodOptions"
+              },
+              {
+                "id": 5,
+                "name": "client_streaming",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 6,
+                "name": "server_streaming",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "FileOptions",
+            "fields": [
+              {
+                "id": 1,
+                "name": "java_package",
+                "type": "string"
+              },
+              {
+                "id": 8,
+                "name": "java_outer_classname",
+                "type": "string"
+              },
+              {
+                "id": 10,
+                "name": "java_multiple_files",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 20,
+                "name": "java_generate_equals_and_hash",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 27,
+                "name": "java_string_check_utf8",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 9,
+                "name": "optimize_for",
+                "type": "OptimizeMode",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "SPEED"
+                  }
+                ]
+              },
+              {
+                "id": 11,
+                "name": "go_package",
+                "type": "string"
+              },
+              {
+                "id": 16,
+                "name": "cc_generic_services",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 17,
+                "name": "java_generic_services",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 18,
+                "name": "py_generic_services",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 23,
+                "name": "deprecated",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 31,
+                "name": "cc_enable_arenas",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 36,
+                "name": "objc_class_prefix",
+                "type": "string"
+              },
+              {
+                "id": 37,
+                "name": "csharp_namespace",
+                "type": "string"
+              },
+              {
+                "id": 999,
+                "name": "uninterpreted_option",
+                "type": "UninterpretedOption",
+                "is_repeated": true
+              }
+            ],
+            "reserved_ids": [
+              38
+            ]
+          },
+          {
+            "name": "MessageOptions",
+            "fields": [
+              {
+                "id": 1,
+                "name": "message_set_wire_format",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 2,
+                "name": "no_standard_descriptor_accessor",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 3,
+                "name": "deprecated",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 7,
+                "name": "map_entry",
+                "type": "bool"
+              },
+              {
+                "id": 999,
+                "name": "uninterpreted_option",
+                "type": "UninterpretedOption",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "FieldOptions",
+            "fields": [
+              {
+                "id": 1,
+                "name": "ctype",
+                "type": "CType",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "STRING"
+                  }
+                ]
+              },
+              {
+                "id": 2,
+                "name": "packed",
+                "type": "bool"
+              },
+              {
+                "id": 6,
+                "name": "jstype",
+                "type": "JSType",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "JS_NORMAL"
+                  }
+                ]
+              },
+              {
+                "id": 5,
+                "name": "lazy",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 3,
+                "name": "deprecated",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 10,
+                "name": "weak",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 999,
+                "name": "uninterpreted_option",
+                "type": "UninterpretedOption",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "OneofOptions",
+            "fields": [
+              {
+                "id": 999,
+                "name": "uninterpreted_option",
+                "type": "UninterpretedOption",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "EnumOptions",
+            "fields": [
+              {
+                "id": 2,
+                "name": "allow_alias",
+                "type": "bool"
+              },
+              {
+                "id": 3,
+                "name": "deprecated",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 999,
+                "name": "uninterpreted_option",
+                "type": "UninterpretedOption",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "EnumValueOptions",
+            "fields": [
+              {
+                "id": 1,
+                "name": "deprecated",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 999,
+                "name": "uninterpreted_option",
+                "type": "UninterpretedOption",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "ServiceOptions",
+            "fields": [
+              {
+                "id": 33,
+                "name": "deprecated",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 999,
+                "name": "uninterpreted_option",
+                "type": "UninterpretedOption",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "MethodOptions",
+            "fields": [
+              {
+                "id": 33,
+                "name": "deprecated",
+                "type": "bool",
+                "options": [
+                  {
+                    "name": "default",
+                    "value": "false"
+                  }
+                ]
+              },
+              {
+                "id": 999,
+                "name": "uninterpreted_option",
+                "type": "UninterpretedOption",
+                "is_repeated": true
+              }
+            ]
+          },
+          {
+            "name": "UninterpretedOption",
+            "fields": [
+              {
+                "id": 2,
+                "name": "name",
+                "type": "NamePart",
+                "is_repeated": true
+              },
+              {
+                "id": 3,
+                "name": "identifier_value",
+                "type": "string"
+              },
+              {
+                "id": 4,
+                "name": "positive_int_value",
+                "type": "uint64"
+              },
+              {
+                "id": 5,
+                "name": "negative_int_value",
+                "type": "int64"
+              },
+              {
+                "id": 6,
+                "name": "double_value",
+                "type": "double"
+              },
+              {
+                "id": 7,
+                "name": "string_value",
+                "type": "bytes"
+              },
+              {
+                "id": 8,
+                "name": "aggregate_value",
+                "type": "string"
+              }
+            ],
+            "messages": [
+              {
+                "name": "NamePart",
+                "fields": [
+                  {
+                    "id": 1,
+                    "name": "name_part",
+                    "type": "string"
+                  },
+                  {
+                    "id": 2,
+                    "name": "is_extension",
+                    "type": "bool"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "SourceCodeInfo",
+            "fields": [
+              {
+                "id": 1,
+                "name": "location",
+                "type": "Location",
+                "is_repeated": true
+              }
+            ],
+            "messages": [
+              {
+                "name": "Location",
+                "fields": [
+                  {
+                    "id": 1,
+                    "name": "path",
+                    "type": "int32",
+                    "is_repeated": true,
+                    "options": [
+                      {
+                        "name": "packed",
+                        "value": "true"
+                      }
+                    ]
+                  },
+                  {
+                    "id": 2,
+                    "name": "span",
+                    "type": "int32",
+                    "is_repeated": true,
+                    "options": [
+                      {
+                        "name": "packed",
+                        "value": "true"
+                      }
+                    ]
+                  },
+                  {
+                    "id": 3,
+                    "name": "leading_comments",
+                    "type": "string"
+                  },
+                  {
+                    "id": 4,
+                    "name": "trailing_comments",
+                    "type": "string"
+                  },
+                  {
+                    "id": 6,
+                    "name": "leading_detached_comments",
+                    "type": "string",
+                    "is_repeated": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "GeneratedCodeInfo",
+            "fields": [
+              {
+                "id": 1,
+                "name": "annotation",
+                "type": "Annotation",
+                "is_repeated": true
+              }
+            ],
+            "messages": [
+              {
+                "name": "Annotation",
+                "fields": [
+                  {
+                    "id": 1,
+                    "name": "path",
+                    "type": "int32",
+                    "is_repeated": true,
+                    "options": [
+                      {
+                        "name": "packed",
+                        "value": "true"
+                      }
+                    ]
+                  },
+                  {
+                    "id": 2,
+                    "name": "source_file",
+                    "type": "string"
+                  },
+                  {
+                    "id": 3,
+                    "name": "begin",
+                    "type": "int32"
+                  },
+                  {
+                    "id": 4,
+                    "name": "end",
+                    "type": "int32"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "package": {
+          "name": "google.protobuf"
+        },
+        "options": [
+          {
+            "name": "go_package",
+            "value": "descriptor"
+          },
+          {
+            "name": "java_package",
+            "value": "com.google.protobuf"
+          },
+          {
+            "name": "java_outer_classname",
+            "value": "DescriptorProtos"
+          },
+          {
+            "name": "csharp_namespace",
+            "value": "Google.Protobuf.Reflection"
+          },
+          {
+            "name": "objc_class_prefix",
+            "value": "GPB"
+          },
+          {
+            "name": "java_generate_equals_and_hash",
+            "value": "true"
+          },
+          {
+            "name": "optimize_for",
+            "value": "SPEED"
+          }
+        ]
+      }
+    }
+  ]
+}
