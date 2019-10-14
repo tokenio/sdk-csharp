@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Security
-{
-    public interface IKeyStore
-    {
+namespace Tokenio.Security {
+    public interface IKeyStore {
         /// <summary>
         /// Puts a specified key pair into the storage.
         /// </summary>

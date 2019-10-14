@@ -7,7 +7,7 @@ namespace Tokenio.TokenRequests {
         /// </summary>
         /// <param name="tokenId">token id</param>
         /// <param name="signature">token request state signature</param>
-        public TokenRequestResult (string tokenId, Signature signature) {
+        public TokenRequestResult(string tokenId, Signature signature) {
             TokenId = tokenId;
             Signature = signature;
         }

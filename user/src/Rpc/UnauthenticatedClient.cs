@@ -18,20 +18,20 @@ namespace Tokenio.User.Rpc {
         /// Creates an instance.
         /// </summary>
         /// <param name = "gateway">gateway gRPC client</param>
-        public UnauthenticatedClient (GatewayService.GatewayServiceClient gateway) : base (gateway) { }
+        public UnauthenticatedClient(GatewayService.GatewayServiceClient gateway) : base(gateway) { }
 
         /// <summary>
         /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
         /// <param name = "tokenRequestId">token request id</param>
         /// <returns>token request result</returns>
-        public Task<TokenRequestResult> GetTokenRequestResult (string tokenRequestId) {
+        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId) {
             var request = new GetTokenRequestResultRequest {
                 TokenRequestId = tokenRequestId
             };
-            return gateway.GetTokenRequestResultAsync (request)
-                .ToTask (response =>
-                    new TokenRequestResult (response.TokenId, response.Signature));
+            return gateway.GetTokenRequestResultAsync(request)
+                .ToTask(response =>
+                    new TokenRequestResult(response.TokenId, response.Signature));
         }
 
         /// <summary>
@@ -39,12 +39,12 @@ namespace Tokenio.User.Rpc {
         /// </summary>
         /// <param name = "tokenRequestId">token request id</param>
         /// <returns>token request that was stored with the request id</returns>
-        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest (string tokenRequestId) {
+        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId) {
             var request = new RetrieveTokenRequestRequest {
                 RequestId = tokenRequestId
             };
-            return gateway.RetrieveTokenRequestAsync (request)
-                .ToTask (response =>
+            return gateway.RetrieveTokenRequestAsync(request)
+                .ToTask(response =>
                     response.TokenRequest);
         }
 
@@ -54,15 +54,15 @@ namespace Tokenio.User.Rpc {
         /// <param name = "alias">alias of the member</param>
         /// <param name = "addKey">the add key payload to be sent</param>
         /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyAddKey (Alias alias, AddKey addKey) {
+        public Task<NotifyStatus> NotifyAddKey(Alias alias, AddKey addKey) {
             var request = new NotifyRequest {
                 Alias = alias,
                 Body = new NotifyBody {
                 AddKey = addKey
                 }
             };
-            return gateway.NotifyAsync (request)
-                .ToTask (response =>
+            return gateway.NotifyAsync(request)
+                .ToTask(response =>
                     response.Status);
         }
 
@@ -71,12 +71,12 @@ namespace Tokenio.User.Rpc {
         /// </summary>
         /// <param name = "tokenPayload">the payload of a token to be sent</param>
         /// <returns>status of the notification request</returns>
-        public Task<NotifyStatus> NotifyPaymentRequest (TokenPayload tokenPayload) {
+        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload) {
             var request = new RequestTransferRequest {
                 TokenPayload = tokenPayload
             };
-            return gateway.RequestTransferAsync (request)
-                .ToTask (response =>
+            return gateway.RequestTransferAsync(request)
+                .ToTask(response =>
                     response.Status);
         }
 
@@ -87,7 +87,7 @@ namespace Tokenio.User.Rpc {
         /// <param name = "addKey">optional add key payload to send</param>
         /// <param name = "receiptContact">optional receipt contact to send</param>
         /// <returns>notify result of the notification request</returns>
-        public Task<NotifyResult> NotifyCreateAndEndorseToken (
+        public Task<NotifyResult> NotifyCreateAndEndorseToken(
             string tokenRequestId,
             AddKey addKey,
             ReceiptContact receiptContact) {
@@ -100,9 +100,9 @@ namespace Tokenio.User.Rpc {
             if (receiptContact != null) {
                 request.Contact = receiptContact;
             }
-            return gateway.TriggerCreateAndEndorseTokenNotificationAsync (request)
-                .ToTask (response =>
-                    NotifyResult.Create (response.NotificationId, response.Status));
+            return gateway.TriggerCreateAndEndorseTokenNotificationAsync(request)
+                .ToTask(response =>
+                    NotifyResult.Create(response.NotificationId, response.Status));
         }
 
         /// <summary>
@@ -110,12 +110,12 @@ namespace Tokenio.User.Rpc {
         /// </summary>
         /// <param name = "notificationId">notification id to invalidate</param>
         /// <returns>status of the invalidation request</returns>
-        public Task<NotifyStatus> InvalidateNotification (string notificationId) {
+        public Task<NotifyStatus> InvalidateNotification(string notificationId) {
             var invalidateNotificationRequest = new InvalidateNotificationRequest {
                 NotificationId = notificationId
             };
-            return gateway.InvalidateNotificationAsync (invalidateNotificationRequest)
-                .ToTask (response =>
+            return gateway.InvalidateNotificationAsync(invalidateNotificationRequest)
+                .ToTask(response =>
                     response.Status);
         }
 
@@ -124,12 +124,12 @@ namespace Tokenio.User.Rpc {
         /// </summary>
         /// <param name="blobId">id of the blob</param>
         /// <returns>Blob</returns>
-        public Task<Blob> GetBlob (string blobId) {
+        public Task<Blob> GetBlob(string blobId) {
             var request = new GetBlobRequest {
                 BlobId = blobId
             };
-            return gateway.GetBlobAsync (request)
-                .ToTask (response =>
+            return gateway.GetBlobAsync(request)
+                .ToTask(response =>
                     response.Blob);
         }
 
@@ -139,13 +139,13 @@ namespace Tokenio.User.Rpc {
         /// <param name = "requestId">token request ID</param>
         /// <param name = "options">new token request options</param>
         /// <returns>token request</returns>
-        public Task UpdateTokenRequest (string requestId, TokenRequestOptions options) {
+        public Task UpdateTokenRequest(string requestId, TokenRequestOptions options) {
             var builder = new UpdateTokenRequestRequest {
                 RequestId = requestId,
                 RequestOptions = options
             };
             return gateway
-                .UpdateTokenRequestAsync (builder).ToTask ();
+                .UpdateTokenRequestAsync(builder).ToTask();
         }
     }
 }

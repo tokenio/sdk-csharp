@@ -9,7 +9,7 @@ namespace Tokenio.Security {
         /// <param name="message">the payload to sign</param>
         /// <param name="signature">the signature to verify</param>
         /// <exception cref="CryptographicException"></exception>
-        void Verify (IMessage message, string signature);
+        void Verify(IMessage message, string signature);
 
         /// <summary>
         /// Verifies the protobuf payload signature.
@@ -17,6 +17,6 @@ namespace Tokenio.Security {
         /// <param name="payload">the payload to sign</param>
         /// <param name="signature">the signature to verify</param>
         /// <exception cref="CryptographicException"></exception>
-        void Verify (string payload, string signature);
+        void Verify(string payload, string signature);
     }
 }

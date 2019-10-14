@@ -8,14 +8,14 @@ using log4net;
 namespace Tokenio.Rpc {
     public class ManagedChannel : IDisposable {
         private static readonly ILog logger = LogManager
-            .GetLogger (MethodBase.GetCurrentMethod ().DeclaringType);
+            .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static readonly int SHUTDOWN_DURATION_MS = 10000;
 
         private readonly Channel channel;
         private readonly Interceptor[] interceptors;
 
-        public ManagedChannel (Channel channel, Interceptor[] interceptors) {
+        public ManagedChannel(Channel channel, Interceptor[] interceptors) {
             this.channel = channel;
             this.interceptors = interceptors;
         }
@@ -24,18 +24,18 @@ namespace Tokenio.Rpc {
         /// Creates a new <see cref="Builder"/> instance that is used to configure
         /// </summary>
         /// <returns>the builder</returns>
-        public static Builder NewBuilder (string hostName, int port, bool useSsl) {
-            return new Builder (hostName, port, useSsl);
+        public static Builder NewBuilder(string hostName, int port, bool useSsl) {
+            return new Builder(hostName, port, useSsl);
         }
 
-        public CallInvoker BuildInvoker () {
-            return channel.Intercept (interceptors);
+        public CallInvoker BuildInvoker() {
+            return channel.Intercept(interceptors);
         }
 
-        public void Dispose () {
-            if (!channel.ShutdownAsync ().Wait (SHUTDOWN_DURATION_MS)) {
-                logger.Error ("Channel shutdown timed out! Interrupting thread...");
-                Thread.CurrentThread.Interrupt ();
+        public void Dispose() {
+            if (!channel.ShutdownAsync().Wait(SHUTDOWN_DURATION_MS)) {
+                logger.Error("Channel shutdown timed out! Interrupting thread...");
+                Thread.CurrentThread.Interrupt();
             }
         }
 
@@ -49,7 +49,7 @@ namespace Tokenio.Rpc {
             protected long timeout;
             protected Metadata metadata;
 
-            public Builder (string hostName, int port, bool useSsl) {
+            public Builder(string hostName, int port, bool useSsl) {
                 this.hostName = hostName;
                 this.port = port;
                 this.useSsl = useSsl;
@@ -60,7 +60,7 @@ namespace Tokenio.Rpc {
             /// </summary>
             /// <param name="keepAlive">whether keep-alive is enabled</param>
             /// <returns>this builder instance</returns>
-            public Builder UseKeepAlive (bool keepAlive) {
+            public Builder UseKeepAlive(bool keepAlive) {
                 this.keepAlive = keepAlive;
                 return this;
             }
@@ -70,7 +70,7 @@ namespace Tokenio.Rpc {
             /// </summary>
             /// <param name="keepAliveTimeMs">keep-alive time in milliseconds</param>
             /// <returns>this builder instance</returns>
-            public Builder WithKeepAliveTime (int keepAliveTimeMs) {
+            public Builder WithKeepAliveTime(int keepAliveTimeMs) {
                 this.keepAliveTimeMs = keepAliveTimeMs;
                 return this;
             }
@@ -80,7 +80,7 @@ namespace Tokenio.Rpc {
             /// </summary>
             /// <param name="timeout"></param>
             /// <returns></returns>
-            public Builder WithTimeout (long timeout) {
+            public Builder WithTimeout(long timeout) {
                 this.timeout = timeout;
                 return this;
             }
@@ -90,32 +90,32 @@ namespace Tokenio.Rpc {
             /// </summary>
             /// <param name="metadata"></param>
             /// <returns></returns>
-            public Builder WithMetadata (Metadata metadata) {
+            public Builder WithMetadata(Metadata metadata) {
                 this.metadata = metadata;
                 return this;
             }
 
-            public ManagedChannel Build () {
-                var channelOptions = new List<ChannelOption> ();
-                channelOptions.Add (new ChannelOption ("grpc.keepalive_permit_without_calls", keepAlive ? 1 : 0));
-                channelOptions.Add (new ChannelOption ("grpc.keepalive_time_ms", keepAliveTimeMs));
-                var channel = new Channel (
+            public ManagedChannel Build() {
+                var channelOptions = new List<ChannelOption>();
+                channelOptions.Add(new ChannelOption("grpc.keepalive_permit_without_calls", keepAlive ? 1 : 0));
+                channelOptions.Add(new ChannelOption("grpc.keepalive_time_ms", keepAliveTimeMs));
+                var channel = new Channel(
                     hostName,
                     port,
-                    useSsl ? new SslCredentials () : ChannelCredentials.Insecure,
+                    useSsl ? new SslCredentials() : ChannelCredentials.Insecure,
                     channelOptions);
 
                 Interceptor[] interceptors = {
-                    new AsyncTimeoutInterceptor (timeout),
-                    new AsyncMetadataInterceptor (metadata => {
+                    new AsyncTimeoutInterceptor(timeout),
+                    new AsyncMetadataInterceptor(metadata => {
                         foreach (Metadata.Entry entry in this.metadata) {
-                            metadata.Add (entry);
+                            metadata.Add(entry);
                         }
                         return metadata;
                     })
                 };
 
-                return new ManagedChannel (channel, interceptors);
+                return new ManagedChannel(channel, interceptors);
             }
         }
     }

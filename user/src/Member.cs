@@ -33,7 +33,7 @@ namespace Tokenio.User {
     /// </summary>
     public class Member : Tokenio.Member {
         private static readonly ILog logger = LogManager
-            .GetLogger (MethodBase.GetCurrentMethod ().DeclaringType);
+            .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly Client client;
         private readonly IBrowserFactory browserFactory;
 
@@ -46,13 +46,13 @@ namespace Tokenio.User {
         /// <param name="partnerId">member ID of partner</param>
         /// <param name="realmId">realm ID</param>
         /// <param name="browserFactory">browser factory for displaying UI for linking</param>
-        public Member (
+        public Member(
             string memberId,
             Client client,
             TokenCluster tokenCluster,
             string partnerId,
             string realmId,
-            IBrowserFactory browserFactory) : base (memberId, client, tokenCluster, partnerId, realmId) {
+            IBrowserFactory browserFactory) : base(memberId, client, tokenCluster, partnerId, realmId) {
             this.client = client;
             this.browserFactory = browserFactory;
         }
@@ -61,20 +61,20 @@ namespace Tokenio.User {
         /// Links a funding bank account to Token and returns it to the caller.
         /// </summary>
         /// <returns>list of accounts</returns>
-        public Task<IList<Account>> GetAccounts () {
-            return GetAccountsImpl ()
-                .Map (accounts =>
-                    (IList<Account>) accounts.Select (account =>
-                        new Account (account, client, this))
-                    .ToList ());
+        public Task<IList<Account>> GetAccounts() {
+            return GetAccountsImpl()
+                .Map(accounts =>
+                    (IList<Account>) accounts.Select(account =>
+                        new Account(account, client, this))
+                    .ToList());
         }
 
         /// <summary>
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
         /// <returns>list of linked accounts</returns>
-        public IList<Account> GetAccountsBlocking () {
-            return GetAccounts ().Result;
+        public IList<Account> GetAccountsBlocking() {
+            return GetAccounts().Result;
         }
 
         /// <summary>
@@ -82,10 +82,10 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accountId">account id</param>
         /// <returns>looked up account</returns>
-        public Task<Account> GetAccount (string accountId) {
-            return GetAccountImpl (accountId)
-                .Map (account =>
-                    new Account (account, client, this));
+        public Task<Account> GetAccount(string accountId) {
+            return GetAccountImpl(accountId)
+                .Map(account =>
+                    new Account(account, client, this));
         }
 
         /// <summary>
@@ -93,8 +93,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accountId">account id</param>
         /// <returns>looked up account</returns>
-        public Account GetAccountBlocking (string accountId) {
-            return GetAccount (accountId).Result;
+        public Account GetAccountBlocking(string accountId) {
+            return GetAccount(accountId).Result;
         }
 
         /// <summary>
@@ -102,35 +102,35 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accountId">ID of default account to set</param>
         /// <returns>task</returns>
-        public Task SetDefaultAccount (string accountId) {
-            return client.SetDefaultAccount (accountId);
+        public Task SetDefaultAccount(string accountId) {
+            return client.SetDefaultAccount(accountId);
         }
 
         /// <summary>
         /// Set the default bank account for this member.
         /// </summary>
         /// <param name="accountId">ID of default account to set</param>
-        public void SetDefaultAccountBlocking (string accountId) {
-            client.SetDefaultAccount (accountId).Wait ();
+        public void SetDefaultAccountBlocking(string accountId) {
+            client.SetDefaultAccount(accountId).Wait();
         }
 
         /// <summary>
         /// Get the default bank account for this member.
         /// </summary>
         /// <returns>task account</returns>
-        public Task<Account> GetDefaultAccount () {
+        public Task<Account> GetDefaultAccount() {
             return client
-                .GetDefaultAccount (MemberId ())
-                .Map (account =>
-                    new Account (this, account, client));
+                .GetDefaultAccount(MemberId())
+                .Map(account =>
+                    new Account(this, account, client));
         }
 
         /// <summary>
         /// Get the default bank account.
         /// </summary>
         /// <returns>the default bank account</returns>
-        public Account GetDefaultAccountBlocking () {
-            return GetDefaultAccount ().Result;
+        public Account GetDefaultAccountBlocking() {
+            return GetDefaultAccount().Result;
         }
 
         /// <summary>
@@ -138,8 +138,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="transferId">ID of the transfer record</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> GetTransfer (string transferId) {
-            return client.GetTransfer (transferId);
+        public Task<Transfer> GetTransfer(string transferId) {
+            return client.GetTransfer(transferId);
         }
 
         /// <summary>
@@ -147,8 +147,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="transferId">ID of the transfer record</param>
         /// <returns>transfer record</returns>
-        public Transfer GetTransferBlocking (string transferId) {
-            return GetTransfer (transferId).Result;
+        public Transfer GetTransferBlocking(string transferId) {
+            return GetTransfer(transferId).Result;
         }
 
         /// <summary>
@@ -156,8 +156,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="bulkTransferId">bulk transfer ID</param>
         /// <returns>bulk transfer record</returns>
-        public Task<BulkTransfer> GetBulkTransfer (string bulkTransferId) {
-            return client.GetBulkTransfer (bulkTransferId);
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId) {
+            return client.GetBulkTransfer(bulkTransferId);
         }
 
         /// <summary>
@@ -165,8 +165,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="bulkTransferId">bulk transfer ID</param>
         /// <returns>bulk transfer record</returns>
-        public BulkTransfer GetBulkTransferBlocking (string bulkTransferId) {
-            return GetBulkTransfer (bulkTransferId).Result;
+        public BulkTransfer GetBulkTransferBlocking(string bulkTransferId) {
+            return GetBulkTransfer(bulkTransferId).Result;
         }
 
         /// <summary>
@@ -174,8 +174,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="submissionId">ID of the standing orde submission</param>
         /// <returns>standing order submission</returns>
-        public Task<StandingOrderSubmission> GetStandingOrderSubmission (string submissionId) {
-            return client.GetStandingOrderSubmission (submissionId);
+        public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId) {
+            return client.GetStandingOrderSubmission(submissionId);
         }
 
         /// <summary>
@@ -183,8 +183,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="submissionId">ID of the standing orde submission</param>
         /// <returns>standing order submission</returns>
-        public StandingOrderSubmission GetStandingOrderSubmissionBlocking (string submissionId) {
-            return GetStandingOrderSubmission (submissionId).Result;
+        public StandingOrderSubmission GetStandingOrderSubmissionBlocking(string submissionId) {
+            return GetStandingOrderSubmission(submissionId).Result;
         }
 
         /// <summary>
@@ -194,11 +194,11 @@ namespace Tokenio.User {
         /// <param name="offset">optional offset to start at</param>
         /// <param name="limit">max number of records to return</param>
         /// <returns>transfer record</returns>
-        public Task<PagedList<Transfer>> GetTransfers (
+        public Task<PagedList<Transfer>> GetTransfers(
             string tokenId,
             string offset,
             int limit) {
-            return client.GetTransfers (tokenId, offset, limit);
+            return client.GetTransfers(tokenId, offset, limit);
         }
 
         /// <summary>
@@ -208,11 +208,11 @@ namespace Tokenio.User {
         /// <param name="offset">optional offset to start at</param>
         /// <param name="limit">max number of records to return</param>
         /// <returns>transfer record</returns>
-        public PagedList<Transfer> GetTransfersBlocking (
+        public PagedList<Transfer> GetTransfersBlocking(
             string tokenId,
             string offset,
             int limit) {
-            return GetTransfers (tokenId, offset, limit).Result;
+            return GetTransfers(tokenId, offset, limit).Result;
         }
 
         /// <summary>
@@ -221,10 +221,10 @@ namespace Tokenio.User {
         /// <param name="limit">max number of submissions to return</param>
         /// <param name="offset">optional offset to start at</param>
         /// <returns>standing order submissions</returns>
-        public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions (
+        public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
             int limit,
             string offset = null) {
-            return client.GetStandingOrderSubmissions (limit, offset);
+            return client.GetStandingOrderSubmissions(limit, offset);
         }
 
         /// <summary>
@@ -233,10 +233,10 @@ namespace Tokenio.User {
         /// <param name="limit">max number of submissions to return</param>
         /// <param name="offset">optional offset to start at</param>
         /// <returns>standing order submissions</returns>
-        public PagedList<StandingOrderSubmission> GetStandingOrderSubmissionsBlocking (
+        public PagedList<StandingOrderSubmission> GetStandingOrderSubmissionsBlocking(
             int limit,
             string offset = null) {
-            return GetStandingOrderSubmissions (limit, offset).Result;
+            return GetStandingOrderSubmissions(limit, offset).Result;
         }
 
         /// <summary>
@@ -244,10 +244,10 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="transferTokenBuilder">transfer token builder</param>
         /// <returns>resolved token payload and policy</returns>
-        public Task<PrepareTokenResult> PrepareTransferToken (
+        public Task<PrepareTokenResult> PrepareTransferToken(
             TransferTokenBuilder transferTokenBuilder) {
-            transferTokenBuilder.From (MemberId ());
-            return client.PrepareToken (transferTokenBuilder.BuildPayload ());
+            transferTokenBuilder.From(MemberId());
+            return client.PrepareToken(transferTokenBuilder.BuildPayload());
         }
 
         /// <summary>
@@ -255,9 +255,9 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="transferTokenBuilder">transfer token builder</param>
         /// <returns>resolved token payload and policy</returns>
-        public PrepareTokenResult PrepareTransferTokenBlocking (
+        public PrepareTokenResult PrepareTransferTokenBlocking(
             TransferTokenBuilder transferTokenBuilder) {
-            return PrepareTransferToken (transferTokenBuilder).Result;
+            return PrepareTransferToken(transferTokenBuilder).Result;
         }
 
         /// <summary>
@@ -266,9 +266,9 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="builder">bulk transfer token builder</param>
         /// <returns>resolved token payload and policy</returns>
-        public Task<PrepareTokenResult> PrepareBulkTransferToken (
+        public Task<PrepareTokenResult> PrepareBulkTransferToken(
             BulkTransferTokenBuilder builder) {
-            return client.PrepareToken (builder.BuildPayload ());
+            return client.PrepareToken(builder.BuildPayload());
         }
 
         /// <summary>
@@ -277,9 +277,9 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="builder">bulk transfer token builder</param>
         /// <returns>resolved token payload and policy</returns>
-        public PrepareTokenResult PrepareBulkTransferTokenBlocking (
+        public PrepareTokenResult PrepareBulkTransferTokenBlocking(
             BulkTransferTokenBuilder builder) {
-            return PrepareBulkTransferToken (builder).Result;
+            return PrepareBulkTransferToken(builder).Result;
         }
 
         /// <summary>
@@ -287,34 +287,32 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accessTokenBuilder">access token builder</param>
         /// <returns>resolved token payload and policy</returns>
-        public Task<PrepareTokenResult> PrepareAccessToken (
+        public Task<PrepareTokenResult> PrepareAccessToken(
             AccessTokenBuilder accessTokenBuilder) {
-            accessTokenBuilder.From (MemberId ());
-            return client.PrepareToken (accessTokenBuilder.Build ());
+            accessTokenBuilder.From(MemberId());
+            return client.PrepareToken(accessTokenBuilder.Build());
         }
 
         /// <summary>
         /// Prepares a standing order token, returning the resolved token payload
         /// and policy.
-        /// 
         /// </summary>
         /// <param name="builder">standing order token builder</param>
         /// <returns>resolved token payload and policy</returns>
-        public Task<PrepareTokenResult> PrepareStandingOrderToken (
+        public Task<PrepareTokenResult> PrepareStandingOrderToken(
             StandingOrderTokenBuilder builder) {
-            return client.PrepareToken (builder.BuildPayload ());
+            return client.PrepareToken(builder.BuildPayload());
         }
 
         /// <summary>
         /// Prepares a standing order token, returning the resolved token payload
         /// and policy.
-        /// 
         /// </summary>
         /// <param name="builder">standing order token builder</param>
         /// <returns>resolved token payload and policy</returns>
-        public PrepareTokenResult PrepareStandingOrderTokenBlocking (
+        public PrepareTokenResult PrepareStandingOrderTokenBlocking(
             StandingOrderTokenBuilder builder) {
-            return PrepareStandingOrderToken (builder).Result;
+            return PrepareStandingOrderToken(builder).Result;
         }
 
         /// <summary>
@@ -322,8 +320,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accessTokenBuilder">access token builder</param>
         /// <returns>resolved token payload and policy</returns>
-        public PrepareTokenResult PrepareAccessTokenBlocking (AccessTokenBuilder accessTokenBuilder) {
-            return PrepareAccessToken (accessTokenBuilder).Result;
+        public PrepareTokenResult PrepareAccessTokenBlocking(AccessTokenBuilder accessTokenBuilder) {
+            return PrepareAccessToken(accessTokenBuilder).Result;
         }
 
         /// <summary>
@@ -332,8 +330,8 @@ namespace Tokenio.User {
         /// <param name="payload">token payload</param>
         /// <param name="signatures">list of signatures</param>
         /// <returns>token returned by server</returns>
-        public Task<Token> CreateToken (TokenPayload payload, IList<Signature> signatures) {
-            return CreateToken (payload, signatures, null);
+        public Task<Token> CreateToken(TokenPayload payload, IList<Signature> signatures) {
+            return CreateToken(payload, signatures, null);
         }
 
         /// <summary>
@@ -343,11 +341,11 @@ namespace Tokenio.User {
         /// <param name="signatures">list of signatures</param>
         /// <param name="tokenRequestId">token request ID</param>
         /// <returns>token returned by server</returns>
-        public Task<Token> CreateToken (
+        public Task<Token> CreateToken(
             TokenPayload payload,
             IList<Signature> signatures,
             string tokenRequestId) {
-            return client.CreateToken (payload, tokenRequestId, signatures);
+            return client.CreateToken(payload, tokenRequestId, signatures);
         }
 
         /// <summary>
@@ -356,8 +354,8 @@ namespace Tokenio.User {
         /// <param name="payload">token payload</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>token returned by server</returns>
-        public Task<Token> CreateToken (TokenPayload payload, Level keyLevel) {
-            return CreateToken (payload, null, keyLevel);
+        public Task<Token> CreateToken(TokenPayload payload, Level keyLevel) {
+            return CreateToken(payload, null, keyLevel);
         }
 
         /// <summary>
@@ -367,14 +365,14 @@ namespace Tokenio.User {
         /// <param name="tokenRequestId">token request ID</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>token returned by the server</returns>
-        public Task<Token> CreateToken (
+        public Task<Token> CreateToken(
             TokenPayload payload,
             string tokenRequestId,
             Level keyLevel) {
             IList<Signature> signatures = new List<Signature> {
-                SignTokenPayload (payload, keyLevel)
+                SignTokenPayload(payload, keyLevel)
             };
-            return client.CreateToken (
+            return client.CreateToken(
                 payload,
                 tokenRequestId,
                 signatures);
@@ -386,8 +384,8 @@ namespace Tokenio.User {
         /// <param name="payload">token payload</param>
         /// <param name="signatures">list of signatures</param>
         /// <returns>token returned by server</returns>
-        public Token CreateTokenBlocking (TokenPayload payload, IList<Signature> signatures) {
-            return CreateToken (payload, signatures).Result;
+        public Token CreateTokenBlocking(TokenPayload payload, IList<Signature> signatures) {
+            return CreateToken(payload, signatures).Result;
         }
 
         /// <summary>
@@ -397,11 +395,11 @@ namespace Tokenio.User {
         /// <param name="signatures">list of signatures</param>
         /// <param name="tokenRequestId">token request ID</param>
         /// <returns>token returned by server</returns>
-        public Token CreateTokenBlocking (
+        public Token CreateTokenBlocking(
             TokenPayload payload,
             IList<Signature> signatures,
             string tokenRequestId) {
-            return CreateToken (payload, signatures, tokenRequestId).Result;
+            return CreateToken(payload, signatures, tokenRequestId).Result;
         }
 
         /// <summary>
@@ -410,8 +408,8 @@ namespace Tokenio.User {
         /// <param name="payload">token payload</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>token returned by server</returns>
-        public Token CreateTokenBlocking (TokenPayload payload, Level keyLevel) {
-            return CreateToken (payload, keyLevel).Result;
+        public Token CreateTokenBlocking(TokenPayload payload, Level keyLevel) {
+            return CreateToken(payload, keyLevel).Result;
         }
 
         /// <summary>
@@ -421,11 +419,11 @@ namespace Tokenio.User {
         /// <param name="tokenRequestId">token request ID</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>token returned by the server</returns>
-        public Token CreateTokenBlocking (
+        public Token CreateTokenBlocking(
             TokenPayload payload,
             string tokenRequestId,
             Level keyLevel) {
-            return CreateToken (payload, tokenRequestId, keyLevel).Result;
+            return CreateToken(payload, tokenRequestId, keyLevel).Result;
         }
 
         /// <summary>
@@ -434,8 +432,8 @@ namespace Tokenio.User {
         /// <param name="amount">transfer amount</param>
         /// <param name="currency">currency code, e.g. "USD"</param>
         /// <returns>transfer token builder</returns>
-        public TransferTokenBuilder CreateTransferTokenBuilder (double amount, string currency) {
-            return new TransferTokenBuilder (this, amount, currency);
+        public TransferTokenBuilder CreateTransferTokenBuilder(double amount, string currency) {
+            return new TransferTokenBuilder(this, amount, currency);
         }
 
         /// <summary>
@@ -443,8 +441,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenRequest">token request</param>
         /// <returns>transfer token builder</returns>
-        public TransferTokenBuilder CreateTransferTokenBuilder (TokenRequest tokenRequest) {
-            return new TransferTokenBuilder (this, tokenRequest);
+        public TransferTokenBuilder CreateTransferTokenBuilder(TokenRequest tokenRequest) {
+            return new TransferTokenBuilder(this, tokenRequest);
         }
 
         /// <summary>
@@ -452,8 +450,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="payload">token payload</param>
         /// <returns>transfer token builder</returns>
-        public TransferTokenBuilder CreateTransferTokenBuilder (TokenPayload payload) {
-            return new TransferTokenBuilder (this, payload);
+        public TransferTokenBuilder CreateTransferTokenBuilder(TokenPayload payload) {
+            return new TransferTokenBuilder(this, payload);
         }
 
         /// <summary>
@@ -463,11 +461,11 @@ namespace Tokenio.User {
         /// <param name="totalAmount">total amount irrespective of currency. Used for redundancy check.</param>
         /// <param name="source">source account for all transfer</param>
         /// <returns>bulk transfer token builder</returns>
-        public BulkTransferTokenBuilder CreateBulkTransferTokenBuilder (
+        public BulkTransferTokenBuilder CreateBulkTransferTokenBuilder(
             List<BulkTransferBody.Types.Transfer> transfers,
             double totalAmount,
             TransferEndpoint source) {
-            return new BulkTransferTokenBuilder (this, transfers, totalAmount, source);
+            return new BulkTransferTokenBuilder(this, transfers, totalAmount, source);
         }
 
         /// <summary>
@@ -475,8 +473,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenRequest">token request</param>
         /// <returns>bulk transfer token builder</returns>
-        public BulkTransferTokenBuilder CreateBulkTransferTokenBuilder (TokenRequest tokenRequest) {
-            return new BulkTransferTokenBuilder (tokenRequest);
+        public BulkTransferTokenBuilder CreateBulkTransferTokenBuilder(TokenRequest tokenRequest) {
+            return new BulkTransferTokenBuilder(tokenRequest);
         }
 
         /// <summary>
@@ -487,16 +485,16 @@ namespace Tokenio.User {
         /// <param name="currency">currency code, e.g. "USD"</param>
         /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
         ///              DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
-        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD</param>
-        /// <param name="endDate">end date of the standing order: ISO 8601 YYYY-MM-DD</param>
+        /// <param name="startDate">start date of the standing order</param>
+        /// <param name="endDate">optional end date of the standing order</param>
         /// <returns>standing order token builder</returns>
-        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder (
+        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(
             double amount,
             string currency,
             string frequency,
-            string startDate,
-            string endDate) {
-            return new StandingOrderTokenBuilder (
+            DateTime startDate,
+            DateTime? endDate = null) {
+            return new StandingOrderTokenBuilder(
                 this,
                 amount,
                 currency,
@@ -506,36 +504,12 @@ namespace Tokenio.User {
         }
 
         /// <summary>
-        /// Creates a new indefinite standing order token builder.
-        /// 
-        /// </summary>
-        /// <param name="amount">individual transfer amount</param>
-        /// <param name="currency">currency code, e.g. "USD"</param>
-        /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
-        ///              DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
-        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD</param>
-        /// <returns>standing order token builder</returns>
-        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder (
-            double amount,
-            string currency,
-            string frequency,
-            string startDate) {
-            return new StandingOrderTokenBuilder (
-                this,
-                amount,
-                currency,
-                frequency,
-                startDate,
-                null);
-        }
-
-        /// <summary>
         /// Creates a new standing order token builder from a token request.
         /// </summary>
         /// <param name="tokenRequest">token request</param>
         /// <returns>transfer token builder</returns>
-        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder (TokenRequest tokenRequest) {
-            return new StandingOrderTokenBuilder (tokenRequest);
+        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(TokenRequest tokenRequest) {
+            return new StandingOrderTokenBuilder(tokenRequest);
         }
 
         /// <summary>
@@ -543,9 +517,9 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accessTokenBuilder">an {@link AccessTokenBuilder} to create access token from</param>
         /// <returns>the access token created</returns>
-        public Task<Token> CreateAccessToken (AccessTokenBuilder accessTokenBuilder) {
-            return client.CreateAccessToken (
-                accessTokenBuilder.From (MemberId ()).Build (),
+        public Task<Token> CreateAccessToken(AccessTokenBuilder accessTokenBuilder) {
+            return client.CreateAccessToken(
+                accessTokenBuilder.From(MemberId()).Build(),
                 accessTokenBuilder.tokenRequestId);
         }
 
@@ -554,14 +528,13 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accessTokenBuilder">an {@link AccessTokenBuilder} to create access token from</param>
         /// <returns>the access token created</returns>
-        public Token CreateAccessTokenBlocking (AccessTokenBuilder accessTokenBuilder) {
-            return CreateAccessToken (accessTokenBuilder).Result;
+        public Token CreateAccessTokenBlocking(AccessTokenBuilder accessTokenBuilder) {
+            return CreateAccessToken(accessTokenBuilder).Result;
         }
 
         /// <summary>
         /// Endorses the token by signing it. The signature is persisted along
         /// with the token.
-        ///
         /// <p>If the key's level is too low, the result's status is MORE_SIGNATURES_NEEDED
         /// and the system pushes a notification to the member prompting them to use a
         /// higher-privilege key.</p>
@@ -569,14 +542,13 @@ namespace Tokenio.User {
         /// <param name="token">token to endorse</param>
         /// <param name="keyLevel">key level to be used to endorse the token</param>
         /// <returns>result of endorse token</returns>
-        public Task<TokenOperationResult> EndorseToken (Token token, Level keyLevel) {
-            return client.EndorseToken (token, keyLevel);
+        public Task<TokenOperationResult> EndorseToken(Token token, Level keyLevel) {
+            return client.EndorseToken(token, keyLevel);
         }
 
         /// <summary>
         /// Endorses the token by signing it. The signature is persisted along
         /// with the token.
-        ///
         /// <p>If the key's level is too low, the result's status is MORE_SIGNATURES_NEEDED
         /// and the system pushes a notification to the member prompting them to use a
         /// higher-privilege key.</p>
@@ -584,8 +556,8 @@ namespace Tokenio.User {
         /// <param name="token">token to endorse</param>
         /// <param name="keyLevel">key level to be used to endorse the token</param>
         /// <returns>result of endorse token</returns>
-        public TokenOperationResult EndorseTokenBlocking (Token token, Level keyLevel) {
-            return EndorseToken (token, keyLevel).Result;
+        public TokenOperationResult EndorseTokenBlocking(Token token, Level keyLevel) {
+            return EndorseToken(token, keyLevel).Result;
         }
 
         /// <summary>
@@ -594,8 +566,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="token">token to cancel</param>
         /// <returns>result of cancel token</returns>
-        public Task<TokenOperationResult> CancelToken (Token token) {
-            return client.CancelToken (token);
+        public Task<TokenOperationResult> CancelToken(Token token) {
+            return client.CancelToken(token);
         }
 
         /// <summary>
@@ -604,8 +576,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="token">token to cancel</param>
         /// <returns>result of cancel token</returns>
-        public TokenOperationResult CancelTokenBlocking (Token token) {
-            return CancelToken (token).Result;
+        public TokenOperationResult CancelTokenBlocking(Token token) {
+            return CancelToken(token).Result;
         }
 
         /// <summary>
@@ -614,13 +586,13 @@ namespace Tokenio.User {
         /// <param name="tokenToCancel">old token to cancel</param>
         /// <param name="tokenToCreate">an {@link AccessTokenBuilder} to create new token from</param>
         /// <returns>result of the replacement operation</returns>
-        public Task<TokenOperationResult> ReplaceAccessToken (
+        public Task<TokenOperationResult> ReplaceAccessToken(
             Token tokenToCancel,
             AccessTokenBuilder tokenToCreate) {
-            return client.ReplaceToken (
+            return client.ReplaceToken(
                 tokenToCancel,
-                tokenToCreate.From (MemberId ())
-                .Build ());
+                tokenToCreate.From(MemberId())
+                .Build());
         }
 
         /// <summary>
@@ -629,10 +601,10 @@ namespace Tokenio.User {
         /// <param name="tokenToCancel">old token to cancel</param>
         /// <param name="tokenToCreate">an {@link AccessTokenBuilder} to create new token from</param>
         /// <returns>result of the replacement operation</returns>
-        public TokenOperationResult ReplaceAccessTokenBlocking (
+        public TokenOperationResult ReplaceAccessTokenBlocking(
             Token tokenToCancel,
             AccessTokenBuilder tokenToCreate) {
-            return ReplaceAccessToken (tokenToCancel, tokenToCreate)
+            return ReplaceAccessToken(tokenToCancel, tokenToCreate)
                 .Result;
         }
 
@@ -641,32 +613,32 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="contact">receipt contact to set</param>
         /// <returns>task that indicates whether the operation finished or had an error</returns>
-        public Task SetReceiptContact (ReceiptContact contact) {
-            return client.SetReceiptContact (contact);
+        public Task SetReceiptContact(ReceiptContact contact) {
+            return client.SetReceiptContact(contact);
         }
 
         /// <summary>
         /// Replaces the member's receipt contact.
         /// </summary>
         /// <param name="receiptContact">receipt contact to set</param>
-        public void SetReceiptContactBlocking (ReceiptContact receiptContact) {
-            SetReceiptContact (receiptContact).Wait ();
+        public void SetReceiptContactBlocking(ReceiptContact receiptContact) {
+            SetReceiptContact(receiptContact).Wait();
         }
 
         /// <summary>
         /// Gets the member's receipt email address.
         /// </summary>
         /// <returns>receipt contact</returns>
-        public Task<ReceiptContact> GetReceiptContact () {
-            return client.GetReceiptContact ();
+        public Task<ReceiptContact> GetReceiptContact() {
+            return client.GetReceiptContact();
         }
 
         /// <summary>
         /// Gets the member's receipt contact.
         /// </summary>
         /// <returns>receipt contact</returns>
-        public ReceiptContact GetReceiptContactBlocking () {
-            return GetReceiptContact ().Result;
+        public ReceiptContact GetReceiptContactBlocking() {
+            return GetReceiptContact().Result;
         }
 
         /// <summary>
@@ -674,16 +646,16 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="appCallbackUrl">the app callback url to set</param>
         /// <returns>task</returns>
-        public Task SetAppCallbackUrl (string appCallbackUrl) {
-            return client.SetAppCallbackUrl (appCallbackUrl);
+        public Task SetAppCallbackUrl(string appCallbackUrl) {
+            return client.SetAppCallbackUrl(appCallbackUrl);
         }
 
         /// <summary>
         /// Sets the app's callback url.
         /// </summary>
         /// <param name="appCallbackUrl">the app callback url to set</param>
-        public void SetAppCallbackUrlBlocking (string appCallbackUrl) {
-            client.SetAppCallbackUrl (appCallbackUrl).Wait ();
+        public void SetAppCallbackUrlBlocking(string appCallbackUrl) {
+            client.SetAppCallbackUrl(appCallbackUrl).Wait();
         }
 
         /// <summary>
@@ -692,8 +664,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="toMemberId">beneficiary of the active access token</param>
         /// <returns>access token returned by the server</returns>
-        public Task<Token> GetActiveAccessToken (string toMemberId) {
-            return client.GetActiveAccessToken (toMemberId);
+        public Task<Token> GetActiveAccessToken(string toMemberId) {
+            return client.GetActiveAccessToken(toMemberId);
         }
 
         /// <summary>
@@ -702,8 +674,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="toMemberId">beneficiary of the active access token</param>
         /// <returns>access token returned by the server</returns>
-        public Token GetActiveAccessTokenBlocking (string toMemberId) {
-            return GetActiveAccessToken (toMemberId).Result;
+        public Token GetActiveAccessTokenBlocking(string toMemberId) {
+            return GetActiveAccessToken(toMemberId).Result;
         }
 
         /// <summary>
@@ -712,11 +684,10 @@ namespace Tokenio.User {
         /// <param name="offset">optional offset to start at</param>
         /// <param name="limit">max number of records to return</param>
         /// <returns>transfer tokens owned by the member</returns>
-        public Task<PagedList<Token>> GetTransferTokens (
+        public Task<PagedList<Token>> GetTransferTokens(
             string offset,
             int limit) {
-            return client.GetTokens (TokenType.Transfer, limit, offset);
-
+            return client.GetTokens(TokenType.Transfer, limit, offset);
         }
 
         /// <summary>
@@ -725,8 +696,8 @@ namespace Tokenio.User {
         /// <param name="offset">optional offset to start at</param>
         /// <param name="limit">max number of records to return</param>
         /// <returns>transfer tokens owned by the member</returns>
-        public PagedList<Token> GetTransferTokensBlocking (string offset, int limit) {
-            return GetTransferTokens (offset, limit).Result;
+        public PagedList<Token> GetTransferTokensBlocking(string offset, int limit) {
+            return GetTransferTokens(offset, limit).Result;
         }
 
         /// <summary>
@@ -735,10 +706,10 @@ namespace Tokenio.User {
         /// <param name="offset">optional offset to start at</param>
         /// <param name="limit">max number of records to return</param>
         /// <returns>access tokens owned by the member</returns>
-        public Task<PagedList<Token>> GetAccessTokens (
+        public Task<PagedList<Token>> GetAccessTokens(
             string offset,
             int limit) {
-            return client.GetTokens (TokenType.Access, limit, offset);
+            return client.GetTokens(TokenType.Access, limit, offset);
         }
 
         /// <summary>
@@ -747,8 +718,8 @@ namespace Tokenio.User {
         /// <param name="offset">optional offset to start at</param>
         /// <param name="limit">max number of records to return</param>
         /// <returns>access tokens owned by the member</returns>
-        public PagedList<Token> GetAccessTokensBlocking (string offset, int limit) {
-            return GetAccessTokens (offset, limit).Result;
+        public PagedList<Token> GetAccessTokensBlocking(string offset, int limit) {
+            return GetAccessTokens(offset, limit).Result;
         }
 
         /// <summary>
@@ -756,8 +727,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenId">token id</param>
         /// <returns>token returned by the server</returns>
-        public Task<Token> GetToken (string tokenId) {
-            return client.GetToken (tokenId);
+        public Task<Token> GetToken(string tokenId) {
+            return client.GetToken(tokenId);
         }
 
         /// <summary>
@@ -765,8 +736,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenId">token id</param>
         /// <returns>token returned by the server</returns>
-        public Token GetTokenBlocking (string tokenId) {
-            return GetToken (tokenId).Result;
+        public Token GetTokenBlocking(string tokenId) {
+            return GetToken(tokenId).Result;
         }
 
         /// <summary>
@@ -774,8 +745,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="token">transfer token to redeem</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> RedeemToken (Token token) {
-            return RedeemTokenInternal (token, null, null, null, null, null);
+        public Task<Transfer> RedeemToken(Token token) {
+            return RedeemTokenInternal(token, null, null, null, null, null);
         }
 
         /// <summary>
@@ -784,8 +755,8 @@ namespace Tokenio.User {
         /// <param name="token">transfer token to redeem</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> RedeemToken (Token token, string refId) {
-            return RedeemTokenInternal (token, null, null, null, null, refId);
+        public Task<Transfer> RedeemToken(Token token, string refId) {
+            return RedeemTokenInternal(token, null, null, null, null, refId);
         }
 
         /// <summary>
@@ -794,8 +765,8 @@ namespace Tokenio.User {
         /// <param name="token">transfer token to redeem</param>
         /// <param name="destination">transfer instruction destination</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> RedeemToken (Token token, TransferDestination destination) {
-            return RedeemToken (token, null, null, null, destination, null);
+        public Task<Transfer> RedeemToken(Token token, TransferDestination destination) {
+            return RedeemToken(token, null, null, null, destination, null);
         }
 
         /// <summary>
@@ -805,11 +776,11 @@ namespace Tokenio.User {
         /// <param name="destination">transfer instruction destination</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> RedeemToken (
+        public Task<Transfer> RedeemToken(
             Token token,
             TransferDestination destination,
             string refId) {
-            return RedeemToken (token, null, null, null, destination, refId);
+            return RedeemToken(token, null, null, null, destination, refId);
         }
 
         /// <summary>
@@ -820,12 +791,12 @@ namespace Tokenio.User {
         /// <param name="currency">transfer currency code, e.g. "EUR"</param>
         /// <param name="description">transfer description</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> RedeemToken (
+        public Task<Transfer> RedeemToken(
             Token token,
             double? amount,
             string currency,
             string description) {
-            return RedeemTokenInternal (token, amount, currency, description, null, null);
+            return RedeemTokenInternal(token, amount, currency, description, null, null);
         }
 
         /// <summary>
@@ -836,12 +807,12 @@ namespace Tokenio.User {
         /// <param name="currency">transfer currency code, e.g. "EUR"</param>
         /// <param name="destination">transfer instruction destination</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> RedeemToken (
+        public Task<Transfer> RedeemToken(
             Token token,
             double? amount,
             string currency,
             TransferDestination destination) {
-            return RedeemToken (token, amount, currency, null, destination, null);
+            return RedeemToken(token, amount, currency, null, destination, null);
         }
 
         /// <summary>
@@ -853,13 +824,13 @@ namespace Tokenio.User {
         /// <param name="description">transfer description</param>
         /// <param name="destination">transfer instruction destination</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> RedeemToken (
+        public Task<Transfer> RedeemToken(
             Token token,
             double? amount,
             string currency,
             string description,
             TransferDestination destination) {
-            return RedeemToken (token, amount, currency, description, destination, null);
+            return RedeemToken(token, amount, currency, description, destination, null);
         }
 
         /// <summary>
@@ -872,7 +843,7 @@ namespace Tokenio.User {
         /// <param name="destination">the transfer instruction destination</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> RedeemToken (
+        public Task<Transfer> RedeemToken(
             Token token,
             double? amount,
             string currency,
@@ -880,18 +851,18 @@ namespace Tokenio.User {
             TransferDestination destination,
             string refId) {
             if (token.Payload.Transfer == null) {
-                throw new ArgumentException ("Expected transfer token; found " +
-                    token.Payload.BodyCase);
+                throw new ArgumentException("Expected transfer token; found "
+                    + token.Payload.BodyCase);
             }
             var payload = new TransferPayload {
                 TokenId = token.Id,
                 Description = token.Payload.Description
             };
             if (destination != null) {
-                payload.TransferDestinations.Add (destination);
+                payload.TransferDestinations.Add(destination);
             }
             if (amount.HasValue) {
-                payload.Amount.Value = Util.DoubleToString (amount.Value);
+                payload.Amount.Value = Util.DoubleToString(amount.Value);
             }
             if (currency != null) {
                 payload.Amount.Currency = currency;
@@ -901,17 +872,17 @@ namespace Tokenio.User {
             }
             if (refId != null) {
                 payload.RefId = refId;
-            } else if (!string.IsNullOrEmpty (token.Payload.RefId) && amount == null) {
+            } else if (amount == null || Util.DoubleToString(amount.Value) == token.Payload.Transfer.LifetimeAmount) {
                 payload.RefId = token.Payload.RefId;
             } else {
-                logger.Warn ("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce ();
+                logger.Warn("refId is not set. A random ID will be used.");
+                payload.RefId = Util.Nonce();
             }
-            return client.CreateTransfer (payload);
+            return client.CreateTransfer(payload);
         }
 
         // Remove when deprecated TransferEndpoint methods are removed.
-        public Task<Transfer> RedeemTokenInternal (
+        public Task<Transfer> RedeemTokenInternal(
             Token token,
             double? amount,
             string currency,
@@ -923,11 +894,11 @@ namespace Tokenio.User {
                 Description = token.Payload.Description
             };
             if (destination != null) {
-                payload.Destinations.Add (destination);
+                payload.Destinations.Add(destination);
             }
             if (amount.HasValue) {
                 Money money = new Money {
-                    Value = Util.DoubleToString (amount.Value)
+                    Value = Util.DoubleToString(amount.Value)
                 };
                 payload.Amount = money;
             }
@@ -942,10 +913,10 @@ namespace Tokenio.User {
             } else if (amount == null || Util.DoubleToString(amount.Value) == token.Payload.Transfer.LifetimeAmount) {
                 payload.RefId = token.Payload.RefId;
             } else {
-                logger.Warn ("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce ();
+                logger.Warn("refId is not set. A random ID will be used.");
+                payload.RefId = Util.Nonce();
             }
-            return client.CreateTransfer (payload);
+            return client.CreateTransfer(payload);
         }
 
         /// <summary>
@@ -953,8 +924,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="token">transfer token to redeem</param>
         /// <returns>transfer record</returns>
-        public Transfer RedeemTokenBlocking (Token token) {
-            return RedeemToken (token).Result;
+        public Transfer RedeemTokenBlocking(Token token) {
+            return RedeemToken(token).Result;
         }
 
         /// <summary>
@@ -963,8 +934,8 @@ namespace Tokenio.User {
         /// <param name="token">transfer token to redeem</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
-        public Transfer RedeemTokenBlocking (Token token, string refId) {
-            return RedeemToken (token, refId).Result;
+        public Transfer RedeemTokenBlocking(Token token, string refId) {
+            return RedeemToken(token, refId).Result;
         }
 
         /// <summary>
@@ -973,8 +944,8 @@ namespace Tokenio.User {
         /// <param name="token">transfer token to redeem</param>
         /// <param name="destination">transfer instruction destination</param>
         /// <returns>transfer record</returns>
-        public Transfer RedeemTokenBlocking (Token token, TransferDestination destination) {
-            return RedeemToken (token, destination).Result;
+        public Transfer RedeemTokenBlocking(Token token, TransferDestination destination) {
+            return RedeemToken(token, destination).Result;
         }
 
         /// <summary>
@@ -984,11 +955,11 @@ namespace Tokenio.User {
         /// <param name="destination">transfer instruction destination</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
-        public Transfer RedeemTokenBlocking (
+        public Transfer RedeemTokenBlocking(
             Token token,
             TransferDestination destination,
             string refId) {
-            return RedeemToken (token, destination, refId).Result;
+            return RedeemToken(token, destination, refId).Result;
         }
 
         /// <summary>
@@ -999,12 +970,12 @@ namespace Tokenio.User {
         /// <param name="currency">transfer currency code, e.g. "EUR"</param>
         /// <param name="description">transfer description</param>
         /// <returns>transfer record</returns>
-        public Transfer RedeemTokenBlocking (
+        public Transfer RedeemTokenBlocking(
             Token token,
             double? amount,
             string currency,
             string description) {
-            return RedeemToken (token, amount, currency, description).Result;
+            return RedeemToken(token, amount, currency, description).Result;
         }
 
         /// <summary>
@@ -1015,12 +986,12 @@ namespace Tokenio.User {
         /// <param name="currency">transfer currency code, e.g. "EUR"</param>
         /// <param name="destination">transfer instruction destination</param>
         /// <returns>transfer record</returns>
-        public Transfer RedeemTokenBlocking (
+        public Transfer RedeemTokenBlocking(
             Token token,
             double? amount,
             string currency,
             TransferDestination destination) {
-            return RedeemToken (token, amount, currency, destination).Result;
+            return RedeemToken(token, amount, currency, destination).Result;
         }
 
         /// <summary>
@@ -1032,13 +1003,13 @@ namespace Tokenio.User {
         /// <param name="description">transfer description</param>
         /// <param name="destination">transfer instruction destination</param>
         /// <returns>transfer record</returns>
-        public Transfer RedeemTokenBlocking (
+        public Transfer RedeemTokenBlocking(
             Token token,
             double? amount,
             string currency,
             string description,
             TransferDestination destination) {
-            return RedeemToken (token, amount, currency, description, destination).Result;
+            return RedeemToken(token, amount, currency, description, destination).Result;
         }
 
         /// <summary>
@@ -1051,14 +1022,14 @@ namespace Tokenio.User {
         /// <param name="destination">transfer instruction destination</param>
         /// <param name="refId">transfer reference id</param>
         /// <returns>transfer record</returns>
-        public Transfer RedeemTokenBlocking (
+        public Transfer RedeemTokenBlocking(
             Token token,
             double? amount,
             string currency,
             string description,
             TransferDestination destination,
             string refId) {
-            return RedeemToken (token, amount, currency, description, destination, refId).Result;
+            return RedeemToken(token, amount, currency, description, destination, refId).Result;
         }
 
         /// <summary>
@@ -1066,8 +1037,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
         /// <returns>bulk transfer record</returns>
-        public Task<BulkTransfer> RedeemBulkTransferToken (string tokenId) {
-            return client.CreateBulkTransfer (tokenId);
+        public Task<BulkTransfer> RedeemBulkTransferToken(string tokenId) {
+            return client.CreateBulkTransfer(tokenId);
         }
 
         /// <summary>
@@ -1075,8 +1046,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
         /// <returns>bulk transfer record</returns>
-        public BulkTransfer redeemBulkTransferTokenBlocking (string tokenId) {
-            return RedeemBulkTransferToken (tokenId).Result;
+        public BulkTransfer redeemBulkTransferTokenBlocking(string tokenId) {
+            return RedeemBulkTransferToken(tokenId).Result;
         }
 
         /// <summary>
@@ -1084,8 +1055,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
         /// <returns>standing order submission</returns>
-        public Task<StandingOrderSubmission> RedeemStandingOrderToken (string tokenId) {
-            return client.CreateStandingOrder (tokenId);
+        public Task<StandingOrderSubmission> RedeemStandingOrderToken(string tokenId) {
+            return client.CreateStandingOrder(tokenId);
         }
 
         /// <summary>
@@ -1093,8 +1064,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
         /// <returns>standing order submission</returns>
-        public StandingOrderSubmission RedeemStandingOrderTokenBlocking (string tokenId) {
-            return RedeemStandingOrderToken (tokenId).Result;
+        public StandingOrderSubmission RedeemStandingOrderTokenBlocking(string tokenId) {
+            return RedeemStandingOrderToken(tokenId).Result;
         }
 
         /// <summary>
@@ -1102,9 +1073,9 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="authorization">an authorization to accounts, from the bank</param>
         /// <returns>list of linked accounts</returns>
-        public Task<IList<Account>> LinkAccounts (
+        public Task<IList<Account>> LinkAccounts(
             BankAuthorization authorization) {
-            return ToAccountList (client.LinkAccounts (authorization));
+            return ToAccountList(client.LinkAccounts(authorization));
         }
 
         /// <summary>
@@ -1113,12 +1084,12 @@ namespace Tokenio.User {
         /// <param name="bankId">bank id</param>
         /// <param name="accessToken">OAuth access token</param>
         /// <returns>list of linked accounts</returns>
-        public Task<IList<Account>> LinkAccounts (string bankId, string accessToken) {
+        public Task<IList<Account>> LinkAccounts(string bankId, string accessToken) {
             var authorization = new OauthBankAuthorization {
                 BankId = bankId,
                 AccessToken = accessToken
             };
-            return ToAccountList (client.LinkAccounts (authorization));
+            return ToAccountList(client.LinkAccounts(authorization));
         }
 
         /// <summary>
@@ -1126,8 +1097,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="authorization">an authorization to accounts, from the bank</param>
         /// <returns>list of linked accounts</returns>
-        public IList<Account> LinkAccountsBlocking (BankAuthorization authorization) {
-            return LinkAccounts (authorization).Result;
+        public IList<Account> LinkAccountsBlocking(BankAuthorization authorization) {
+            return LinkAccounts(authorization).Result;
         }
 
         /// <summary>
@@ -1136,8 +1107,8 @@ namespace Tokenio.User {
         /// <param name="bankId">bank id</param>
         /// <param name="accessToken">OAuth access token</param>
         /// <returns>list of linked accounts</returns>
-        public IList<Account> LinkAccountsBlocking (string bankId, string accessToken) {
-            return LinkAccounts (bankId, accessToken).Result;
+        public IList<Account> LinkAccountsBlocking(string bankId, string accessToken) {
+            return LinkAccounts(bankId, accessToken).Result;
         }
 
         /// <summary>
@@ -1145,16 +1116,16 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accountIds">account ids to unlink</param>
         /// <returns>task</returns>
-        public Task UnlinkAccounts (IList<string> accountIds) {
-            return client.UnlinkAccounts (accountIds);
+        public Task UnlinkAccounts(IList<string> accountIds) {
+            return client.UnlinkAccounts(accountIds);
         }
 
         /// <summary>
         /// Unlinks bank accounts previously linked via LinkAccounts call.
         /// </summary>
         /// <param name="accountIds">list of account ids to unlink</param>
-        public void UnlinkAccountsBlocking (IList<string> accountIds) {
-            UnlinkAccounts (accountIds).Wait ();
+        public void UnlinkAccountsBlocking(IList<string> accountIds) {
+            UnlinkAccounts(accountIds).Wait();
         }
 
         /// <summary>
@@ -1162,17 +1133,17 @@ namespace Tokenio.User {
         /// the current device from the member.
         /// </summary>
         /// <returns>task that indicates whether the operation finished or had an error</returns>
-        public Task RemoveNonStoredKeys () {
-            IList<Key> storedKeys = client.GetCryptoEngine ().GetPublicKeys ();
-            return client.GetMember (MemberId ())
-                .FlatMap (member => {
-                    IList<string> toRemoveIds = new List<string> ();
-                    foreach (Key key in member.Keys.ToList ()) {
-                        if (!storedKeys.Contains (key)) {
-                            toRemoveIds.Add (key.Id);
+        public Task RemoveNonStoredKeys() {
+            IList<Key> storedKeys = client.GetCryptoEngine().GetPublicKeys();
+            return client.GetMember(MemberId())
+                .FlatMap(member => {
+                    IList<string> toRemoveIds = new List<string>();
+                    foreach (Key key in member.Keys.ToList()) {
+                        if (!storedKeys.Contains(key)) {
+                            toRemoveIds.Add(key.Id);
                         }
                     }
-                    return (Task<ProtoMember>) RemoveKeys (toRemoveIds);
+                    return (Task<ProtoMember>) RemoveKeys(toRemoveIds);
                 });
         }
 
@@ -1180,8 +1151,8 @@ namespace Tokenio.User {
         /// Removes all public keys that do not have a corresponding private key stored on
         /// the current device from the member.
         /// </summary>
-        public void RemoveNonStoredKeysBlocking () {
-            RemoveNonStoredKeys ().Wait ();
+        public void RemoveNonStoredKeysBlocking() {
+            RemoveNonStoredKeys().Wait();
         }
 
         /// <summary>
@@ -1189,8 +1160,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="profile">protile to set</param>
         /// <returns>updated profile</returns>
-        public Task<Profile> SetProfile (Profile profile) {
-            return client.SetProfile (profile);
+        public Task<Profile> SetProfile(Profile profile) {
+            return client.SetProfile(profile);
         }
 
         /// <summary>
@@ -1198,8 +1169,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="profile">protile to set</param>
         /// <returns>updated profile</returns>
-        public Profile SetProfileBlocking (Profile profile) {
-            return SetProfile (profile).Result;
+        public Profile SetProfileBlocking(Profile profile) {
+            return SetProfile(profile).Result;
         }
 
         /// <summary>
@@ -1208,15 +1179,15 @@ namespace Tokenio.User {
         /// <param name="type">MIME type of picture</param>
         /// <param name="data">image data</param>
         /// <returns>task that indicates whether the operation finished or had an error</returns>
-        public Task SetProfilePicture (string type, byte[] data) {
+        public Task SetProfilePicture(string type, byte[] data) {
             var payload = new Payload {
-                OwnerId = MemberId (),
+                OwnerId = MemberId(),
                 Type = type,
                 Name = "profile",
-                Data = ByteString.CopyFrom (data),
+                Data = ByteString.CopyFrom(data),
                 AccessMode = AccessMode.Public
             };
-            return client.SetProfilePicture (payload);
+            return client.SetProfilePicture(payload);
         }
 
         /// <summary>
@@ -1224,8 +1195,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="type">MIME type of picture</param>
         /// <param name="data">image data</param>
-        public void SetProfilePictureBlocking (string type, byte[] data) {
-            SetProfilePicture (type, data).Wait ();
+        public void SetProfilePictureBlocking(string type, byte[] data) {
+            SetProfilePicture(type, data).Wait();
         }
 
         /// <summary>
@@ -1234,10 +1205,10 @@ namespace Tokenio.User {
         /// <param name="offset">offset to start</param>
         /// <param name="limit">how many notifications to get</param>
         /// <returns>list of notifications</returns>
-        public Task<PagedList<Notification>> GetNotifications (
+        public Task<PagedList<Notification>> GetNotifications(
             int limit,
             string offset = null) {
-            return client.GetNotifications (limit, offset);
+            return client.GetNotifications(limit, offset);
         }
 
         /// <summary>
@@ -1246,10 +1217,10 @@ namespace Tokenio.User {
         /// <param name="offset">offset to start</param>
         /// <param name="limit">how many notifications to get</param>
         /// <returns>list of notifications</returns>
-        public PagedList<Notification> GetNotificationsBlocking (
+        public PagedList<Notification> GetNotificationsBlocking(
             int limit,
             string offset = null) {
-            return GetNotifications (limit, offset).Result;
+            return GetNotifications(limit, offset).Result;
         }
 
         /// <summary>
@@ -1257,8 +1228,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="notificationId">Id of the notification</param>
         /// <returns>notification</returns>
-        public Task<Notification> GetNotification (string notificationId) {
-            return client.GetNotification (notificationId);
+        public Task<Notification> GetNotification(string notificationId) {
+            return client.GetNotification(notificationId);
         }
 
         /// <summary>
@@ -1266,8 +1237,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="notificationId">Id of the notification</param>
         /// <returns>notification</returns>
-        public Notification GetNotificationBlocking (string notificationId) {
-            return GetNotification (notificationId).Result;
+        public Notification GetNotificationBlocking(string notificationId) {
+            return GetNotification(notificationId).Result;
         }
 
         /// <summary>
@@ -1275,17 +1246,17 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="subscriberId">subscriberId</param>
         /// <returns>task that indicates whether the operation finished or had an error</returns>
-        public Task UnsubscribeFromNotifications (string subscriberId) {
+        public Task UnsubscribeFromNotifications(string subscriberId) {
             return client
-                .UnsubscribeFromNotifications (subscriberId);
+                .UnsubscribeFromNotifications(subscriberId);
         }
 
         /// <summary>
         /// Removes a subscriber.
         /// </summary>
         /// <param name="subscriberId">subscriberId</param>
-        public void UnsubscribeFromNotificationsBlocking (string subscriberId) {
-            UnsubscribeFromNotifications (subscriberId).Wait ();
+        public void UnsubscribeFromNotificationsBlocking(string subscriberId) {
+            UnsubscribeFromNotifications(subscriberId).Wait();
         }
 
         /// <summary>
@@ -1294,10 +1265,10 @@ namespace Tokenio.User {
         /// <param name="handler">specify the handler of the notifications</param>
         /// <param name="handlerInstructions">map of instructions for the handler</param>
         /// <returns>Subscriber</returns>
-        public Task<Subscriber> SubscribeToNotifications (
+        public Task<Subscriber> SubscribeToNotifications(
             string handler,
             MapField<string, string> handlerInstructions) {
-            return client.SubscribeToNotifications (handler, handlerInstructions);
+            return client.SubscribeToNotifications(handler, handlerInstructions);
         }
 
         /// <summary>
@@ -1305,8 +1276,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="handler">specify the handler of the notifications</param>
         /// <returns>Subscriber</returns>
-        public Task<Subscriber> SubscribeToNotifications (string handler) {
-            return SubscribeToNotifications (handler, new MapField<string, string> ());
+        public Task<Subscriber> SubscribeToNotifications(string handler) {
+            return SubscribeToNotifications(handler, new MapField<string, string>());
         }
 
         /// <summary>
@@ -1315,10 +1286,10 @@ namespace Tokenio.User {
         /// <param name="handler">specify the handler of the notifications</param>
         /// <param name="handlerInstructions">map of instructions for the handler</param>
         /// <returns>Subscriber</returns>
-        public Subscriber SubscribeToNotificationsBlocking (
+        public Subscriber SubscribeToNotificationsBlocking(
             string handler,
             MapField<string, string> handlerInstructions) {
-            return SubscribeToNotifications (handler, handlerInstructions).Result;
+            return SubscribeToNotifications(handler, handlerInstructions).Result;
         }
 
         /// <summary>
@@ -1326,24 +1297,24 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="handler">specify the handler of the notifications</param>
         /// <returns>Subscriber</returns>
-        public Subscriber SubscribeToNotificationsBlocking (string handler) {
-            return SubscribeToNotifications (handler).Result;
+        public Subscriber SubscribeToNotificationsBlocking(string handler) {
+            return SubscribeToNotifications(handler).Result;
         }
 
         /// <summary>
         /// Gets subscribers.
         /// </summary>
         /// <returns>subscribers</returns>
-        public Task<IList<Subscriber>> GetSubscribers () {
-            return client.GetSubscribers ();
+        public Task<IList<Subscriber>> GetSubscribers() {
+            return client.GetSubscribers();
         }
 
         /// <summary>
         /// Gets a list of all subscribers.
         /// </summary>
         /// <returns>subscribers</returns>
-        public IList<Subscriber> GetSubscribersBlocking () {
-            return GetSubscribers ().Result;
+        public IList<Subscriber> GetSubscribersBlocking() {
+            return GetSubscribers().Result;
         }
 
         /// <summary>
@@ -1351,8 +1322,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="subscriberId">Id of the subscriber</param>
         /// <returns>subscriber</returns>
-        public Task<Subscriber> GetSubscriber (string subscriberId) {
-            return client.GetSubscriber (subscriberId);
+        public Task<Subscriber> GetSubscriber(string subscriberId) {
+            return client.GetSubscriber(subscriberId);
         }
 
         /// <summary>
@@ -1360,8 +1331,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="subscriberId">subscriberId</param>
         /// <returns>subscriber</returns>
-        public Subscriber GetSubscriberBlocking (string subscriberId) {
-            return GetSubscriber (subscriberId).Result;
+        public Subscriber GetSubscriberBlocking(string subscriberId) {
+            return GetSubscriber(subscriberId).Result;
         }
 
         /// <summary>
@@ -1371,11 +1342,11 @@ namespace Tokenio.User {
         /// <param name="tokenId">token id</param>
         /// <param name="state">state</param>
         /// <returns>signature</returns>
-        public Task<Signature> SignTokenRequestState (
+        public Task<Signature> SignTokenRequestState(
             string tokenRequestId,
             string tokenId,
             string state) {
-            return client.SignTokenRequestState (tokenRequestId, tokenId, state);
+            return client.SignTokenRequestState(tokenRequestId, tokenId, state);
         }
 
         /// <summary>
@@ -1385,11 +1356,11 @@ namespace Tokenio.User {
         /// <param name="tokenId">token id</param>
         /// <param name="state">state</param>
         /// <returns>signature</returns>
-        public Signature SignTokenRequestStateBlocking (
+        public Signature SignTokenRequestStateBlocking(
             string tokenRequestId,
             string tokenId,
             string state) {
-            return SignTokenRequestState (tokenRequestId, tokenId, state).Result;
+            return SignTokenRequestState(tokenRequestId, tokenId, state).Result;
         }
 
         /// <summary>
@@ -1397,8 +1368,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accountIds">list of account ids</param>
         /// <returns>task</returns>
-        public Task ApplySca (IList<string> accountIds) {
-            return client.ApplySca (accountIds);
+        public Task ApplySca(IList<string> accountIds) {
+            return client.ApplySca(accountIds);
         }
 
         /// <summary>
@@ -1406,8 +1377,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="accountIds">list of account ids</param>
         /// <returns>task</returns>
-        public void ApplyScaBlocking (IList<string> accountIds) {
-            ApplySca (accountIds).Wait ();
+        public void ApplyScaBlocking(IList<string> accountIds) {
+            ApplySca(accountIds).Wait();
         }
 
         /// <summary>
@@ -1416,10 +1387,10 @@ namespace Tokenio.User {
         /// <param name="balance">account balance to set</param>
         /// <param name="currency">currency code, e.g. "EUR"</param>
         /// <returns>the linked account</returns>
-        public Task<Account> CreateTestBankAccount (double balance, string currency) {
-            return CreateTestBankAccountImpl (balance, currency)
-                .Map (account =>
-                    new Account (account, client, this));
+        public Task<Account> CreateTestBankAccount(double balance, string currency) {
+            return CreateTestBankAccountImpl(balance, currency)
+                .Map(account =>
+                    new Account(account, client, this));
         }
 
         /// <summary>
@@ -1428,16 +1399,16 @@ namespace Tokenio.User {
         /// <param name="balance">account balance to set</param>
         /// <param name="currency">currency code, e.g. "EUR"</param>
         /// <returns>the linked account</returns>
-        public Account CreateTestBankAccountBlocking (double balance, string currency) {
-            return CreateTestBankAccount (balance, currency).Result;
+        public Account CreateTestBankAccountBlocking(double balance, string currency) {
+            return CreateTestBankAccount(balance, currency).Result;
         }
 
-        private Task<IList<Account>> ToAccountList (
+        private Task<IList<Account>> ToAccountList(
             Task<IList<ProtoAccount>> accounts) {
-            return accounts.Map (account => (IList<Account>) account
-                .Select (acc =>
-                    new Account (this, acc, client))
-                .ToList ());
+            return accounts.Map(account => (IList<Account>) account
+                .Select(acc =>
+                    new Account(this, acc, client))
+                .ToList());
         }
 
         /// <summary>
@@ -1446,8 +1417,8 @@ namespace Tokenio.User {
         /// <param name="notificationId">the notification id to update</param>
         /// <param name="status">the status to update</param>
         /// <returns>task</returns>
-        public Task UpdateNotificationStatus (string notificationId, Status status) {
-            return client.UpdateNotificationStatus (notificationId, status);
+        public Task UpdateNotificationStatus(string notificationId, Status status) {
+            return client.UpdateNotificationStatus(notificationId, status);
         }
 
         /// <summary>
@@ -1455,9 +1426,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="notificationId">the notification id to update</param>
         /// <param name="status">the status to update</param>
-        public void UpdateNotificationStatusBlocking (string notificationId, Status status) {
-            UpdateNotificationStatus (notificationId, status).Wait ();
+        public void UpdateNotificationStatusBlocking(string notificationId, Status status) {
+            UpdateNotificationStatus(notificationId, status).Wait();
         }
-
     }
 }

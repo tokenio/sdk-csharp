@@ -8,7 +8,7 @@ namespace Tokenio.User {
         /// <param name = "notificationId">notification id</param>
         /// <param name = "notifyStatus">notify status</param>
         /// <returns>notify result</returns>
-        public static NotifyResult Create (string notificationId, NotifyStatus notifyStatus) {
+        public static NotifyResult Create(string notificationId, NotifyStatus notifyStatus) {
             return new NotifyResult {
                 NotificationId = notificationId,
                     NotifyStatus = notifyStatus

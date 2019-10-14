@@ -3,7 +3,7 @@ using Tokenio.Proto.Common.TokenProtos;
 
 namespace Tokenio.Exceptions {
     public class TransferTokenException : Exception {
-        public TransferTokenException (TransferTokenStatus status) : base ("Failed to create token: " + status) {
+        public TransferTokenException(TransferTokenStatus status) : base("Failed to create token: " + status) {
             Status = status;
         }
 

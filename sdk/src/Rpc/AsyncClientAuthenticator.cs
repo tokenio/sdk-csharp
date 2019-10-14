@@ -1,14 +1,12 @@
-﻿using System;
+using System;
 using Google.Protobuf;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 
-namespace Tokenio.Rpc
-{
-    public class AsyncClientAuthenticator : Interceptor
-    {
+namespace Tokenio.Rpc {
+    public class AsyncClientAuthenticator : Interceptor {
         private readonly string memberId;
         private readonly ICryptoEngine crypto;
         private readonly AuthenticationContext authentication;
@@ -16,8 +14,7 @@ namespace Tokenio.Rpc
         public AsyncClientAuthenticator(
             string memberId,
             ICryptoEngine crypto,
-            AuthenticationContext authentication)
-        {
+            AuthenticationContext authentication) {
             this.memberId = memberId;
             this.crypto = crypto;
             this.authentication = authentication;
@@ -26,13 +23,11 @@ namespace Tokenio.Rpc
         public override AsyncUnaryCall<TResponse> AsyncUnaryCall<TRequest, TResponse>(
             TRequest request,
             ClientInterceptorContext<TRequest, TResponse> context,
-            AsyncUnaryCallContinuation<TRequest, TResponse> continuation)
-        {
+            AsyncUnaryCallContinuation<TRequest, TResponse> continuation) {
             var now = Util.EpochTimeMillis();
             var keyLevel = authentication.KeyLevel;
             var signer = crypto.CreateSigner(keyLevel);
-            var payload = new GrpcAuthPayload
-            {
+            var payload = new GrpcAuthPayload {
                 Request = ByteString.CopyFrom(((IMessage) request).ToByteArray()),
                 CreatedAtMs = now
             };
@@ -46,8 +41,7 @@ namespace Tokenio.Rpc
             metadata.Add("token-member-id", memberId);
             metadata.Add("token-security-metadata", encodeSecurityMetadata(authentication));
 
-            if (authentication.OnBehalfOf != null)
-            {
+            if (authentication.OnBehalfOf != null) {
                 metadata.Add("token-on-behalf-of", authentication.OnBehalfOf);
                 metadata.Add("customer-initiated", authentication.CustomerInitiated.ToString());
             }
@@ -57,8 +51,7 @@ namespace Tokenio.Rpc
                     context.Options.WithHeaders(metadata)));
         }
 
-        private static string encodeSecurityMetadata(AuthenticationContext context)
-        {
+        private static string encodeSecurityMetadata(AuthenticationContext context) {
             var json = Util.ToJson(context.SecurityMetadata);
             return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
         }

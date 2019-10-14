@@ -1,10 +1,8 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using Google.Protobuf;
 
-namespace Tokenio.Security
-{
-    public interface IVerifier
-    {
+namespace Tokenio.Security {
+    public interface IVerifier {
         /// <summary>
         /// Verifies the protobuf payload signature.
         /// </summary>

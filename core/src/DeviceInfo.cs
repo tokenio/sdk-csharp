@@ -11,7 +11,7 @@ namespace Tokenio {
         /// </summary>
         /// <param name="memberId">member id</param>
         /// <param name="keys">list of keys</param>
-        public DeviceInfo (string memberId, IList<Key> keys) {
+        public DeviceInfo(string memberId, IList<Key> keys) {
             MemberId = memberId;
             Keys = keys;
         }

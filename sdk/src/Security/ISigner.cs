@@ -1,9 +1,7 @@
-﻿using Google.Protobuf;
+using Google.Protobuf;
 
-namespace Tokenio.Security
-{
-    public interface ISigner
-    {
+namespace Tokenio.Security {
+    public interface ISigner {
         /// <summary>
         /// Returns the Key ID used for signing.
         /// </summary>

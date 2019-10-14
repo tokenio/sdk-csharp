@@ -10,9 +10,9 @@ namespace Tokenio.Rpc {
         private readonly string onBehalfOf;
         private readonly Level keyLevel = Level.Low;
         private readonly bool customerInitiated;
-        private readonly SecurityMetadata securityMetadata = new SecurityMetadata ();
+        private readonly SecurityMetadata securityMetadata = new SecurityMetadata();
 
-        public AuthenticationContext (
+        public AuthenticationContext(
             string onBehalfOf,
             Level keyLevel,
             bool customerInitiated,

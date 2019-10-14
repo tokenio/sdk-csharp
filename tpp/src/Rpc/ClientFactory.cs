@@ -13,8 +13,8 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <returns>Newly created client.</returns>
         /// <param name="channel">RPC Channel to use.</param>
-        public static UnauthenticatedClient Unauthenticated (ManagedChannel channel) {
-            return new UnauthenticatedClient (new GatewayService.GatewayServiceClient (channel.BuildInvoker ()));
+        public static UnauthenticatedClient Unauthenticated(ManagedChannel channel) {
+            return new UnauthenticatedClient(new GatewayService.GatewayServiceClient(channel.BuildInvoker()));
         }
 
         /// <summary>
@@ -25,11 +25,11 @@ namespace Tokenio.Tpp.Rpc {
         /// <param name="memberId">the member id</param>
         /// <param name="crypto">the engine to use for signing requests, tokens, etc</param>
         /// <returns>the created client</returns>
-        public static Client Authenticated (
+        public static Client Authenticated(
             ManagedChannel channel,
             string memberId,
             ICryptoEngine crypto) {
-            return new Client (memberId, crypto, channel);
+            return new Client(memberId, crypto, channel);
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using Grpc.Core.Interceptors;
+using Grpc.Core.Interceptors;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 
-namespace Tokenio.Rpc
-{
-    public static class ClientFactory
-    {
-        public static UnauthenticatedClient Unauthenticated(ManagedChannel channel)
-        {
+namespace Tokenio.Rpc {
+    public static class ClientFactory {
+        public static UnauthenticatedClient Unauthenticated(ManagedChannel channel) {
             return new UnauthenticatedClient(new GatewayService.GatewayServiceClient(channel.BuildInvoker()));
         }
 
@@ -22,8 +19,7 @@ namespace Tokenio.Rpc
         public static Client Authenticated(
             ManagedChannel channel,
             string memberId,
-            ICryptoEngine crypto)
-        {
+            ICryptoEngine crypto) {
             return new Client(memberId, crypto, channel);
         }
     }

@@ -9,12 +9,12 @@ namespace Tokenio.Sample.Tpp {
         /// Illustrate Member.getTransfers
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void GetTransfers_Sample (TppMember payer) {
-            var accounts = payer.GetAccountsBlocking ();
-            string accountId = accounts[0].Id ();
-            foreach (Transfer transfer in payer.GetTransfersBlocking (null, null, 10).List) {
+        public static void GetTransfers_Sample(TppMember payer) {
+            var accounts = payer.GetAccountsBlocking();
+            string accountId = accounts[0].Id();
+            foreach (Transfer transfer in payer.GetTransfersBlocking(null, null, 10).List) {
 
-                DisplayTransfer (
+                DisplayTransfer(
                     transfer.Status,
                     transfer.Payload.Description);
 
@@ -26,12 +26,12 @@ namespace Tokenio.Sample.Tpp {
         /// Illustrate Member.getTransferTokens
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void GetTransferTokensSample (
+        public static void GetTransferTokensSample(
             TppMember payer) {
 
-            foreach (Token token in payer.GetTransferTokensBlocking (null, 10).List) {
+            foreach (Token token in payer.GetTransferTokensBlocking(null, 10).List) {
                 TransferBody transferBody = token.Payload.Transfer;
-                DisplayTransferToken (
+                DisplayTransferToken(
                     transferBody.Currency,
                     transferBody.LifetimeAmount);
 
@@ -45,18 +45,18 @@ namespace Tokenio.Sample.Tpp {
         /// <param name="payer">payer Token member</param>
         /// <param name="transferId">id of a transfe</param>
         /// <returns>a Transfer</returns>
-        public static Transfer GetTransferSample (
+        public static Transfer GetTransferSample(
             TppMember payer,
             string transferId) {
-            Transfer transfer = payer.GetTransferBlocking (transferId);
+            Transfer transfer = payer.GetTransferBlocking(transferId);
             return transfer;
         }
 
-        private static void DisplayTransfer (
+        private static void DisplayTransfer(
             TransactionStatus status,
             string description) { }
 
-        private static void DisplayTransferToken (
+        private static void DisplayTransferToken(
             string currency, string value) { }
     }
 }

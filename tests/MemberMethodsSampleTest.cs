@@ -1,35 +1,30 @@
-﻿using Sample;
-using Xunit;
+using Sample;
 using Tokenio;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Security;
+using Xunit;
 using static Test.TestUtil;
 using Member = Tokenio.Member;
 
-namespace Test
-{
-    public class MemberMethodsSampleTest
-    {
+namespace Test {
+    public class MemberMethodsSampleTest {
         private static readonly TokenClient tokenClient = NewSdkInstance();
 
         private readonly Member member;
 
-        public MemberMethodsSampleTest()
-        {
+        public MemberMethodsSampleTest() {
             member = tokenClient.CreateMemberBlocking(Alias());
         }
 
         [Fact]
-        public void keys()
-        {
+        public void keys() {
             IKeyStore keyStore = new InMemoryKeyStore();
             ICryptoEngine crypto = new TokenCryptoEngine("member-id", keyStore);
             MemberMethodsSample.keys(crypto, member);
         }
 
         [Fact]
-        public void profiles()
-        {
+        public void profiles() {
             Profile profile = MemberMethodsSample.profiles(member);
 
             Assert.NotEmpty(profile.DisplayNameFirst);

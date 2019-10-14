@@ -10,17 +10,17 @@ namespace Tokenio.Sample.Tpp {
         /// Creates and returns a new token member.
         /// </summary>
         /// <returns>a new Member instance</returns>
-        public static TppMember CreateMember () {
+        public static TppMember CreateMember() {
             // Create the client, which communicates with
             // the Token cloud.
             try {
 
-                var key = Directory.CreateDirectory ("./keys");
+                var key = Directory.CreateDirectory("./keys");
 
-                Tokenio.Tpp.TokenClient tokenClient = Tokenio.Tpp.TokenClient.NewBuilder ()
-                    .ConnectTo (Tokenio.TokenCluster.SANDBOX)
-                    .WithKeyStore (new UnsecuredFileSystemKeyStore (key.FullName))
-                    .Build ();
+                Tokenio.Tpp.TokenClient tokenClient = Tokenio.Tpp.TokenClient.NewBuilder()
+                    .ConnectTo(Tokenio.TokenCluster.SANDBOX)
+                    .WithKeyStore(new UnsecuredFileSystemKeyStore(key.FullName))
+                    .Build();
 
                 // An alias is a "human-readable" reference to a member.
                 // Here, we use a random email. This works in test environments.
@@ -29,17 +29,17 @@ namespace Tokenio.Sample.Tpp {
                 // We use a random address because otherwise, if we ran a second
                 // time, Token would say the alias was already taken.
                 Alias alias = new Alias {
-                    Value = TestUtil.RandomNumeric (10) + "+noverify@example.com",
+                    Value = TestUtil.RandomNumeric(10) + "+noverify@example.com",
                     Type = Alias.Types.Type.Email
                 };
 
-                TppMember newMember = tokenClient.CreateMemberBlocking (alias);
+                TppMember newMember = tokenClient.CreateMemberBlocking(alias);
                 // let user recover member by verifying email if they lose keys
-                newMember.UseDefaultRecoveryRule ();
+                newMember.UseDefaultRecoveryRule();
 
                 return newMember;
             } catch (IOException ioe) {
-                throw new ArgumentException ("", ioe);
+                throw new ArgumentException("", ioe);
             }
         }
     }

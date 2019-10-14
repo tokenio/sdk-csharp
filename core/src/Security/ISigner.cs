@@ -6,7 +6,7 @@ namespace Tokenio.Security {
         /// Returns the Key ID used for signing.
         /// </summary>
         /// <returns>The key id.</returns>
-        string GetKeyId ();
+        string GetKeyId();
 
         /// <summary>
         /// Signs protobuf message. The message is converted to normalized json and the json
@@ -14,7 +14,7 @@ namespace Tokenio.Security {
         /// </summary>
         /// <param name="message">the payload to sign</param>
         /// <returns>the signature as a hex encoded string</returns>
-        string Sign (IMessage message);
+        string Sign(IMessage message);
 
         /// <summary>
         /// Signs the payload with the test key.
@@ -22,6 +22,6 @@ namespace Tokenio.Security {
         /// <param name="payload">the payload to sign</param>
         /// <returns>the signature as hex encoded string</returns>
         /// <remarks>this method is for testing purpose</remarks>
-        string Sign (string payload);
+        string Sign(string payload);
     }
 }

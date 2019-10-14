@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.TransactionProtos;
@@ -7,13 +7,11 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 
-namespace Tokenio
-{
+namespace Tokenio {
     /// <summary>
     /// Represents a funding account in the Token system.
     /// </summary>
-    public class Account
-    {
+    public class Account {
         private readonly Member member;
         private readonly ProtoAccount account;
         private readonly Client client;
@@ -24,8 +22,7 @@ namespace Tokenio
         /// <param name="member">account owner</param>
         /// <param name="account">account information</param>
         /// <param name="client">RPC client used to perform operations against the server</param>
-        internal Account(Member member, ProtoAccount account, Client client)
-        {
+        internal Account(Member member, ProtoAccount account, Client client) {
             this.member = member;
             this.account = account;
             this.client = client;
@@ -35,8 +32,7 @@ namespace Tokenio
         /// Gets an account owner.
         /// </summary>
         /// <returns>account owner</returns>
-        public Member Member()
-        {
+        public Member Member() {
             return member;
         }
 
@@ -44,8 +40,7 @@ namespace Tokenio
         /// Gets an account ID.
         /// </summary>
         /// <returns>account id</returns>
-        public string Id()
-        {
+        public string Id() {
             return account.Id;
         }
 
@@ -53,8 +48,7 @@ namespace Tokenio
         /// Gets an account name.
         /// </summary>
         /// <returns>account name</returns>
-        public string Name()
-        {
+        public string Name() {
             return account.Name;
         }
 
@@ -62,8 +56,7 @@ namespace Tokenio
         /// Looks up if this account is locked.
         /// </summary>
         /// <returns>true if this account is locked; false otherwise.</returns>
-        public bool IsLocked()
-        {
+        public bool IsLocked() {
             return account.IsLocked;
         }
 
@@ -71,8 +64,7 @@ namespace Tokenio
         /// Gets the bank ID.
         /// </summary>
         /// <returns>the bank ID</returns>
-        public string BankId()
-        {
+        public string BankId() {
             return account.BankId;
         }
 
@@ -82,20 +74,18 @@ namespace Tokenio
         /// <param name="keyLevel">key level</param>
         /// <returns>the current balance</returns>
         [Obsolete("GetCurrentBalance is deprecated. Use GetBalance(keyLevel) instead")]
-        public Task<Money> GetCurrentBalance(Level keyLevel)
-        {
+        public Task<Money> GetCurrentBalance(Level keyLevel) {
             return client.GetBalance(account.Id, keyLevel)
                 .Map(balance => balance.Current);
         }
-        
+
         /// <summary>
         /// Looks up an account current balance.
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the current balance</returns>
         [Obsolete("GetCurrentBalanceBlocking is deprecated. Use GetBalanceBlocking(keyLevel).Current instead")]
-        public Money GetCurrentBalanceBlocking(Level keyLevel)
-        {
+        public Money GetCurrentBalanceBlocking(Level keyLevel) {
             return GetCurrentBalance(keyLevel).Result;
         }
 
@@ -105,20 +95,18 @@ namespace Tokenio
         /// <param name="keyLevel">key level</param>
         /// <returns>the available balance</returns>
         [Obsolete("GetAvailableBalance is deprecated. Use GetBalance(keyLevel) instead.")]
-        public Task<Money> GetAvailableBalance(Level keyLevel)
-        {
+        public Task<Money> GetAvailableBalance(Level keyLevel) {
             return client.GetBalance(account.Id, keyLevel)
                 .Map(balance => balance.Available);
         }
-        
+
         /// <summary>
         /// Looks up an account available balance.
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the available balance</returns>
         [Obsolete("GetAvailableBalanceBlocking is deprecated. Use GetBalanceBlocking(keyLevel).Available instead.")]
-        public Money GetAvailableBalanceBlocking(Level keyLevel)
-        {
+        public Money GetAvailableBalanceBlocking(Level keyLevel) {
             return GetAvailableBalance(keyLevel).Result;
         }
 
@@ -127,18 +115,16 @@ namespace Tokenio
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the account balance</returns>
-        public Task<Balance> GetBalance(Level keyLevel)
-        {
+        public Task<Balance> GetBalance(Level keyLevel) {
             return client.GetBalance(account.Id, keyLevel);
         }
-        
+
         /// <summary>
         /// Looks up an account balance.
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the account balance</returns>
-        public Balance GetBalanceBlocking(Level keyLevel)
-        {
+        public Balance GetBalanceBlocking(Level keyLevel) {
             return GetBalance(keyLevel).Result;
         }
 
@@ -150,11 +136,10 @@ namespace Tokenio
         /// <returns>the transaction</returns>
         public Task<Transaction> GetTransaction(
             string transactionId,
-            Level keyLevel)
-        {
+            Level keyLevel) {
             return client.GetTransaction(account.Id, transactionId, keyLevel);
         }
-        
+
         /// <summary>
         /// Looks up transaction.
         /// </summary>
@@ -163,8 +148,7 @@ namespace Tokenio
         /// <returns>the transaction</returns>
         public Transaction GetTransactionBlocking(
             string transactionId,
-            Level keyLevel)
-        {
+            Level keyLevel) {
             return GetTransaction(transactionId, keyLevel).Result;
         }
 
@@ -178,20 +162,18 @@ namespace Tokenio
         public Task<PagedList<Transaction>> GetTransactions(
             string offset,
             int limit,
-            Level keyLevel)
-        {
+            Level keyLevel) {
             return client.GetTransactions(account.Id, limit, keyLevel, offset);
         }
-        
+
         /// <summary>
         /// Returns ProtoAccount object
         /// </summary>
         /// <returns> the ProtoAccount object</returns>
-        public ProtoAccount toProto()
-        {
+        public ProtoAccount toProto() {
             return account;
         }
-        
+
         /// <summary>
         /// Looks up transactions.
         /// </summary>
@@ -202,20 +184,16 @@ namespace Tokenio
         public PagedList<Transaction> GetTransactionsBlocking(
             string offset,
             int limit,
-            Level keyLevel)
-        {
+            Level keyLevel) {
             return GetTransactions(offset, limit, keyLevel).Result;
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return account.Id.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj != null && obj.GetType().IsInstanceOfType(this))
-            {
+        public override bool Equals(object obj) {
+            if (obj != null && obj.GetType().IsInstanceOfType(this)) {
                 return ((Account) obj).account.Equals(account);
             }
 

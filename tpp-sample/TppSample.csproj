@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\tpp\Tpp.csproj" />
+    <ProjectReference Include="..\user-sample\UserSample.csproj" />
     <ProjectReference Include="..\user\User.csproj" />
   </ItemGroup>
   <ItemGroup>

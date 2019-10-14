@@ -18,43 +18,43 @@ namespace Tokenio.Security {
         /// </summary>
         /// <param name="memberId">Member identifier.</param>
         /// <param name="keys">Keys.</param>
-        public TokenCryptoEngine (string memberId, IKeyStore keys) {
+        public TokenCryptoEngine(string memberId, IKeyStore keys) {
             this.keys = keys;
             this.memberId = memberId;
         }
 
-        public Key GenerateKey (Level level) {
-            var generator = GeneratorUtilities.GetKeyPairGenerator ("Ed25519");
-            generator.Init (new Ed25519KeyGenerationParameters (new SecureRandom ()));
-            var keyPair = generator.GenerateKeyPair ().ParseEd25519KeyPair (level);
-            keys.Put (memberId, keyPair);
-            return keyPair.ToKey ();
+        public Key GenerateKey(Level level) {
+            var generator = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
+            generator.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
+            var keyPair = generator.GenerateKeyPair().ParseEd25519KeyPair(level);
+            keys.Put(memberId, keyPair);
+            return keyPair.ToKey();
         }
 
-        public Key GenerateKey (Level level, long expiresAtMs) {
-            var generator = GeneratorUtilities.GetKeyPairGenerator ("Ed25519");
-            generator.Init (new Ed25519KeyGenerationParameters (new SecureRandom ()));
-            var keyPair = generator.GenerateKeyPair ().ParseEd25519KeyPair (level, expiresAtMs);
-            keys.Put (memberId, keyPair);
-            return keyPair.ToKey ();
+        public Key GenerateKey(Level level, long expiresAtMs) {
+            var generator = GeneratorUtilities.GetKeyPairGenerator("Ed25519");
+            generator.Init(new Ed25519KeyGenerationParameters(new SecureRandom()));
+            var keyPair = generator.GenerateKeyPair().ParseEd25519KeyPair(level, expiresAtMs);
+            keys.Put(memberId, keyPair);
+            return keyPair.ToKey();
 
         }
 
-        public ISigner CreateSigner (Level level) {
-            var keyPair = keys.GetByLevel (memberId, level);
-            return new Ed25519Signer (keyPair.Id, keyPair.PrivateKey);
+        public ISigner CreateSigner(Level level) {
+            var keyPair = keys.GetByLevel(memberId, level);
+            return new Ed25519Signer(keyPair.Id, keyPair.PrivateKey);
         }
 
-        public IVerifier CreateVerifier (string keyId) {
-            var keyPair = keys.GetById (memberId, keyId);
-            return new Ed25519Veifier (keyPair.PublicKey);
+        public IVerifier CreateVerifier(string keyId) {
+            var keyPair = keys.GetById(memberId, keyId);
+            return new Ed25519Veifier(keyPair.PublicKey);
         }
 
-        public IList<Key> GetPublicKeys () {
-            IList<Key> publicKeys = new List<Key> ();
-            IList<KeyPair> secretKeys = keys.KeyList (memberId);
+        public IList<Key> GetPublicKeys() {
+            IList<Key> publicKeys = new List<Key>();
+            IList<KeyPair> secretKeys = keys.KeyList(memberId);
             foreach (KeyPair secretKey in secretKeys) {
-                publicKeys.Add (secretKey.ToKey ());
+                publicKeys.Add(secretKey.ToKey());
             }
             return publicKeys;
         }

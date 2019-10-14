@@ -1,11 +1,7 @@
-﻿using System;
+using System;
 
-namespace Tokenio.Exceptions
-{
-    public class TokenArgumentsException : Exception
-    {
-        public TokenArgumentsException(string message) : base(message)
-        {
-        }
+namespace Tokenio.Exceptions {
+    public class TokenArgumentsException : Exception {
+        public TokenArgumentsException(string message) : base(message) { }
     }
 }

@@ -11,7 +11,7 @@ namespace Tokenio.Security {
         /// to persist the keys.
         /// </summary>
         /// <param name="keyStore">Key store.</param>
-        public TokenCryptoEngineFactory (IKeyStore keyStore) {
+        public TokenCryptoEngineFactory(IKeyStore keyStore) {
             this.keyStore = keyStore;
         }
 
@@ -20,8 +20,8 @@ namespace Tokenio.Security {
         /// </summary>
         /// <returns>The create.</returns>
         /// <param name="memberId">Member identifier.</param>
-        public ICryptoEngine Create (string memberId) {
-            return new TokenCryptoEngine (memberId, keyStore);
+        public ICryptoEngine Create(string memberId) {
+            return new TokenCryptoEngine(memberId, keyStore);
         }
     }
 }

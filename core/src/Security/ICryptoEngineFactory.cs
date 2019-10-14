@@ -8,6 +8,6 @@ namespace Tokenio.Security {
         /// </summary>
         /// <param name="memberId">the member id</param>
         /// <returns>the crypto engine instance</returns>
-        ICryptoEngine Create (string memberId);
+        ICryptoEngine Create(string memberId);
     }
 }

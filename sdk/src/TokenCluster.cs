@@ -1,11 +1,8 @@
-﻿using static Tokenio.TokenCluster.TokenEnv;
+using static Tokenio.TokenCluster.TokenEnv;
 
-namespace Tokenio
-{
-    public class TokenCluster
-    {
-        private TokenCluster(string url, string webAppUrl)
-        {
+namespace Tokenio {
+    public class TokenCluster {
+        private TokenCluster(string url, string webAppUrl) {
             WebAppUrl = webAppUrl;
             Url = url;
         }
@@ -26,8 +23,7 @@ namespace Tokenio
 
         public static TokenCluster DEVELOPMENT => new TokenCluster("api-grpc.dev.token.io", "web-app.dev.token.io");
 
-        public enum TokenEnv
-        {
+        public enum TokenEnv {
             Development,
             Production,
             Integration,
@@ -36,17 +32,22 @@ namespace Tokenio
             Performance
         }
 
-        public static TokenCluster GetCluster(TokenEnv env)
-        {
-            switch (env)
-            {
-                case Production: return PRODUCTION;
-                case Integration: return INTEGRATION;
-                case Sandbox: return SANDBOX;
-                case Staging: return STAGING;
-                case Performance: return PERFORMANCE;
-                case Development: return DEVELOPMENT;
-                default: return DEVELOPMENT;
+        public static TokenCluster GetCluster(TokenEnv env) {
+            switch (env) {
+                case Production:
+                    return PRODUCTION;
+                case Integration:
+                    return INTEGRATION;
+                case Sandbox:
+                    return SANDBOX;
+                case Staging:
+                    return STAGING;
+                case Performance:
+                    return PERFORMANCE;
+                case Development:
+                    return DEVELOPMENT;
+                default:
+                    return DEVELOPMENT;
             }
         }
     }

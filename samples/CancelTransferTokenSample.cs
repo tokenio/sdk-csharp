@@ -1,13 +1,11 @@
-﻿using Tokenio;
+using Tokenio;
 using Tokenio.Proto.Common.TokenProtos;
 
-namespace Sample
-{
+namespace Sample {
     /// <summary>
     /// Cancels a transfer token.
     /// </summary>
-    public class CancelTransferTokenSample
-    {
+    public class CancelTransferTokenSample {
         /// <summary>
         /// Cancels a transfer token.
         /// </summary>

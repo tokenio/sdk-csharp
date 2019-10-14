@@ -4,7 +4,7 @@ using Tokenio.Proto.Gateway;
 
 namespace Tokenio {
     public class PagedBanks {
-        public PagedBanks (GetBanksResponse response) {
+        public PagedBanks(GetBanksResponse response) {
             Banks = response.Banks;
 
             var paging = response.Paging;

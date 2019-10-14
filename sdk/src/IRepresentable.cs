@@ -1,23 +1,21 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio
-{
+namespace Tokenio {
     /// <summary>
     /// Represents the part of a token member that can be accessed through an access token.
     /// </summary>
-    public interface IRepresentable
-    {
+    public interface IRepresentable {
         /// <summary>
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
         /// <returns>a list of accounts</returns>
         Task<IList<Account>> GetAccounts();
-        
+
         /// <summary>
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
@@ -30,7 +28,7 @@ namespace Tokenio
         /// <param name="accountId">the account id</param>
         /// <returns>the account</returns>
         Task<Account> GetAccount(string accountId);
-        
+
         /// <summary>
         /// Looks up a funding bank account linked to Token.
         /// </summary>
@@ -45,7 +43,7 @@ namespace Tokenio
         /// <param name="keyLevel">the key level</param>
         /// <returns>the balance</returns>
         Task<Balance> GetBalance(string accountId, Level keyLevel);
-        
+
         /// <summary>
         /// Looks up account balance.
         /// </summary>
@@ -61,7 +59,7 @@ namespace Tokenio
         /// <param name="keyLevel">the key level</param>
         /// <returns>a list of balances</returns>
         Task<IList<Balance>> GetBalances(IList<string> accountIds, Level keyLevel);
-        
+
         /// <summary>
         /// Looks up balances for a list of accounts.
         /// </summary>
@@ -83,7 +81,7 @@ namespace Tokenio
             int limit,
             Level keyLevel,
             string offset);
-        
+
         /// <summary>
         /// Looks up transactions for a given account.
         /// </summary>
@@ -109,7 +107,7 @@ namespace Tokenio
             string accountId,
             string transactionId,
             Level keyLevel);
-        
+
         /// <summary>
         /// Looks up an existing transaction for a given account.
         /// </summary>
@@ -128,7 +126,7 @@ namespace Tokenio
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer destinations</returns>
         Task<IList<TransferDestination>> ResolveTransferDestinations(string accountId);
-        
+
         /// <summary>
         /// Resolves transfer destinations for the given account.
         /// </summary>

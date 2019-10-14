@@ -1,10 +1,8 @@
-﻿using Tokenio.Proto.Common.SecurityProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Security
-{
-    public interface ICryptoEngine
-    {
+namespace Tokenio.Security {
+    public interface ICryptoEngine {
         /// <summary>
         /// Generates keys of the specified level. If the key with the specified level
         /// already exists, it is replaced. Old key is still kept around because it could be
@@ -20,7 +18,7 @@ namespace Tokenio.Security
         /// <param name="level">the key level</param>
         /// <returns>the signer</returns>
         ISigner CreateSigner(Level level);
-        
+
         /// <summary>
         /// Create a verifier that verifies signatures with a specific key.
         /// </summary>
@@ -29,4 +27,3 @@ namespace Tokenio.Security
         IVerifier CreateVerifier(string keyId);
     }
 }
-

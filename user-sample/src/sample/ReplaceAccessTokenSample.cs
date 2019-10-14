@@ -16,12 +16,12 @@ namespace Tokenio.Sample.User {
         /// <param name="grantor">Token member granting access to her accounts</param>
         /// <param name="granteeAlias">Token member alias acquiring information access</param>
         /// <returns>an access Token</returns>
-        public static Token FindAccessToken (
+        public static Token FindAccessToken(
             Tokenio.User.TokenClient tokenClient,
             UserMember grantor,
             Alias granteeAlias) {
-            string granteeMemberId = tokenClient.GetMemberIdBlocking (granteeAlias);
-            return grantor.GetActiveAccessTokenBlocking (granteeMemberId);
+            string granteeMemberId = tokenClient.GetMemberIdBlocking(granteeAlias);
+            return grantor.GetActiveAccessTokenBlocking(granteeMemberId);
         }
 
         /// <summary>
@@ -31,26 +31,22 @@ namespace Tokenio.Sample.User {
         /// <param name="granteeAlias">Token member alias acquiring information access</param>
         /// <param name="oldToken">token to replace</param>
         /// <returns>success or failure</returns>
-        public static TokenOperationResult ReplaceAccessToken (
+        public static TokenOperationResult ReplaceAccessToken(
             UserMember grantor,
             Alias granteeAlias,
             Token oldToken) {
-            string accountId = grantor.CreateTestBankAccountBlocking (1000.0, "EUR")
-                .Id ();
-
+            string accountId = grantor.CreateTestBankAccountBlocking(1000.0, "EUR")
+                .Id();
             // Replace the old access token
-            Token newToken = grantor.ReplaceAccessTokenBlocking (
+            Token newToken = grantor.ReplaceAccessTokenBlocking(
                     oldToken,
                     AccessTokenBuilder
-                    .FromPayload (oldToken.Payload)
-                    .ForAccount (accountId))
+                    .FromPayload(oldToken.Payload)
+                    .ForAccount(accountId))
                 .Token;
-
             // Endorse the new access token
-            TokenOperationResult status = grantor.EndorseTokenBlocking (newToken, Key.Types.Level.Standard);
-
+            TokenOperationResult status = grantor.EndorseTokenBlocking(newToken, Key.Types.Level.Standard);
             return status;
         }
-
     }
 }

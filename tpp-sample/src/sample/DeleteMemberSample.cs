@@ -9,8 +9,8 @@ namespace Tokenio.Sample.Tpp {
         /// Deletes a member.
         /// </summary>
         /// <param name="member">member</param>
-        public static void DeleteMember (TppMember member) {
-            member.DeleteMember ();
+        public static void DeleteMember(TppMember member) {
+            member.DeleteMember();
         }
     }
 }

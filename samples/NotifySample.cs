@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Tokenio;
 using Tokenio.Proto.Common.NotificationProtos;
 
-namespace Sample
-{
-    public class NotifySample
-    {
+namespace Sample {
+    public class NotifySample {
         /// <summary>
         /// Triggers a notification to step up the signature level when requesting balance information.
         /// </summary>
@@ -14,8 +12,7 @@ namespace Sample
         /// <returns>notification status</returns>
         public static NotifyStatus TriggerBalanceStepUpNotification(
             Member member,
-            IList<string> accountIds)
-        {
+            IList<string> accountIds) {
             return member.TriggerBalanceStepUpNotificationBlocking(accountIds);
         }
     }

@@ -8,11 +8,11 @@ namespace Tokenio.Exceptions {
     public class RequestException : Exception {
         private readonly RequestStatus status;
 
-        public RequestException (RequestStatus status) {
+        public RequestException(RequestStatus status) {
             this.status = status;
         }
 
-        public RequestStatus GetStatus () {
+        public RequestStatus GetStatus() {
             return status;
         }
     }

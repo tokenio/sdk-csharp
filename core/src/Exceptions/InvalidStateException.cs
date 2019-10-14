@@ -5,6 +5,6 @@ namespace Tokenio.Exceptions {
     /// Invalid state exception.
     /// </summary>
     public class InvalidStateException : Exception {
-        public InvalidStateException (string csrfToken) : base ($"CSRF token {csrfToken} does not match CSRF token in state (hashed)") { }
+        public InvalidStateException(string csrfToken) : base($"CSRF token {csrfToken} does not match CSRF token in state (hashed)") { }
     }
 }

@@ -15,7 +15,7 @@ namespace Tokenio.Security {
         /// <param name="algorithm">Algorithm.</param>
         /// <param name="privateKey">Private key.</param>
         /// <param name="publicKey">Public key.</param>
-        public KeyPair (
+        public KeyPair(
             string id,
             Level level,
             Algorithm algorithm,
@@ -37,7 +37,7 @@ namespace Tokenio.Security {
         /// <param name="privateKey">Private key.</param>
         /// <param name="publicKey">Public key.</param>
         /// <param name="expiresAtMs">Expires at ms.</param>
-        public KeyPair (
+        public KeyPair(
             string id,
             Level level,
             Algorithm algorithm,
@@ -68,27 +68,27 @@ namespace Tokenio.Security {
         /// Checks whether a key has expired.
         /// </summary>
         /// <returns><c>true</c>, if expired was ised, <c>false</c> otherwise.</returns>
-        public bool IsExpired () {
+        public bool IsExpired() {
 
-            return ExpiresAtMs != 0 && ExpiresAtMs < Util.CurrentMillis ();
+            return ExpiresAtMs != 0 && ExpiresAtMs < Util.CurrentMillis();
         }
 
-        public override bool Equals (object obj) {
+        public override bool Equals(object obj) {
             if (obj == null) {
                 return false;
             }
 
             var other = (KeyPair) obj;
 
-            return Id.Equals (other.Id) &&
-                Level.Equals (other.Level) &&
-                Algorithm.Equals (other.Algorithm) &&
-                PrivateKey.SequenceEqual (other.PrivateKey) &&
-                PublicKey.SequenceEqual (other.PublicKey);
+            return Id.Equals(other.Id)
+                && Level.Equals(other.Level)
+                && Algorithm.Equals(other.Algorithm)
+                && PrivateKey.SequenceEqual(other.PrivateKey)
+                && PublicKey.SequenceEqual(other.PublicKey);
         }
 
-        public override int GetHashCode () {
-            return Id.GetHashCode ();
+        public override int GetHashCode() {
+            return Id.GetHashCode();
         }
     }
 }

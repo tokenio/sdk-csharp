@@ -9,10 +9,10 @@ namespace Tokenio.Sample.Tpp {
         /// <param name="member">member</param>
         /// <param name="accountIds">list of account id</param>
         /// <returns>notification status</returns>
-        public static NotifyStatus TriggerBalanceStepUpNotification (
+        public static NotifyStatus TriggerBalanceStepUpNotification(
             TppMember member,
             IList<string> accountIds) {
-            return member.TriggerBalanceStepUpNotificationBlocking (accountIds);
+            return member.TriggerBalanceStepUpNotificationBlocking(accountIds);
         }
 
     }

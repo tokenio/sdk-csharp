@@ -7,6 +7,6 @@ namespace Tokenio.User.Browser {
         /// Creates a new browser.
         /// </summary>
         /// <returns>a new browser</returns>
-        IBrowser Create ();
+        IBrowser Create();
     }
 }

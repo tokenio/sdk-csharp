@@ -8,7 +8,7 @@ namespace Tokenio.Exceptions {
         /// Member Not Found Exception
         /// </summary>
         /// <param name="alias">Alias.</param>
-        public MemberNotFoundException (Alias alias) : base (new Status (StatusCode.NotFound, $"Member could not be resolved for alias: {Util.ToJson(alias)}")) { }
+        public MemberNotFoundException(Alias alias) : base(new Status(StatusCode.NotFound, $"Member could not be resolved for alias: {Util.ToJson(alias)}")) { }
 
     }
 }

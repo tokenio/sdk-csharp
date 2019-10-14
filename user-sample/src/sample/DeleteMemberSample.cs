@@ -9,8 +9,8 @@ namespace Tokenio.Sample.User {
         /// Deletes a member.
         /// </summary>
         /// <param name="member">member</param>
-        public static void DeleteMember (UserMember member) {
-            member.DeleteMember ();
+        public static void DeleteMember(UserMember member) {
+            member.DeleteMember();
         }
     }
 }

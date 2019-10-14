@@ -14,7 +14,7 @@ namespace Tokenio.Tpp.Rpc {
         /// Creates an instance.
         /// </summary>
         /// <param name="gateway">the gateway gRPC client</param>
-        public UnauthenticatedClient (GatewayService.GatewayServiceClient gateway) : base (gateway) { }
+        public UnauthenticatedClient(GatewayService.GatewayServiceClient gateway) : base(gateway) { }
 
         /// <summary>
         /// Looks up member id for a given member ID. The user is defined by
@@ -22,18 +22,18 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="memberId">the member ID to check</param>
         /// <returns>the member</returns>
-        public Task<ProtoMember> GetMember (string memberId) {
+        public Task<ProtoMember> GetMember(string memberId) {
             var request = new GetMemberRequest { MemberId = memberId };
-            return gateway.GetMemberAsync (request)
-                .ToTask (response => response.Member);
+            return gateway.GetMemberAsync(request)
+                .ToTask(response => response.Member);
         }
 
         /// <summary>
         /// Returns the token member.
         /// </summary>
         /// <returns>the member</returns>
-        public Task<ProtoMember> GetTokenMember () {
-            return GetMemberId (TOKEN).FlatMap (GetMember);
+        public Task<ProtoMember> GetTokenMember() {
+            return GetMemberId(TOKEN).FlatMap(GetMember);
         }
 
         /// <summary>
@@ -41,10 +41,10 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>the token request result</returns>
-        public Task<TokenRequestResult> GetTokenRequestResult (string tokenRequestId) {
+        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId) {
             var request = new GetTokenRequestResultRequest { TokenRequestId = tokenRequestId };
-            return gateway.GetTokenRequestResultAsync (request)
-                .ToTask (response => new TokenRequestResult (response.TokenId, response.Signature));
+            return gateway.GetTokenRequestResultAsync(request)
+                .ToTask(response => new TokenRequestResult(response.TokenId, response.Signature));
         }
 
         /// <summary>
@@ -52,10 +52,10 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>token request that was stored with the request id</returns>
-        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest (string tokenRequestId) {
+        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId) {
             var request = new RetrieveTokenRequestRequest { RequestId = tokenRequestId };
-            return gateway.RetrieveTokenRequestAsync (request)
-                .ToTask (response => response.TokenRequest);
+            return gateway.RetrieveTokenRequestAsync(request)
+                .ToTask(response => response.TokenRequest);
         }
     }
 }

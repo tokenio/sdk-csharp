@@ -17,7 +17,7 @@ namespace Tokenio.Sample.Tpp {
         /// <param name="accountId">account id of the payee</param>
         /// <param name="tokenId">ID of the token to redeem</param>
         /// <returns>a transfer Transfer</returns>
-        public static Transfer RedeemTransferToken (
+        public static Transfer RedeemTransferToken(
             TppMember payee,
             string accountId, // account ID of the payee
             string tokenId) { // ID of token to redeem
@@ -25,16 +25,16 @@ namespace Tokenio.Sample.Tpp {
             // explicitly sets a reference ID would use an ID from a db.
             // E.g., an online merchant might use the ID of a "shopping cart".
             // We don't have a db, so we fake it with a random string:
-            string cartId = Util.Nonce ();
+            string cartId = Util.Nonce();
 
             // Retrieve a transfer token to redeem.
-            Token transferToken = payee.GetTokenBlocking (tokenId);
+            Token transferToken = payee.GetTokenBlocking(tokenId);
 
             // Set token destination
             TransferDestination tokenDestination = new TransferDestination {
 
                 Token = new TransferDestination.Types.Token {
-                MemberId = payee.MemberId (),
+                MemberId = payee.MemberId(),
                 AccountId = accountId
                 }
 
@@ -42,10 +42,10 @@ namespace Tokenio.Sample.Tpp {
 
             // Payee redeems a transfer token.
             // Money is transferred to a payee bank account.
-            Transfer transfer = payee.RedeemTokenBlocking (
+            Transfer transfer = payee.RedeemTokenBlocking(
                 transferToken,
                 tokenDestination,
-                // if refId not set, transfer will have random refID:
+                // if refId not set, transfer will use token refID:
                 cartId);
 
             return transfer;

@@ -1,7 +1,5 @@
-﻿namespace Tokenio.Security
-{
-    public interface ICryptoEngineFactory
-    {
+namespace Tokenio.Security {
+    public interface ICryptoEngineFactory {
         /// <summary>
         /// Creates a new <see cref="ICryptoEngine"/> for a given member.
         /// </summary>

@@ -1,26 +1,22 @@
-﻿using System.Collections.Generic;
-using Xunit;
+using System.Collections.Generic;
 using Tokenio;
 using Tokenio.Security;
+using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 using KeyPair = Tokenio.Security.KeyPair;
 
-namespace Test.Security
-{
-    public class InMemoryKeyStoreTest
-    {
+namespace Test.Security {
+    public class InMemoryKeyStoreTest {
         private IKeyStore keyStore;
         private string memberId;
 
-        public InMemoryKeyStoreTest()
-        {
+        public InMemoryKeyStoreTest() {
             keyStore = new InMemoryKeyStore();
             memberId = Util.Nonce();
         }
 
         [Fact]
-        public void GetByLevel()
-        {
+        public void GetByLevel() {
             var privileged = TestUtil.GenerateKeyPair(Privileged);
             var standard = TestUtil.GenerateKeyPair(Standard);
             var low = TestUtil.GenerateKeyPair(Low);
@@ -33,8 +29,7 @@ namespace Test.Security
         }
 
         [Fact]
-        public void GetById()
-        {
+        public void GetById() {
             var key1 = TestUtil.GenerateKeyPair(Privileged);
             var key2 = TestUtil.GenerateKeyPair(Privileged);
             keyStore.Put(memberId, key1);
@@ -44,8 +39,7 @@ namespace Test.Security
         }
 
         [Fact]
-        public void GetLatest()
-        {
+        public void GetLatest() {
             var oldKey = TestUtil.GenerateKeyPair(Privileged);
             var newKey = TestUtil.GenerateKeyPair(Privileged);
             keyStore.Put(memberId, oldKey);
@@ -54,21 +48,19 @@ namespace Test.Security
         }
 
         [Fact]
-        public void KeyList()
-        {
+        public void KeyList() {
             var privileged = TestUtil.GenerateKeyPair(Privileged);
             var standard = TestUtil.GenerateKeyPair(Standard);
             var low = TestUtil.GenerateKeyPair(Low);
             keyStore.Put(memberId, privileged);
             keyStore.Put(memberId, standard);
             keyStore.Put(memberId, low);
-            var keyList = new List<KeyPair> {privileged, standard, low};
+            var keyList = new List<KeyPair> { privileged, standard, low };
             CollectionAssert.Equivalent(keyStore.KeyList(memberId), keyList);
         }
 
         [Fact]
-        public void DifferentMember()
-        {
+        public void DifferentMember() {
             var member2 = Util.Nonce();
             var key1 = TestUtil.GenerateKeyPair(Privileged);
             var key2 = TestUtil.GenerateKeyPair(Privileged);

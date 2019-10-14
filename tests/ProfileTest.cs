@@ -1,29 +1,24 @@
-﻿using System;
+using System;
 using Google.Protobuf;
-using Xunit;
 using Tokenio;
 using Tokenio.Proto.Common.MemberProtos;
+using Xunit;
 using static Test.TestUtil;
 using static Tokenio.Proto.Common.MemberProtos.ProfilePictureSize;
 
-namespace Test
-{
-    public class ProfileTest
-    {
+namespace Test {
+    public class ProfileTest {
         private static readonly TokenClient tokenClient = NewSdkInstance();
-        
+
         private Tokenio.Member member;
 
-        public ProfileTest()
-        {
+        public ProfileTest() {
             member = tokenClient.CreateMemberBlocking(Alias());
         }
-        
+
         [Fact]
-        public void SetProfileBlocking()
-        {
-            var inProfile = new Profile
-            {
+        public void SetProfileBlocking() {
+            var inProfile = new Profile {
                 DisplayNameFirst = "Tomás",
                 DisplayNameLast = "de Aquino"
             };
@@ -34,19 +29,16 @@ namespace Test
         }
 
         [Fact]
-        public void UpdateProfile()
-        {
-            var firstProfile = new Profile
-            {
+        public void UpdateProfile() {
+            var firstProfile = new Profile {
                 DisplayNameFirst = "Katy",
                 DisplayNameLast = "Hudson"
             };
             var backProfile = member.SetProfileBlocking(firstProfile);
             var outProfile = member.GetProfileBlocking(member.MemberId());
             Assert.Equal(backProfile, outProfile);
-            
-            var secondProfile = new Profile
-            {
+
+            var secondProfile = new Profile {
                 DisplayNameFirst = "Katy"
             };
             backProfile = member.SetProfileBlocking(secondProfile);
@@ -55,10 +47,8 @@ namespace Test
         }
 
         [Fact]
-        public void ReadProfile_notYours()
-        {
-            var inProfile = new Profile
-            {
+        public void ReadProfile_notYours() {
+            var inProfile = new Profile {
                 DisplayNameFirst = "Tomás",
                 DisplayNameLast = "de Aquino"
             };
@@ -70,8 +60,7 @@ namespace Test
         }
 
         [Fact]
-        public void GetProfilePictureBlocking()
-        {
+        public void GetProfilePictureBlocking() {
             // "The tiniest gif ever" , a 1x1 gif
             // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
             var tinyGif = Convert.FromBase64String("R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
@@ -90,21 +79,18 @@ namespace Test
         }
 
         [Fact]
-        public void GetNoProfilePicture()
-        {
+        public void GetNoProfilePicture() {
             var blob = member.GetProfilePictureBlocking(member.MemberId(), Original);
             Assert.Equal(blob.Id, string.Empty);
         }
 
         [Fact]
-        public void GetPictureProfile()
-        {
+        public void GetPictureProfile() {
             // "The tiniest gif ever" , a 1x1 gif
             // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever
             var tinyGif = Convert.FromBase64String("R0lGODlhAQABAIABAP///wAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
 
-            var inProfile = new Profile
-            {
+            var inProfile = new Profile {
                 DisplayNameFirst = "Tomás",
                 DisplayNameLast = "de Aquino"
             };
@@ -114,7 +100,7 @@ namespace Test
             member.SetProfileBlocking(inProfile);
             member.SetProfilePictureBlocking("image/gif", tinyGif);
             var outProfile = otherMember.GetProfileBlocking(member.MemberId());
-            
+
             Assert.NotEmpty(outProfile.OriginalPictureId);
             Assert.Equal(outProfile.DisplayNameFirst, inProfile.DisplayNameFirst);
             Assert.Equal(outProfile.DisplayNameLast, inProfile.DisplayNameLast);

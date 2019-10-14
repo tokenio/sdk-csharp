@@ -3,7 +3,7 @@ namespace Tokenio.Tpp.TokenRequests {
     /// Represents callback in Token Request Flow. Contains tokenID and state.
     /// </summary>
     public class TokenRequestCallback {
-        public static TokenRequestCallback Create (
+        public static TokenRequestCallback Create(
             string tokenId,
             string state) {
             return new TokenRequestCallback {

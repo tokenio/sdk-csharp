@@ -20,22 +20,22 @@ namespace Tokenio.Tpp.TokenRequests {
         /// </summary>
         /// <param name="url">URL</param>
         /// <returns>TokenRequestTransferDestinationsCallbackParameters instance</returns>
-        public static TokenRequestTransferDestinationsCallbackParameters Create (
+        public static TokenRequestTransferDestinationsCallbackParameters Create(
             string url) {
-            var parameters = HttpUtility.ParseQueryString (Util.GetQueryString (url));
-            if (!parameters.AllKeys.Contains (COUNTRY_FIELD) ||
-                !parameters.AllKeys.Contains (BANK_NAME_FIELD) ||
-                !parameters.AllKeys.Contains (SUPPORTED_TRANSFER_DESTINATION_TYPES_FIELD)) {
-                throw new InvalidTokenRequestQuery ();
+            var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(url));
+            if (!parameters.AllKeys.Contains(COUNTRY_FIELD)
+                || !parameters.AllKeys.Contains(BANK_NAME_FIELD)
+                || !parameters.AllKeys.Contains(SUPPORTED_TRANSFER_DESTINATION_TYPES_FIELD)) {
+                throw new InvalidTokenRequestQuery();
             }
-            IList<string> countries = parameters.Get (SUPPORTED_TRANSFER_DESTINATION_TYPES_FIELD).Split (',').ToList ();
-            IList<string> bankNames = parameters.Get (SUPPORTED_TRANSFER_DESTINATION_TYPES_FIELD).Split (',').ToList ();
-            IList<string> destinations = parameters.Get (SUPPORTED_TRANSFER_DESTINATION_TYPES_FIELD).Split (',').ToList ();
+            IList<string> countries = parameters.Get(SUPPORTED_TRANSFER_DESTINATION_TYPES_FIELD).Split(',').ToList();
+            IList<string> bankNames = parameters.Get(SUPPORTED_TRANSFER_DESTINATION_TYPES_FIELD).Split(',').ToList();
+            IList<string> destinations = parameters.Get(SUPPORTED_TRANSFER_DESTINATION_TYPES_FIELD).Split(',').ToList();
 
             IList<DestinationCase> destinationCases = destinations
-                .Select (destination =>
-                    (DestinationCase) Enum.Parse (typeof (DestinationCase), destination.ToLower ().Replace ("_", ""), true))
-                .ToList ();
+                .Select(destination =>
+                    (DestinationCase) Enum.Parse(typeof(DestinationCase), destination.ToLower().Replace("_", ""), true))
+                .ToList();
 
             return new TokenRequestTransferDestinationsCallbackParameters {
                 Country = countries[0],
