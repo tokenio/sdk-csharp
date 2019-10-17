@@ -11,11 +11,13 @@ using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
+using static Tokenio.Proto.Common.BankProtos.BankFilter.Types;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
-namespace Tokenio.Rpc {
+namespace Tokenio.Rpc
+{
     /// <summary>
     /// Similar to <see cref="Client"/> but is only used for a handful of requests that
     /// don't require authentication. We use this client to create new member or getMember
@@ -253,6 +255,24 @@ namespace Tokenio.Rpc {
             return gateway.CompleteRecoveryAsync(request).ToTask(response => response.RecoveryEntry);
         }
 
+        /// <summary>
+        /// Returns a list of token enabled banks.
+        /// </summary>
+        /// <param name="ids">If specified, return banks whose 'id' matches any one of the given ids
+        ///   (case-insensitive). Can be at most 1000.</param>
+        /// <param name="search">If specified, return banks whose 'name' or 'identifier' contains the given
+        ///     search string (case-insensitive)</param>
+        /// <param name="country">If specified, return banks whose 'country' matches the given ISO 3166-1
+        ///     alpha-2 country code(case-insensitive)</param>
+        /// <param name="page">Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">Maximum number of records per page. Can be at most 200. Default to 200
+        ///     if not specified.</param>
+        /// <param name="sort">The key to sort the results. Could be one of: name, provider and country.
+        ///     Defaults to name if not specified.</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///     (case insensitive).</param>
+        /// <param name="bankFeatures">If specified, return banks who meet the bank features requirement.</param>
+        /// <returns>a list of banks</returns>
         public Task<PagedBanks> GetBanks(
             IList<string> ids,
             string search,
@@ -261,7 +281,7 @@ namespace Tokenio.Rpc {
             int? perPage,
             string sort,
             string provider,
-            IDictionary<string, bool> bankFeaturesMap) {
+            BankFeatures bankFeatures) {
             var request = new GetBanksRequest();
 
             if (ids != null) {
@@ -292,12 +312,8 @@ namespace Tokenio.Rpc {
                 request.Filter.Provider = provider;
             }
 
-            if (bankFeaturesMap != null) {
-                IDictionary<string, string> map = new Dictionary<string, string>();
-                foreach (var entry in bankFeaturesMap) {
-                    map.Add(entry.Key, entry.Value.ToString());
-                }
-                request.Filter.RequiresBankFeatures.Add(map);
+            if (bankFeatures != null) {
+                request.Filter.BankFeatures = bankFeatures;
             }
 
             return gateway.GetBanksAsync(request)

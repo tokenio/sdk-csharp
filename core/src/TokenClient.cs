@@ -11,10 +11,12 @@ using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Rpc;
 using Tokenio.Security;
 using Tokenio.Utils;
+using static Tokenio.Proto.Common.BankProtos.BankFilter.Types;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio {
+namespace Tokenio
+{
     public class TokenClient : IDisposable {
         protected readonly ManagedChannel channel;
         protected readonly TokenCluster tokenCluster;
@@ -376,7 +378,7 @@ namespace Tokenio {
         /// <param name="sort">the key to sort the results, one of: name, provider and country</param>
         /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
         ///   (case insensitive)</param>
-        /// <param name="bankFeaturesMap">If specified, return banks who meet the bank features requirement.</param>
+        /// <param name="bankFeatures">If specified, return banks who meet the bank features requirement.</param>
         /// <returns>banks with paging information</returns>
         public Task<PagedBanks> GetBanks(
             IList<string> ids,
@@ -386,7 +388,7 @@ namespace Tokenio {
             int? perPage,
             string sort,
             string provider,
-            IDictionary<string, bool> bankFeaturesMap) {
+            BankFeatures bankFeatures) {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetBanks(
                 ids,
@@ -396,7 +398,7 @@ namespace Tokenio {
                 perPage,
                 sort,
                 provider,
-                bankFeaturesMap);
+                bankFeatures);
         }
 
         /// <summary>

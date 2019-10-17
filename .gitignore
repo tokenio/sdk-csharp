@@ -5,6 +5,7 @@ core/generated/
 *.csproj.DotSettings
 **/*.proto
 !protos/common/google/protobuf/descriptor.proto
+!protos/common/google/protobuf/wrappers.proto
 sdk/docs/html/
 
 .idea/

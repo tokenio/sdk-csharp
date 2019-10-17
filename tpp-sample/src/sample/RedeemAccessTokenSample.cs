@@ -88,7 +88,7 @@ namespace Tokenio.Sample.Tpp {
                 .GetStandingOrdersBlocking(5, Level.Standard, null);
 
             // Pass this offset to the next getStandingOrders
-            // call to fetch the next page of transactions.
+            // call to fetch the next page of standing orders.
             string nextOffset = standingOrders.Offset;
 
             return standingOrders.List;
