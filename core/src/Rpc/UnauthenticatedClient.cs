@@ -64,9 +64,9 @@ namespace Tokenio.Rpc
         /// Gets the default agent.
         /// </summary>
         /// <returns>The default agent.</returns>
-        public Task<string> GetDefaultAgent()
+        public async Task<string> GetDefaultAgent()
         {
-            return gateway.ResolveAliasAsync(GetDefaultAgentRequest())
+            return await gateway.ResolveAliasAsync(GetDefaultAgentRequest())
                  .ToTask(response => response.Member?.Id);
         }
 
@@ -77,10 +77,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="alias">alias to resolve</param>
         /// <returns>TokenMember</returns>
-        public Task<TokenMember> ResolveAlias(Alias alias)
+        public async Task<TokenMember> ResolveAlias(Alias alias)
         {
             var request = new ResolveAliasRequest { Alias = alias };
-            return gateway.ResolveAliasAsync(request)
+            return await gateway.ResolveAliasAsync(request)
                 .ToTask(response => response.Member);
         }
 
@@ -89,10 +89,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>member id if alias already exists, null otherwise</returns>
-        public Task<string> GetMemberId(Alias alias)
+        public async Task<string> GetMemberId(Alias alias)
         {
             var request = new ResolveAliasRequest { Alias = alias };
-            return gateway.ResolveAliasAsync(request)
+            return await gateway.ResolveAliasAsync(request)
                 .ToTask(response => response.Member != null ?
                 response.Member.Id : throw new MemberNotFoundException(alias));
         }
@@ -105,7 +105,7 @@ namespace Tokenio.Rpc
         /// <param name="tokenRequestId">Token request identifier.</param>
         /// <param name="partnerId">Partner identifier.</param>
         /// <param name="realmId">Realm identifier.</param>
-        public Task<string> CreateMemberId(CreateMemberType createMemberType,
+        public async Task<string> CreateMemberId(CreateMemberType createMemberType,
             string tokenRequestId = null,
             string partnerId = null,
             string realmId = null)
@@ -118,7 +118,7 @@ namespace Tokenio.Rpc
                 PartnerId = partnerId ?? "",
                 RealmId = realmId ?? ""
             };
-            return gateway.CreateMemberAsync(request)
+            return await gateway.CreateMemberAsync(request)
                 .ToTask(response => response.MemberId);
         }
 
@@ -130,7 +130,7 @@ namespace Tokenio.Rpc
         /// <param name="metadata">the metadata of the operations</param>
         /// <param name="signer">the signer used to sign the request</param>
         /// <returns>the created member</returns>
-        public Task<ProtoMember> CreateMember(
+        public async Task<ProtoMember> CreateMember(
             string memberId,
             IList<MemberOperation> operations,
             IList<MemberOperationMetadata> metadata,
@@ -153,7 +153,7 @@ namespace Tokenio.Rpc
                 Metadata = { metadata }
             };
 
-            return gateway.UpdateMemberAsync(request)
+            return await gateway.UpdateMemberAsync(request)
                 .ToTask(response => response.Member);
         }
 
@@ -162,10 +162,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="alias">the alias used to recover</param>
         /// <returns>the verification ID</returns>
-        public Task<string> BeginRecovery(Alias alias)
+        public async Task<string> BeginRecovery(Alias alias)
         {
             var request = new BeginRecoveryRequest { Alias = alias.ToNormalized() };
-            return gateway.BeginRecoveryAsync(request)
+            return await gateway.BeginRecoveryAsync(request)
                 .ToTask(response => response.VerificationId);
         }
 
@@ -175,10 +175,10 @@ namespace Tokenio.Rpc
         /// <param name="memberId">the ID of the member we claim to be</param>
         /// <param name="privilegedKey">the new privileged key we want to use</param>
         /// <returns>the authorization</returns>
-        public Task<Authorization> CreateRecoveryAuthorization(string memberId, Key privilegedKey)
+        public async Task<Authorization> CreateRecoveryAuthorization(string memberId, Key privilegedKey)
         {
             var request = new GetMemberRequest { MemberId = memberId };
-            return gateway.GetMemberAsync(request)
+            return await gateway.GetMemberAsync(request)
                 .ToTask(response => new Authorization
                 {
                     MemberId = memberId,
@@ -195,7 +195,7 @@ namespace Tokenio.Rpc
         /// <param name="privilegedKey">the privileged public key in the member recovery operations</param>
         /// <param name="cryptoEngine">the new crypto engine</param>
         /// <returns>the new member</returns>
-        public Task<ProtoMember> CompleteRecovery(
+        public async Task<ProtoMember> CompleteRecovery(
             string memberId,
             IList<MemberRecoveryOperation> recoveryOperations,
             Key privilegedKey,
@@ -209,7 +209,7 @@ namespace Tokenio.Rpc
 
             var signer = cryptoEngine.CreateSigner(Level.Privileged);
             var memberRequest = new GetMemberRequest { MemberId = memberId };
-            return gateway.GetMemberAsync(memberRequest)
+            return await gateway.GetMemberAsync(memberRequest)
                 .ToTask(response => response.Member)
                 .FlatMap(member =>
                 {
@@ -226,7 +226,7 @@ namespace Tokenio.Rpc
         /// <param name="code">the code</param>
         /// <param name="cryptoEngine">the new crypto engine</param>
         /// <returns>the new member</returns>
-        public Task<ProtoMember> CompleteRecoveryWithDefaultRule(
+        public async Task<ProtoMember> CompleteRecoveryWithDefaultRule(
             string memberId,
             string verificationId,
             string code,
@@ -243,7 +243,7 @@ namespace Tokenio.Rpc
                 .ToList();
 
             var memberRequest = new GetMemberRequest { MemberId = memberId };
-            return Util.TwoTasks(
+            return await Util.TwoTasks(
                     gateway.GetMemberAsync(memberRequest)
                     .ToTask(response => response.Member),
                     GetRecoveryAuthorization(verificationId, code, privilegedKey))
@@ -264,7 +264,7 @@ namespace Tokenio.Rpc
         /// <param name="code">the verification code</param>
         /// <param name="privilegedKey">the privileged key</param>
         /// <returns>the recovery entry</returns>
-        public Task<MemberRecoveryOperation> GetRecoveryAuthorization(
+        public async Task<MemberRecoveryOperation> GetRecoveryAuthorization(
             string verificationId,
             string code,
             Key privilegedKey)
@@ -276,10 +276,10 @@ namespace Tokenio.Rpc
                 Key = privilegedKey
             };
 
-            return gateway.CompleteRecoveryAsync(request).ToTask(response => response.RecoveryEntry);
+            return await gateway.CompleteRecoveryAsync(request).ToTask(response => response.RecoveryEntry);
         }
 
-        public Task<PagedBanks> GetBanks(
+        public async Task<PagedBanks> GetBanks(
             IList<string> ids,
             string search,
             string country,
@@ -319,16 +319,16 @@ namespace Tokenio.Rpc
                 request.Sort = sort;
             }
 
-            return gateway.GetBanksAsync(request)
+            return await gateway.GetBanksAsync(request)
                 .ToTask(response => new PagedBanks(response));
         }
 
         /// <summary>
         /// Returns a list of countries with Token-enabled banks.
         /// </summary>
-        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider</param>
+        /// <param name="provider">If specified, return await banks whose 'provider' matches the given provider</param>
         /// <returns>a list if country codes</returns>
-        public Task<IList<string>> GetCountries(string provider)
+        public async Task<IList<string>> GetCountries(string provider)
         {
             var request = new GetBanksCountriesRequest();
             if (provider != null)
@@ -340,7 +340,7 @@ namespace Tokenio.Rpc
                 request.Filter = filter;
             }
 
-            return gateway.GetBanksCountriesAsync(request)
+            return await gateway.GetBanksCountriesAsync(request)
                 .ToTask(response => (IList<string>)response.Countries);
         }
 

@@ -58,9 +58,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="profile">the protile to set</param>
         /// <returns>the updated profile</returns>
-        public Task<Profile> SetProfile(Profile profile)
+        public async Task<Profile> SetProfile(Profile profile)
         {
-            return client.SetProfile(profile);
+            return await client.SetProfile(profile);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Tokenio.Tpp
         /// <param name="type">MIME type of picture</param>
         /// <param name="data">image data</param>
         /// <returns>task that indicates whether the operation finished or had an error</returns>
-        public Task SetProfilePicture(string type, byte[] data)
+        public async Task SetProfilePicture(string type, byte[] data)
         {
             var payload = new Payload
             {
@@ -89,7 +89,7 @@ namespace Tokenio.Tpp
                 Data = ByteString.CopyFrom(data),
                 AccessMode = AccessMode.Public
             };
-            return client.SetProfilePicture(payload);
+            await client.SetProfilePicture(payload);
         }
 
         /// <summary>
@@ -107,10 +107,10 @@ namespace Tokenio.Tpp
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
         /// <returns>a list of accounts</returns>
-        public Task<IList<Account>> GetAccounts()
+        public async Task<IList<Account>> GetAccounts()
         {
 
-            return GetAccountsImpl()
+            return await GetAccountsImpl()
             .Map(accounts => (IList<Account>)accounts
             .Select(account => new Account(this, account))
             .ToList());
@@ -131,9 +131,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>the account</returns>
-        public Task<Account> GetAccount(string accountId)
+        public async Task<Account> GetAccount(string accountId)
         {
-            return GetAccountImpl(accountId)
+            return await GetAccountImpl(accountId)
                 .Map(account => new Account(this, account));
         }
 
@@ -152,9 +152,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="blobId">the blob id</param>
         /// <returns>the blob</returns>
-        public Task<Blob> GetBlob(string blobId)
+        public async Task<Blob> GetBlob(string blobId)
         {
-            return client.GetBlob(blobId);
+            return await client.GetBlob(blobId);
         }
 
         /// <summary>
@@ -185,9 +185,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="token">the transfer token</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(Token token)
+        public async Task<Transfer> RedeemToken(Token token)
         {
-            return RedeemTokenInternal(token, null, null, null, null, null);
+            return await RedeemTokenInternal(token, null, null, null, null, null);
         }
 
         /// <summary>
@@ -196,9 +196,9 @@ namespace Tokenio.Tpp
         /// <param name="token">the transfer token</param>
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(Token token, string refId)
+        public async Task<Transfer> RedeemToken(Token token, string refId)
         {
-            return RedeemTokenInternal(token, null, null, null, null, refId);
+            return await RedeemTokenInternal(token, null, null, null, null, refId);
         }
 
         /// <summary>
@@ -207,9 +207,9 @@ namespace Tokenio.Tpp
         /// <param name="token">the transfer token</param>
         /// <param name="destination">the transfer instruction destination</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(Token token, TransferDestination destination)
+        public async Task<Transfer> RedeemToken(Token token, TransferDestination destination)
         {
-            return RedeemToken(token, null, null, null, destination, null);
+            return await RedeemToken(token, null, null, null, destination, null);
         }
 
         /// <summary>
@@ -219,12 +219,12 @@ namespace Tokenio.Tpp
         /// <param name="destination">the transfer instruction destination</param>
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(
+        public async Task<Transfer> RedeemToken(
             Token token,
             TransferDestination destination,
             string refId)
         {
-            return RedeemToken(token, null, null, null, destination, refId);
+            return await RedeemToken(token, null, null, null, destination, refId);
         }
 
         /// <summary>
@@ -235,13 +235,13 @@ namespace Tokenio.Tpp
         /// <param name="currency">the currency</param>
         /// <param name="description">the description of the transfer</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(
+        public async Task<Transfer> RedeemToken(
             Token token,
             double? amount,
             string currency,
             string description)
         {
-            return RedeemTokenInternal(token, amount, currency, description, null, null);
+            return await RedeemTokenInternal(token, amount, currency, description, null, null);
         }
 
         /// <summary>
@@ -252,13 +252,13 @@ namespace Tokenio.Tpp
         /// <param name="currency">the currency</param>
         /// <param name="destination">the transfer instruction destination</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(
+        public async Task<Transfer> RedeemToken(
             Token token,
             double? amount,
             string currency,
             TransferDestination destination)
         {
-            return RedeemToken(token, amount, currency, null, destination, null);
+            return await RedeemToken(token, amount, currency, null, destination, null);
         }
 
         /// <summary>
@@ -270,14 +270,14 @@ namespace Tokenio.Tpp
         /// <param name="description">the description of the transfer</param>
         /// <param name="destination">the transfer instruction destination</param>
         /// <returns>a transfer record</returns>
-        public Task<Transfer> RedeemToken(
+        public async Task<Transfer> RedeemToken(
             Token token,
             double? amount,
             string currency,
             string description,
             TransferDestination destination)
         {
-            return RedeemToken(token, amount, currency, description, destination, null);
+            return await RedeemToken(token, amount, currency, description, destination, null);
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Tokenio.Tpp
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
         /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
-        public Task<Transfer> RedeemToken(
+        public async Task<Transfer> RedeemToken(
             Token token,
             double? amount,
             string currency,
@@ -338,7 +338,7 @@ namespace Tokenio.Tpp
                 payload.RefId = Util.Nonce();
             }
 
-            return client.CreateTransfer(payload);
+            return await client.CreateTransfer(payload);
         }
 
         /// <summary>
@@ -350,14 +350,14 @@ namespace Tokenio.Tpp
         /// <param name="currency">Currency.</param>
         /// <param name="description">Description.</param>
         /// <param name="refId">Reference identifier.</param>
-        public Task<Transfer> RedeemToken(
+        public async Task<Transfer> RedeemToken(
            Token token,
            double? amount,
            string currency = null,
            string description = null,
            string refId = null)
         {
-            return RedeemTokenInternal(token, amount, currency, description, null, refId);
+            return await RedeemTokenInternal(token, amount, currency, description, null, refId);
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace Tokenio.Tpp
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
         /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
-        public Task<Transfer> RedeemTokenInternal(
+        public async Task<Transfer> RedeemTokenInternal(
             Token token,
             double? amount,
             string currency,
@@ -414,7 +414,7 @@ namespace Tokenio.Tpp
                 logger.Warn("refId is not set. A random ID will be used.");
                 payload.RefId = Util.Nonce();
             }
-            return client.CreateTransfer(payload);
+            return await client.CreateTransfer(payload);
         }
 
         /// <summary>
@@ -554,9 +554,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
         /// <returns>standing order submission</returns>
-        public Task<StandingOrderSubmission> RedeemStandingOrderToken(string tokenId)
+        public async Task<StandingOrderSubmission> RedeemStandingOrderToken(string tokenId)
         {
-            return client.CreateStandingOrder(tokenId);
+            return await client.CreateStandingOrder(tokenId);
         }
 
         /// <summary>
@@ -575,11 +575,11 @@ namespace Tokenio.Tpp
         /// <param name="requestPayload">the token request payload (immutable fields)</param>
         /// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
         /// <returns>an id to reference the token request</returns>
-        public Task<string> StoreTokenRequest(
+        public async Task<string> StoreTokenRequest(
             TokenRequestPayload requestPayload,
             TokenRequestOptions requestOptions)
         {
-            return client.StoreTokenRequest(requestPayload, requestOptions);
+            return await client.StoreTokenRequest(requestPayload, requestOptions);
         }
 
         /// <summary>
@@ -600,9 +600,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="tokenRequest">the token request</param>
         /// <returns>an id to reference the token request</returns>
-        public Task<string> StoreTokenRequest(TokenRequest tokenRequest)
+        public async Task<string> StoreTokenRequest(TokenRequest tokenRequest)
         {
-            return client.StoreTokenRequest(
+            return await client.StoreTokenRequest(
                 tokenRequest.GetTokenRequestPayload(),
                 tokenRequest.GetTokenRequestOptions());
         }
@@ -626,14 +626,14 @@ namespace Tokenio.Tpp
         /// <param name="name">display name</param>
         /// <param name="appName">corresponding app name</param>
         /// <returns>customization id</returns>
-        public Task<string> CreateCustomization(
+        public async Task<string> CreateCustomization(
             Payload logo,
             MapField<string, string> colors,
             string consentText,
             string name,
             string appName)
         {
-            return client.CreateCustomization(logo, colors, consentText, name, appName);
+            return await client.CreateCustomization(logo, colors, consentText, name, appName);
         }
 
         /// <summary>
@@ -660,9 +660,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="transferId">the transfer id</param>
         /// <returns>the transfer record</returns>
-        public Task<Transfer> GetTransfer(string transferId)
+        public async Task<Transfer> GetTransfer(string transferId)
         {
-            return client.GetTransfer(transferId);
+            return await client.GetTransfer(transferId);
         }
 
         /// <summary>
@@ -680,9 +680,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="submissionId">ID of the standing orde submission</param>
         /// <returns>standing order submission</returns>
-        public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
+        public async Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
         {
-            return client.GetStandingOrderSubmission(submissionId);
+            return await client.GetStandingOrderSubmission(submissionId);
         }
 
         /// <summary>
@@ -702,12 +702,12 @@ namespace Tokenio.Tpp
         /// <param name="offset">nullable offset to start at</param>
         /// <param name="limit">max number of records to return</param>
         /// <returns>a paged list of transfers</returns>
-        public Task<PagedList<Transfer>> GetTransfers(
+        public async Task<PagedList<Transfer>> GetTransfers(
             string tokenId,
             string offset,
             int limit)
         {
-            return client.GetTransfers(tokenId, offset, limit);
+            return await client.GetTransfers(tokenId, offset, limit);
         }
 
         /// <summary>
@@ -731,11 +731,11 @@ namespace Tokenio.Tpp
         /// <param name="limit">max number of submissions to return</param>
         /// <param name="offset">optional offset to start at</param>
         /// <returns>standing order submissions</returns>
-        public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
+        public async Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
                 int limit,
                 string offset = null)
         {
-            return client.GetStandingOrderSubmissions(limit, offset);
+            return await client.GetStandingOrderSubmissions(limit, offset);
         }
 
         /// <summary>
@@ -757,9 +757,9 @@ namespace Tokenio.Tpp
         /// <param name="offset">nullable offset to start at</param>
         /// <param name="limit">the max number of records to return</param>
         /// <returns>a paged list of access tokens</returns>
-        public Task<PagedList<Token>> GetAccessTokens(string offset, int limit)
+        public async Task<PagedList<Token>> GetAccessTokens(string offset, int limit)
         {
-            return client.GetTokens(TokenType.Access, limit, offset);
+            return await client.GetTokens(TokenType.Access, limit, offset);
         }
 
         /// <summary>
@@ -779,9 +779,9 @@ namespace Tokenio.Tpp
         /// <param name="offset">nullable offset to start at</param>
         /// <param name="limit">the max number of records to return</param>
         /// <returns>a paged list of transfer tokens</returns>
-        public Task<PagedList<Token>> GetTransferTokens(string offset, int limit)
+        public async Task<PagedList<Token>> GetTransferTokens(string offset, int limit)
         {
-            return client.GetTokens(TokenType.Transfer, limit, offset);
+            return await client.GetTokens(TokenType.Transfer, limit, offset);
         }
 
         /// <summary>
@@ -800,9 +800,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="tokenId">the token id</param>
         /// <returns>the token</returns>
-        public Task<Token> GetToken(string tokenId)
+        public async Task<Token> GetToken(string tokenId)
         {
-            return client.GetToken(tokenId);
+            return await client.GetToken(tokenId);
         }
 
         /// <summary>
@@ -820,9 +820,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="token">the token to cancel</param>
         /// <returns>the result of the cancel operation</returns>
-        public Task<TokenOperationResult> CancelToken(Token token)
+        public async Task<TokenOperationResult> CancelToken(Token token)
         {
-            return client.CancelToken(token);
+            return await client.CancelToken(token);
         }
 
         /// <summary>
@@ -840,9 +840,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="accountIds">list of account ids</param>
         /// <returns>notification status</returns>
-        public Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds)
+        public async Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds)
         {
-            return client.TriggerBalanceStepUpNotification(accountIds);
+            return await client.TriggerBalanceStepUpNotification(accountIds);
         }
 
         /// <summary>
@@ -860,9 +860,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="accountId">account ids</param>
         /// <returns>notification status</returns>
-        public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
+        public async Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
         {
-            return client.TriggerTransactionStepUpNotification(accountId);
+            return await client.TriggerTransactionStepUpNotification(accountId);
         }
 
         /// <summary>
@@ -882,9 +882,9 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <returns>token returned by the server.</returns>
         /// <param name="toMemberId">beneficiary of the active access token.</param>
-        public Task<Token> GetActiveAccessToken(string toMemberId)
+        public async Task<Token> GetActiveAccessToken(string toMemberId)
         {
-            return client.GetActiveAccessToken(toMemberId);
+            return await client.GetActiveAccessToken(toMemberId);
         }
 
 
@@ -906,9 +906,9 @@ namespace Tokenio.Tpp
         /// <returns>The test bank account.</returns>
         /// <param name="balance">Balance.</param>
         /// <param name="currency">Currency  e.g. "EUR".</param>
-        public Task<Account> CreateTestBankAccount(double balance, string currency)
+        public async Task<Account> CreateTestBankAccount(double balance, string currency)
         {
-            return CreateTestBankAccountImpl(balance, currency)
+            return await CreateTestBankAccountImpl(balance, currency)
                 .Map(acc => new Account(this, acc));
         }
 
@@ -933,11 +933,11 @@ namespace Tokenio.Tpp
         /// <returns>The eidas.</returns>
         /// <param name="payload">payload payload containing the member id and the certificate in PEM format.</param>
         /// <param name="signature">signature the payload signed with a private key corresponding to the certificate.</param>
-        public Task VerifyEidas(
+        public async Task VerifyEidas(
             VerifyEidasPayload payload,
             string signature)
         {
-            return client.VerifyEidas(payload, signature);
+            await client.VerifyEidas(payload, signature);
         }
     }
 }

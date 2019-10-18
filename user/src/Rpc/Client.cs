@@ -46,13 +46,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "profile">Profile to set</param>
         /// <returns>task that completes when request handled</returns>
-        public Task<Profile> SetProfile(Profile profile)
+        public async Task<Profile> SetProfile(Profile profile)
         {
             var request = new SetProfileRequest
             {
                 Profile = profile
             };
-            return gateway(authenticationContext()).SetProfileAsync(request)
+            return await gateway(authenticationContext()).SetProfileAsync(request)
                     .ToTask(response =>
                             response.Profile);
         }
@@ -62,13 +62,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "payload">Picture data</param>
         /// <returns>task that completes when request handled</returns>
-        public Task SetProfilePicture(Payload payload)
+        public async Task SetProfilePicture(Payload payload)
         {
             var request = new SetProfilePictureRequest
             {
                 Payload = payload
             };
-            return gateway(authenticationContext())
+            await gateway(authenticationContext())
                     .SetProfilePictureAsync(request)
                     .ToTask();
         }
@@ -78,13 +78,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "memberId">member id</param>
         /// <returns>the bank account</returns>
-        public Task<ProtoAccount> GetDefaultAccount(string memberId)
+        public async Task<ProtoAccount> GetDefaultAccount(string memberId)
         {
             var request = new GetDefaultAccountRequest
             {
                 MemberId = memberId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetDefaultAccountAsync(request)
                     .ToTask(response =>
                             response.Account);
@@ -95,14 +95,14 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "accountId">the account id</param>
         /// <returns>task indicating if the default bank account was successfully set</returns>
-        public Task SetDefaultAccount(string accountId)
+        public async Task SetDefaultAccount(string accountId)
         {
             var request = new SetDefaultAccountRequest
             {
                 MemberId = MemberId,
                 AccountId = accountId
             };
-            return gateway(authenticationContext())
+            await gateway(authenticationContext())
                     .SetDefaultAccountAsync(request)
                     .ToTask();
         }
@@ -112,9 +112,9 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "accountId">the bank account id</param>
         /// <returns>true if the account is default; false otherwise</returns>
-        public Task<bool> IsDefault(string accountId)
+        public async Task<bool> IsDefault(string accountId)
         {
-            return GetDefaultAccount(MemberId)
+            return await GetDefaultAccount(MemberId)
                     .Map(account =>
                             account.Id.Equals(accountId));
         }
@@ -124,13 +124,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "transferId">transfer id</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> GetTransfer(string transferId)
+        public async Task<Transfer> GetTransfer(string transferId)
         {
             var request = new GetTransferRequest
             {
                 TransferId = transferId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetTransferAsync(request)
                     .ToTask(response =>
                             response.Transfer);
@@ -141,9 +141,9 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name="submissionId">submission ID</param>
         /// <returns>standing order submission record</returns>
-        public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
+        public async Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
         {
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetStandingOrderSubmissionAsync(new GetStandingOrderSubmissionRequest
                     {
                         SubmissionId = submissionId
@@ -159,7 +159,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "offset">optional offset to start at</param>
         /// <param name = "limit">max number of records to return</param>
         /// <returns>transfer records</returns>
-        public Task<PagedList<Transfer>> GetTransfers(
+        public async Task<PagedList<Transfer>> GetTransfers(
                 string tokenId,
                 string offset,
                 int limit)
@@ -182,7 +182,7 @@ namespace Tokenio.User.Rpc
             {
                 request.Page.Offset = offset;
             }
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetTransfersAsync(request)
                     .ToTask(response =>
                             new PagedList<Transfer>(response.Transfers, response.Offset));
@@ -193,7 +193,7 @@ namespace Tokenio.User.Rpc
         /// <param name="limit">max number of records to return</param>
         /// <param name="offset">optional offset to start at</param>
         /// <returns>standing order submissions</returns>
-        public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
+        public async Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
                 int limit,
                 string offset = null)
         {
@@ -202,7 +202,7 @@ namespace Tokenio.User.Rpc
                 Page = PageBuilder(limit, offset)
             };
 
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetStandingOrderSubmissionsAsync(request)
                     .ToTask(response => new PagedList<StandingOrderSubmission>(
                             response.Submissions,
@@ -216,13 +216,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "payload">token payload</param>
         /// <returns>resolved payload and policy</returns>
-        public Task<PrepareTokenResult> PrepareToken(TokenPayload payload)
+        public async Task<PrepareTokenResult> PrepareToken(TokenPayload payload)
         {
             var request = new PrepareTokenRequest
             {
                 Payload = payload
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .PrepareTokenAsync(request)
                     .ToTask(response =>
                             PrepareTokenResult.Create(response.ResolvedPayload, response.Policy));
@@ -235,7 +235,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "tokenRequestId">token request ID</param>
         /// <param name = "signatures">list of token payload signatures</param>
         /// <returns>token returned by server</returns>
-        public Task<Token> CreateToken(
+        public async Task<Token> CreateToken(
                 TokenPayload payload,
                 string tokenRequestId,
                 IList<Signature> signatures)
@@ -252,7 +252,7 @@ namespace Tokenio.User.Rpc
             {
                 request.Signatures.Add(signatures);
             }
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .CreateTokenAsync(request)
                     .ToTask(response =>
                             response.Token);
@@ -263,13 +263,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "payload">transfer token payload</param>
         /// <returns>transfer token returned by the server</returns>
-        public Task<Token> CreateTransferToken(TokenPayload payload)
+        public async Task<Token> CreateTransferToken(TokenPayload payload)
         {
             var request = new CreateTransferTokenRequest
             {
                 Payload = payload
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .CreateTransferTokenAsync(request)
                     .ToTask(response =>
                     {
@@ -287,14 +287,14 @@ namespace Tokenio.User.Rpc
         /// <param name = "payload">transfer token payload</param>
         /// <param name = "tokenRequestId">token request id</param>
         /// <returns>transfer token returned by the server</returns>
-        public Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId)
+        public async Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId)
         {
             var request = new CreateTransferTokenRequest
             {
                 Payload = payload,
                 TokenRequestId = tokenRequestId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .CreateTransferTokenAsync(request)
                     .ToTask(response =>
                     {
@@ -312,7 +312,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "payload">token payload</param>
         /// <param name="tokenRequestId">token request id</param>
         /// <returns>token returned by server</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload, string tokenRequestId = null)
+        public async Task<Token> CreateAccessToken(TokenPayload payload, string tokenRequestId = null)
         {
             payload.From = new TokenMember
             {
@@ -323,7 +323,7 @@ namespace Tokenio.User.Rpc
                 Payload = payload,
                 TokenRequestId = tokenRequestId ?? ""
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .CreateAccessTokenAsync(request)
                     .ToTask(response =>
                             response.Token);
@@ -335,7 +335,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "token">token to endorse</param>
         /// <param name = "level">key level to be used to endorse the token</param>
         /// <returns>result of the endorse operation, returned by the server</returns>
-        public Task<TokenOperationResult> EndorseToken(Token token, Level level)
+        public async Task<TokenOperationResult> EndorseToken(Token token, Level level)
         {
             var signer = cryptoEngine.CreateSigner(level);
             var request = new EndorseTokenRequest
@@ -348,7 +348,7 @@ namespace Tokenio.User.Rpc
                     Signature_ = signer.Sign(Stringify(token, TokenAction.Endorsed))
                 }
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .EndorseTokenAsync(request)
                     .ToTask(response =>
                             response.Result);
@@ -359,7 +359,7 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "token">token to cancel</param>
         /// <returns>result of the cancel operation, returned by the server</returns>
-        public Task<TokenOperationResult> CancelToken(Token token)
+        public async Task<TokenOperationResult> CancelToken(Token token)
         {
             var signer = cryptoEngine.CreateSigner(Level.Low);
             var request = new CancelTokenRequest
@@ -372,7 +372,7 @@ namespace Tokenio.User.Rpc
                     Signature_ = signer.Sign(Stringify(token, TokenAction.Cancelled))
                 }
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .CancelTokenAsync(request)
                     .ToTask(response =>
                         response.Result);
@@ -385,11 +385,11 @@ namespace Tokenio.User.Rpc
         /// <param name = "tokenToCancel">old token to cancel</param>
         /// <param name = "tokenToCreate">new token to create</param>
         /// <returns>result of the replacement operation, returned by the server</returns>
-        public Task<TokenOperationResult> ReplaceToken(
+        public async Task<TokenOperationResult> ReplaceToken(
                 Token tokenToCancel,
                 TokenPayload tokenToCreate)
         {
-            return CancelAndReplace(tokenToCancel, new CreateToken
+            return await CancelAndReplace(tokenToCancel, new CreateToken
             {
                 Payload = tokenToCreate
             });
@@ -401,13 +401,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "toMemberId">beneficiary of the active access token</param>
         /// <returns>token returned by the server</returns>
-        public Task<Token> GetActiveAccessToken(string toMemberId)
+        public async Task<Token> GetActiveAccessToken(string toMemberId)
         {
             var request = new GetActiveAccessTokenRequest
             {
                 ToMemberId = toMemberId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetActiveAccessTokenAsync(request)
                     .ToTask(response =>
                             response.Token);
@@ -418,13 +418,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "tokenId">token id</param>
         /// <returns>token returned by the server</returns>
-        public Task<Token> GetToken(string tokenId)
+        public async Task<Token> GetToken(string tokenId)
         {
             var request = new GetTokenRequest
             {
                 TokenId = tokenId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetTokenAsync(request)
                     .ToTask(response =>
                             response.Token);
@@ -437,7 +437,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "limit">max number of records to return</param>
         /// <param name = "offset">optional offset to start at</param>
         /// <returns>token returned by the server</returns>
-        public Task<PagedList<Token>> GetTokens(
+        public async Task<PagedList<Token>> GetTokens(
                 TokenType type,
                 int limit,
                 string offset)
@@ -447,7 +447,7 @@ namespace Tokenio.User.Rpc
                 Type = type,
                 Page = PageBuilder(limit, offset)
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetTokensAsync(request)
                     .ToTask(response =>
                             new PagedList<Token>(response.Tokens, response.Offset));
@@ -458,7 +458,7 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "payload">transfer parameters, such as amount, currency, etc</param>
         /// <returns>transfer record</returns>
-        public Task<Transfer> CreateTransfer(TransferPayload payload)
+        public async Task<Transfer> CreateTransfer(TransferPayload payload)
         {
             var signer = cryptoEngine.CreateSigner(Level.Low);
             var request = new CreateTransferRequest
@@ -471,7 +471,7 @@ namespace Tokenio.User.Rpc
                     Signature_ = signer.Sign(payload)
                 }
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .CreateTransferAsync(request)
                     .ToTask(response =>
                             response.Transfer);
@@ -482,9 +482,9 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
         /// <returns>standing order submission</returns>
-        public Task<StandingOrderSubmission> CreateStandingOrder(string tokenId)
+        public async Task<StandingOrderSubmission> CreateStandingOrder(string tokenId)
         {
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .CreateStandingOrderAsync(new CreateStandingOrderRequest
                     {
                         TokenId = tokenId
@@ -498,13 +498,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "authorization">an authorization to accounts, from the bank</param>
         /// <returns>list of linked accounts</returns>
-        public Task<IList<ProtoAccount>> LinkAccounts(BankAuthorization authorization)
+        public async Task<IList<ProtoAccount>> LinkAccounts(BankAuthorization authorization)
         {
             var request = new LinkAccountsRequest
             {
                 BankAuthorization = authorization
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .LinkAccountsAsync(request)
                     .ToTask(response =>
                             (IList<ProtoAccount>)response.Accounts);
@@ -515,7 +515,7 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "accountIds">account ids to unlink</param>
         /// <returns>task</returns>
-        public Task UnlinkAccounts(IList<string> accountIds)
+        public async Task UnlinkAccounts(IList<string> accountIds)
         {
             var request = new UnlinkAccountsRequest
             {
@@ -523,7 +523,7 @@ namespace Tokenio.User.Rpc
                     accountIds
                 }
             };
-            return gateway(authenticationContext())
+            await gateway(authenticationContext())
                     .UnlinkAccountsAsync(request)
                     .ToTask();
         }
@@ -533,13 +533,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "subscriberId">id of the subscriber</param>
         /// <returns>task</returns>
-        public Task UnsubscribeFromNotifications(string subscriberId)
+        public async Task UnsubscribeFromNotifications(string subscriberId)
         {
             var request = new UnsubscribeFromNotificationsRequest
             {
                 SubscriberId = subscriberId
             };
-            return gateway(authenticationContext())
+            await gateway(authenticationContext())
                     .UnsubscribeFromNotificationsAsync(request)
                     .ToTask();
         }
@@ -550,7 +550,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "offset">offset to start</param>
         /// <param name = "limit">how many notifications to get</param>
         /// <returns>list of notifications</returns>
-        public Task<PagedList<Notification>> GetNotifications(
+        public async Task<PagedList<Notification>> GetNotifications(
                 int limit,
                 string offset = null)
         {
@@ -559,7 +559,7 @@ namespace Tokenio.User.Rpc
             {
                 Page = page
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetNotificationsAsync(request)
                     .ToTask(response =>
                             new PagedList<Notification>(response.Notifications, response.Offset));
@@ -570,13 +570,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "notificationId">id of the notification</param>
         /// <returns>notification</returns>
-        public Task<Notification> GetNotification(string notificationId)
+        public async Task<Notification> GetNotification(string notificationId)
         {
             var request = new GetNotificationRequest
             {
                 NotificationId = notificationId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetNotificationAsync(request)
                     .ToTask(response =>
                             response.Notification);
@@ -588,7 +588,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "handler">specify the handler of the notifications</param>
         /// <param name = "handlerInstructions">map of instructions for the handler</param>
         /// <returns>n  otification subscriber</returns>
-        public Task<Subscriber> SubscribeToNotifications(
+        public async Task<Subscriber> SubscribeToNotifications(
                 string handler,
                 MapField<string, string> handlerInstructions)
         {
@@ -597,7 +597,7 @@ namespace Tokenio.User.Rpc
                 Handler = handler
             };
             request.HandlerInstructions.Add(handlerInstructions);
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .SubscribeToNotificationsAsync(request)
                     .ToTask(response =>
                             response.Subscriber);
@@ -610,7 +610,7 @@ namespace Tokenio.User.Rpc
         /// <param name = "tokenId">token id</param>
         /// <param name = "state">state</param>
         /// <returns>signature</returns>
-        public Task<Signature> SignTokenRequestState(
+        public async Task<Signature> SignTokenRequestState(
                 string tokenRequestId,
                 string tokenId,
                 string state)
@@ -624,7 +624,7 @@ namespace Tokenio.User.Rpc
                 },
                 TokenRequestId = tokenRequestId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .SignTokenRequestStateAsync(request)
                     .ToTask(response =>
                             response.Signature);
@@ -635,13 +635,13 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "subscriberId">subscriber id</param>
         /// <returns>notification subscriber</returns>
-        public Task<Subscriber> GetSubscriber(string subscriberId)
+        public async Task<Subscriber> GetSubscriber(string subscriberId)
         {
             var request = new GetSubscriberRequest
             {
                 SubscriberId = subscriberId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetSubscriberAsync(request)
                     .ToTask(response =>
                             response.Subscriber);
@@ -651,10 +651,10 @@ namespace Tokenio.User.Rpc
         /// Gets all subscribers for the member.
         /// </summary>
         /// <returns>list of notification subscribers</returns>
-        public Task<IList<Subscriber>> GetSubscribers()
+        public async Task<IList<Subscriber>> GetSubscribers()
         {
             var request = new GetSubscribersRequest();
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetSubscribersAsync(request)
                     .ToTask(response =>
                             (IList<Subscriber>)response.Subscribers);
@@ -665,7 +665,7 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "accountIds">list of account ids</param>
         /// <returns>task</returns>
-        public Task ApplySca(IList<string> accountIds)
+        public async Task ApplySca(IList<string> accountIds)
         {
             var request = new ApplyScaRequest
             {
@@ -673,7 +673,7 @@ namespace Tokenio.User.Rpc
                     accountIds
                 }
             };
-            return gateway(authenticationContext(Level.Standard))
+            await gateway(authenticationContext(Level.Standard))
                     .ApplyScaAsync(request)
                     .ToTask();
         }
@@ -682,10 +682,10 @@ namespace Tokenio.User.Rpc
         /// Gets a member's receipt contact.
         /// </summary>
         /// <returns>receipt contact</returns>
-        public Task<ReceiptContact> GetReceiptContact()
+        public async Task<ReceiptContact> GetReceiptContact()
         {
             var request = new GetReceiptContactRequest();
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .GetReceiptContactAsync(request)
                     .ToTask(response =>
                             response.Contact);
@@ -696,18 +696,18 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name = "contact">receipt contact to set</param>
         /// <returns>task that indicates whether the operation finished or had an error</returns>
-        public Task SetReceiptContact(ReceiptContact contact)
+        public async Task SetReceiptContact(ReceiptContact contact)
         {
             var request = new SetReceiptContactRequest
             {
                 Contact = contact
             };
-            return gateway(authenticationContext())
+            await gateway(authenticationContext())
                     .SetReceiptContactAsync(request)
                     .ToTask();
         }
 
-        private Task<TokenOperationResult> CancelAndReplace(
+        private async Task<TokenOperationResult> CancelAndReplace(
                 Token tokenToCancel,
                 CreateToken tokenToCreate)
         {
@@ -726,7 +726,7 @@ namespace Tokenio.User.Rpc
                 },
                 CreateToken = tokenToCreate
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                     .ReplaceTokenAsync(request)
                     .ToTask(response =>
                             response.Result);
@@ -737,7 +737,7 @@ namespace Tokenio.User.Rpc
         /// </summary>
         /// <param name="appCallbackUrl">the app callback url to set</param>
         /// <returns>task</returns>
-        public Task SetAppCallbackUrl(string appCallbackUrl)
+        public async Task SetAppCallbackUrl(string appCallbackUrl)
         {
             var request = new SetAppCallbackUrlRequest
             {
@@ -745,7 +745,7 @@ namespace Tokenio.User.Rpc
                 AppCallbackUrl = appCallbackUrl
 
             };
-            return gateway(authenticationContext())
+            await gateway(authenticationContext())
                     .SetAppCallbackUrlAsync(request).ToTask();
         }
 
@@ -755,7 +755,7 @@ namespace Tokenio.User.Rpc
         /// <param name="notificationId">the notification id to update</param>
         /// <param name="status">the status to update</param>
         /// <returns>task</returns>
-        public Task UpdateNotificationStatus(string notificationId, Status status)
+        public async Task UpdateNotificationStatus(string notificationId, Status status)
         {
             var request = new UpdateNotificationStatusRequest
             {
@@ -764,7 +764,7 @@ namespace Tokenio.User.Rpc
 
             };
 
-            return gateway(authenticationContext())
+            await gateway(authenticationContext())
                    .UpdateNotificationStatusAsync(request).ToTask();
         }
 

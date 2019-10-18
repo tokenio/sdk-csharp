@@ -98,9 +98,9 @@ namespace Tokenio
         /// Gets the last hash.
         /// </summary>
         /// <returns>the last hash</returns>
-        public Task<string> GetLastHash()
+        public async Task<string> GetLastHash()
         {
-            return client
+            return await client
                 .GetMember()
                 .Map(m => m.LastHash);
         }
@@ -118,9 +118,9 @@ namespace Tokenio
         /// Gets all aliases owned by the member.
         /// </summary>
         /// <returns>a list of aliases</returns>
-        public Task<IList<Alias>> GetAliases()
+        public async Task<IList<Alias>> GetAliases()
         {
-            return client.GetAliases();
+            return await client.GetAliases();
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace Tokenio
         /// Gets the first alias owner by the user.
         /// </summary>
         /// <returns>first alias owned by the user, or throws exception if no aliases are found</returns>
-        public Task<Alias> GetFirstAlias()
+        public async Task<Alias> GetFirstAlias()
         {
-            return GetAliases().Map(aliases => aliases.Count > 0 ? aliases[0] : throw new NoAliasesFoundException(MemberId()));
+            return await GetAliases().Map(aliases => aliases.Count > 0 ? aliases[0] : throw new NoAliasesFoundException(MemberId()));
         }
 
         /// <summary>
@@ -154,9 +154,9 @@ namespace Tokenio
         /// Gets all public keys for this member.
         /// </summary>
         /// <returns>list of public keys that are approved for this member</returns>
-        public Task<IList<Key>> GetKeys()
+        public async Task<IList<Key>> GetKeys()
         {
-            return client
+            return await client
                 .GetMember()
                 .Map(member => (IList<Key>)member.Keys.ToList());
         }
@@ -174,14 +174,13 @@ namespace Tokenio
         /// Links a funding bank account to Token and returns it to the caller.
         /// </summary>
         /// <returns>a list of accounts</returns>
-        public Task<IList<Account>> GetAccountsImpl()
+        public async Task<IList<Account>> GetAccountsImpl()
         {
-            var acc = client
+            return await client
                 .GetAccounts()
                 .Map(accounts => (IList<Account>)accounts
                     .Select(account => new Account(this, account, client))
                     .ToList());
-            return acc;
         }
 
         public IList<Account> GetAccountsImplBlocking()
@@ -197,9 +196,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>the account</returns>
-        public Task<Account> GetAccountImpl(string accountId)
+        public async Task<Account> GetAccountImpl(string accountId)
         {
-            return client
+            return await client
                 .GetAccount(accountId)
                 .Map(account => new Account(this, account, client));
         }
@@ -209,7 +208,7 @@ namespace Tokenio
         /// </summary>
         /// <param name="aliases">aliases, e.g. 'john', must be unique</param>
         /// <returns>a task that indicates whether the operation finished or had an error</returns>
-        public Task AddAliases(IList<Alias> aliases)
+        public async Task AddAliases(IList<Alias> aliases)
         {
             aliases = aliases.Select(alias =>
             {
@@ -231,7 +230,7 @@ namespace Tokenio
             }).ToList();
             var operations = aliases.Select(Util.ToAddAliasOperation).ToList();
             var metadata = aliases.Select(Util.ToAddAliasMetadata).ToList();
-            return client.UpdateMember(operations, metadata);
+            await client.UpdateMember(operations, metadata);
         }
 
         /// <summary>
@@ -248,9 +247,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias</param>
         /// <returns>a task</returns>
-        public Task AddAlias(Alias alias)
+        public async Task AddAlias(Alias alias)
         {
-            return AddAliases(new List<Alias> { alias });
+            await AddAliases(new List<Alias> { alias });
         }
 
         /// <summary>
@@ -268,9 +267,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias to be verified</param>
         /// <returns>the verification id</returns>
-        public Task<string> RetryVerification(Alias alias)
+        public async Task<string> RetryVerification(Alias alias)
         {
-            return client.RetryVerification(alias);
+            return await client.RetryVerification(alias);
         }
 
         /// <summary>
@@ -288,9 +287,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="rule">the recovery rule</param>
         /// <returns>the updated member</returns>
-        public Task<ProtoMember> AddRecoveryRule(RecoveryRule rule)
+        public async Task<ProtoMember> AddRecoveryRule(RecoveryRule rule)
         {
-            return client.UpdateMember(new List<MemberOperation>
+            return await client.UpdateMember(new List<MemberOperation>
                     {
                         new MemberOperation
                         {
@@ -316,9 +315,9 @@ namespace Tokenio
         /// Set Token as the recovery agent.
         /// </summary>
         /// <returns>a task</returns>
-        public Task UseDefaultRecoveryRule()
+        public async Task UseDefaultRecoveryRule()
         {
-            return client.UseDefaultRecoveryRule();
+            await client.UseDefaultRecoveryRule();
         }
 
         /// <summary>
@@ -335,9 +334,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="authorization">the authorization</param>
         /// <returns>the signature</returns>
-        public Task<Signature> AuthorizeRecovery(Authorization authorization)
+        public async Task<Signature> AuthorizeRecovery(Authorization authorization)
         {
-            return client.AuthorizeRecovery(authorization);
+            return await client.AuthorizeRecovery(authorization);
         }
 
         /// <summary>
@@ -354,9 +353,9 @@ namespace Tokenio
         /// Gets the member id of the default recovery agent.
         /// </summary>
         /// <returns>the member id</returns>
-        public Task<string> GetDefaultAgent()
+        public async Task<string> GetDefaultAgent()
         {
-            return client.GetDefaultAgent();
+            return await client.GetDefaultAgent();
         }
 
         /// <summary>
@@ -374,9 +373,9 @@ namespace Tokenio
         /// <param name="verificationId">the verification id</param>
         /// <param name="code">the verification code</param>
         /// <returns>a task</returns>
-        public Task VerifyAlias(string verificationId, string code)
+        public async Task VerifyAlias(string verificationId, string code)
         {
-            return client.VerifyAlias(verificationId, code);
+            await client.VerifyAlias(verificationId, code);
         }
 
         /// <summary>
@@ -395,10 +394,10 @@ namespace Tokenio
         /// </summary>
         /// <param name="aliases">the aliases to remove</param>
         /// <returns>a task</returns>
-        public Task RemoveAliases(IList<Alias> aliases)
+        public async Task RemoveAliases(IList<Alias> aliases)
         {
             var operations = aliases.Select(Util.ToRemoveAliasOperation).ToList();
-            return client.UpdateMember(operations);
+            await client.UpdateMember(operations);
         }
 
         /// <summary>
@@ -416,9 +415,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias to remove</param>
         /// <returns>a task</returns>
-        public Task RemoveAlias(Alias alias)
+        public async Task RemoveAlias(Alias alias)
         {
-            return RemoveAliases(new List<Alias> { alias });
+            await RemoveAliases(new List<Alias> { alias });
         }
 
         /// <summary>
@@ -437,10 +436,10 @@ namespace Tokenio
         /// </summary>
         /// <param name="keys">the keys to add</param>
         /// <returns>a task</returns>
-        public Task ApproveKeys(IList<Key> keys)
+        public async Task ApproveKeys(IList<Key> keys)
         {
             var operations = keys.Select(Util.ToAddKeyOperation).ToList();
-            return client.UpdateMember(operations);
+            await client.UpdateMember(operations);
         }
 
         /// <summary>
@@ -459,9 +458,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="key">the key to add</param>
         /// <returns>a task that indicates whether the operation finished or had an error</returns>
-        public Task ApproveKey(Key key)
-        {
-            return ApproveKeys(new List<Key> { key });
+        public async Task ApproveKey(Key key)
+        { 
+            await ApproveKeys(new List<Key> { key });
         }
 
         /// <summary>
@@ -481,9 +480,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="keyPair">the keypair to add</param>
         /// <returns>a task</returns>
-        public Task ApproveKey(KeyPair keyPair)
+        public async Task ApproveKey(KeyPair keyPair)
         {
-            return ApproveKey(keyPair.ToKey());
+            await ApproveKey(keyPair.ToKey());
         }
 
         /// <summary>
@@ -502,10 +501,10 @@ namespace Tokenio
         /// </summary>
         /// <param name="keyIds">the IDs of the keys to remove</param>
         /// <returns>a task</returns>
-        public Task RemoveKeys(IList<string> keyIds)
+        public async Task RemoveKeys(IList<string> keyIds)
         {
-            var operations = keyIds.Select(Util.ToRemoveKeyOperation).ToList();
-            return client.UpdateMember(operations);
+            var operations = keyIds.Select(Util.ToRemoveKeyOperation).ToList(); 
+            await client.UpdateMember(operations);
         }
 
         /// <summary>
@@ -523,9 +522,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="keyId">the key id</param>
         /// <returns>a task</returns>
-        public Task RemoveKey(string keyId)
+        public async Task RemoveKey(string keyId)
         {
-            return RemoveKeys(new List<string> { keyId });
+            await RemoveKeys(new List<string> { keyId });
         }
 
         /// <summary>
@@ -545,12 +544,12 @@ namespace Tokenio
         /// <param name="transactionId">the transaction ID</param>
         /// <param name="keyLevel">the key level</param>
         /// <returns>the transaction</returns>
-        public Task<Transaction> GetTransaction(
+        public async Task<Transaction> GetTransaction(
             string accountId,
             string transactionId,
             Level keyLevel)
         {
-            return client.GetTransaction(accountId, transactionId, keyLevel);
+            return await client.GetTransaction(accountId, transactionId, keyLevel);
         }
 
         /// <summary>
@@ -576,13 +575,13 @@ namespace Tokenio
         /// <param name="keyLevel">the key level</param>
         /// <param name="offset">the nullable offset to start at</param>
         /// <returns>a paged list of transactions</returns>
-        public Task<PagedList<Transaction>> GetTransactions(
+        public async Task<PagedList<Transaction>> GetTransactions(
             string accountId,
             int limit,
             Level keyLevel,
             string offset = null)
         {
-            return client.GetTransactions(accountId, limit, keyLevel, offset);
+            return await client.GetTransactions(accountId, limit, keyLevel, offset);
         }
 
         /// <summary>
@@ -609,12 +608,12 @@ namespace Tokenio
         /// <param name="standingOrderId">ID of the standing order</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>standing order record</returns>
-        public Task<StandingOrder> GetStandingOrder(
+        public async Task<StandingOrder> GetStandingOrder(
             string accountId,
             string standingOrderId,
             Level keyLevel)
         {
-            return client.GetStandingOrder(accountId, standingOrderId, keyLevel);
+            return await client.GetStandingOrder(accountId, standingOrderId, keyLevel);
         }
 
         /// <summary>
@@ -640,13 +639,13 @@ namespace Tokenio
         /// <param name="keyLevel">key level</param>
         /// <param name="offset">optional offset to start at</param>
         /// <returns>a paged list of standing order records</returns>
-        public Task<PagedList<StandingOrder>> GetStandingOrders(
+        public async Task<PagedList<StandingOrder>> GetStandingOrders(
                 string accountId,
                 int limit,
                 Level keyLevel,
                 string offset = null)
         {
-            return client.GetStandingOrders(accountId, limit, keyLevel, offset);
+            return await client.GetStandingOrders(accountId, limit, keyLevel, offset);
         }
 
         /// <summary>
@@ -672,9 +671,9 @@ namespace Tokenio
         /// <param name="accountId">the account id</param>
         /// <param name="keyLevel">the key level</param>
         /// <returns>the balance</returns>
-        public Task<Balance> GetBalance(string accountId, Level keyLevel)
+        public async Task<Balance> GetBalance(string accountId, Level keyLevel)
         {
-            return client.GetBalance(accountId, keyLevel);
+            return await client.GetBalance(accountId, keyLevel);
         }
 
         /// <summary>
@@ -694,9 +693,9 @@ namespace Tokenio
         /// <param name="accountIds">the list of accounts</param>
         /// <param name="keyLevel">the key level</param>
         /// <returns>a list of balances</returns>
-        public Task<IList<Balance>> GetBalances(IList<string> accountIds, Level keyLevel)
+        public async Task<IList<Balance>> GetBalances(IList<string> accountIds, Level keyLevel)
         {
-            return client.GetBalances(accountIds, keyLevel);
+            return await client.GetBalances(accountIds, keyLevel);
         }
 
         /// <summary>
@@ -717,14 +716,14 @@ namespace Tokenio
         /// <param name="accountId">Account identifier.</param>
         /// <param name="amount">Amount.</param>
         /// <param name="currency">Currency.</param>
-        public Task<bool> ConfirmFunds(string accountId, double amount, string currency)
+        public async Task<bool> ConfirmFunds(string accountId, double amount, string currency)
         {
             var money = new Money
             {
                 Currency = currency,
                 Value = amount.ToString()
             };
-            return client.ConfirmFunds(accountId, money);
+            return await client.ConfirmFunds(accountId, money);
         }
 
         /// <summary>
@@ -744,9 +743,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="bankId">the bank id</param>
         /// <returns>the bank linking information</returns>
-        public Task<BankInfo> GetBankInfo(string bankId)
+        public async Task<BankInfo> GetBankInfo(string bankId)
         {
-            return client.GetBankInfo(bankId);
+            return await client.GetBankInfo(bankId);
         }
 
         /// <summary>
@@ -763,9 +762,9 @@ namespace Tokenio
         /// Deletes the member
         /// </summary>
         /// <returns>Task</returns>
-        public Task DeleteMember()
+        public async Task DeleteMember()
         {
-            return client.DeleteMember();
+            await client.DeleteMember();
         }
 
         /// <summary>
@@ -782,9 +781,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        public Task<IList<TransferDestination>> ResolveTransferDestinations(string accountId)
+        public async Task<IList<TransferDestination>> ResolveTransferDestinations(string accountId)
         {
-            return client.ResolveTransferDestination(accountId);
+            return await client.ResolveTransferDestination(accountId);
         }
 
         /// <summary>
@@ -807,9 +806,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="memberId">member ID of member whose profile we want</param>
         /// <returns>their profile</returns>
-        public Task<Profile> GetProfile(string memberId)
+        public async Task<Profile> GetProfile(string memberId)
         {
-            return client.GetProfile(memberId);
+            return await client.GetProfile(memberId);
         }
 
         /// <summary>
@@ -828,9 +827,9 @@ namespace Tokenio
         /// <param name="memberId">member ID of member whose profile we want</param>
         /// <param name="size">desired size category (small, medium, large, original)</param>
         /// <returns>blob with picture; empty blob (no fields set) if has no picture</returns>
-        public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
+        public async Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
         {
-            return client.GetProfilePicture(memberId, size);
+            return await client.GetProfilePicture(memberId, size);
         }
 
         /// <summary>

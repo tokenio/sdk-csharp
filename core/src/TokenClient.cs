@@ -45,10 +45,10 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">alias to resolve</param>
         /// <returns>TokenMember</returns>
-        public Task<TokenMember> ResolveAlias(Alias alias)
+        public async Task<TokenMember> ResolveAlias(Alias alias)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.ResolveAlias(alias);
+            return await unauthenticated.ResolveAlias(alias);
         }
 
         /// <summary>
@@ -67,10 +67,10 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>member id if alias already exists, null otherwise</returns>
-        public Task<string> GetMemberId(Alias alias)
+        public async Task<string> GetMemberId(Alias alias)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetMemberId(alias);
+            return await unauthenticated.GetMemberId(alias);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Tokenio
         /// <param name="partnerId">Partner identifier.</param>
         /// <param name="realmId">Realm identifier.</param>
 
-        public Task<Member> CreateMemberImpl(
+        public async Task<Member> CreateMemberImpl(
         Alias alias,
         CreateMemberType createMemberType,
         string recoveryAgent,
@@ -103,7 +103,7 @@ namespace Tokenio
         string realmId = null)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated
+            return await unauthenticated
                 .CreateMemberId(createMemberType, null, partnerId, realmId)
                 .FlatMap(memberId =>
                 {
@@ -163,9 +163,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="memberId">the member ID</param>
         /// <returns>the member</returns>
-        public Task<Member> GetMemberImpl(string memberId, Client client)
+        public async Task<Member> GetMemberImpl(string memberId, Client client)
         {
-            return client
+            return await client
                 .GetMember(memberId)
                 .Map(member => new Member(member.Id, null,
                 tokenCluster, member.PartnerId, member.RealmId));
@@ -179,10 +179,10 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the used to recover</param>
         /// <returns>the verification id</returns>
-        public Task<string> BeginRecovery(Alias alias)
+        public async Task<string> BeginRecovery(Alias alias)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.BeginRecovery(alias);
+            return await unauthenticated.BeginRecovery(alias);
         }
 
         /// <summary>
@@ -201,12 +201,12 @@ namespace Tokenio
         /// <param name="memberId">the ID of the member we claim to be.</param>
         /// <param name="privilegedKey">the new privileged key we want to use.</param>
         /// <returns>the authorization</returns>
-        public Task<Authorization> CreateRecoveryAuthorization(
+        public async Task<Authorization> CreateRecoveryAuthorization(
             string memberId,
             Key privilegedKey)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.CreateRecoveryAuthorization(memberId, privilegedKey);
+            return await unauthenticated.CreateRecoveryAuthorization(memberId, privilegedKey);
         }
 
         /// <summary>
@@ -229,13 +229,13 @@ namespace Tokenio
         /// <param name="code">the verification code</param>
         /// <param name="key">the privileged key</param>
         /// <returns>the member recovery operation</returns>
-        public Task<MemberRecoveryOperation> GetRecoveryAuthorization(
+        public async Task<MemberRecoveryOperation> GetRecoveryAuthorization(
             string verificationId,
             string code,
             Key key)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetRecoveryAuthorization(verificationId, code, key);
+            return await unauthenticated.GetRecoveryAuthorization(verificationId, code, key);
         }
 
         /// <summary>
@@ -261,14 +261,14 @@ namespace Tokenio
         /// <param name="privilegedKey">the privileged public key in the member recovery operations</param>
         /// <param name="cryptoEngine">the new crypto engine</param>
         /// <returns>the new member</returns>
-        public Task<Member> CompleteRecoveryImpl(
+        public async Task<Member> CompleteRecoveryImpl(
             string memberId,
             IList<MemberRecoveryOperation> recoveryOperations,
             Key privilegedKey,
             ICryptoEngine cryptoEngine)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated
+            return await unauthenticated
                 .CompleteRecovery(memberId, recoveryOperations, privilegedKey, cryptoEngine)
                 .Map(member =>
                 {
@@ -284,14 +284,14 @@ namespace Tokenio
         /// <param name="verificationId">the verification id</param>
         /// <param name="code">the code</param>
         /// <returns>the new member</returns>
-        public Task<Member> CompleteRecoveryWithDefaultRuleImpl(
+        public async Task<Member> CompleteRecoveryWithDefaultRuleImpl(
             string memberId,
             string verificationId,
             string code, ICryptoEngine cryptoEngine)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             //var cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
-            return unauthenticated
+            return await unauthenticated
                 .CompleteRecoveryWithDefaultRule(memberId, verificationId, code, cryptoEngine)
                 .Map(member =>
                 {
@@ -306,9 +306,9 @@ namespace Tokenio
         /// Returns the first 200 available banks for linking.
         /// </summary>
         /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks()
+        public async Task<PagedBanks> GetBanks()
         {
-            return GetBanks(1, 200);
+            return await GetBanks(1, 200);
         }
 
         /// <summary>
@@ -316,9 +316,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="ids">the bank IDs</param>
         /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks(IList<string> ids)
+        public async Task<PagedBanks> GetBanks(IList<string> ids)
         {
-            return GetBanks(ids, null, null, null, null, null);
+            return await GetBanks(ids, null, null, null, null, null);
         }
 
         /// <summary>
@@ -326,9 +326,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="search">the keyword to search for</param>
         /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks(string search)
+        public async Task<PagedBanks> GetBanks(string search)
         {
-            return GetBanks(null, search, null, null, null, null);
+            return await GetBanks(null, search, null, null, null, null);
         }
 
         /// <summary>
@@ -337,11 +337,11 @@ namespace Tokenio
         /// <param name="page">the result page to retrieve</param>
         /// <param name="perPage">max number of records per page, can be at most 200</param>
         /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks(
+        public async Task<PagedBanks> GetBanks(
             int page,
             int perPage)
         {
-            return GetBanks(null, null, null, page, perPage, null);
+            return await GetBanks(null, null, null, page, perPage, null);
         }
 
         /// <summary>
@@ -351,12 +351,12 @@ namespace Tokenio
         /// <param name="page">the result page to retrieve</param>
         /// <param name="perPage">max number of records per page, can be at most 200</param>
         /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks(
+        public async Task<PagedBanks> GetBanks(
             string country,
             int page,
             int perPage)
         {
-            return GetBanks(null, null, country, page, perPage, null);
+            return await GetBanks(null, null, country, page, perPage, null);
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace Tokenio
         /// All fields are optional. Set to null if absent. The default value for page is 1; the default
         /// value for perPage is 200. Values set out of range will be treated as default value.
         /// </remarks>
-        public Task<PagedBanks> GetBanks(
+        public async Task<PagedBanks> GetBanks(
             IList<string> ids,
             string search,
             string country,
@@ -382,7 +382,7 @@ namespace Tokenio
             string sort)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetBanks(ids, search, country, page, perPage, sort);
+            return await unauthenticated.GetBanks(ids, search, country, page, perPage, sort);
         }
 
         /// <summary>
@@ -474,10 +474,10 @@ namespace Tokenio
         /// </summary>
         /// <param name="provider">If specified, return banks whose 'provider' matches the given provider</param>
         /// <returns>a list of country codes</returns>
-        public Task<IList<string>> GetCountries(string provider)
+        public async Task<IList<string>> GetCountries(string provider)
         {
             UnauthenticatedClient unauthenticatedClient = ClientFactory.Unauthenticated(channel);
-            return unauthenticatedClient.GetCountries(provider);
+            return await unauthenticatedClient.GetCountries(provider);
         }
 
         /// <summary>

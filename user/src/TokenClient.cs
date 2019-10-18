@@ -82,12 +82,12 @@ namespace Tokenio.User
         /// <param name="recoveryAgent">member id of the primary recovery agent.</param>
         /// <param name="realmId">member id of an existing Member to whose realm this new member belongs.</param>
         /// <returns>newly created member</returns>
-        public Task<Member> CreateMember(
+        public async Task<Member> CreateMember(
                 Alias alias,
                 string recoveryAgent = null,
                 string realmId = null)
         {
-            return CreateMemberImpl(alias, CreateMemberType.Personal, recoveryAgent, null, realmId)
+            return await CreateMemberImpl(alias, CreateMemberType.Personal, recoveryAgent, null, realmId)
                     .Map(member =>
                     {
                         var crypto = cryptoEngineFactory.Create(member.MemberId());
@@ -138,10 +138,10 @@ namespace Tokenio.User
         /// <param name="alias">nullable member alias to use, must be unique. If null, then no alias will
         ///     be created with the member.</param>
         /// <returns>newly created member</returns>
-        public Task<Member> SetUpMember(string memberId,
+        public async Task<Member> SetUpMember(string memberId,
                 Alias alias)
         {
-            return SetUpMemberImpl(memberId, alias)
+            return await SetUpMemberImpl(memberId, alias)
                     .Map(member =>
                     {
                         var crypto = cryptoEngineFactory.Create(member.MemberId());
@@ -173,11 +173,11 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="memberId">member id</param>
         /// <returns>member</returns>
-        public Task<Member> GetMember(string memberId)
+        public async Task<Member> GetMember(string memberId)
         {
             var crypto = cryptoEngineFactory.Create(memberId);
             var client = ClientFactory.Authenticated(channel, memberId, crypto);
-            return GetMemberImpl(memberId, client)
+            return await GetMemberImpl(memberId, client)
                     .Map(member =>
                     {
                         return new Member(member.MemberId(), client, tokenCluster,
@@ -201,10 +201,10 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="requestId">request id</param>
         /// <returns>token request that was stored with the request id</returns>
-        public Task<TokenRequest> RetrieveTokenRequest(string requestId)
+        public async Task<TokenRequest> RetrieveTokenRequest(string requestId)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.RetrieveTokenRequest(requestId)
+            return await unauthenticated.RetrieveTokenRequest(requestId)
                     .Map(tokenRequest =>
                             TokenRequest.FromProtos(
                                     tokenRequest.RequestPayload,
@@ -229,13 +229,13 @@ namespace Tokenio.User
         /// <param name="privilegedKey">the privileged public key in the member recovery operations</param>
         /// <param name="cryptoEngine">the new crypto engine</param>
         /// <returns>a task of the updated member</returns>
-        public Task<Member> CompleteRecovery(
+        public async Task<Member> CompleteRecovery(
                 string memberId,
                 IList<MemberRecoveryOperation> recoveryOperations,
                 Key privilegedKey,
                 ICryptoEngine cryptoEngine)
         {
-            return CompleteRecoveryImpl(memberId, recoveryOperations, privilegedKey, cryptoEngine)
+            return await CompleteRecoveryImpl(memberId, recoveryOperations, privilegedKey, cryptoEngine)
                     .Map(member =>
                     {
                         var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
@@ -269,13 +269,13 @@ namespace Tokenio.User
         /// <param name="verificationId">the verification id</param>
         /// <param name="code">the code</param>
         /// <returns>the new member</returns>
-        public Task<Member> CompleteRecoveryWithDefaultRule(
+        public async Task<Member> CompleteRecoveryWithDefaultRule(
                 string memberId,
                 string verificationId,
                 string code,
                 ICryptoEngine cryptoEngine)
         {
-            return CompleteRecoveryWithDefaultRuleImpl(memberId, verificationId, code, cryptoEngine)
+            return await CompleteRecoveryWithDefaultRuleImpl(memberId, verificationId, code, cryptoEngine)
                     .Map(member =>
                     {
                         var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
@@ -306,10 +306,10 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="tokenRequestId">token request id</param>
         /// <returns>token request result</returns>
-        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
+        public async Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetTokenRequestResult(tokenRequestId);
+            return await unauthenticated.GetTokenRequestResult(tokenRequestId);
         }
 
         /// <summary>
@@ -329,10 +329,10 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="alias">member id to provision the device for</param>
         /// <returns>device information</returns>
-        public Task<DeviceInfo> ProvisionDevice(Alias alias)
+        public async Task<DeviceInfo> ProvisionDevice(Alias alias)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetMemberId(alias)
+            return await unauthenticated.GetMemberId(alias)
                     .Map(memberId =>
                     {
                         var cryptoEngine = cryptoEngineFactory.Create(memberId);
@@ -364,7 +364,7 @@ namespace Tokenio.User
         /// <param name="keys">keys that need approval</param>
         /// <param name="deviceMetadata">device metadata of the keys</param>
         /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyAddKey(Alias alias, IList<Key> keys, DeviceMetadata deviceMetadata)
+        public async Task<NotifyStatus> NotifyAddKey(Alias alias, IList<Key> keys, DeviceMetadata deviceMetadata)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             var addKey = new AddKey
@@ -372,7 +372,7 @@ namespace Tokenio.User
                 DeviceMetadata = deviceMetadata
             };
             addKey.Keys.Add(keys);
-            return unauthenticated.NotifyAddKey(alias, addKey);
+            return await unauthenticated.NotifyAddKey(alias, addKey);
         }
 
         /// <summary>
@@ -395,14 +395,14 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="tokenPayload">the payload of a token to be sent</param>
         /// <returns>status of the notification request</returns>
-        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
+        public async Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
         {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
             if (tokenPayload.RefId.Length == 0)
             {
                 tokenPayload.RefId = Util.Nonce();
             }
-            return unauthenticated.NotifyPaymentRequest(tokenPayload);
+            return await unauthenticated.NotifyPaymentRequest(tokenPayload);
         }
 
         /// <summary>
@@ -423,7 +423,7 @@ namespace Tokenio.User
         /// <param name="deviceMetadata">device metadata of the keys</param>
         /// <param name="receiptContact">optional receipt contact to send</param>
         /// <returns>notify result of the notification request</returns>
-        public Task<NotifyResult> NotifyCreateAndEndorseToken(
+        public async Task<NotifyResult> NotifyCreateAndEndorseToken(
                string tokenRequestId,
               IList<Key> keys,
                DeviceMetadata deviceMetadata,
@@ -435,7 +435,7 @@ namespace Tokenio.User
                 DeviceMetadata = deviceMetadata
             };
             addKey.Keys.Add(keys);
-            return unauthenticated.NotifyCreateAndEndorseToken(
+            return await unauthenticated.NotifyCreateAndEndorseToken(
                     tokenRequestId,
                     addKey,
                     receiptContact);
@@ -463,10 +463,10 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="notificationId">notification id to invalidate</param>
         /// <returns>status of the invalidation request</returns>
-        public Task<NotifyStatus> InvalidateNotification(string notificationId)
+        public async Task<NotifyStatus> InvalidateNotification(string notificationId)
         {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.InvalidateNotification(notificationId);
+            return await unauthenticated.InvalidateNotification(notificationId);
         }
 
         /// <summary>
@@ -484,10 +484,10 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="blobId">id of the blob</param>
         /// <returns>Blob</returns>
-        public Task<Blob> GetBlob(string blobId)
+        public async Task<Blob> GetBlob(string blobId)
         {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetBlob(blobId);
+            return await unauthenticated.GetBlob(blobId);
         }
 
         /// <summary>
@@ -506,10 +506,10 @@ namespace Tokenio.User
         /// <param name="requestId">token request ID</param>
         /// <param name="options">new token request options</param>
         /// <returns>task</returns>
-        public Task UpdateTokenRequest(string requestId, TokenRequestOptions options)
+        public async Task UpdateTokenRequest(string requestId, TokenRequestOptions options)
         {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.UpdateTokenRequest(requestId, options);
+            await unauthenticated.UpdateTokenRequest(requestId, options);
         }
 
         /// <summary>

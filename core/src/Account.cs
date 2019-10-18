@@ -90,9 +90,9 @@ namespace Tokenio
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the account balance</returns>
-        public Task<Balance> GetBalance(Level keyLevel)
+        public async Task<Balance> GetBalance(Level keyLevel)
         {
-            return client.GetBalance(account.Id, keyLevel);
+            return await client.GetBalance(account.Id, keyLevel);
         }
 
         /// <summary>
@@ -111,11 +111,11 @@ namespace Tokenio
         /// <param name="transactionId">transaction id</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>the transaction</returns>
-        public Task<Transaction> GetTransaction(
+        public async Task<Transaction> GetTransaction(
             string transactionId,
             Level keyLevel)
         {
-            return client.GetTransaction(account.Id, transactionId, keyLevel);
+            return await client.GetTransaction(account.Id, transactionId, keyLevel);
         }
 
         /// <summary>
@@ -138,12 +138,12 @@ namespace Tokenio
         /// <param name="limit">limit</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>a paged list of transactions</returns>
-        public Task<PagedList<Transaction>> GetTransactions(
+        public async Task<PagedList<Transaction>> GetTransactions(
             string offset,
             int limit,
             Level keyLevel)
         {
-            return client.GetTransactions(account.Id, limit, keyLevel, offset);
+            return await client.GetTransactions(account.Id, limit, keyLevel, offset);
         }
 
         /// <summary>
@@ -176,11 +176,11 @@ namespace Tokenio
         /// <param name="standingOrderId">ID of the standing order</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>standing order record</returns>
-        public Task<StandingOrder> GetStandingOrder(
+        public async Task<StandingOrder> GetStandingOrder(
             string standingOrderId,
             Level keyLevel)
         {
-            return client.GetStandingOrder(account.Id, standingOrderId, keyLevel);
+            return await client.GetStandingOrder(account.Id, standingOrderId, keyLevel);
         }
 
         /// <summary>
@@ -203,12 +203,12 @@ namespace Tokenio
         /// <param name="keyLevel">key level</param>
         /// <param name="offset">optional offset to start at</param>
         /// <returns>a paged list of standing order records</returns>
-        public Task<PagedList<StandingOrder>> GetStandingOrders(
+        public async Task<PagedList<StandingOrder>> GetStandingOrders(
                 int limit,
                 Level keyLevel,
                 string offset = null)
         {
-            return client.GetStandingOrders(account.Id, limit, keyLevel, offset);
+            return await client.GetStandingOrders(account.Id, limit, keyLevel, offset);
         }
 
         /// <summary>

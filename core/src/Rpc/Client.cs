@@ -63,9 +63,9 @@ namespace Tokenio.Rpc
         /// the key used for authentication.
         /// </summary>
         /// <returns>the member</returns>
-        public Task<ProtoMember> GetMember()
+        public async Task<ProtoMember> GetMember()
         {
-            return GetMember(MemberId);
+            return await GetMember(MemberId);
         }
 
         /// <summary>
@@ -73,10 +73,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="memberId">the member id of the user</param>
         /// <returns>the member</returns>
-        public Task<ProtoMember> GetMember(string memberId)
+        public async Task<ProtoMember> GetMember(string memberId)
         {
             var request = new GetMemberRequest { MemberId = memberId };
-            return gateway(authenticationContext()).GetMemberAsync(request)
+            return await gateway(authenticationContext()).GetMemberAsync(request)
                 .ToTask(response => response.Member);
         }
 
@@ -86,11 +86,11 @@ namespace Tokenio.Rpc
         /// <param name="operations">the operations to apply</param>
         /// <param name="metadata">the metadata associated with the operations</param>
         /// <returns>the updated member</returns>
-        public Task<ProtoMember> UpdateMember(
+        public async Task<ProtoMember> UpdateMember(
             IList<MemberOperation> operations,
             IList<MemberOperationMetadata> metadata)
         {
-            return GetMember().FlatMap(member => UpdateMember(member, operations, metadata));
+            return await GetMember().FlatMap(member => UpdateMember(member, operations, metadata));
         }
 
         /// <summary>
@@ -99,9 +99,9 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="operations">the operations to apply</param>
         /// <returns>the updated member</returns>
-        public Task<ProtoMember> UpdateMember(IList<MemberOperation> operations)
+        public async Task<ProtoMember> UpdateMember(IList<MemberOperation> operations)
         {
-            return GetMember().FlatMap(member => UpdateMember(
+            return await GetMember().FlatMap(member => UpdateMember(
                 member,
                 operations,
                 new List<MemberOperationMetadata>()));
@@ -115,7 +115,7 @@ namespace Tokenio.Rpc
         /// <param name="operations">the operations to apply</param>
         /// <param name="metadata">the updated member</param>
         /// <returns></returns>
-        public Task<ProtoMember> UpdateMember(
+        public async Task<ProtoMember> UpdateMember(
             ProtoMember member,
             IList<MemberOperation> operations,
             IList<MemberOperationMetadata> metadata)
@@ -123,7 +123,7 @@ namespace Tokenio.Rpc
             var signer = cryptoEngine.CreateSigner(Level.Privileged);
             var request = Util.ToUpdateMemberRequest(member, operations, signer, metadata);
 
-            return gateway(authenticationContext()).UpdateMemberAsync(request)
+            return await gateway(authenticationContext()).UpdateMemberAsync(request)
                 .ToTask(response => response.Member);
         }
 
@@ -131,9 +131,9 @@ namespace Tokenio.Rpc
         /// Set Token as the recovery agent.
         /// </summary>
         /// <returns>a task</returns>
-        public Task UseDefaultRecoveryRule()
+        public async Task UseDefaultRecoveryRule()
         {
-            return gateway(authenticationContext()).GetDefaultAgentAsync(new GetDefaultAgentRequest())
+            await gateway(authenticationContext()).GetDefaultAgentAsync(new GetDefaultAgentRequest())
                 .ToTask(response => new MemberOperation
                 {
                     RecoveryRules = new MemberRecoveryRulesOperation
@@ -141,7 +141,7 @@ namespace Tokenio.Rpc
                         RecoveryRule = new RecoveryRule { PrimaryAgent = response.MemberId }
                     }
                 })
-                .FlatMap(opration => UpdateMember(new List<MemberOperation> { opration }));
+                .FlatMap(operation => UpdateMember(new List<MemberOperation> { operation }));
         }
 
         /// <summary>
@@ -167,10 +167,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>the account info</returns>
-        public Task<ProtoAccount> GetAccount(string accountId)
+        public async Task<ProtoAccount> GetAccount(string accountId)
         {
             var request = new GetAccountRequest { AccountId = accountId };
-            return gateway(authenticateOnBehalfOf()).GetAccountAsync(request)
+            return await gateway(authenticateOnBehalfOf()).GetAccountAsync(request)
                 .ToTask(response => response.Account);
         }
 
@@ -178,12 +178,12 @@ namespace Tokenio.Rpc
         /// Looks up all the linked funding accounts.
         /// </summary>
         /// <returns>a list of linked accounts</returns>
-        public Task<IList<ProtoAccount>> GetAccounts()
+        public async Task<IList<ProtoAccount>> GetAccounts()
         {
             var acc = gateway(authenticateOnBehalfOf())
                 .GetAccountsAsync(new GetAccountsRequest())
                 .ToTask(response => (IList<ProtoAccount>)response.Accounts);
-            return acc;
+            return await acc;
         }
 
         /// <summary>
@@ -193,10 +193,10 @@ namespace Tokenio.Rpc
         /// <param name="keyLevel">the key level</param>
         /// <returns>the account balance</returns>
         /// <exception cref="StepUpRequiredException"></exception>
-        public Task<Balance> GetBalance(string accountId, Level keyLevel)
+        public async Task<Balance> GetBalance(string accountId, Level keyLevel)
         {
             var request = new GetBalanceRequest { AccountId = accountId };
-            return gateway(authenticateOnBehalfOf(keyLevel)).GetBalanceAsync(request)
+            return await gateway(authenticateOnBehalfOf(keyLevel)).GetBalanceAsync(request)
                 .ToTask(response =>
                 {
                     switch (response.Status)
@@ -217,13 +217,13 @@ namespace Tokenio.Rpc
         /// <param name="accountIds">a list of account ids</param>
         /// <param name="keyLevel">the key level</param>
         /// <returns>a list of balances</returns>
-        public Task<IList<Balance>> GetBalances(IList<string> accountIds, Level keyLevel)
+        public async Task<IList<Balance>> GetBalances(IList<string> accountIds, Level keyLevel)
         {
             var request = new GetBalancesRequest
             {
                 AccountId = { accountIds }
             };
-            return gateway(authenticateOnBehalfOf(keyLevel)).GetBalancesAsync(request)
+            return await gateway(authenticateOnBehalfOf(keyLevel)).GetBalancesAsync(request)
                 .ToTask(response =>
                 {
                     IList<Balance> balances = new List<Balance>();
@@ -245,14 +245,14 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Look up an existing transaction and return the response.
+        /// Look up an existing transaction and return await the response.
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <param name="transactionId">the transaction id</param>
         /// <param name="keyLevel">the key level</param>
         /// <returns>the transaction</returns>
         /// <exception cref="StepUpRequiredException">if further authentication is required</exception>
-        public Task<Transaction> GetTransaction(
+        public async Task<Transaction> GetTransaction(
             string accountId,
             string transactionId,
             Level keyLevel)
@@ -262,7 +262,7 @@ namespace Tokenio.Rpc
                 AccountId = accountId,
                 TransactionId = transactionId
             };
-            return gateway(authenticateOnBehalfOf(keyLevel)).GetTransactionAsync(request)
+            return await gateway(authenticateOnBehalfOf(keyLevel)).GetTransactionAsync(request)
                 .ToTask(response =>
                 {
                     switch (response.Status)
@@ -278,7 +278,7 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Lookup transactions and return response.
+        /// Lookup transactions and return await response.
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <param name="limt">the limit</param>
@@ -286,7 +286,7 @@ namespace Tokenio.Rpc
         /// <param name="offset">nullable offset to start at</param>
         /// <returns>a paged list of transactions</returns>
         /// <exception cref="StepUpRequiredException">if further authentication is required</exception>
-        public Task<PagedList<Transaction>> GetTransactions(
+        public async Task<PagedList<Transaction>> GetTransactions(
             string accountId,
             int limt,
             Level keyLevel,
@@ -298,7 +298,7 @@ namespace Tokenio.Rpc
                 Page = PageBuilder(limt, offset)
             };
 
-            return gateway(authenticateOnBehalfOf(keyLevel)).GetTransactionsAsync(request)
+            return await gateway(authenticateOnBehalfOf(keyLevel)).GetTransactionsAsync(request)
                 .ToTask(response =>
                 {
                     switch (response.Status)
@@ -314,13 +314,13 @@ namespace Tokenio.Rpc
         }
         
         /// <summary>
-        /// Look up an existing standing order and return the response.
+        /// Look up an existing standing order and return await the response.
         /// </summary>
         /// <param name="accountId">account ID</param>
         /// <param name="standingOrderId">standing order ID</param>
         /// <param name="keyLevel">key level</param>
         /// <returns>transaction</returns>
-        public Task<StandingOrder> GetStandingOrder(
+        public async Task<StandingOrder> GetStandingOrder(
             string accountId,
             string standingOrderId,
             Level keyLevel)
@@ -330,7 +330,7 @@ namespace Tokenio.Rpc
                 AccountId = accountId,
                 StandingOrderId = standingOrderId
             };
-            return gateway(authenticateOnBehalfOf(keyLevel))
+            return await gateway(authenticateOnBehalfOf(keyLevel))
                     .GetStandingOrderAsync(request)
                     .ToTask(response =>
                     {
@@ -347,14 +347,14 @@ namespace Tokenio.Rpc
         }
         
         /// <summary>
-        /// Look up standing orders and return response.
+        /// Look up standing orders and return await response.
         /// </summary>
         /// <param name="accountId">account ID</param>
         /// <param name="limit">limit</param>
         /// <param name="keyLevel">key level</param>
         /// <param name="offset">offset</param>
         /// <returns></returns>
-        public Task<PagedList<StandingOrder>> GetStandingOrders(
+        public async Task<PagedList<StandingOrder>> GetStandingOrders(
                 string accountId,
                 int limit,
                 Level keyLevel,
@@ -365,7 +365,7 @@ namespace Tokenio.Rpc
                 AccountId = accountId,
                 Page = PageBuilder(limit, offset)
             };
-            return gateway(authenticateOnBehalfOf(keyLevel))
+            return await gateway(authenticateOnBehalfOf(keyLevel))
                     .GetStandingOrdersAsync(request)
                     .ToTask(response =>
                     {
@@ -387,7 +387,7 @@ namespace Tokenio.Rpc
         /// <param name="accountId">account ID</param>
         /// <param name="amount">charge amount</param>
         /// <returns>true if the account has sufficient funds to cover the charge</returns>
-        public Task<bool> ConfirmFunds(string accountId, Money amount)
+        public async Task<bool> ConfirmFunds(string accountId, Money amount)
         {
             var request = new ConfirmFundsRequest
             {
@@ -395,7 +395,7 @@ namespace Tokenio.Rpc
                 Amount = amount
             };
 
-            return gateway(authenticateOnBehalfOf())
+            return await gateway(authenticateOnBehalfOf())
                 .ConfirmFundsAsync(request)
                 .ToTask(response => response.FundsAvailable);
         }
@@ -405,10 +405,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="bankId">the bank id</param>
         /// <returns>the bank linking information</returns>
-        public Task<BankInfo> GetBankInfo(string bankId)
+        public async Task<BankInfo> GetBankInfo(string bankId)
         {
             var request = new GetBankInfoRequest { BankId = bankId };
-            return gateway(authenticationContext()).GetBankInfoAsync(request)
+            return await gateway(authenticationContext()).GetBankInfoAsync(request)
                 .ToTask(response => response.Info);
         }
         
@@ -418,10 +418,10 @@ namespace Tokenio.Rpc
         /// <param name="authorization">an OAuth authorization for linking</param>
         /// <returns>a list of linked accounts</returns>
         /// <exception cref="BankAuthorizationRequiredException"></exception>
-        public Task<IList<ProtoAccount>> LinkAccounts(OauthBankAuthorization authorization)
+        public async Task<IList<ProtoAccount>> LinkAccounts(OauthBankAuthorization authorization)
         {
             var request = new LinkAccountsOauthRequest { Authorization = authorization };
-            return gateway(authenticationContext()).LinkAccountsOauthAsync(request)
+            return await gateway(authenticationContext()).LinkAccountsOauthAsync(request)
                 .ToTask(response =>
                 {
                     if (response.Status == AccountLinkingStatus.FailureBankAuthorizationRequired)
@@ -429,7 +429,7 @@ namespace Tokenio.Rpc
                         throw new BankAuthorizationRequiredException();
                     }
 
-                    return (IList<ProtoAccount>)response.Accounts;
+                    return (IList<ProtoAccount>) response.Accounts;
                 });
         }
 
@@ -438,32 +438,32 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="balance">account balance to set</param>
         /// <returns>linked account</returns>
-        public Task<ProtoAccount> CreateAndLinkTestBankAccount(Money balance)
+        public async Task<ProtoAccount> CreateAndLinkTestBankAccount(Money balance)
         {
+            return await CreateTestBankAuth(balance)
+                .FlatMap(authorization =>
+                {
+                    return LinkAccounts(authorization)
+                        .Map(accounts =>
+                        {
+                            if (accounts.Count != 1)
+                            {
+                                throw new SystemException("Expected 1 account; found " + accounts.Count);
+                            }
 
-            return CreateTestBankAuth(balance)
-            .FlatMap(Authorization =>
-            {
-                return LinkAccounts(Authorization)
-               .Map(accounts =>
-               {
-                   if (accounts.Count != 1)
-                   {
-                       throw new SystemException("Expected 1 account; found " + accounts.Count);
-                   }
-                   return accounts.ElementAt(0);
-               });
-            });
+                            return accounts.ElementAt(0);
+                        });
+                });
         }
 
         /// <summary>
         /// Returns a list of aliases of the member.
         /// </summary>
         /// <returns>a list of aliases</returns>
-        public Task<IList<Alias>> GetAliases()
+        public async Task<IList<Alias>> GetAliases()
         {
             var request = new GetAliasesRequest();
-            return gateway(authenticationContext()).GetAliasesAsync(request)
+            return await gateway(authenticationContext()).GetAliasesAsync(request)
                 .ToTask(response => (IList<Alias>)response.Aliases);
         }
 
@@ -472,14 +472,14 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="alias">the alias to be verified</param>
         /// <returns>the verification id</returns>
-        public Task<string> RetryVerification(Alias alias)
+        public async Task<string> RetryVerification(Alias alias)
         {
             var request = new RetryVerificationRequest
             {
                 Alias = alias,
                 MemberId = MemberId
             };
-            return gateway(authenticationContext()).RetryVerificationAsync(request)
+            return await gateway(authenticationContext()).RetryVerificationAsync(request)
                 .ToTask(response => response.VerificationId);
         }
 
@@ -488,10 +488,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="authorization">the authorization</param>
         /// <returns>the signature</returns>
-        public Task<Signature> AuthorizeRecovery(Authorization authorization)
+        public async Task<Signature> AuthorizeRecovery(Authorization authorization)
         {
             var signer = cryptoEngine.CreateSigner(Level.Standard);
-            return Task.FromResult(new Signature
+            return await Task.FromResult(new Signature
             {
                 MemberId = MemberId,
                 KeyId = signer.GetKeyId(),
@@ -503,9 +503,9 @@ namespace Tokenio.Rpc
         /// Gets the member id of the default recovery agent.
         /// </summary>
         /// <returns>the member id</returns>
-        public Task<string> GetDefaultAgent()
+        public async Task<string> GetDefaultAgent()
         {
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                 .GetDefaultAgentAsync(new GetDefaultAgentRequest())
                 .ToTask(response => response.MemberId);
         }
@@ -516,23 +516,23 @@ namespace Tokenio.Rpc
         /// <param name="verificationId">the verification id</param>
         /// <param name="code">the verification code</param>
         /// <returns>a task</returns>
-        public Task VerifyAlias(string verificationId, string code)
+        public async Task VerifyAlias(string verificationId, string code)
         {
             var request = new VerifyAliasRequest
             {
                 VerificationId = verificationId,
                 Code = code
             };
-            return gateway(authenticationContext()).VerifyAliasAsync(request).ToTask();
+            await gateway(authenticationContext()).VerifyAliasAsync(request).ToTask();
         }
 
         /// <summary>
         /// Delete the member.
         /// </summary>
         /// <returns>Task</returns>
-        public Task DeleteMember()
+        public async Task DeleteMember()
         {
-            return gateway(authenticationContext(Level.Privileged))
+            await gateway(authenticationContext(Level.Privileged))
                 .DeleteMemberAsync(new DeleteMemberRequest())
                 .ToTask();
         }
@@ -542,10 +542,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="accountId">the account id</param>
         /// <returns>a list of transfer endpoints</returns>
-        public Task<IList<TransferDestination>> ResolveTransferDestination(string accountId)
+        public async Task<IList<TransferDestination>> ResolveTransferDestination(string accountId)
         {
             var request = new ResolveTransferDestinationsRequest { AccountId = accountId };
-            return gateway(authenticateOnBehalfOf()).ResolveTransferDestinationsAsync(request)
+            return await gateway(authenticateOnBehalfOf()).ResolveTransferDestinationsAsync(request)
                 .ToTask(response => (IList<TransferDestination>)response.TransferDestinations);
         }
 
@@ -573,7 +573,7 @@ namespace Tokenio.Rpc
         /// <param name="requestId">token request ID</param>
         /// <param name="options">new token request options</param>
         /// <returns>a task</returns>
-        public Task UpdateTokenRequest(
+        public async Task UpdateTokenRequest(
             string requestId,
             Proto.Common.TokenProtos.TokenRequestOptions options)
         {
@@ -582,7 +582,7 @@ namespace Tokenio.Rpc
                 RequestId = requestId,
                 RequestOptions = options
             };
-            return gateway(authenticationContext()).UpdateTokenRequestAsync(request).ToTask();
+            await gateway(authenticationContext()).UpdateTokenRequestAsync(request).ToTask();
         }
 
         /// <summary>
@@ -590,11 +590,11 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="payload">the access token payload</param>
         /// <returns>the access token</returns>
-        public Task<Token> CreateAccessToken(TokenPayload payload)
+        public async Task<Token> CreateAccessToken(TokenPayload payload)
         {
             payload.From = new TokenMember { Id = MemberId };
             var request = new CreateAccessTokenRequest { Payload = payload };
-            return gateway(authenticationContext()).CreateAccessTokenAsync(request)
+            return await gateway(authenticationContext()).CreateAccessTokenAsync(request)
                 .ToTask(response => response.Token);
         }
       
@@ -603,25 +603,25 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="memberId"></param>
         /// <returns></returns>
-        public Task<Profile> GetProfile(string memberId)
+        public async Task<Profile> GetProfile(string memberId)
         {
             var request = new GetProfileRequest
             {
                 MemberId = memberId
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                 .GetProfileAsync(request)
                 .ToTask(response => response.Profile);
         }
 
-        public Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
+        public async Task<Blob> GetProfilePicture(string memberId, ProfilePictureSize size)
         {
             var request = new GetProfilePictureRequest
             {
                 MemberId = memberId,
                 Size = size
             };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                 .GetProfilePictureAsync(request)
                 .ToTask(response => response.Blob);
         }
@@ -631,10 +631,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="payload">the blob payload</param>
         /// <returns>id of the blob</returns>
-        public Task<string> CreateBlob(Payload payload)
+        public async Task<string> CreateBlob(Payload payload)
         {
             var request = new CreateBlobRequest { Payload = payload };
-            return gateway(authenticationContext()).CreateBlobAsync(request)
+            return await gateway(authenticationContext()).CreateBlobAsync(request)
                 .ToTask(response => response.BlobId);
         }
 
@@ -645,14 +645,14 @@ namespace Tokenio.Rpc
         /// <param name="tokenId">the id of the token</param>
         /// <param name="blobId">the id of the blob</param>
         /// <returns></returns>
-        public Task<Blob> GetTokenBlob(string tokenId, string blobId)
+        public async Task<Blob> GetTokenBlob(string tokenId, string blobId)
         {
             var request = new GetTokenBlobRequest
             {
                 TokenId = tokenId,
                 BlobId = blobId
             };
-            return gateway(authenticationContext()).GetTokenBlobAsync(request)
+            return await gateway(authenticationContext()).GetTokenBlobAsync(request)
                 .ToTask(response => response.Blob);
         }
 
@@ -662,7 +662,7 @@ namespace Tokenio.Rpc
         /// <param name="name">the name of the address</param>
         /// <param name="address">the address json</param>
         /// <returns>the created address record</returns>
-        public Task<AddressRecord> AddAddress(string name, Address address)
+        public async Task<AddressRecord> AddAddress(string name, Address address)
         {
             var signer = cryptoEngine.CreateSigner(Level.Low);
             var request = new AddAddressRequest
@@ -676,7 +676,7 @@ namespace Tokenio.Rpc
                     Signature_ = signer.Sign(address)
                 }
             };
-            return gateway(authenticationContext()).AddAddressAsync(request)
+            return await gateway(authenticationContext()).AddAddressAsync(request)
                 .ToTask(response => response.Address);
         }
 
@@ -685,10 +685,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="addressId">the address id</param>
         /// <returns>the address record</returns>
-        public Task<AddressRecord> GetAddress(string addressId)
+        public async Task<AddressRecord> GetAddress(string addressId)
         {
             var request = new GetAddressRequest { AddressId = addressId };
-            return gateway(authenticateOnBehalfOf()).GetAddressAsync(request)
+            return await gateway(authenticateOnBehalfOf()).GetAddressAsync(request)
                 .ToTask(response => response.Address);
         }
 
@@ -696,9 +696,9 @@ namespace Tokenio.Rpc
         /// Looks up member addresses.
         /// </summary>
         /// <returns>a list of addresses</returns>
-        public Task<IList<AddressRecord>> GetAddresses()
+        public async Task<IList<AddressRecord>> GetAddresses()
         {
-            return gateway(authenticateOnBehalfOf()).GetAddressesAsync(new GetAddressesRequest())
+            return await gateway(authenticateOnBehalfOf()).GetAddressesAsync(new GetAddressesRequest())
                 .ToTask(response => (IList<AddressRecord>)response.Addresses);
         }
 
@@ -707,19 +707,19 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="addressId">the id of the address</param>
         /// <returns>a task</returns>
-        public Task DeleteAddress(string addressId)
+        public async Task DeleteAddress(string addressId)
         {
             var request = new DeleteAddressRequest { AddressId = addressId };
-            return gateway(authenticationContext()).DeleteAddressAsync(request).ToTask();
+            await gateway(authenticationContext()).DeleteAddressAsync(request).ToTask();
         }
 
         /// <summary>
         /// Get a list of paired devices.
         /// </summary>
         /// <returns>the list</returns>
-        public Task<IList<Device>> GetPairedDevices()
+        public async Task<IList<Device>> GetPairedDevices()
         {
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                 .GetPairedDevicesAsync(new GetPairedDevicesRequest())
                 .ToTask(response => (IList<Device>)response.Devices);
         }
@@ -729,10 +729,10 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="memberId">member ID of the TPP verify</param>
         /// <returns>a task</returns>
-        public Task VerifyAffiliate(string memberId)
+        public async Task VerifyAffiliate(string memberId)
         {
             var request = new VerifyAffiliateRequest { MemberId = memberId };
-            return gateway(authenticationContext()).VerifyAffiliateAsync(request).ToTask();
+            await gateway(authenticationContext()).VerifyAffiliateAsync(request).ToTask();
         }
 
 
@@ -742,7 +742,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="payload">the trusted beneficiary payload</param>
         /// <returns>a task</returns>
-        public Task AddTrustedBeneficiary(TrustedBeneficiary.Types.Payload payload)
+        public async Task AddTrustedBeneficiary(TrustedBeneficiary.Types.Payload payload)
         {
             var signer = cryptoEngine.CreateSigner(Level.Standard);
             var request = new AddTrustedBeneficiaryRequest
@@ -758,7 +758,7 @@ namespace Tokenio.Rpc
                     }
                 }
             };
-            return gateway(authenticationContext()).AddTrustedBeneficiaryAsync(request).ToTask();
+            await gateway(authenticationContext()).AddTrustedBeneficiaryAsync(request).ToTask();
         }
 
         /// <summary>
@@ -766,7 +766,7 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="payload">the trusted beneficiary payload</param>
         /// <returns>a task</returns>
-        public Task RemoveTrustedBeneficiary(TrustedBeneficiary.Types.Payload payload)
+        public async Task RemoveTrustedBeneficiary(TrustedBeneficiary.Types.Payload payload)
         {
             var signer = cryptoEngine.CreateSigner(Level.Standard);
             var request = new RemoveTrustedBeneficiaryRequest
@@ -781,18 +781,18 @@ namespace Tokenio.Rpc
                         Signature_ = signer.Sign(payload)
                     }
                 }
-            };
-            return gateway(authenticationContext()).RemoveTrustedBeneficiaryAsync(request).ToTask();
+            }; 
+            await gateway(authenticationContext()).RemoveTrustedBeneficiaryAsync(request).ToTask();
         }
 
         /// <summary>
         /// Gets a list of all trusted beneficiaries.
         /// </summary>
         /// <returns>the list</returns>
-        public Task<IList<TrustedBeneficiary>> GetTrustedBeneficiaries()
+        public async Task<IList<TrustedBeneficiary>> GetTrustedBeneficiaries()
         {
             var request = new GetTrustedBeneficiariesRequest();
-            return gateway(authenticationContext()).GetTrustedBeneficiariesAsync(request)
+            return await gateway(authenticationContext()).GetTrustedBeneficiariesAsync(request)
                 .ToTask(response => (IList<TrustedBeneficiary>)response.TrustedBeneficiaries);
         }
 
@@ -801,7 +801,7 @@ namespace Tokenio.Rpc
             return new Client(MemberId, cryptoEngine, channel);
         }
 
-        private Task<TokenOperationResult> CancelAndReplace(
+        private async Task<TokenOperationResult> CancelAndReplace(
             Token tokenToCancel,
             CreateToken tokenToCreate)
         {
@@ -820,15 +820,15 @@ namespace Tokenio.Rpc
                 },
                 CreateToken = tokenToCreate
             };
-            return gateway(authenticationContext()).ReplaceTokenAsync(request)
+            return await gateway(authenticationContext()).ReplaceTokenAsync(request)
                 .ToTask(response => response.Result);
         }
 
 
-        private Task<OauthBankAuthorization> CreateTestBankAuth(Money balance)
+        private async Task<OauthBankAuthorization> CreateTestBankAuth(Money balance)
         {
             var request = new CreateTestBankAccountRequest { Balance = balance };
-            return gateway(authenticationContext())
+            return await gateway(authenticationContext())
                 .CreateTestBankAccountAsync(request)
                 .ToTask(response => response.Authorization);
         }

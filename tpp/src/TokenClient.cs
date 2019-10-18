@@ -67,12 +67,12 @@ namespace Tokenio.Tpp
         /// <param name="partnerId">of partner member.</param>
         /// <param name="realmId">member Id of existing member to which this new member is associated with</param>
         /// <returns>newly created member</returns>
-        public Task<Member> CreateMember(
+        public async Task<Member> CreateMember(
           Alias alias,
           string partnerId = null,
           string realmId = null)
         {
-            return CreateMemberImpl(alias, CreateMemberType.Business, null, partnerId, realmId)
+            return await CreateMemberImpl(alias, CreateMemberType.Business, null, partnerId, realmId)
                 .Map(member =>
                 {
                     var crypto = cryptoEngineFactory.Create(member.MemberId());
@@ -120,10 +120,10 @@ namespace Tokenio.Tpp
         /// <param name="memberId">Member identifier.</param>
         /// <param name="alias">nullable member alias to use, must be unique. If null, then no alias will
         ///     be created with the member.</param>
-        public Task<Member> SetUpMember(string memberId,
+        public async Task<Member> SetUpMember(string memberId,
         Alias alias)
         {
-            return SetUpMemberImpl(memberId, alias)
+            return await SetUpMemberImpl(memberId, alias)
                 .Map(member =>
                 {
                     var crypto = cryptoEngineFactory.Create(member.MemberId());
@@ -151,12 +151,12 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <returns>The member.</returns>
         /// <param name="memberId">Member identifier.</param>
-        public Task<Member> GetMember(string memberId)
+        public async Task<Member> GetMember(string memberId)
         {
             var crypto = cryptoEngineFactory.Create(memberId);
             var client = ClientFactory.Authenticated(channel, memberId, crypto);
 
-            return GetMemberImpl(memberId, client)
+            return await GetMemberImpl(memberId, client)
              .Map(member =>
              {
 
@@ -180,10 +180,10 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="requestId">the request id</param>
         /// <returns>the token request</returns>
-        public Task<TokenRequest> RetrieveTokenRequest(string requestId)
+        public async Task<TokenRequest> RetrieveTokenRequest(string requestId)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.RetrieveTokenRequest(requestId)
+            return await unauthenticated.RetrieveTokenRequest(requestId)
                 .Map(tokenRequest => TokenRequest.FromProtos(
                     tokenRequest.RequestPayload,
                     tokenRequest.RequestOptions));
@@ -208,13 +208,13 @@ namespace Tokenio.Tpp
         /// <param name="recoveryOperations">Recovery operations.</param>
         /// <param name="privilegedKey">the privileged public key in the member recovery operations</param>
         /// <param name="cryptoEngine">Crypto engine.</param>
-        public Task<Member> CompleteRecovery(
+        public async Task<Member> CompleteRecovery(
                            string memberId,
                            IList<MemberRecoveryOperation> recoveryOperations,
                            Key privilegedKey,
                            ICryptoEngine cryptoEngine)
         {
-            return CompleteRecoveryImpl(memberId, recoveryOperations, privilegedKey, cryptoEngine)
+            return await CompleteRecoveryImpl(memberId, recoveryOperations, privilegedKey, cryptoEngine)
                 .Map(member =>
                 {
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
@@ -247,14 +247,14 @@ namespace Tokenio.Tpp
         /// <param name="verificationId">the verification id</param>
         /// <param name="code">the code</param>
         /// <returns>the new member</returns>
-        public Task<Member> CompleteRecoveryWithDefaultRule(
+        public async Task<Member> CompleteRecoveryWithDefaultRule(
                  string memberId,
                 string verificationId,
                 string code,
                 ICryptoEngine cryptoEngine)
         {
 
-            return CompleteRecoveryWithDefaultRuleImpl(memberId, verificationId, code, cryptoEngine)
+            return await CompleteRecoveryWithDefaultRuleImpl(memberId, verificationId, code, cryptoEngine)
                 .Map(member =>
                 {
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
@@ -287,14 +287,14 @@ namespace Tokenio.Tpp
         /// <param name="state">the state</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>the token request url</returns>
-        public Task<string> GenerateTokenRequestUrl(
+        public async Task<string> GenerateTokenRequestUrl(
             string requestId,
             string state = "",
             string csrfToken = "")
         {
             var csrfTokenHash = Util.HashString(csrfToken);
             var tokenRequestState = TokenRequestState.Create(csrfTokenHash, state);
-            return Task.FromResult(string.Format(
+            return await Task.FromResult(string.Format(
                 TOKEN_REQUEST_TEMPLATE,
                 tokenCluster.WebAppUrl,
                 requestId,
@@ -324,12 +324,12 @@ namespace Tokenio.Tpp
         /// <param name="callbackUrl">the token request callback url</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
-        public Task<TokenRequestCallback> ParseTokenRequestCallbackUrl(
+        public async Task<TokenRequestCallback> ParseTokenRequestCallbackUrl(
             string callbackUrl,
             string csrfToken = "")
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetTokenMember()
+            return await unauthenticated.GetTokenMember()
                 .Map(member =>
                 {
                     var parameters = TokenRequestCallbackParameters.Create(callbackUrl);
@@ -373,10 +373,10 @@ namespace Tokenio.Tpp
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>the token request result</returns>
-        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
+        public async Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetTokenRequestResult(tokenRequestId);
+            return await unauthenticated.GetTokenRequestResult(tokenRequestId);
         }
 
         /// <summary>

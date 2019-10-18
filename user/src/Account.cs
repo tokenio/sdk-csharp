@@ -36,9 +36,9 @@ namespace Tokenio.User
         /// Sets this account as a member's default account.
         /// </summary>
         /// <returns>taskk</returns>
-        public Task SetAsDefault()
+        public async Task SetAsDefault()
         {
-            return client.SetDefaultAccount(this.Id());
+            await client.SetDefaultAccount(this.Id());
         }
 
         /// <summary>
@@ -53,9 +53,9 @@ namespace Tokenio.User
         /// Looks up if this account is default.
         /// </summary>
         /// <returns>true if this account is default; false otherwise.</returns>
-        public Task<bool> IsDefault()
+        public async Task<bool> IsDefault()
         {
-            return client.IsDefault(this.Id());
+            return await client.IsDefault(this.Id());
         }
 
         /// <summary>

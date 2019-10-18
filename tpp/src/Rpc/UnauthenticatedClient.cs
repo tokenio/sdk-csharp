@@ -27,10 +27,10 @@ namespace Tokenio.Tpp.Rpc
         /// </summary>
         /// <param name="memberId">the member ID to check</param>
         /// <returns>the member</returns>
-        public Task<ProtoMember> GetMember(string memberId)
+        public async Task<ProtoMember> GetMember(string memberId)
         {
             var request = new GetMemberRequest { MemberId = memberId };
-            return gateway.GetMemberAsync(request)
+            return await gateway.GetMemberAsync(request)
                 .ToTask(response => response.Member);
         }
 
@@ -38,9 +38,9 @@ namespace Tokenio.Tpp.Rpc
         /// Returns the token member.
         /// </summary>
         /// <returns>the member</returns>
-        public Task<ProtoMember> GetTokenMember()
+        public async Task<ProtoMember> GetTokenMember()
         {
-            return GetMemberId(TOKEN).FlatMap(GetMember);
+            return await GetMemberId(TOKEN).FlatMap(GetMember);
         }
 
         /// <summary>
@@ -48,10 +48,10 @@ namespace Tokenio.Tpp.Rpc
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>the token request result</returns>
-        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
+        public async Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
         {
             var request = new GetTokenRequestResultRequest { TokenRequestId = tokenRequestId };
-            return gateway.GetTokenRequestResultAsync(request)
+            return await gateway.GetTokenRequestResultAsync(request)
                 .ToTask(response => new TokenRequestResult(response.TokenId, response.Signature));
         }
 
@@ -60,10 +60,10 @@ namespace Tokenio.Tpp.Rpc
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>token request that was stored with the request id</returns>
-        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId)
+        public async Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId)
         {
             var request = new RetrieveTokenRequestRequest { RequestId = tokenRequestId };
-            return gateway.RetrieveTokenRequestAsync(request)
+            return await gateway.RetrieveTokenRequestAsync(request)
                 .ToTask(response => response.TokenRequest);
         }
     }
