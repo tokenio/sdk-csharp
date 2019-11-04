@@ -445,6 +445,17 @@ namespace Tokenio.TokenRequests {
             }
 
             /// <summary>
+            /// Optional. Sets the source account to bypass account selection. May be required for
+            /// some banks.
+            /// </summary>
+            /// <param name="source">Source</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetSource(TransferEndpoint source) {
+                this.requestPayload.TransferBody.Instructions.Source = source;
+                return this;
+            }
+
+            /// <summary>
             /// Optional. Sets the ultimate party to which the money is due.
             /// </summary>
             /// <param name="ultimateCreditor">the ultimate creditor</param>
