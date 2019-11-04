@@ -2,6 +2,7 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.EidasProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
+using Tokenio.Security.Crypto;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio.Sample.Tpp {

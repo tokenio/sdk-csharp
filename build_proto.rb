@@ -81,18 +81,11 @@ end
 fetch_protos();
 
 # Build the command that generates the protos.
-core_dir = "./core/generated"
 sdk_dir = "./sdk/generated"
-system("rm -rf #{core_dir}");
 system("rm -rf #{sdk_dir}");
 
 #
-gencommand = generate_protos_cmd("common", core_dir) +
-generate_protos_cmd("common/provider", core_dir) +
-generate_protos_cmd("common/google/api", core_dir) +
-generate_protos_cmd("external/gateway", core_dir) +
-generate_protos_cmd("extensions", core_dir)+
-generate_protos_cmd("common", sdk_dir) +
+gencommand = generate_protos_cmd("common", sdk_dir) +
 generate_protos_cmd("common/provider", sdk_dir) +
 generate_protos_cmd("common/google/api", sdk_dir) +
 generate_protos_cmd("external/gateway", sdk_dir) +
