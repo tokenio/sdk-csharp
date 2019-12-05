@@ -17,28 +17,6 @@ namespace Tokenio.Security
         /// <param name="algorithm">Algorithm.</param>
         /// <param name="privateKey">Private key.</param>
         /// <param name="publicKey">Public key.</param>
-        public KeyPair(
-            string id,
-            Level level,
-            Algorithm algorithm,
-            byte[] privateKey,
-            byte[] publicKey)
-        {
-            Id = id;
-            Level = level;
-            Algorithm = algorithm;
-            PrivateKey = privateKey;
-            PublicKey = publicKey;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:Tokenio.Security.KeyPair"/> class.
-        /// </summary>
-        /// <param name="id">Identifier.</param>
-        /// <param name="level">Level.</param>
-        /// <param name="algorithm">Algorithm.</param>
-        /// <param name="privateKey">Private key.</param>
-        /// <param name="publicKey">Public key.</param>
         /// <param name="expiresAtMs">Expires at ms.</param>
         public KeyPair(
            string id,
@@ -46,7 +24,7 @@ namespace Tokenio.Security
            Algorithm algorithm,
            byte[] privateKey,
            byte[] publicKey,
-           long expiresAtMs)
+           long expiresAtMs = 0)
         {
             Id = id;
             Level = level;
@@ -78,7 +56,6 @@ namespace Tokenio.Security
             return ExpiresAtMs != 0 && ExpiresAtMs < Util.CurrentMillis();
         }
 
-
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -94,7 +71,6 @@ namespace Tokenio.Security
                    && PrivateKey.SequenceEqual(other.PrivateKey)
                    && PublicKey.SequenceEqual(other.PublicKey);
         }
-
 
         public override int GetHashCode()
         {
