@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.MemberProtos;
@@ -328,11 +331,73 @@ namespace Tokenio.Tpp
             string callbackUrl,
             string csrfToken = "")
         {
+            var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(callbackUrl));
+            return ParseTokenRequestCallbackParams(parameters, csrfToken);
+        }
+
+        /// <summary>
+        /// Parse the token request callback URL to extract the state and the token ID. Verify that the
+        /// state contains the CSRF token hash and that the signature on the state and CSRF token is
+        /// valid.
+        /// </summary>
+        /// <param name="callbackUrl">the token request callback url</param>
+        /// <param name="csrfToken">the csrf token</param>
+        /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
+        public TokenRequestCallback ParseTokenRequestCallbackUrlBlocking(
+            string callbackUrl,
+            string csrfToken = "")
+        {
+            return ParseTokenRequestCallbackUrl(callbackUrl, csrfToken).Result;
+        }
+
+        /// <summary>
+        /// Parse the token request callback Parameter to extract the state and the token ID. Verify that the
+        /// state contains the CSRF token hash and that the signature on the state and CSRF token is
+        /// valid.
+        /// </summary>
+        /// <param name="callbackParams">the token request callback parameters</param>
+        /// <param name="csrfToken">the csrf token</param>
+        /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
+        public Task<TokenRequestCallback> ParseTokenRequestCallbackParams(
+            NameValueCollection callbackParams,
+            string csrfToken)
+        {
+            var parameters = callbackParams.AllKeys.ToDictionary(param => param, param => callbackParams[param]);
+            return ParseTokenRequestCallbackParams(parameters, csrfToken);
+        }
+
+        /// <summary>
+        /// Parse the token request callback Parameter to extract the state and the token ID. Verify that the
+        /// state contains the CSRF token hash and that the signature on the state and CSRF token is
+        /// valid.
+        /// </summary>
+        /// <param name="callbackParams">the token request callback parameters</param>
+        /// <param name="csrfToken">the csrf token</param>
+        /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
+        public TokenRequestCallback ParseTokenRequestCallbackParamsBlocking(
+            NameValueCollection callbackParams,
+            string csrfToken)
+        {
+            return ParseTokenRequestCallbackParams(callbackParams, csrfToken).Result;
+        }
+
+        /// <summary>
+        /// Parse the token request callback Parameter to extract the state and the token ID. Verify that the
+        /// state contains the CSRF token hash and that the signature on the state and CSRF token is
+        /// valid.
+        /// </summary>
+        /// <param name="callbackParams">the token request callback parameters</param>
+        /// <param name="csrfToken">the csrf token</param>
+        /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
+        public Task<TokenRequestCallback> ParseTokenRequestCallbackParams(
+            IDictionary<string, string> callbackParams,
+            string csrfToken)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetTokenMember()
                 .Map(member =>
                 {
-                    var parameters = TokenRequestCallbackParameters.Create(callbackUrl);
+                    var parameters = TokenRequestCallbackParameters.Create(callbackParams);
                     var state = TokenRequestState.ParseFrom(parameters.SerializedState);
                     if (!state.CsrfTokenHash.Equals(Util.HashString(csrfToken)))
                     {
@@ -352,21 +417,19 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
-        /// Parse the token request callback URL to extract the state and the token ID. Verify that the
+        /// Parse the token request callback Parameter to extract the state and the token ID. Verify that the
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
         /// valid.
         /// </summary>
-        /// <param name="callbackUrl">the token request callback url</param>
+        /// <param name="callbackParams">the token request callback parameters</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
-        public TokenRequestCallback ParseTokenRequestCallbackUrlBlocking(
-            string callbackUrl,
-            string csrfToken = "")
+        public TokenRequestCallback ParseTokenRequestCallbackParamsBlocking(
+            IDictionary<string, string> callbackParams,
+            string csrfToken)
         {
-            return ParseTokenRequestCallbackUrl(callbackUrl, csrfToken).Result;
+            return ParseTokenRequestCallbackParams(callbackParams, csrfToken).Result;
         }
-
-
 
         /// <summary>
         /// Get the token request result based on a token's tokenRequestId.
