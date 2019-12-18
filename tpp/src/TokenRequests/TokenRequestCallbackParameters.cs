@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using Google.Protobuf;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.SecurityProtos;
-using Tokenio.Tpp.Utils;
 
 namespace Tokenio.Tpp.TokenRequests
 {
@@ -19,22 +17,20 @@ namespace Tokenio.Tpp.TokenRequests
         /// </summary>
         /// <returns>The TokenRequestCallbackParameters instance.</returns>
         /// <param name="url">URL.</param>
-        public static TokenRequestCallbackParameters Create(string url)
+        public static TokenRequestCallbackParameters Create(IDictionary<string, string> parameters)
         {
-            var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(url));
-            
-            if (!parameters.AllKeys.Contains(TOKEN_ID_FIELD)
-                || !parameters.AllKeys.Contains(STATE_FIELD)
-                || !parameters.AllKeys.Contains(SIGNATURE_FIELD))
+            if (!parameters.ContainsKey(TOKEN_ID_FIELD)
+                || !parameters.ContainsKey(STATE_FIELD)
+                || !parameters.ContainsKey(SIGNATURE_FIELD))
             {
                 throw new InvalidTokenRequestQuery();
             }
 
             return new TokenRequestCallbackParameters
             {
-                TokenId = parameters.Get(TOKEN_ID_FIELD),
-                SerializedState = parameters.Get(STATE_FIELD),
-                Signature = JsonParser.Default.Parse<Signature>(parameters.Get(SIGNATURE_FIELD))
+                TokenId = parameters[TOKEN_ID_FIELD],
+                SerializedState = parameters[STATE_FIELD],
+                Signature = JsonParser.Default.Parse<Signature>(parameters[SIGNATURE_FIELD])
             };
         }
 
