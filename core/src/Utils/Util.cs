@@ -65,8 +65,7 @@ namespace Tokenio.Utils {
                     AliasHash = NormalizeAndHashAlias(alias),
                     Realm = alias.Realm,
                     RealmId = alias.RealmId
-
-                    }
+                }
             };
         }
 
@@ -74,7 +73,7 @@ namespace Tokenio.Utils {
             return new MemberOperation {
                 RemoveAlias = new MemberAliasOperation {
                     AliasHash = NormalizeAndHashAlias(alias),
-                    Realm = alias.Realm
+                    RealmId = alias.RealmId
                     }
             };
         }
