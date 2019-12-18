@@ -609,6 +609,26 @@ namespace Tokenio.User.Rpc {
         }
 
         /// <summary>
+        /// Stores a linking request.
+        /// </summary>
+        /// <param name="callbackUrl">callback URL</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>linking request ID</returns>
+        public Task<string> StoreLinkingRequest(
+            string callbackUrl,
+            string tokenRequestId)
+        {
+            var request = new StoreLinkingRequestRequest
+            {
+                CallbackUrl = callbackUrl,
+                TokenRequestId = tokenRequestId
+            };
+            return gateway(authenticationContext())
+                .StoreLinkingRequestAsync(request)
+                .ToTask(response => response.LinkingRequestId);
+        }
+
+        /// <summary>
         /// Apply SCA for the given list of account IDs.
         /// </summary>
         /// <param name = "accountIds">list of account ids</param>
