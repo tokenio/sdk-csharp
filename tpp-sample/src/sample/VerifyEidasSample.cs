@@ -5,8 +5,10 @@ using Tokenio.Security;
 using Tokenio.Security.Crypto;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Sample.Tpp {
-    public class VerifyEidasSample {
+namespace Tokenio.Sample.Tpp
+{
+    public class VerifyEidasSample
+    {
         /// <summary>
         /// Creates a TPP member and verifies it using eIDAS certificate.
         /// </summary>
@@ -21,16 +23,18 @@ namespace Tokenio.Sample.Tpp {
             string tppAuthNumber,
             string certificate,
             string bankId,
-            byte[] privateKey) {
+            byte[] privateKey)
+        {
             Algorithm signingAlgorithm = Algorithm.Rs256;
             ISigner signer = new Rs256Signer("eidas", privateKey);
 
             // resolve memberId of the bank TPP is trying to get access to
             string bankMemberId = client
-                .ResolveAliasBlocking(new Alias { Value = bankId, Type = Alias.Types.Type.Bank })
+                .ResolveAliasBlocking(new Alias {Value = bankId, Type = Alias.Types.Type.Bank})
                 .Id;
             // create an eIDAS alias under realm of the target bank
-            Alias eidasAlias = new Alias {
+            Alias eidasAlias = new Alias
+            {
                 Value = tppAuthNumber.Trim(),
                 RealmId = bankMemberId,
                 Type = Alias.Types.Type.Eidas
@@ -38,7 +42,8 @@ namespace Tokenio.Sample.Tpp {
             // create a member under realm of the bank with eIDAS alias
             Tokenio.Tpp.Member tpp = client.CreateMember(eidasAlias, null, bankMemberId).Result;
             // construct a payload with all the required data
-            VerifyEidasPayload payload = new VerifyEidasPayload {
+            VerifyEidasPayload payload = new VerifyEidasPayload
+            {
                 Algorithm = signingAlgorithm,
                 Alias = eidasAlias,
                 Certificate = certificate,

@@ -6,11 +6,15 @@ using Tokenio.Security;
 using Xunit;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class MemberMethodsSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class MemberMethodsSampleTest
+    {
         [Fact]
-        public void KeysTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void KeysTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 IKeyStore keyStore = new InMemoryKeyStore();
                 ICryptoEngine cryptoEngine = new TokenCryptoEngine("member-id", keyStore);
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
@@ -19,8 +23,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void ProfilesTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void ProfilesTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 Profile profile = MemberMethodsSample.Profiles(member);
                 Assert.NotEmpty(profile.DisplayNameFirst);
@@ -29,8 +35,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void AliasesTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void AliasesTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 MemberMethodsSample.Aliases(tokenClient, member);
                 List<Alias> aliases = member.GetAliasesBlocking().ToList();

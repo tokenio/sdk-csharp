@@ -23,8 +23,10 @@ namespace Tokenio.Rpc
     /// don't require authentication. We use this client to create new member or getMember
     /// an existing one and switch to the authenticated <see cref="Client"/>.
     /// </summary>
-    public class UnauthenticatedClient {
-        protected static readonly Alias TOKEN = new Alias {
+    public class UnauthenticatedClient
+    {
+        protected static readonly Alias TOKEN = new Alias
+        {
             Type = Domain,
             Value = "token.io"
         };
@@ -35,7 +37,8 @@ namespace Tokenio.Rpc
         /// Creates an instance.
         /// </summary>
         /// <param name="gateway">the gateway gRPC client</param>
-        public UnauthenticatedClient(GatewayService.GatewayServiceClient gateway) {
+        public UnauthenticatedClient(GatewayService.GatewayServiceClient gateway)
+        {
             this.gateway = gateway;
         }
 
@@ -43,15 +46,15 @@ namespace Tokenio.Rpc
         /// Gets the default agent request.
         /// </summary>
         /// <returns>The default agent request.</returns>
-        public ResolveAliasRequest GetDefaultAgentRequest() {
-
-            return new ResolveAliasRequest {
-
-                Alias = new Alias {
+        public ResolveAliasRequest GetDefaultAgentRequest()
+        {
+            return new ResolveAliasRequest
+            {
+                Alias = new Alias
+                {
                     Type = Domain,
                     Value = "token.io"
-                    }
-
+                }
             };
         }
 
@@ -59,7 +62,8 @@ namespace Tokenio.Rpc
         /// Gets the default agent.
         /// </summary>
         /// <returns>The default agent.</returns>
-        public Task<string> GetDefaultAgent() {
+        public Task<string> GetDefaultAgent()
+        {
             return gateway.ResolveAliasAsync(GetDefaultAgentRequest())
                 .ToTask(response => response.Member?.Id);
         }
@@ -70,8 +74,9 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="alias">alias to resolve</param>
         /// <returns>TokenMember</returns>
-        public Task<TokenMember> ResolveAlias(Alias alias) {
-            var request = new ResolveAliasRequest { Alias = alias };
+        public Task<TokenMember> ResolveAlias(Alias alias)
+        {
+            var request = new ResolveAliasRequest {Alias = alias};
             return gateway.ResolveAliasAsync(request)
                 .ToTask(response => response.Member);
         }
@@ -81,11 +86,13 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>member id if alias already exists, null otherwise</returns>
-        public Task<string> GetMemberId(Alias alias) {
-            var request = new ResolveAliasRequest { Alias = alias };
+        public Task<string> GetMemberId(Alias alias)
+        {
+            var request = new ResolveAliasRequest {Alias = alias};
             return gateway.ResolveAliasAsync(request)
                 .ToTask(response => response.Member != null
-                    ? response.Member.Id : throw new MemberNotFoundException(alias));
+                    ? response.Member.Id
+                    : throw new MemberNotFoundException(alias));
         }
 
         /// <summary>
@@ -99,13 +106,15 @@ namespace Tokenio.Rpc
         public Task<string> CreateMemberId(CreateMemberType createMemberType,
             string tokenRequestId = null,
             string partnerId = null,
-            string realmId = null) {
-            var request = new CreateMemberRequest {
-            Nonce = Util.Nonce(),
-            MemberType = createMemberType,
-            TokenRequestId = tokenRequestId ?? "",
-            PartnerId = partnerId ?? "",
-            RealmId = realmId ?? ""
+            string realmId = null)
+        {
+            var request = new CreateMemberRequest
+            {
+                Nonce = Util.Nonce(),
+                MemberType = createMemberType,
+                TokenRequestId = tokenRequestId ?? "",
+                PartnerId = partnerId ?? "",
+                RealmId = realmId ?? ""
             };
             return gateway.CreateMemberAsync(request)
                 .ToTask(response => response.MemberId);
@@ -123,19 +132,23 @@ namespace Tokenio.Rpc
             string memberId,
             IList<MemberOperation> operations,
             IList<MemberOperationMetadata> metadata,
-            ISigner signer) {
-            var update = new MemberUpdate {
+            ISigner signer)
+        {
+            var update = new MemberUpdate
+            {
                 MemberId = memberId,
-                Operations = { operations }
+                Operations = {operations}
             };
-            var request = new UpdateMemberRequest {
+            var request = new UpdateMemberRequest
+            {
                 Update = update,
-                UpdateSignature = new Signature {
-                MemberId = memberId,
-                KeyId = signer.GetKeyId(),
-                Signature_ = signer.Sign(update)
+                UpdateSignature = new Signature
+                {
+                    MemberId = memberId,
+                    KeyId = signer.GetKeyId(),
+                    Signature_ = signer.Sign(update)
                 },
-                Metadata = { metadata }
+                Metadata = {metadata}
             };
 
             return gateway.UpdateMemberAsync(request)
@@ -147,8 +160,9 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="alias">the alias used to recover</param>
         /// <returns>the verification ID</returns>
-        public Task<string> BeginRecovery(Alias alias) {
-            var request = new BeginRecoveryRequest { Alias = alias.ToNormalized() };
+        public Task<string> BeginRecovery(Alias alias)
+        {
+            var request = new BeginRecoveryRequest {Alias = alias.ToNormalized()};
             return gateway.BeginRecoveryAsync(request)
                 .ToTask(response => response.VerificationId);
         }
@@ -159,13 +173,15 @@ namespace Tokenio.Rpc
         /// <param name="memberId">the ID of the member we claim to be</param>
         /// <param name="privilegedKey">the new privileged key we want to use</param>
         /// <returns>the authorization</returns>
-        public Task<Authorization> CreateRecoveryAuthorization(string memberId, Key privilegedKey) {
-            var request = new GetMemberRequest { MemberId = memberId };
+        public Task<Authorization> CreateRecoveryAuthorization(string memberId, Key privilegedKey)
+        {
+            var request = new GetMemberRequest {MemberId = memberId};
             return gateway.GetMemberAsync(request)
-                .ToTask(response => new Authorization {
+                .ToTask(response => new Authorization
+                {
                     MemberId = memberId,
-                        MemberKey = privilegedKey,
-                        PrevHash = response.Member.LastHash
+                    MemberKey = privilegedKey,
+                    PrevHash = response.Member.LastHash
                 });
         }
 
@@ -181,18 +197,20 @@ namespace Tokenio.Rpc
             string memberId,
             IList<MemberRecoveryOperation> recoveryOperations,
             Key privilegedKey,
-            ICryptoEngine cryptoEngine) {
-            var operations = recoveryOperations.Select(re => new MemberOperation { Recover = re }).ToList();
+            ICryptoEngine cryptoEngine)
+        {
+            var operations = recoveryOperations.Select(re => new MemberOperation {Recover = re}).ToList();
 
             operations.Add(Util.ToAddKeyOperation(privilegedKey));
             operations.Add(Util.ToAddKeyOperation(cryptoEngine.GenerateKey(Level.Standard)));
             operations.Add(Util.ToAddKeyOperation(cryptoEngine.GenerateKey(Level.Low)));
 
             var signer = cryptoEngine.CreateSigner(Level.Privileged);
-            var memberRequest = new GetMemberRequest { MemberId = memberId };
+            var memberRequest = new GetMemberRequest {MemberId = memberId};
             return gateway.GetMemberAsync(memberRequest)
                 .ToTask(response => response.Member)
-                .FlatMap(member => {
+                .FlatMap(member =>
+                {
                     var request = Util.ToUpdateMemberRequest(member, operations, signer);
                     return gateway.UpdateMemberAsync(request).ToTask(response => response.Member);
                 });
@@ -210,24 +228,26 @@ namespace Tokenio.Rpc
             string memberId,
             string verificationId,
             string code,
-            ICryptoEngine cryptoEngine) {
+            ICryptoEngine cryptoEngine)
+        {
             var privilegedKey = cryptoEngine.GenerateKey(Level.Privileged);
             var standardKey = cryptoEngine.GenerateKey(Level.Standard);
             var lowKey = cryptoEngine.GenerateKey(Level.Low);
 
             var signer = cryptoEngine.CreateSigner(Level.Privileged);
 
-            var operations = new List<Key> { privilegedKey, standardKey, lowKey }
+            var operations = new List<Key> {privilegedKey, standardKey, lowKey}
                 .Select(Util.ToAddKeyOperation)
                 .ToList();
 
-            var memberRequest = new GetMemberRequest { MemberId = memberId };
+            var memberRequest = new GetMemberRequest {MemberId = memberId};
             return Util.TwoTasks(
                     gateway.GetMemberAsync(memberRequest)
-                    .ToTask(response => response.Member),
+                        .ToTask(response => response.Member),
                     GetRecoveryAuthorization(verificationId, code, privilegedKey))
-                .Map(memberAndEntry => {
-                    operations.Add(new MemberOperation { Recover = memberAndEntry.Value });
+                .Map(memberAndEntry =>
+                {
+                    operations.Add(new MemberOperation {Recover = memberAndEntry.Value});
                     return Util.ToUpdateMemberRequest(memberAndEntry.Key, operations, signer);
                 })
                 .FlatMap(updateMember => gateway
@@ -245,8 +265,10 @@ namespace Tokenio.Rpc
         public Task<MemberRecoveryOperation> GetRecoveryAuthorization(
             string verificationId,
             string code,
-            Key privilegedKey) {
-            var request = new CompleteRecoveryRequest {
+            Key privilegedKey)
+        {
+            var request = new CompleteRecoveryRequest
+            {
                 VerificationId = verificationId,
                 Code = code,
                 Key = privilegedKey
@@ -281,38 +303,47 @@ namespace Tokenio.Rpc
             int? perPage,
             string sort,
             string provider,
-            BankFeatures bankFeatures) {
+            BankFeatures bankFeatures)
+        {
             var request = new GetBanksRequest();
 
-            if (ids != null) {
+            if (ids != null)
+            {
                 request.Filter.Ids.Add(ids);
             }
 
-            if (search != null) {
+            if (search != null)
+            {
                 request.Filter.Search = search;
             }
 
-            if (country != null) {
+            if (country != null)
+            {
                 request.Filter.Country = country;
             }
 
-            if (page.HasValue) {
+            if (page.HasValue)
+            {
                 request.Page = page.Value;
             }
 
-            if (perPage.HasValue) {
+            if (perPage.HasValue)
+            {
                 request.PerPage = perPage.Value;
             }
 
-            if (sort != null) {
+            if (sort != null)
+            {
                 request.Sort = sort;
             }
 
-            if (provider != null) {
+            if (provider != null)
+            {
                 request.Filter.Provider = provider;
             }
 
-            if (bankFeatures != null) {
+            if (bankFeatures != null)
+            {
                 request.Filter.BankFeatures = bankFeatures;
             }
 
@@ -325,11 +356,14 @@ namespace Tokenio.Rpc
         /// </summary>
         /// <param name="provider">If specified, return banks whose 'provider' matches the given provider</param>
         /// <returns>a list if country codes</returns>
-        public Task<IList<string>> GetCountries(string provider) {
+        public Task<IList<string>> GetCountries(string provider)
+        {
             var request = new GetBanksCountriesRequest();
-            if (provider != null) {
-                var filter = new BankFilter {
-                Provider = provider
+            if (provider != null)
+            {
+                var filter = new BankFilter
+                {
+                    Provider = provider
                 };
                 request.Filter = filter;
             }

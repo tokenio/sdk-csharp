@@ -15,8 +15,10 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ManagedChannel = Tokenio.Rpc.ManagedChannel;
 using TokenRequest = Tokenio.TokenRequests.TokenRequest;
 
-namespace Tokenio.User {
-    public class TokenClient : Tokenio.TokenClient {
+namespace Tokenio.User
+{
+    public class TokenClient : Tokenio.TokenClient
+    {
         private readonly IBrowserFactory browserFactory;
 
         /// <summary>
@@ -29,7 +31,9 @@ namespace Tokenio.User {
         public TokenClient(
             ManagedChannel channel,
             ICryptoEngineFactory cryptoEngineFactory,
-            TokenCluster tokenCluster, IBrowserFactory browserFactory) : base(channel, cryptoEngineFactory, tokenCluster) {
+            TokenCluster tokenCluster, IBrowserFactory browserFactory) : base(channel, cryptoEngineFactory,
+            tokenCluster)
+        {
             this.browserFactory = browserFactory;
         }
 
@@ -38,7 +42,8 @@ namespace Tokenio.User {
         /// build a {@link TokenClient} instance.
         /// </summary>
         /// <returns>builder</returns>
-        public static Builder NewBuilder() {
+        public static Builder NewBuilder()
+        {
             return new Builder();
         }
 
@@ -48,7 +53,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="cluster">token cluster to connect to</param>
         /// <returns>{@link TokenClient} instance</returns>
-        public static TokenClient Create(TokenCluster cluster) {
+        public static TokenClient Create(TokenCluster cluster)
+        {
             return NewBuilder()
                 .ConnectTo(cluster)
                 .Build();
@@ -61,7 +67,8 @@ namespace Tokenio.User {
         /// <param name="cluster">token cluster to connect to</param>
         /// <param name="developerKey">developer key</param>
         /// <returns>{@link TokenClient} instance</returns>
-        public static TokenClient Create(TokenCluster cluster, string developerKey) {
+        public static TokenClient Create(TokenCluster cluster, string developerKey)
+        {
             return NewBuilder()
                 .ConnectTo(cluster)
                 .DeveloperKey(developerKey)
@@ -79,12 +86,15 @@ namespace Tokenio.User {
         public Task<Member> CreateMember(
             Alias alias,
             string recoveryAgent = null,
-            string realmId = null) {
+            string realmId = null)
+        {
             return CreateMemberImpl(alias, CreateMemberType.Personal, recoveryAgent, null, realmId)
-                .Map(member => {
+                .Map(member =>
+                {
                     var crypto = cryptoEngineFactory.Create(member.MemberId());
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), crypto);
-                    return new Member(member.MemberId(), client, tokenCluster, member.PartnerId(), member.RealmId(), browserFactory);
+                    return new Member(member.MemberId(), client, tokenCluster, member.PartnerId(), member.RealmId(),
+                        browserFactory);
                 });
         }
 
@@ -97,7 +107,8 @@ namespace Tokenio.User {
         /// <returns>newly created member</returns>
         public Member CreateMemberBlocking(
             Alias alias,
-            string recoveryAgent = null) {
+            string recoveryAgent = null)
+        {
             return CreateMember(alias, recoveryAgent, null).Result;
         }
 
@@ -109,7 +120,8 @@ namespace Tokenio.User {
         ///     be created with the member.</param>
         /// <param name="realmId">member id of an existing Member to whose realm this new member belongs.</param>
         /// <returns>newly created member</returns>
-        public Member CreateMemberInRealmBlocking(Alias alias, string realmId) {
+        public Member CreateMemberInRealmBlocking(Alias alias, string realmId)
+        {
             return CreateMember(alias, realmId, realmId).Result;
         }
 
@@ -124,9 +136,11 @@ namespace Tokenio.User {
         ///     be created with the member.</param>
         /// <returns>newly created member</returns>
         public Task<Member> SetUpMember(string memberId,
-            Alias alias) {
+            Alias alias)
+        {
             return SetUpMemberImpl(memberId, alias)
-                .Map(member => {
+                .Map(member =>
+                {
                     var crypto = cryptoEngineFactory.Create(member.MemberId());
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), crypto);
                     return new Member(member.MemberId(), client, tokenCluster,
@@ -145,7 +159,8 @@ namespace Tokenio.User {
         ///     be created with the member.</param>
         /// <returns>newly created member</returns>
         public Member SetUpMemberBlocking(string memberId,
-            Alias alias = null) {
+            Alias alias = null)
+        {
             return SetUpMember(memberId, alias).Result;
         }
 
@@ -154,11 +169,13 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="memberId">member id</param>
         /// <returns>member</returns>
-        public Task<Member> GetMember(string memberId) {
+        public Task<Member> GetMember(string memberId)
+        {
             var crypto = cryptoEngineFactory.Create(memberId);
             var client = ClientFactory.Authenticated(channel, memberId, crypto);
             return GetMemberImpl(memberId, client)
-                .Map(member => {
+                .Map(member =>
+                {
                     return new Member(member.MemberId(), client, tokenCluster,
                         member.PartnerId(),
                         member.RealmId(), browserFactory);
@@ -170,7 +187,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="memberId">member id</param>
         /// <returns>member</returns>
-        public Member GetMemberBlocking(string memberId) {
+        public Member GetMemberBlocking(string memberId)
+        {
             return GetMember(memberId).Result;
         }
 
@@ -179,7 +197,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="requestId">request id</param>
         /// <returns>token request that was stored with the request id</returns>
-        public Task<TokenRequest> RetrieveTokenRequest(string requestId) {
+        public Task<TokenRequest> RetrieveTokenRequest(string requestId)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.RetrieveTokenRequest(requestId)
                 .Map(tokenRequest =>
@@ -193,7 +212,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="requestId">request id</param>
         /// <returns>token request that was stored with the request id</returns>
-        public TokenRequest RetrieveTokenRequestBlocking(string requestId) {
+        public TokenRequest RetrieveTokenRequestBlocking(string requestId)
+        {
             return RetrieveTokenRequest(requestId).Result;
         }
 
@@ -209,9 +229,11 @@ namespace Tokenio.User {
             string memberId,
             IList<MemberRecoveryOperation> recoveryOperations,
             Key privilegedKey,
-            ICryptoEngine cryptoEngine) {
+            ICryptoEngine cryptoEngine)
+        {
             return CompleteRecoveryImpl(memberId, recoveryOperations, privilegedKey, cryptoEngine)
-                .Map(member => {
+                .Map(member =>
+                {
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
                     return new Member(member.MemberId(), client, tokenCluster,
                         member.PartnerId(),
@@ -231,7 +253,8 @@ namespace Tokenio.User {
             string memberId,
             IList<MemberRecoveryOperation> recoveryOperations,
             Key privilegedKey,
-            ICryptoEngine cryptoEngine) {
+            ICryptoEngine cryptoEngine)
+        {
             return CompleteRecovery(memberId, recoveryOperations, privilegedKey, cryptoEngine).Result;
         }
 
@@ -246,9 +269,11 @@ namespace Tokenio.User {
             string memberId,
             string verificationId,
             string code,
-            ICryptoEngine cryptoEngine) {
+            ICryptoEngine cryptoEngine)
+        {
             return CompleteRecoveryWithDefaultRuleImpl(memberId, verificationId, code, cryptoEngine)
-                .Map(member => {
+                .Map(member =>
+                {
                     var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
                     return new Member(member.MemberId(), client, tokenCluster,
                         member.PartnerId(),
@@ -267,7 +292,8 @@ namespace Tokenio.User {
             string memberId,
             string verificationId,
             string code,
-            ICryptoEngine cryptoEngine) {
+            ICryptoEngine cryptoEngine)
+        {
             return CompleteRecoveryWithDefaultRule(memberId, verificationId, code, cryptoEngine).Result;
         }
 
@@ -276,7 +302,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenRequestId">token request id</param>
         /// <returns>token request result</returns>
-        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId) {
+        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetTokenRequestResult(tokenRequestId);
         }
@@ -286,7 +313,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>the token request result</returns>
-        public TokenRequestResult GetTokenRequestResultBlocking(string tokenRequestId) {
+        public TokenRequestResult GetTokenRequestResultBlocking(string tokenRequestId)
+        {
             return GetTokenRequestResult(tokenRequestId).Result;
         }
 
@@ -297,12 +325,15 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="alias">member id to provision the device for</param>
         /// <returns>device information</returns>
-        public Task<DeviceInfo> ProvisionDevice(Alias alias) {
+        public Task<DeviceInfo> ProvisionDevice(Alias alias)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetMemberId(alias)
-                .Map(memberId => {
+                .Map(memberId =>
+                {
                     var cryptoEngine = cryptoEngineFactory.Create(memberId);
-                    var Keys = new List<Key> {
+                    var Keys = new List<Key>
+                    {
                         cryptoEngine.GenerateKey(Level.Privileged),
                         cryptoEngine.GenerateKey(Level.Standard),
                         cryptoEngine.GenerateKey(Level.Low)
@@ -318,7 +349,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="alias">member id to provision the device for</param>
         /// <returns>device information</returns>
-        public DeviceInfo ProvisionDeviceBlocking(Alias alias) {
+        public DeviceInfo ProvisionDeviceBlocking(Alias alias)
+        {
             return ProvisionDevice(alias).Result;
         }
 
@@ -329,9 +361,11 @@ namespace Tokenio.User {
         /// <param name="keys">keys that need approval</param>
         /// <param name="deviceMetadata">device metadata of the keys</param>
         /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyAddKey(Alias alias, IList<Key> keys, DeviceMetadata deviceMetadata) {
+        public Task<NotifyStatus> NotifyAddKey(Alias alias, IList<Key> keys, DeviceMetadata deviceMetadata)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            var addKey = new AddKey {
+            var addKey = new AddKey
+            {
                 DeviceMetadata = deviceMetadata
             };
             addKey.Keys.Add(keys);
@@ -348,7 +382,8 @@ namespace Tokenio.User {
         public NotifyStatus NotifyAddKeyBlocking(
             Alias alias,
             IList<Key> keys,
-            DeviceMetadata deviceMetadata) {
+            DeviceMetadata deviceMetadata)
+        {
             return NotifyAddKey(alias, keys, deviceMetadata).Result;
         }
 
@@ -357,11 +392,14 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenPayload">the payload of a token to be sent</param>
         /// <returns>status of the notification request</returns>
-        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload) {
+        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
+        {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            if (tokenPayload.RefId.Length == 0) {
+            if (tokenPayload.RefId.Length == 0)
+            {
                 tokenPayload.RefId = Util.Nonce();
             }
+
             return unauthenticated.NotifyPaymentRequest(tokenPayload);
         }
 
@@ -370,7 +408,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="tokenPayload">the payload of a token to be sent</param>
         /// <returns>status of the notification request</returns>
-        public NotifyStatus NotifyPaymentRequestBlocking(TokenPayload tokenPayload) {
+        public NotifyStatus NotifyPaymentRequestBlocking(TokenPayload tokenPayload)
+        {
             return NotifyPaymentRequest(tokenPayload).Result;
         }
 
@@ -386,9 +425,11 @@ namespace Tokenio.User {
             string tokenRequestId,
             IList<Key> keys,
             DeviceMetadata deviceMetadata,
-            ReceiptContact receiptContact) {
+            ReceiptContact receiptContact)
+        {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            var addKey = new AddKey {
+            var addKey = new AddKey
+            {
                 DeviceMetadata = deviceMetadata
             };
             addKey.Keys.Add(keys);
@@ -410,7 +451,8 @@ namespace Tokenio.User {
             string tokenRequestId,
             IList<Key> keys,
             DeviceMetadata deviceMetadata,
-            ReceiptContact receiptContact) {
+            ReceiptContact receiptContact)
+        {
             return NotifyCreateAndEndorseToken(tokenRequestId, keys, deviceMetadata, receiptContact).Result;
         }
 
@@ -419,7 +461,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="notificationId">notification id to invalidate</param>
         /// <returns>status of the invalidation request</returns>
-        public Task<NotifyStatus> InvalidateNotification(string notificationId) {
+        public Task<NotifyStatus> InvalidateNotification(string notificationId)
+        {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.InvalidateNotification(notificationId);
         }
@@ -429,7 +472,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="notificationId">notification id to invalidate</param>
         /// <returns>status of the invalidation request</returns>
-        public NotifyStatus InvalidateNotificationBlocking(string notificationId) {
+        public NotifyStatus InvalidateNotificationBlocking(string notificationId)
+        {
             return InvalidateNotification(notificationId).Result;
         }
 
@@ -438,7 +482,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="blobId">id of the blob</param>
         /// <returns>Blob</returns>
-        public Task<Blob> GetBlob(string blobId) {
+        public Task<Blob> GetBlob(string blobId)
+        {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetBlob(blobId);
         }
@@ -448,7 +493,8 @@ namespace Tokenio.User {
         /// </summary>
         /// <param name="blobId">id of the blob</param>
         /// <returns>Blob</returns>
-        public Blob GetBlobBlocking(string blobId) {
+        public Blob GetBlobBlocking(string blobId)
+        {
             return GetBlob(blobId).Result;
         }
 
@@ -458,7 +504,8 @@ namespace Tokenio.User {
         /// <param name="requestId">token request ID</param>
         /// <param name="options">new token request options</param>
         /// <returns>task</returns>
-        public Task UpdateTokenRequest(string requestId, TokenRequestOptions options) {
+        public Task UpdateTokenRequest(string requestId, TokenRequestOptions options)
+        {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.UpdateTokenRequest(requestId, options);
         }
@@ -469,15 +516,18 @@ namespace Tokenio.User {
         /// <param name="requestId">token request ID</param>
         /// <param name="options">new token request options</param>
         /// <returns>task</returns>
-        public void UpdateTokenRequestBlocking(string requestId, TokenRequestOptions options) {
+        public void UpdateTokenRequestBlocking(string requestId, TokenRequestOptions options)
+        {
             UpdateTokenRequest(requestId, options).Wait();
         }
 
-        public class Builder : Builder<Builder> {
+        public class Builder : Builder<Builder>
+        {
             private IBrowserFactory browserFactory;
 
             /// <inheritdoc />
-            protected override string GetPlatform() {
+            protected override string GetPlatform()
+            {
                 return "csharp-user";
             }
 
@@ -486,12 +536,14 @@ namespace Tokenio.User {
             /// </summary>
             /// <param name="browserFactory">browser factory</param>
             /// <returns>this builder instance</returns>
-            public Builder WithBrowserFactory(IBrowserFactory browserFactory) {
+            public Builder WithBrowserFactory(IBrowserFactory browserFactory)
+            {
                 this.browserFactory = browserFactory;
                 return this;
             }
 
-            public new TokenClient Build() {
+            public new TokenClient Build()
+            {
                 var metadata = GetHeaders();
                 var newChannel = ManagedChannel.NewBuilder(hostName, port, useSsl)
                     .WithTimeout(timeoutMs)

@@ -1,14 +1,18 @@
-namespace Tokenio.Tpp.TokenRequests {
+namespace Tokenio.Tpp.TokenRequests
+{
     /// <summary>
     /// Represents callback in Token Request Flow. Contains tokenID and state.
     /// </summary>
-    public class TokenRequestCallback {
+    public class TokenRequestCallback
+    {
         public static TokenRequestCallback Create(
             string tokenId,
-            string state) {
-            return new TokenRequestCallback {
+            string state)
+        {
+            return new TokenRequestCallback
+            {
                 TokenId = tokenId,
-                    State = state
+                State = state
             };
         }
 

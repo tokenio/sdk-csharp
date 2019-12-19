@@ -5,11 +5,15 @@ using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class RedeemTransferTokenSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class RedeemTransferTokenSampleTest
+    {
         [Fact]
-        public void RedeemPaymentTokenTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void RedeemPaymentTokenTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -24,8 +28,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void RedeemScheduledPaymentTokenTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void RedeemScheduledPaymentTokenTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);

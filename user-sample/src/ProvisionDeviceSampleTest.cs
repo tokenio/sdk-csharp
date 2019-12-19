@@ -3,11 +3,15 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Xunit;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class ProvisionDeviceSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class ProvisionDeviceSampleTest
+    {
         [Fact]
-        public void ProvisionDevice() {
-            using(Tokenio.User.TokenClient remoteDevice = TestUtil.CreateClient()) {
+        public void ProvisionDevice()
+        {
+            using (Tokenio.User.TokenClient remoteDevice = TestUtil.CreateClient())
+            {
                 Alias alias = TestUtil.RandomAlias();
                 UserMember remoteMember = remoteDevice.CreateMemberBlocking(alias);
                 remoteMember.SubscribeToNotifications("iron");

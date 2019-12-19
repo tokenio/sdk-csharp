@@ -7,12 +7,15 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using TppMember = Tokenio.Tpp.Member;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.Tpp {
-    public class GetTransfersSampleTest {
-
+namespace Tokenio.Sample.Tpp
+{
+    public class GetTransfersSampleTest
+    {
         [Fact]
-        public void GetTransfersTest() {
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void GetTransfersTest()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateUserMember();
                 Alias payeeAlias = TestUtil.RandomAlias();
                 TppMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -31,8 +34,10 @@ namespace Tokenio.Sample.Tpp {
         }
 
         [Fact]
-        public void GetTransferTokensTest() {
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void GetTransferTokensTest()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateUserMember();
                 Alias payeeAlias = TestUtil.RandomAlias();
                 TppMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -51,8 +56,10 @@ namespace Tokenio.Sample.Tpp {
         }
 
         [Fact]
-        public void GetTransferTest() {
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void GetTransferTest()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateUserMember();
                 Alias payeeAlias = TestUtil.RandomAlias();
                 TppMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -71,7 +78,6 @@ namespace Tokenio.Sample.Tpp {
                     redeemedTransfer.Id);
                 Assert.Equal(gotTransfer, redeemedTransfer);
             }
-
         }
     }
 }

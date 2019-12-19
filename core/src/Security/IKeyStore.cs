@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Security {
+namespace Tokenio.Security
+{
     /// <summary>
     /// Provides key storage primitives.
     /// </summary>
-    public interface IKeyStore {
+    public interface IKeyStore
+    {
         /// <summary>
         /// Puts a specified key pair into the storage.
         /// </summary>

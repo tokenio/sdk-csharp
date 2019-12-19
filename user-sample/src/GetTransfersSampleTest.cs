@@ -5,11 +5,15 @@ using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class GetTransfersSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class GetTransfersSampleTest
+    {
         [Fact]
-        public void GetTransfersTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void GetTransfersTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -24,8 +28,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void GetTransferTokensTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void GetTransferTokensTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -40,8 +46,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void GetTransferTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void GetTransferTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);

@@ -8,25 +8,29 @@ using DestinationCase = Tokenio.Proto.Common.TransferInstructionsProtos.Transfer
 using ResourceType = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types.ResourceType;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace Tokenio.Sample.Tpp {
+namespace Tokenio.Sample.Tpp
+{
     /// <summary>
     /// Stores and retrieves a token request.
     /// </summary>
-    public static class StoreAndRetrieveTokenRequestSample {
+    public static class StoreAndRetrieveTokenRequestSample
+    {
         /// <summary>
         /// Stores a transfer token request.
         /// </summary>
         /// <param name="payee">Payee Token member (the member requesting the transfer token be created)</param>
         /// <returns>a token request id</returns>
-        public static string StoreTransferTokenRequest(TppMember payee) {
+        public static string StoreTransferTokenRequest(TppMember payee)
+        {
             // Create token request to be stored
             TokenRequest request = TokenRequest.TransferTokenRequestBuilder(100, "EUR")
                 .SetToMemberId(payee.MemberId())
                 .SetDescription("Book purchase") // optional description
                 .SetRedirectUrl("https://token.io/callback") // callback URL
-                .SetFromAlias(new Alias {
+                .SetFromAlias(new Alias
+                {
                     Value = "payer-alias@token.io",
-                        Type = Alias.Types.Type.Email
+                    Type = Alias.Types.Type.Email
                 })
                 .SetBankId("iron") // bank ID
                 .SetCsrfToken(Util.Nonce()) // nonce for CSRF check
@@ -45,8 +49,8 @@ namespace Tokenio.Sample.Tpp {
         /// <returns>token request id</returns>
         public static string StoreTransferTokenRequestWithDestinationsCallback(
             TppMember payee,
-            string setTransferDestinationsCallback) {
-
+            string setTransferDestinationsCallback)
+        {
             TokenRequest tokenRequest = TokenRequest.TransferTokenRequestBuilder(250, "EUR")
                 .SetToMemberId(payee.MemberId())
                 .SetDescription("Book purchase")
@@ -56,9 +60,10 @@ namespace Tokenio.Sample.Tpp {
                 // This TPP provided Redirect URL gets called after Token is ready
                 // for redemption.
                 .SetRedirectUrl("https://tpp-sample.com/callback")
-                .SetFromAlias(new Alias {
+                .SetFromAlias(new Alias
+                {
                     Value = "payer-alias@token.io",
-                        Type = Alias.Types.Type.Email
+                    Type = Alias.Types.Type.Email
                 })
                 .SetBankId("iron") // bank ID
                 .SetCsrfToken(Util.Nonce()) // nonce for CSRF check
@@ -74,14 +79,16 @@ namespace Tokenio.Sample.Tpp {
         /// </summary>
         /// <param name="grantee">Token member requesting the access token be created</param>
         /// <returns>a token request id</returns>
-        public static string StoreAccessTokenRequest(TppMember grantee) {
+        public static string StoreAccessTokenRequest(TppMember grantee)
+        {
             // Create token request to be stored
             TokenRequest request = TokenRequest.AccessTokenRequestBuilder(ResourceType.Accounts, ResourceType.Balances)
                 .SetToMemberId(grantee.MemberId())
                 .SetRedirectUrl("https://token.io/callback") // callback URL
-                .SetFromAlias(new Alias {
+                .SetFromAlias(new Alias
+                {
                     Value = "grantor-alias@token.io",
-                        Type = Alias.Types.Type.Email
+                    Type = Alias.Types.Type.Email
                 })
                 .SetBankId("iron") // bank ID
                 .SetCsrfToken(Util.Nonce()) // nonce for CSRF check
@@ -98,7 +105,8 @@ namespace Tokenio.Sample.Tpp {
         /// <returns>token request that was stored with the request id</returns>
         public static TokenRequest RetrieveTokenRequest(
             Tokenio.Tpp.TokenClient tokenClient,
-            string requestId) {
+            string requestId)
+        {
             return tokenClient.RetrieveTokenRequestBlocking(requestId);
         }
 
@@ -122,29 +130,37 @@ namespace Tokenio.Sample.Tpp {
             TppMember payee,
             string requestId,
             Tokenio.Tpp.TokenClient tokenClient,
-            string setTransferDestinationsCallback) {
-
+            string setTransferDestinationsCallback)
+        {
             TokenRequestTransferDestinationsCallbackParameters parameters =
                 tokenClient.ParseSetTransferDestinationsUrl(setTransferDestinationsCallback);
 
             IList<TransferDestination> transferDestinations = new List<TransferDestination>();
             if (parameters.SupportedTransferDestinationTypes
-                .Contains(DestinationCase.FasterPayments)) {
-                TransferDestination destination = new TransferDestination {
-                    FasterPayments = new TransferDestination.Types.FasterPayments {
-                    SortCode = Util.Nonce(),
-                    AccountNumber = Util.Nonce()
+                .Contains(DestinationCase.FasterPayments))
+            {
+                TransferDestination destination = new TransferDestination
+                {
+                    FasterPayments = new TransferDestination.Types.FasterPayments
+                    {
+                        SortCode = Util.Nonce(),
+                        AccountNumber = Util.Nonce()
                     }
                 };
                 transferDestinations.Add(destination);
-            } else {
-                transferDestinations.Add(new TransferDestination {
-                    Sepa = new TransferDestination.Types.Sepa {
+            }
+            else
+            {
+                transferDestinations.Add(new TransferDestination
+                {
+                    Sepa = new TransferDestination.Types.Sepa
+                    {
                         Bic = Util.Nonce(),
-                            Iban = Util.Nonce()
+                        Iban = Util.Nonce()
                     }
                 });
             }
+
             payee.SetTokenRequestTransferDestinationsBlocking(requestId, transferDestinations);
         }
     }

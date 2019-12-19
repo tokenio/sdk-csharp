@@ -1,15 +1,18 @@
 using Tokenio;
 
-namespace Sample {
+namespace Sample
+{
     /// <summary>
     /// Deletes the member.
     /// </summary>
-    public class DeleteMemberSample {
+    public class DeleteMemberSample
+    {
         /// <summary>
         /// Deletes a member
         /// </summary>
         /// <param name="member">member</param>
-        public static void deleteMember(Member member) {
+        public static void deleteMember(Member member)
+        {
             member.DeleteMember();
         }
     }

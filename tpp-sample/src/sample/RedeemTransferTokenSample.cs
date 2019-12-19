@@ -4,12 +4,13 @@ using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.Tpp.Utils;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace Tokenio.Sample.Tpp {
+namespace Tokenio.Sample.Tpp
+{
     /// <summary>
     /// Redeems a transfer token.
     /// </summary>
-    public static class RedeemTransferTokenSample {
-
+    public static class RedeemTransferTokenSample
+    {
         /// <summary>
         /// Redeems a transfer token to transfer money from payer bank account to payee bank account.
         /// </summary>
@@ -20,7 +21,9 @@ namespace Tokenio.Sample.Tpp {
         public static Transfer RedeemTransferToken(
             TppMember payee,
             string accountId, // account ID of the payee
-            string tokenId) { // ID of token to redeem
+            string tokenId)
+        {
+            // ID of token to redeem
             // We'll use this as a reference ID. Normally, a payee who
             // explicitly sets a reference ID would use an ID from a db.
             // E.g., an online merchant might use the ID of a "shopping cart".
@@ -31,13 +34,13 @@ namespace Tokenio.Sample.Tpp {
             Token transferToken = payee.GetTokenBlocking(tokenId);
 
             // Set token destination
-            TransferDestination tokenDestination = new TransferDestination {
-
-                Token = new TransferDestination.Types.Token {
-                MemberId = payee.MemberId(),
-                AccountId = accountId
+            TransferDestination tokenDestination = new TransferDestination
+            {
+                Token = new TransferDestination.Types.Token
+                {
+                    MemberId = payee.MemberId(),
+                    AccountId = accountId
                 }
-
             };
 
             // Payee redeems a transfer token.
@@ -50,6 +53,5 @@ namespace Tokenio.Sample.Tpp {
 
             return transfer;
         }
-
     }
 }

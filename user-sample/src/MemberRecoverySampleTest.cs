@@ -2,14 +2,19 @@ using Tokenio.Proto.Common.AliasProtos;
 using Xunit;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
+namespace Tokenio.Sample.User
+{
     /// <summary>
     /// Tests for member-recovery sample code.
     /// </summary>
-    public class MemberRecoverySampleTest {
+    public class MemberRecoverySampleTest
+    {
         [Fact]
-        public void RecoveryDefault() { // "normal consumer" recovery using "shortcuts"
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void RecoveryDefault()
+        {
+            // "normal consumer" recovery using "shortcuts"
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 MemberRecoverySample mrs = new MemberRecoverySample();
                 // set up
                 Alias originalAlias = TestUtil.RandomAlias();
@@ -25,8 +30,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void RecoveryComplex() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void RecoveryComplex()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 MemberRecoverySample mrs = new MemberRecoverySample();
                 Tokenio.User.TokenClient agentTokenIO = TestUtil.CreateClient();
                 Alias agentAlias = TestUtil.RandomAlias();

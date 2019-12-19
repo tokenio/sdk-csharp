@@ -3,11 +3,15 @@ using Tokenio.Proto.Common.TransactionProtos;
 using Xunit;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class GetBalanceSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class GetBalanceSampleTest
+    {
         [Fact]
-        public void MemberGetBalanceSampleTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void MemberGetBalanceSampleTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 member.CreateTestBankAccountBlocking(1000.0, "EUR");
                 var sums = GetBalanceSample.MemberGetBalanceSample(member);
@@ -16,8 +20,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void AccountGetBalanceSampleTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void AccountGetBalanceSampleTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 member.CreateTestBankAccountBlocking(1000.0, "EUR");
                 var sums = GetBalanceSample.AccountGetBalanceSample(member);
@@ -26,8 +32,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void MemberGetBalancesSampleTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void MemberGetBalancesSampleTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember member = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 member.CreateTestBankAccountBlocking(1000.0, "EUR");
                 member.CreateTestBankAccountBlocking(500.0, "EUR");

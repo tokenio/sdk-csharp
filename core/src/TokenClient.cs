@@ -17,7 +17,8 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio
 {
-    public class TokenClient : IDisposable {
+    public class TokenClient : IDisposable
+    {
         protected readonly ManagedChannel channel;
         protected readonly TokenCluster tokenCluster;
         protected readonly ICryptoEngineFactory cryptoEngineFactory;
@@ -31,7 +32,8 @@ namespace Tokenio
         public TokenClient(
             ManagedChannel channel,
             ICryptoEngineFactory cryptoEngineFactory,
-            TokenCluster tokenCluster) {
+            TokenCluster tokenCluster)
+        {
             this.channel = channel;
             this.cryptoEngineFactory = cryptoEngineFactory;
             this.tokenCluster = tokenCluster;
@@ -43,7 +45,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">alias to resolve</param>
         /// <returns>TokenMember</returns>
-        public Task<TokenMember> ResolveAlias(Alias alias) {
+        public Task<TokenMember> ResolveAlias(Alias alias)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.ResolveAlias(alias);
         }
@@ -54,7 +57,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">alias to resolve</param>
         /// <returns>TokenMember</returns>
-        public TokenMember ResolveAliasBlocking(Alias alias) {
+        public TokenMember ResolveAliasBlocking(Alias alias)
+        {
             return ResolveAlias(alias).Result;
         }
 
@@ -63,7 +67,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>member id if alias already exists, null otherwise</returns>
-        public Task<string> GetMemberId(Alias alias) {
+        public Task<string> GetMemberId(Alias alias)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetMemberId(alias);
         }
@@ -73,7 +78,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the alias to check</param>
         /// <returns>member id if alias already exists, null otherwise</returns>
-        public string GetMemberIdBlocking(Alias alias) {
+        public string GetMemberIdBlocking(Alias alias)
+        {
             return GetMemberId(alias).Result;
         }
 
@@ -88,20 +94,17 @@ namespace Tokenio
         /// <param name="recoveryAgent">Recovery agent.</param>
         /// <param name="partnerId">Partner identifier.</param>
         /// <param name="realmId">Realm identifier.</param>
-
         public Task<Member> CreateMemberImpl(
             Alias alias,
             CreateMemberType createMemberType,
             string recoveryAgent,
             string partnerId = null,
-            string realmId = null) {
+            string realmId = null)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
                 .CreateMemberId(createMemberType, null, partnerId, realmId)
-                .FlatMap(memberId => {
-                    return SetUpMemberImpl(memberId, alias, recoveryAgent);
-                });
-
+                .FlatMap(memberId => { return SetUpMemberImpl(memberId, alias, recoveryAgent); });
         }
 
         /// <summary>
@@ -113,30 +116,34 @@ namespace Tokenio
         /// <param name="agent">Agent.</param>
         protected Task<Member> SetUpMemberImpl(string memberId,
             Alias alias,
-            string agent = null) {
+            string agent = null)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return (agent == null ? unauthenticated.GetDefaultAgent()
+            return (agent == null
+                    ? unauthenticated.GetDefaultAgent()
                     : Task.Factory.StartNew(() => { return agent; }))
-                .FlatMap(agentId => {
+                .FlatMap(agentId =>
+                {
                     var crypto = cryptoEngineFactory.Create(memberId);
-                    var operations = new List<MemberOperation> {
+                    var operations = new List<MemberOperation>
+                    {
                         Util.ToAddKeyOperation(crypto.GenerateKey(Level.Privileged)),
                         Util.ToAddKeyOperation(crypto.GenerateKey(Level.Standard)),
                         Util.ToAddKeyOperation(crypto.GenerateKey(Level.Low)),
                         Util.ToRecoveryAgentOperation(agentId)
-
                     };
                     var metadata = new List<MemberOperationMetadata>();
-                    if (alias != null) {
+                    if (alias != null)
+                    {
                         operations.Add(Util.ToAddAliasOperation(alias.ToNormalized()));
                         metadata.Add(Util.ToAddAliasMetadata(alias.ToNormalized()));
-
                     }
 
                     var signer = crypto.CreateSigner(Level.Privileged);
                     var mem = unauthenticated.CreateMember(memberId, operations, metadata, signer);
                     return mem;
-                }).Map(member => {
+                }).Map(member =>
+                {
                     return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
                 });
         }
@@ -146,7 +153,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="memberId">the member ID</param>
         /// <returns>the member</returns>
-        public Task<Member> GetMemberImpl(string memberId, Client client) {
+        public Task<Member> GetMemberImpl(string memberId, Client client)
+        {
             return client
                 .GetMember(memberId)
                 .Map(member => new Member(member.Id, null,
@@ -158,7 +166,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the used to recover</param>
         /// <returns>the verification id</returns>
-        public Task<string> BeginRecovery(Alias alias) {
+        public Task<string> BeginRecovery(Alias alias)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.BeginRecovery(alias);
         }
@@ -168,7 +177,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="alias">the used to recover</param>
         /// <returns>the verification id</returns>
-        public string BeginRecoveryBlocking(Alias alias) {
+        public string BeginRecoveryBlocking(Alias alias)
+        {
             return BeginRecovery(alias).Result;
         }
 
@@ -180,7 +190,8 @@ namespace Tokenio
         /// <returns>the authorization</returns>
         public Task<Authorization> CreateRecoveryAuthorization(
             string memberId,
-            Key privilegedKey) {
+            Key privilegedKey)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.CreateRecoveryAuthorization(memberId, privilegedKey);
         }
@@ -193,7 +204,8 @@ namespace Tokenio
         /// <returns>the authorization</returns>
         public Authorization CreateRecoveryAuthorizationBlocking(
             string memberId,
-            Key privilegedKey) {
+            Key privilegedKey)
+        {
             return CreateRecoveryAuthorization(memberId, privilegedKey).Result;
         }
 
@@ -207,7 +219,8 @@ namespace Tokenio
         public Task<MemberRecoveryOperation> GetRecoveryAuthorization(
             string verificationId,
             string code,
-            Key key) {
+            Key key)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetRecoveryAuthorization(verificationId, code, key);
         }
@@ -222,7 +235,8 @@ namespace Tokenio
         public MemberRecoveryOperation GetRecoveryAuthorizationBlocking(
             string verificationId,
             string code,
-            Key key) {
+            Key key)
+        {
             return GetRecoveryAuthorization(verificationId, code, key).Result;
         }
 
@@ -238,13 +252,12 @@ namespace Tokenio
             string memberId,
             IList<MemberRecoveryOperation> recoveryOperations,
             Key privilegedKey,
-            ICryptoEngine cryptoEngine) {
+            ICryptoEngine cryptoEngine)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated
                 .CompleteRecovery(memberId, recoveryOperations, privilegedKey, cryptoEngine)
-                .Map(member => {
-                    return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
-                });
+                .Map(member => { return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId); });
         }
 
         /// <summary>
@@ -257,22 +270,21 @@ namespace Tokenio
         public Task<Member> CompleteRecoveryWithDefaultRuleImpl(
             string memberId,
             string verificationId,
-            string code, ICryptoEngine cryptoEngine) {
+            string code, ICryptoEngine cryptoEngine)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             //var cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
             return unauthenticated
                 .CompleteRecoveryWithDefaultRule(memberId, verificationId, code, cryptoEngine)
-                .Map(member => {
-                    return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
-
-                });
+                .Map(member => { return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId); });
         }
 
         /// <summary>
         /// Returns the first 200 available banks for linking.
         /// </summary>
         /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks() {
+        public Task<PagedBanks> GetBanks()
+        {
             return GetBanks(1, 200);
         }
 
@@ -281,7 +293,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="ids">the bank IDs</param>
         /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks(IList<string> ids) {
+        public Task<PagedBanks> GetBanks(IList<string> ids)
+        {
             return GetBanks(ids, null, null, null, null, null);
         }
 
@@ -290,7 +303,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="search">the keyword to search for</param>
         /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks(string search) {
+        public Task<PagedBanks> GetBanks(string search)
+        {
             return GetBanks(null, search, null, null, null, null);
         }
 
@@ -302,7 +316,8 @@ namespace Tokenio
         /// <returns>banks with paging information</returns>
         public Task<PagedBanks> GetBanks(
             int page,
-            int perPage) {
+            int perPage)
+        {
             return GetBanks(null, null, null, page, perPage, null);
         }
 
@@ -316,7 +331,8 @@ namespace Tokenio
         public Task<PagedBanks> GetBanks(
             string country,
             int page,
-            int perPage) {
+            int perPage)
+        {
             return GetBanks(null, null, country, page, perPage, null);
         }
 
@@ -340,7 +356,8 @@ namespace Tokenio
             string country,
             int? page,
             int? perPage,
-            string sort) {
+            string sort)
+        {
             return GetBanks(ids, search, country, page, perPage, sort, null);
         }
 
@@ -363,7 +380,8 @@ namespace Tokenio
             int? page,
             int? perPage,
             string sort,
-            string provider) {
+            string provider)
+        {
             return GetBanks(ids, search, country, page, perPage, sort, provider, null);
         }
 
@@ -388,7 +406,8 @@ namespace Tokenio
             int? perPage,
             string sort,
             string provider,
-            BankFeatures bankFeatures) {
+            BankFeatures bankFeatures)
+        {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.GetBanks(
                 ids,
@@ -405,7 +424,8 @@ namespace Tokenio
         /// Returns the first 200 available banks for linking.
         /// </summary>
         /// <returns>banks with paging information</returns>
-        public PagedBanks GetBanksBlocking() {
+        public PagedBanks GetBanksBlocking()
+        {
             return GetBanks().Result;
         }
 
@@ -414,7 +434,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="ids">the bank IDs</param>
         /// <returns>banks with paging information</returns>
-        public PagedBanks GetBanksBlocking(IList<string> ids) {
+        public PagedBanks GetBanksBlocking(IList<string> ids)
+        {
             return GetBanks(ids).Result;
         }
 
@@ -423,7 +444,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="search">the keyword to search for</param>
         /// <returns>banks with paging information</returns>
-        public PagedBanks GetBanksBlocking(string search) {
+        public PagedBanks GetBanksBlocking(string search)
+        {
             return GetBanks(search).Result;
         }
 
@@ -435,7 +457,8 @@ namespace Tokenio
         /// <returns>banks with paging information</returns>
         public PagedBanks GetBanksBlocking(
             int page,
-            int perPage) {
+            int perPage)
+        {
             return GetBanks(page, perPage).Result;
         }
 
@@ -449,7 +472,8 @@ namespace Tokenio
         public PagedBanks GetBanksBlocking(
             string country,
             int page,
-            int perPage) {
+            int perPage)
+        {
             return GetBanks(country, page, perPage).Result;
         }
 
@@ -473,7 +497,8 @@ namespace Tokenio
             string country,
             int? page,
             int? perPage,
-            string sort) {
+            string sort)
+        {
             return GetBanks(ids, search, country, page, perPage, sort).Result;
         }
 
@@ -482,7 +507,8 @@ namespace Tokenio
         /// </summary>
         /// <param name="provider">If specified, return banks whose 'provider' matches the given provider</param>
         /// <returns>a list of country codes</returns>
-        public Task<IList<string>> GetCountries(string provider) {
+        public Task<IList<string>> GetCountries(string provider)
+        {
             UnauthenticatedClient unauthenticatedClient = ClientFactory.Unauthenticated(channel);
             return unauthenticatedClient.GetCountries(provider);
         }
@@ -492,19 +518,23 @@ namespace Tokenio
         /// </summary>
         /// <param name="provider">If specified, return banks whose 'provider' matches the given provider</param>
         /// <returns>a list of country codes</returns>
-        public IList<string> GetCountriesBlocking(string provider) {
+        public IList<string> GetCountriesBlocking(string provider)
+        {
             return GetCountries(provider).Result;
         }
 
-        public ICryptoEngineFactory GetCryptoEngineFactory() {
+        public ICryptoEngineFactory GetCryptoEngineFactory()
+        {
             return this.cryptoEngineFactory;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             channel.Dispose();
         }
 
-        public class Builder<T> where T : Builder<T> {
+        public class Builder<T> where T : Builder<T>
+        {
             private static readonly string DEFAULT_DEV_KEY = "4qY7lqQw8NOl9gng0ZHgT4xdiDqxqoGVutuZwrUYQsI";
             private static readonly long DEFAULT_TIMEOUT_MS = 10_000L;
             private static readonly int DEFAULT_SSL_PORT = 443;
@@ -526,7 +556,8 @@ namespace Tokenio
             /// <summary>
             /// Creates new builder instance with the defaults initialized.
             /// </summary>
-            public Builder() {
+            public Builder()
+            {
                 devKey = DEFAULT_DEV_KEY;
                 timeoutMs = DEFAULT_TIMEOUT_MS;
                 port = DEFAULT_SSL_PORT;
@@ -537,7 +568,8 @@ namespace Tokenio
             /// Sets the host name of the Token Gateway Service to connect to.
             /// </summary>
             /// <param name="hostName">the host name to set</param>
-            public T HostName(string hostName) {
+            public T HostName(string hostName)
+            {
                 this.hostName = hostName;
                 return (T) this;
             }
@@ -547,7 +579,8 @@ namespace Tokenio
             /// </summary>
             /// <param name="port">the port number</param>
             /// <returns>this builder instance</returns>
-            public T Port(int port) {
+            public T Port(int port)
+            {
                 this.port = port;
                 this.useSsl = port == DEFAULT_SSL_PORT;
                 return (T) this;
@@ -558,7 +591,8 @@ namespace Tokenio
             /// </summary>
             /// <param name="cluster">the token cluster</param>
             /// <returns>this builder instance</returns>
-            public T ConnectTo(TokenCluster cluster) {
+            public T ConnectTo(TokenCluster cluster)
+            {
                 this.tokenCluster = cluster;
                 this.hostName = cluster.Url;
                 return (T) this;
@@ -569,7 +603,8 @@ namespace Tokenio
             /// </summary>
             /// <param name="timeoutMs">the RPC call timeoutMs</param>
             /// <returns>this builder instance</returns>
-            public T Timeout(long timeoutMs) {
+            public T Timeout(long timeoutMs)
+            {
                 this.timeoutMs = timeoutMs;
                 return (T) this;
             }
@@ -579,7 +614,8 @@ namespace Tokenio
             /// </summary>
             /// <param name="keyStore">the key store to be used</param>
             /// <returns>this builder instance</returns>
-            public T WithKeyStore(IKeyStore keyStore) {
+            public T WithKeyStore(IKeyStore keyStore)
+            {
                 this.cryptoEngine = new TokenCryptoEngineFactory(keyStore);
                 return (T) this;
             }
@@ -589,12 +625,14 @@ namespace Tokenio
             /// </summary>
             /// <param name="cryptoEngineFactory">the crypto engine factory to use</param>
             /// <returns>this builder instance</returns>
-            public T WithCryptoEngine(ICryptoEngineFactory cryptoEngineFactory) {
+            public T WithCryptoEngine(ICryptoEngineFactory cryptoEngineFactory)
+            {
                 this.cryptoEngine = cryptoEngineFactory;
                 return (T) this;
             }
 
-            public T WithFeatureCodes(params string[] featureCodes) {
+            public T WithFeatureCodes(params string[] featureCodes)
+            {
                 this.featureCodes = featureCodes.ToList();
                 return (T) this;
             }
@@ -604,7 +642,8 @@ namespace Tokenio
             /// </summary>
             /// <param name="devKey">the developer key</param>
             /// <returns>this builder instance</returns>
-            public T DeveloperKey(string devKey) {
+            public T DeveloperKey(string devKey)
+            {
                 this.devKey = devKey;
                 return (T) this;
             }
@@ -614,7 +653,8 @@ namespace Tokenio
             /// </summary>
             /// <param name="keepAlive">whether keep-alive is enabled</param>
             /// <returns>this builder instance</returns>
-            public T KeepAlive(bool keepAlive) {
+            public T KeepAlive(bool keepAlive)
+            {
                 this.keepAlive = keepAlive;
                 return (T) this;
             }
@@ -624,7 +664,8 @@ namespace Tokenio
             /// </summary>
             /// <param name="keepAliveTimeMs">keep-alive time in milliseconds</param>
             /// <returns>this builder instance</returns>
-            public T KeepAliveTime(int keepAliveTimeMs) {
+            public T KeepAliveTime(int keepAliveTimeMs)
+            {
                 this.keepAliveTimeMs = keepAliveTimeMs;
                 return (T) this;
             }
@@ -633,16 +674,19 @@ namespace Tokenio
             /// Get the headers.
             /// </summary>
             /// <returns>return metadata</returns>
-            protected Metadata GetHeaders() {
+            protected Metadata GetHeaders()
+            {
                 Metadata metadata = new Metadata();
                 metadata.Add("token-sdk", GetPlatform());
                 metadata.Add(
                     "token-sdk-version",
                     Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
                 metadata.Add("token-dev-key", devKey);
-                if (featureCodes != null) {
+                if (featureCodes != null)
+                {
                     featureCodes.ForEach(f => metadata.Add(FEATURE_CODE_KEY, f));
                 }
+
                 return metadata;
             }
 
@@ -650,7 +694,8 @@ namespace Tokenio
             /// Gets the platform.
             /// </summary>
             /// <returns>the platform</returns>
-            protected virtual string GetPlatform() {
+            protected virtual string GetPlatform()
+            {
                 throw new NotSupportedException();
             }
 
@@ -658,7 +703,8 @@ namespace Tokenio
             /// Builds and returns a new <see cref="TokenClient"/> instance.
             /// </summary>
             /// <returns>the <see cref="TokenClient"/> instance</returns>
-            public virtual TokenClient Build() {
+            public virtual TokenClient Build()
+            {
                 var metadata = GetHeaders();
                 var newChannel = ManagedChannel.NewBuilder(hostName, port, useSsl)
                     .WithTimeout(timeoutMs)

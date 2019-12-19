@@ -6,11 +6,15 @@ using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class GetTransactionsSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class GetTransactionsSampleTest
+    {
         [Fact]
-        public void GetTransactionsTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void GetTransactionsTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -28,8 +32,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void AccountGetTransactionsTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void AccountGetTransactionsTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);

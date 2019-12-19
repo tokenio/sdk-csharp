@@ -7,11 +7,13 @@ using Tokenio.User.Utils;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
+namespace Tokenio.Sample.User
+{
     /// <summary>
     /// Creates a transfer token and endorses it to a payee.
     /// </summary>
-    public static class CreateTransferTokenSample {
+    public static class CreateTransferTokenSample
+    {
         /// <summary>
         /// Creates a transfer token and authorizes a money transfer from a payer to a payee.
         /// </summary>
@@ -22,7 +24,8 @@ namespace Tokenio.Sample.User {
         public static Token CreateTransferToken(
             UserMember payer,
             Alias payeeAlias,
-            Level keyLevel) {
+            Level keyLevel)
+        {
             // We'll use this as a reference ID. Normally, a payer who
             // explicitly sets a reference ID would use an ID from a db.
             // E.g., a bill-paying service might use ID of a "purchase".
@@ -33,7 +36,7 @@ namespace Tokenio.Sample.User {
                     10.0, // amount
                     "EUR") // currency
                 // source account:
-                .SetAccountId(payer.GetAccountsBlocking() [0].Id())
+                .SetAccountId(payer.GetAccountsBlocking()[0].Id())
                 // payee token alias:
                 .SetToAlias(payeeAlias)
                 // optional description:
@@ -56,14 +59,15 @@ namespace Tokenio.Sample.User {
         /// <returns>a transfer Token</returns>
         public static Token CreateTransferTokenWithOtherOptions(
             UserMember payer,
-            string payeeId) {
+            string payeeId)
+        {
             long now = Util.CurrentMillis();
             // Set the details of the token.
             TransferTokenBuilder builder = payer.CreateTransferTokenBuilder(
                     120.0, // amount
                     "EUR") // currency
                 // source account:
-                .SetAccountId(payer.GetAccountsBlocking() [0].Id())
+                .SetAccountId(payer.GetAccountsBlocking()[0].Id())
                 .SetToMemberId(payeeId)
                 // effective in one second:
                 .SetEffectiveAtMs(now + 1000)
@@ -87,22 +91,25 @@ namespace Tokenio.Sample.User {
         /// <returns>a transfer Token</returns>
         public static Token CreateTransferTokenToDestination(
             UserMember payer,
-            Alias payeeAlias) {
+            Alias payeeAlias)
+        {
             // Set SEPA destination.
-            TransferDestination sepaDestination = new TransferDestination {
-                Sepa = new TransferDestination.Types.Sepa {
-                Bic = "XUIWC2489",
-                Iban = "DE89 3704 0044 0532 0130 00"
+            TransferDestination sepaDestination = new TransferDestination
+            {
+                Sepa = new TransferDestination.Types.Sepa
+                {
+                    Bic = "XUIWC2489",
+                    Iban = "DE89 3704 0044 0532 0130 00"
                 }
             };
             // Set the destination and other details.
             TransferTokenBuilder builder =
                 payer.CreateTransferTokenBuilder(
-                    100.0, // amount
-                    "EUR") // currency
-                .SetAccountId(payer.GetAccountsBlocking() [0].Id())
-                .SetToAlias(payeeAlias)
-                .AddDestination(sepaDestination);
+                        100.0, // amount
+                        "EUR") // currency
+                    .SetAccountId(payer.GetAccountsBlocking()[0].Id())
+                    .SetToAlias(payeeAlias)
+                    .AddDestination(sepaDestination);
             // Get the token redemption policy and resolve the token payload.
             PrepareTokenResult result = payer.PrepareTransferTokenBlocking(builder);
             // Create the token, signing with the payer's STANDARD-level key
@@ -118,7 +125,8 @@ namespace Tokenio.Sample.User {
         /// <returns>a transfer Token</returns>
         public static Token CreateTransferTokenScheduled(
             UserMember payer,
-            Alias payeeAlias) {
+            Alias payeeAlias)
+        {
             // We'll use this as a reference ID. Normally, a payer who
             // explicitly sets a reference ID would use an ID from a db.
             // E.g., a bill-paying service might use ID of a "purchase".
@@ -129,7 +137,7 @@ namespace Tokenio.Sample.User {
                     10.0, // amount
                     "EUR") // currency
                 // source account:
-                .SetAccountId(payer.GetAccountsBlocking() [0].Id())
+                .SetAccountId(payer.GetAccountsBlocking()[0].Id())
                 // payee token alias:
                 .SetToAlias(payeeAlias)
                 // optional description:

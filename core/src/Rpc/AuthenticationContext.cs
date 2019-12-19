@@ -1,12 +1,14 @@
 using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Rpc {
+namespace Tokenio.Rpc
+{
     /// <summary>
     /// Authentication context. Stores the values of On-Behalf-Of and Key-Level to be used for request
     /// authentication and signing.
     /// </summary>
-    public class AuthenticationContext {
+    public class AuthenticationContext
+    {
         private readonly string onBehalfOf;
         private readonly Level keyLevel = Level.Low;
         private readonly bool customerInitiated;
@@ -16,26 +18,31 @@ namespace Tokenio.Rpc {
             string onBehalfOf,
             Level keyLevel,
             bool customerInitiated,
-            SecurityMetadata securityMetadata) {
+            SecurityMetadata securityMetadata)
+        {
             this.onBehalfOf = onBehalfOf;
             this.keyLevel = keyLevel;
             this.customerInitiated = customerInitiated;
             this.securityMetadata = securityMetadata;
         }
 
-        public string OnBehalfOf {
+        public string OnBehalfOf
+        {
             get => onBehalfOf;
         }
 
-        public Level KeyLevel {
+        public Level KeyLevel
+        {
             get => keyLevel;
         }
 
-        public bool CustomerInitiated {
+        public bool CustomerInitiated
+        {
             get => customerInitiated;
         }
 
-        public SecurityMetadata SecurityMetadata {
+        public SecurityMetadata SecurityMetadata
+        {
             get => securityMetadata;
         }
     }

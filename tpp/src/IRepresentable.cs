@@ -4,11 +4,13 @@ using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Tpp {
+namespace Tokenio.Tpp
+{
     /// <summary>
     /// Represents the part of a token member that can be accessed through an access token.
     /// </summary>
-    public interface IRepresentable {
+    public interface IRepresentable
+    {
         /// <summary>
         /// Looks up funding bank accounts linked to Token.
         /// </summary>
@@ -238,6 +240,5 @@ namespace Tokenio.Tpp {
         /// <param name="currency"></param>
         /// <returns>true if the account has sufficient funds to cover the charge</returns>
         bool ConfirmFundsBlocking(string accountId, double amount, string currency);
-
     }
 }

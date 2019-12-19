@@ -6,19 +6,21 @@ using Tokenio.Tpp;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace Tokenio.Sample.Tpp {
+namespace Tokenio.Sample.Tpp
+{
     /// <summary>
     /// Redeems an information access token.
     /// </summary>
-    public static class RedeemAccessTokenSample {
-
+    public static class RedeemAccessTokenSample
+    {
         /// <summary>
         /// Redeems access token to acquire access to the grantor's account balances.
         /// </summary>
         /// <param name="grantee">grantee Token member</param>
         /// <param name="tokenId">ID of the access token to redeem</param>
         /// <returns>balance of one of grantor's acounts</returns>
-        public static Money RedeemBalanceAccessToken(TppMember grantee, string tokenId) {
+        public static Money RedeemBalanceAccessToken(TppMember grantee, string tokenId)
+        {
             // Specifies whether the request originated from a customer
             bool customerInitiated = true;
 
@@ -40,7 +42,8 @@ namespace Tokenio.Sample.Tpp {
         /// <param name="grantee">grantee Token member</param>
         /// <param name="tokenId">of the access token to redeem</param>
         /// <returns>transaction history of one of grantor's accounts</returns>
-        public static IList<Transaction> RedeemTransactionsAccessToken(TppMember grantee, string tokenId) {
+        public static IList<Transaction> RedeemTransactionsAccessToken(TppMember grantee, string tokenId)
+        {
             // Specifies whether the request originated from a customer
             bool customerInitiated = true;
 
@@ -73,7 +76,8 @@ namespace Tokenio.Sample.Tpp {
         /// <returns>standing orders of one of grantor's accounts</returns>
         public static IList<StandingOrder> RedeemStandingOrdersAccessToken(
             TppMember grantee,
-            string tokenId) {
+            string tokenId)
+        {
             // Specifies whether the request originated from a customer
             bool customerInitiated = true;
 
@@ -93,6 +97,5 @@ namespace Tokenio.Sample.Tpp {
 
             return standingOrders.List;
         }
-
     }
 }

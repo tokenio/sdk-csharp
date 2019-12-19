@@ -4,11 +4,15 @@ using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class CreateTransferTokenSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class CreateTransferTokenSampleTest
+    {
         [Fact]
-        public void CreatePaymentTokenTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void CreatePaymentTokenTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -18,8 +22,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void CreatePaymentTokenWithOtherOptionsTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void CreatePaymentTokenWithOtherOptionsTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 UserMember payee = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 Token token = CreateTransferTokenSample.CreateTransferTokenWithOtherOptions(payer, payee.MemberId());
@@ -28,8 +34,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void CreatePaymentTokenToDestinationTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void CreatePaymentTokenToDestinationTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
@@ -39,8 +47,10 @@ namespace Tokenio.Sample.User {
         }
 
         [Fact]
-        public void CreatePaymentTokenScheduledTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void CreatePaymentTokenScheduledTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);

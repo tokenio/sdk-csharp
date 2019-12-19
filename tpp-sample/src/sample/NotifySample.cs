@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using Tokenio.Proto.Common.NotificationProtos;
 using TppMember = Tokenio.Tpp.Member;
-namespace Tokenio.Sample.Tpp {
-    public static class NotifySample {
+
+namespace Tokenio.Sample.Tpp
+{
+    public static class NotifySample
+    {
         /// <summary>
         /// Triggers a notification to step up the signature level when requesting balance information.
         /// </summary>
@@ -11,9 +14,9 @@ namespace Tokenio.Sample.Tpp {
         /// <returns>notification status</returns>
         public static NotifyStatus TriggerBalanceStepUpNotification(
             TppMember member,
-            IList<string> accountIds) {
+            IList<string> accountIds)
+        {
             return member.TriggerBalanceStepUpNotificationBlocking(accountIds);
         }
-
     }
 }

@@ -2,14 +2,19 @@ using Tokenio.Proto.Common.AliasProtos;
 using Xunit;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace Tokenio.Sample.Tpp {
+namespace Tokenio.Sample.Tpp
+{
     /// <summary>
     /// Tests for member-recovery sample code.
     /// </summary>
-    public class MemberRecoverySampleTest {
+    public class MemberRecoverySampleTest
+    {
         [Fact]
-        public void RecoveryDefault() { // "normal consumer" recovery using "shortcuts"
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void RecoveryDefault()
+        {
+            // "normal consumer" recovery using "shortcuts"
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 MemberRecoverySample mrs = new MemberRecoverySample();
 
                 // set up
@@ -27,8 +32,10 @@ namespace Tokenio.Sample.Tpp {
         }
 
         [Fact]
-        public void RecoveryComplex() {
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void RecoveryComplex()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 MemberRecoverySample mrs = new MemberRecoverySample();
 
                 Tokenio.Tpp.TokenClient agentTokenIO = TestUtil.CreateClient();

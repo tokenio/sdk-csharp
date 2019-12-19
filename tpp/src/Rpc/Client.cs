@@ -20,13 +20,15 @@ using static Tokenio.Proto.Gateway.GetTransfersRequest.Types;
 using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
 
-namespace Tokenio.Tpp.Rpc {
+namespace Tokenio.Tpp.Rpc
+{
     /// <summary>
     /// An authenticated RPC client that is used to talk to Token gateway. The
     /// class is a thin wrapper on top of gRPC generated client. Makes the API
     /// easier to use.
     /// </summary>
-    public sealed class Client : Tokenio.Rpc.Client {
+    public sealed class Client : Tokenio.Rpc.Client
+    {
         private SecurityMetadata securityMetadata = new SecurityMetadata();
 
         /// <summary>
@@ -36,15 +38,19 @@ namespace Tokenio.Tpp.Rpc {
         /// <param name="cryptoEngine">the crypto engine used to sign for authentication, request
         /// payloads, etc</param>
         /// <param name="channel">managed channel</param>
-        public Client(string memberId, ICryptoEngine cryptoEngine, ManagedChannel channel) : base(memberId, cryptoEngine, channel) { }
+        public Client(string memberId, ICryptoEngine cryptoEngine, ManagedChannel channel) : base(memberId,
+            cryptoEngine, channel)
+        {
+        }
 
         /// <summary>
         /// Replaces a member's public profile.
         /// </summary>
         /// <param name="profile">the profile to set</param>
         /// <returns>the profile that was set</returns>
-        public Task<Profile> SetProfile(Profile profile) {
-            var request = new SetProfileRequest { Profile = profile };
+        public Task<Profile> SetProfile(Profile profile)
+        {
+            var request = new SetProfileRequest {Profile = profile};
             return gateway(authenticationContext()).SetProfileAsync(request)
                 .ToTask(response => response.Profile);
         }
@@ -54,8 +60,9 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="payload">the blob payload</param>
         /// <returns>a task</returns>
-        public Task SetProfilePicture(Payload payload) {
-            var request = new SetProfilePictureRequest { Payload = payload };
+        public Task SetProfilePicture(Payload payload)
+        {
+            var request = new SetProfilePictureRequest {Payload = payload};
             return gateway(authenticationContext()).SetProfilePictureAsync(request).ToTask();
         }
 
@@ -64,8 +71,9 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="blobId">the blob id</param>
         /// <returns>the blob</returns>
-        public Task<Blob> GetBlob(string blobId) {
-            var request = new GetBlobRequest { BlobId = blobId };
+        public Task<Blob> GetBlob(string blobId)
+        {
+            var request = new GetBlobRequest {BlobId = blobId};
             return gateway(authenticationContext()).GetBlobAsync(request)
                 .ToTask(response => response.Blob);
         }
@@ -76,7 +84,8 @@ namespace Tokenio.Tpp.Rpc {
         /// <param name="tokenId">access token ID to be used</param>
         /// <param name="customerInitiated">whether the customer initiated the calls</param>
         /// <returns>new client instance</returns>
-        public Client ForAccessToken(string tokenId, bool customerInitiated) {
+        public Client ForAccessToken(string tokenId, bool customerInitiated)
+        {
             Client updated = new Client(MemberId, cryptoEngine, channel);
             updated.UseAccessToken(tokenId, customerInitiated);
             updated.SetSecurityMetadata(securityMetadata);
@@ -90,7 +99,8 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="accessTokenId">the access token id to be used</param>
         /// <param name="customerInitiated">whether the customer initiated the calls</param>
-        private void UseAccessToken(string accessTokenId, bool customerInitiated) {
+        private void UseAccessToken(string accessTokenId, bool customerInitiated)
+        {
             this.onBehalfOf = accessTokenId;
             this.customerInitiated = customerInitiated;
         }
@@ -103,8 +113,10 @@ namespace Tokenio.Tpp.Rpc {
         /// <returns>an id to reference the token request</returns>
         public Task<string> StoreTokenRequest(
             TokenRequestPayload payload,
-            TokenRequestOptions options) {
-            var request = new StoreTokenRequestRequest {
+            TokenRequestOptions options)
+        {
+            var request = new StoreTokenRequestRequest
+            {
                 RequestPayload = payload,
                 RequestOptions = options
             };
@@ -121,12 +133,14 @@ namespace Tokenio.Tpp.Rpc {
         /// <returns>Task that completes when request handled</returns>
         public Task SetTokenRequestTransferDestinations(
             string tokenRequestId,
-            IList<TransferDestination> transferDestinations) {
+            IList<TransferDestination> transferDestinations)
+        {
             return gateway(authenticationContext())
                 .SetTokenRequestTransferDestinationsAsync(
-                    new SetTokenRequestTransferDestinationsRequest {
+                    new SetTokenRequestTransferDestinationsRequest
+                    {
                         TokenRequestId = tokenRequestId,
-                            TransferDestinations = { transferDestinations }
+                        TransferDestinations = {transferDestinations}
                     })
                 .ToTask();
         }
@@ -145,10 +159,12 @@ namespace Tokenio.Tpp.Rpc {
             MapField<string, string> colors,
             string consentText,
             string name,
-            string appName) {
-            var request = new CreateCustomizationRequest {
+            string appName)
+        {
+            var request = new CreateCustomizationRequest
+            {
                 Logo = logo,
-                Colors = { colors },
+                Colors = {colors},
                 Name = name,
                 ConsentText = consentText,
                 AppName = appName
@@ -163,8 +179,9 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <returns>The token returned by server.</returns>
         /// <param name="tokenId">Token id</param>
-        public Task<Token> GetToken(string tokenId) {
-            var request = new GetTokenRequest { TokenId = tokenId };
+        public Task<Token> GetToken(string tokenId)
+        {
+            var request = new GetTokenRequest {TokenId = tokenId};
             return gateway(authenticationContext()).GetTokenAsync(request)
                 .ToTask(response => response.Token);
         }
@@ -179,14 +196,18 @@ namespace Tokenio.Tpp.Rpc {
         public Task<PagedList<Token>> GetTokens(
             TokenType type,
             int limit,
-            string offset) {
-            var request = new GetTokensRequest {
+            string offset)
+        {
+            var request = new GetTokensRequest
+            {
                 Type = type,
-                Page = new Page {
-                Limit = limit
+                Page = new Page
+                {
+                    Limit = limit
                 }
             };
-            if (offset != null) {
+            if (offset != null)
+            {
                 request.Page.Offset = offset;
             }
 
@@ -199,8 +220,9 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="transferId">the transfer id</param>
         /// <returns>the transfer record</returns>
-        public Task<Transfer> GetTransfer(string transferId) {
-            var request = new GetTransferRequest { TransferId = transferId };
+        public Task<Transfer> GetTransfer(string transferId)
+        {
+            var request = new GetTransferRequest {TransferId = transferId};
             return gateway(authenticationContext()).GetTransferAsync(request)
                 .ToTask(response => response.Transfer);
         }
@@ -210,9 +232,11 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="bulkTransferId">bulk transfer ID</param>
         /// <returns>bulk transfer record</returns>
-        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId) {
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId)
+        {
             return gateway(authenticationContext())
-                .GetBulkTransferAsync(new GetBulkTransferRequest {
+                .GetBulkTransferAsync(new GetBulkTransferRequest
+                {
                     BulkTransferId = bulkTransferId
                 })
                 .ToTask(response => response.BulkTransfer);
@@ -223,9 +247,11 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="submissionId">submission ID</param>
         /// <returns>standing order submission record</returns>
-        public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId) {
+        public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
+        {
             return gateway(authenticationContext())
-                .GetStandingOrderSubmissionAsync(new GetStandingOrderSubmissionRequest {
+                .GetStandingOrderSubmissionAsync(new GetStandingOrderSubmissionRequest
+                {
                     SubmissionId = submissionId
                 }).ToTask(response => response.Submission);
         }
@@ -240,17 +266,22 @@ namespace Tokenio.Tpp.Rpc {
         public Task<PagedList<Transfer>> GetTransfers(
             string tokenId,
             string offset,
-            int limit) {
-            var request = new GetTransfersRequest {
-                Page = new Page {
-                Limit = limit
+            int limit)
+        {
+            var request = new GetTransfersRequest
+            {
+                Page = new Page
+                {
+                    Limit = limit
                 }
             };
-            if (tokenId != null) {
-                request.Filter = new TransferFilter { TokenId = tokenId };
+            if (tokenId != null)
+            {
+                request.Filter = new TransferFilter {TokenId = tokenId};
             }
 
-            if (offset != null) {
+            if (offset != null)
+            {
                 request.Page.Offset = offset;
             }
 
@@ -266,9 +297,11 @@ namespace Tokenio.Tpp.Rpc {
         /// <returns>standing order submissions</returns>
         public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
             int limit,
-            string offset = null) {
-            GetStandingOrderSubmissionsRequest request = new GetStandingOrderSubmissionsRequest {
-            Page = PageBuilder(limit, offset)
+            string offset = null)
+        {
+            GetStandingOrderSubmissionsRequest request = new GetStandingOrderSubmissionsRequest
+            {
+                Page = PageBuilder(limit, offset)
             };
 
             return gateway(authenticationContext())
@@ -282,7 +315,8 @@ namespace Tokenio.Tpp.Rpc {
         /// Sets security metadata included in all requests.
         /// </summary>
         /// <param name="securityMetadata">Security metadata.</param>
-        private void SetSecurityMetadata(SecurityMetadata securityMetadata) {
+        private void SetSecurityMetadata(SecurityMetadata securityMetadata)
+        {
             this.securityMetadata = securityMetadata;
         }
 
@@ -292,11 +326,14 @@ namespace Tokenio.Tpp.Rpc {
         /// <param name="payload">the transfer token payload</param>
         /// <returns>the transfer token</returns>
         /// <exception cref="TransferTokenException"></exception>
-        public Task<Token> CreateTransferToken(TokenPayload payload) {
-            var request = new CreateTransferTokenRequest { Payload = payload };
+        public Task<Token> CreateTransferToken(TokenPayload payload)
+        {
+            var request = new CreateTransferTokenRequest {Payload = payload};
             return gateway(authenticationContext()).CreateTransferTokenAsync(request)
-                .ToTask(response => {
-                    if (response.Status != TransferTokenStatus.Success) {
+                .ToTask(response =>
+                {
+                    if (response.Status != TransferTokenStatus.Success)
+                    {
                         throw new TransferTokenException(response.Status);
                     }
 
@@ -311,14 +348,18 @@ namespace Tokenio.Tpp.Rpc {
         /// <param name="tokenRequestId">the token request id</param>
         /// <returns>the transfer payload</returns>
         /// <exception cref="TransferTokenException"></exception>
-        public Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId) {
-            var request = new CreateTransferTokenRequest {
+        public Task<Token> CreateTransferToken(TokenPayload payload, string tokenRequestId)
+        {
+            var request = new CreateTransferTokenRequest
+            {
                 Payload = payload,
                 TokenRequestId = tokenRequestId
             };
             return gateway(authenticationContext()).CreateTransferTokenAsync(request)
-                .ToTask(response => {
-                    if (response.Status != TransferTokenStatus.Success) {
+                .ToTask(response =>
+                {
+                    if (response.Status != TransferTokenStatus.Success)
+                    {
                         throw new TransferTokenException(response.Status);
                     }
 
@@ -331,14 +372,17 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="token">the token to cancel</param>
         /// <returns>the result of the cancel operation, , returned by the server</returns>
-        public Task<TokenOperationResult> CancelToken(Token token) {
+        public Task<TokenOperationResult> CancelToken(Token token)
+        {
             var signer = cryptoEngine.CreateSigner(Level.Low);
-            var request = new CancelTokenRequest {
+            var request = new CancelTokenRequest
+            {
                 TokenId = token.Id,
-                Signature = new Signature {
-                MemberId = MemberId,
-                KeyId = signer.GetKeyId(),
-                Signature_ = signer.Sign(Stringify(token, TokenAction.Cancelled))
+                Signature = new Signature
+                {
+                    MemberId = MemberId,
+                    KeyId = signer.GetKeyId(),
+                    Signature_ = signer.Sign(Stringify(token, TokenAction.Cancelled))
                 }
             };
             return gateway(authenticationContext()).CancelTokenAsync(request)
@@ -350,10 +394,13 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <returns>list of account ids.</returns>
         /// <param name="accountIds">Account identifiers.</param>
-        public Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds) {
-            var request = new TriggerStepUpNotificationRequest {
-                BalanceStepUp = new BalanceStepUp {
-                AccountId = { accountIds }
+        public Task<NotifyStatus> TriggerBalanceStepUpNotification(IList<string> accountIds)
+        {
+            var request = new TriggerStepUpNotificationRequest
+            {
+                BalanceStepUp = new BalanceStepUp
+                {
+                    AccountId = {accountIds}
                 }
             };
 
@@ -367,10 +414,13 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <returns>notification setup.</returns>
         /// <param name="accountId">account id</param>
-        public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId) {
-            var request = new TriggerStepUpNotificationRequest {
-                TransactionStepUp = new TransactionStepUp {
-                AccountId = accountId
+        public Task<NotifyStatus> TriggerTransactionStepUpNotification(string accountId)
+        {
+            var request = new TriggerStepUpNotificationRequest
+            {
+                TransactionStepUp = new TransactionStepUp
+                {
+                    AccountId = accountId
                 }
             };
 
@@ -379,7 +429,8 @@ namespace Tokenio.Tpp.Rpc {
                 .ToTask(response => response.Status);
         }
 
-        protected override string GetOnBehalfOf() {
+        protected override string GetOnBehalfOf()
+        {
             return onBehalfOf;
         }
 
@@ -389,8 +440,10 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <returns>The active access token.</returns>
         /// <param name="toMemberId">beneficiary of the active access token.</param>
-        public Task<Token> GetActiveAccessToken(string toMemberId) {
-            var request = new GetActiveAccessTokenRequest {
+        public Task<Token> GetActiveAccessToken(string toMemberId)
+        {
+            var request = new GetActiveAccessTokenRequest
+            {
                 ToMemberId = toMemberId
             };
 
@@ -407,12 +460,12 @@ namespace Tokenio.Tpp.Rpc {
         /// <param name="signature">signature payload signed with the private key corresponding to the certificate.</param>
         public Task<VerifyEidasResponse> VerifyEidas(
             VerifyEidasPayload payload,
-            string signature) {
-            var request = new VerifyEidasRequest {
-
+            string signature)
+        {
+            var request = new VerifyEidasRequest
+            {
                 Payload = payload,
                 Signature = signature
-
             };
             return gateway(authenticationContext())
                 .VerifyEidasAsync(request)
@@ -424,14 +477,17 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="payload">the transfer payload</param>
         /// <returns></returns>
-        public Task<Transfer> CreateTransfer(TransferPayload payload) {
+        public Task<Transfer> CreateTransfer(TransferPayload payload)
+        {
             var signer = cryptoEngine.CreateSigner(Level.Low);
-            var request = new CreateTransferRequest {
+            var request = new CreateTransferRequest
+            {
                 Payload = payload,
-                PayloadSignature = new Signature {
-                MemberId = MemberId,
-                KeyId = signer.GetKeyId(),
-                Signature_ = signer.Sign(payload)
+                PayloadSignature = new Signature
+                {
+                    MemberId = MemberId,
+                    KeyId = signer.GetKeyId(),
+                    Signature_ = signer.Sign(payload)
                 }
             };
             return gateway(authenticationContext()).CreateTransferAsync(request)
@@ -443,9 +499,11 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="tokenId"> ID of token to redeem</param>
         /// <returns>bulk transfer record</returns>
-        public Task<BulkTransfer> CreateBulkTransfer(string tokenId) {
+        public Task<BulkTransfer> CreateBulkTransfer(string tokenId)
+        {
             return gateway(authenticationContext())
-                .CreateBulkTransferAsync(new CreateBulkTransferRequest {
+                .CreateBulkTransferAsync(new CreateBulkTransferRequest
+                {
                     TokenId = tokenId
                 })
                 .ToTask(response => response.Transfer);
@@ -456,9 +514,11 @@ namespace Tokenio.Tpp.Rpc {
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
         /// <returns>standing order submission</returns>
-        public Task<StandingOrderSubmission> CreateStandingOrder(string tokenId) {
+        public Task<StandingOrderSubmission> CreateStandingOrder(string tokenId)
+        {
             return gateway(authenticationContext())
-                .CreateStandingOrderAsync(new CreateStandingOrderRequest {
+                .CreateStandingOrderAsync(new CreateStandingOrderRequest
+                {
                     TokenId = tokenId
                 }).ToTask(response => response.Submission);
         }

@@ -8,11 +8,14 @@ using Tokenio.Security;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 
-namespace Sample {
-    public class MemberRecoverySample {
+namespace Sample
+{
+    public class MemberRecoverySample
+    {
         public Tokenio.Member agentMember; // used by complex recovery rule sample
 
-        public void SetUpDefaultRecoveryRule(Tokenio.Member member) {
+        public void SetUpDefaultRecoveryRule(Tokenio.Member member)
+        {
             member.UseDefaultRecoveryRule().Wait();
         }
 
@@ -23,7 +26,8 @@ namespace Sample {
         /// <param name="tokenClient">SDK client</param>
         /// <param name="alias">alias of member to recoverWithDefaultRule</param>
         /// <returns>the recovered member</returns>
-        public Tokenio.Member RecoverWithDefaultRule(TokenClient tokenClient, Alias alias) {
+        public Tokenio.Member RecoverWithDefaultRule(TokenClient tokenClient, Alias alias)
+        {
             var verificationId = tokenClient.BeginRecovery(alias).Result;
             var memberId = tokenClient.GetMemberId(alias).Result;
 
@@ -46,11 +50,12 @@ namespace Sample {
         public void SetUpComplexRecoveryRule(
             Tokenio.Member newMember,
             TokenClient tokenClient,
-            Alias agentAlias) {
+            Alias agentAlias)
+        {
             TellRecoveryAgentMemberId(newMember.MemberId());
 
             var agentId = tokenClient.GetMemberId(agentAlias).Result;
-            var recoveryRule = new RecoveryRule { PrimaryAgent = agentId };
+            var recoveryRule = new RecoveryRule {PrimaryAgent = agentId};
             newMember.AddRecoveryRule(recoveryRule).Wait();
         }
 
@@ -59,9 +64,11 @@ namespace Sample {
         /// </summary>
         /// <param name="authorization">client's claim to be some member</param>
         /// <returns>if authorization seems legitimate, return signature; else error</returns>
-        public Signature GetRecoveryAgentSignature(Authorization authorization) {
+        public Signature GetRecoveryAgentSignature(Authorization authorization)
+        {
             var isCorrect = CheckMemberId(authorization.MemberId);
-            if (isCorrect) {
+            if (isCorrect)
+            {
                 return agentMember.AuthorizeRecovery(authorization).Result;
             }
 
@@ -76,7 +83,8 @@ namespace Sample {
         /// <returns>the recovered member</returns>
         public Tokenio.Member RecoverWithComplexRule(
             TokenClient tokenClient,
-            Alias alias) {
+            Alias alias)
+        {
             var memberId = tokenClient.GetMemberId(alias).Result;
 
             var cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
@@ -87,13 +95,14 @@ namespace Sample {
 
             var agentSignature = GetRecoveryAgentSignature(authorization);
 
-            var mro = new MemberRecoveryOperation {
+            var mro = new MemberRecoveryOperation
+            {
                 AgentSignature = agentSignature,
                 Authorization = authorization
             };
             var recoveredMember = tokenClient.CompleteRecovery(
                 memberId,
-                new List<MemberRecoveryOperation> { mro },
+                new List<MemberRecoveryOperation> {mro},
                 newKey,
                 cryptoEngine).Result;
 
@@ -102,10 +111,13 @@ namespace Sample {
             return recoveredMember;
         }
 
-        private static void TellRecoveryAgentMemberId(string memberId) { } /* this simple sample uses a no op */
+        private static void TellRecoveryAgentMemberId(string memberId)
+        {
+        } /* this simple sample uses a no op */
 
         /* this simple sample approves everybody */
-        private static bool CheckMemberId(string memberId) {
+        private static bool CheckMemberId(string memberId)
+        {
             return true;
         }
     }

@@ -4,11 +4,13 @@ using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.User;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
+namespace Tokenio.Sample.User
+{
     /// <summary>
     /// Working with existing access tokens: finding and replacing.
     /// </summary>
-    public static class ReplaceAccessTokenSample {
+    public static class ReplaceAccessTokenSample
+    {
         /// <summary>
         /// Finds a previously-created access token from grantor to grantee.
         /// </summary>
@@ -19,7 +21,8 @@ namespace Tokenio.Sample.User {
         public static Token FindAccessToken(
             Tokenio.User.TokenClient tokenClient,
             UserMember grantor,
-            Alias granteeAlias) {
+            Alias granteeAlias)
+        {
             string granteeMemberId = tokenClient.GetMemberIdBlocking(granteeAlias);
             return grantor.GetActiveAccessTokenBlocking(granteeMemberId);
         }
@@ -34,15 +37,16 @@ namespace Tokenio.Sample.User {
         public static TokenOperationResult ReplaceAccessToken(
             UserMember grantor,
             Alias granteeAlias,
-            Token oldToken) {
+            Token oldToken)
+        {
             string accountId = grantor.CreateTestBankAccountBlocking(1000.0, "EUR")
                 .Id();
             // Replace the old access token
             Token newToken = grantor.ReplaceAccessTokenBlocking(
                     oldToken,
                     AccessTokenBuilder
-                    .FromPayload(oldToken.Payload)
-                    .ForAccount(accountId))
+                        .FromPayload(oldToken.Payload)
+                        .ForAccount(accountId))
                 .Token;
             // Endorse the new access token
             TokenOperationResult status = grantor.EndorseTokenBlocking(newToken, Key.Types.Level.Standard);

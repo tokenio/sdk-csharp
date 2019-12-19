@@ -4,15 +4,20 @@ using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class CreateStandingOrderTokenSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class CreateStandingOrderTokenSampleTest
+    {
         [Fact]
-        public void CreateStandingOrderTokenTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void CreateStandingOrderTokenTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias payeeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
-                Token token = CreateStandingOrderTokenSample.CreateStandingOrderToken(payer, payeeAlias, Level.Standard);
+                Token token =
+                    CreateStandingOrderTokenSample.CreateStandingOrderToken(payer, payeeAlias, Level.Standard);
                 Assert.NotNull(token);
             }
         }

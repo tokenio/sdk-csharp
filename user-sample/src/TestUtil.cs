@@ -4,8 +4,10 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Utils;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public abstract class TestUtil {
+namespace Tokenio.Sample.User
+{
+    public abstract class TestUtil
+    {
         private static string DEV_KEY = "f3982819-5d8d-4123-9601-886df2780f42";
         private static string TOKEN_REALM = "token";
 
@@ -13,11 +15,13 @@ namespace Tokenio.Sample.User {
         /// Generates random user name to be used for testing.
         /// </summary>
         /// <returns>The alias.</returns>
-        public static Alias RandomAlias() {
-            return new Alias {
+        public static Alias RandomAlias()
+        {
+            return new Alias
+            {
                 Value = "alias-" + Util.Nonce().ToLower() + "+noverify@example.com",
-                    Type = Alias.Types.Type.Email,
-                    Realm = TOKEN_REALM
+                Type = Alias.Types.Type.Email,
+                Realm = TOKEN_REALM
             };
         }
 
@@ -25,7 +29,8 @@ namespace Tokenio.Sample.User {
         /// Creates the client.
         /// </summary>
         /// <returns>The client.</returns>
-        public static Tokenio.User.TokenClient CreateClient() {
+        public static Tokenio.User.TokenClient CreateClient()
+        {
             return Tokenio.User.TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
         }
 
@@ -34,7 +39,8 @@ namespace Tokenio.Sample.User {
         /// </summary>
         /// <returns>The member and link accounts.</returns>
         /// <param name="client">Client.</param>
-        public static UserMember CreateMemberAndLinkAccounts(Tokenio.User.TokenClient client) {
+        public static UserMember CreateMemberAndLinkAccounts(Tokenio.User.TokenClient client)
+        {
             Alias alias = RandomAlias();
             UserMember member = client.CreateMemberBlocking(alias);
             LinkMemberAndBankSample.LinkBankAccounts(member);
@@ -46,11 +52,13 @@ namespace Tokenio.Sample.User {
         /// </summary>
         /// <returns>The numeric.</returns>
         /// <param name="size">Size.</param>
-        public static string RandomNumeric(int size) {
+        public static string RandomNumeric(int size)
+        {
             return Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, size);
         }
 
-        public static void waitUntil(Action function) {
+        public static void waitUntil(Action function)
+        {
             WaitUntil(60000, 500, 1, function);
         }
 
@@ -65,16 +73,24 @@ namespace Tokenio.Sample.User {
             long timeoutMs,
             long waitTimeMs,
             int backOffFactor,
-            Action function) {
-            for (long start = CurrentMillis();; waitTimeMs *= backOffFactor) {
-                try {
+            Action function)
+        {
+            for (long start = CurrentMillis();; waitTimeMs *= backOffFactor)
+            {
+                try
+                {
                     Thread newThread = new Thread(new ThreadStart(function));
                     newThread.Start();
                     return;
-                } catch (InvalidOperationException ex) {
-                    if (CurrentMillis() - start < timeoutMs) {
+                }
+                catch (InvalidOperationException ex)
+                {
+                    if (CurrentMillis() - start < timeoutMs)
+                    {
                         SleepUninterruptibly(waitTimeMs);
-                    } else {
+                    }
+                    else
+                    {
                         throw ex;
                     }
                 }
@@ -84,21 +100,30 @@ namespace Tokenio.Sample.User {
         /// <summary>
         /// </summary>
         /// <param name="sleepFor">Sleep for.</param>
-        private static void SleepUninterruptibly(long sleepFor) {
+        private static void SleepUninterruptibly(long sleepFor)
+        {
             bool interrupted = false;
-            try {
+            try
+            {
                 long end = CurrentMillis() + sleepFor;
-                while (true) {
-                    try {
+                while (true)
+                {
+                    try
+                    {
                         Thread.Sleep((int) sleepFor);
                         return;
-                    } catch (ThreadInterruptedException) {
+                    }
+                    catch (ThreadInterruptedException)
+                    {
                         interrupted = true;
                         sleepFor = end - CurrentMillis();
                     }
                 }
-            } finally {
-                if (interrupted) {
+            }
+            finally
+            {
+                if (interrupted)
+                {
                     Thread.CurrentThread.Interrupt();
                 }
             }
@@ -108,7 +133,8 @@ namespace Tokenio.Sample.User {
         /// Currents the millis.
         /// </summary>
         /// <returns>The millis.</returns>
-        private static long CurrentMillis() {
+        private static long CurrentMillis()
+        {
             DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             long currentTime = (long) (DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
             return currentTime;

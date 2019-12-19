@@ -6,9 +6,10 @@ using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Security;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace Tokenio.Sample.Tpp {
-    public static class MemberMethodsSample {
-
+namespace Tokenio.Sample.Tpp
+{
+    public static class MemberMethodsSample
+    {
         private static readonly byte[] PICTURE = Convert.FromBase64String(
             "/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDA"
             + "BALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRT"
@@ -28,27 +29,28 @@ namespace Tokenio.Sample.Tpp {
         /// Adds and removes an alias.
         /// </summary>
         /// <param name="member">member</param>
-        public static void Aliases(TppMember member) {
-            Alias alias = new Alias {
+        public static void Aliases(TppMember member)
+        {
+            Alias alias = new Alias
+            {
                 Type = Alias.Types.Type.Domain,
                 Value = "verified-domain.com"
-
             };
             // add the alias
             member.AddAliasBlocking(alias);
             // remove the alias
             member.RemoveAliasBlocking(alias);
-
         }
 
         /// <summary>
         /// Resolves a user's alias.
         /// </summary>
         /// <param name="client">token client</param>
-        public static void ResolveAlias(Tokenio.Tpp.TokenClient client) {
-            Alias alias = new Alias {
+        public static void ResolveAlias(Tokenio.Tpp.TokenClient client)
+        {
+            Alias alias = new Alias
+            {
                 Value = "user-email@example.com"
-
             };
 
             // If this call fails then the alias does not correspond to an existing member.
@@ -67,13 +69,14 @@ namespace Tokenio.Sample.Tpp {
         /// </summary>
         /// <param name="crypto">crypto engine</param>
         /// <param name="member">member</param>
-        public static void Keys(ICryptoEngine crypto, TppMember member) {
+        public static void Keys(ICryptoEngine crypto, TppMember member)
+        {
             Key lowKey = crypto.GenerateKey(Key.Types.Level.Low);
             member.ApproveKeyBlocking(lowKey);
 
             Key standardKey = crypto.GenerateKey(Key.Types.Level.Standard);
             Key privilegedKey = crypto.GenerateKey(Key.Types.Level.Privileged);
-            member.ApproveKeysBlocking(new [] { standardKey, privilegedKey });
+            member.ApproveKeysBlocking(new[] {standardKey, privilegedKey});
 
             member.RemoveKeyBlocking(lowKey.Id);
         }
@@ -83,8 +86,10 @@ namespace Tokenio.Sample.Tpp {
         /// </summary>
         /// <param name="member">member</param>
         /// <returns>profile</returns>
-        public static Profile Profiles(TppMember member) {
-            Profile name = new Profile {
+        public static Profile Profiles(TppMember member)
+        {
+            Profile name = new Profile
+            {
                 DisplayNameFirst = "Tycho",
                 DisplayNameLast = "Nestoris"
             };
@@ -96,5 +101,4 @@ namespace Tokenio.Sample.Tpp {
             return profile;
         }
     }
-
 }

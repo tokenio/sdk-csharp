@@ -5,16 +5,20 @@ using Tokenio.Proto.Common.TransferProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public static class GetTransactionsSample {
+namespace Tokenio.Sample.User
+{
+    public static class GetTransactionsSample
+    {
         /// <summary>
         /// Illustrate Member.getTransactions
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void getTransactionsSample(UserMember payer) {
+        public static void getTransactionsSample(UserMember payer)
+        {
             List<Tokenio.User.Account> accounts = payer.GetAccountsBlocking().ToList();
             string accountId = accounts[0].Id();
-            foreach (Transaction transaction in payer.GetTransactionsBlocking(accountId, 10, Level.Standard, null).List) {
+            foreach (Transaction transaction in payer.GetTransactionsBlocking(accountId, 10, Level.Standard, null).List)
+            {
                 DisplayTransaction(
                     transaction.Amount.Currency,
                     transaction.Amount.Value,
@@ -27,10 +31,13 @@ namespace Tokenio.Sample.User {
         /// Illustrate Member.getTransactions.
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void GetTransactionsByDateSample(UserMember payer) {
+        public static void GetTransactionsByDateSample(UserMember payer)
+        {
             List<Tokenio.User.Account> accounts = payer.GetAccountsBlocking().ToList();
             string accountId = accounts[0].Id();
-            foreach (Transaction transaction in payer.GetTransactionsBlocking(accountId, 10, Level.Standard, null, "2019-01-15", "2022-02-15").List) {
+            foreach (Transaction transaction in payer
+                .GetTransactionsBlocking(accountId, 10, Level.Standard, null, "2019-01-15", "2022-02-15").List)
+            {
                 DisplayTransaction(
                     transaction.Amount.Currency,
                     transaction.Amount.Value,
@@ -47,7 +54,8 @@ namespace Tokenio.Sample.User {
         /// <returns>a Transaction</returns>
         public static Transaction GetTransactionSample(
             UserMember payer,
-            Transfer transfer) {
+            Transfer transfer)
+        {
             List<Tokenio.User.Account> accounts = payer.GetAccountsBlocking().ToList();
             string accountId = accounts[0].Id();
             string transactionId = transfer.TransactionId;
@@ -59,9 +67,11 @@ namespace Tokenio.Sample.User {
         /// Illustrate Account.getTransactions
         /// </summary>
         /// <param name="payer">payer Token member</param>
-        public static void AccountGetTransactionsSample(UserMember payer) {
-            Tokenio.User.Account account = payer.GetAccountsBlocking() [0];
-            foreach (Transaction transaction in account.GetTransactionsBlocking(10, Level.Standard, null).List) {
+        public static void AccountGetTransactionsSample(UserMember payer)
+        {
+            Tokenio.User.Account account = payer.GetAccountsBlocking()[0];
+            foreach (Transaction transaction in account.GetTransactionsBlocking(10, Level.Standard, null).List)
+            {
                 DisplayTransaction(
                     transaction.Amount.Currency,
                     transaction.Amount.Value,
@@ -78,8 +88,9 @@ namespace Tokenio.Sample.User {
         /// <returns>a Transaction</returns>
         public static Transaction AccountGetTransactionSample(
             UserMember payer,
-            Transfer transfer) {
-            Tokenio.User.Account account = payer.GetAccountsBlocking() [0];
+            Transfer transfer)
+        {
+            Tokenio.User.Account account = payer.GetAccountsBlocking()[0];
             string txnId = transfer.TransactionId;
             Transaction transaction = account.GetTransactionBlocking(txnId, Level.Standard);
             return transaction;
@@ -89,6 +100,8 @@ namespace Tokenio.Sample.User {
             string currency,
             string value,
             TransactionType debitOrCredit,
-            TransactionStatus status) { }
+            TransactionStatus status)
+        {
+        }
     }
 }

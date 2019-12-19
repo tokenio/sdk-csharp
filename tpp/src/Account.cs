@@ -1,5 +1,7 @@
-namespace Tokenio.Tpp {
-    public class Account : Tokenio.Account {
+namespace Tokenio.Tpp
+{
+    public class Account : Tokenio.Account
+    {
         private readonly Member member;
 
         /// <summary>
@@ -7,12 +9,13 @@ namespace Tokenio.Tpp {
         /// </summary>
         /// <param name="member">account owner</param>
         /// <param name="account">account information</param>
-
-        internal Account(Member member, Tokenio.Account account) : base(account) {
+        internal Account(Member member, Tokenio.Account account) : base(account)
+        {
             this.member = member;
         }
 
-        public new Member Member() {
+        public new Member Member()
+        {
             return member;
         }
     }

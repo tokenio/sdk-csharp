@@ -2,11 +2,13 @@ using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
+namespace Tokenio.Sample.User
+{
     /// <summary>
     /// Redeems a standing order token.
     /// </summary>
-    public static class RedeemStandingOrderTokenSample {
+    public static class RedeemStandingOrderTokenSample
+    {
         /// <summary>
         /// Redeems a standing order token to make a series of transfers from payer bank account
         /// to payee bank account.

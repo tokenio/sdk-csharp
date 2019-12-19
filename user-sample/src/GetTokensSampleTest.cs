@@ -5,21 +5,27 @@ using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class GetTokensSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class GetTokensSampleTest
+    {
         [Fact]
-        public void GetTokenTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void GetTokenTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 Alias granteeAlias = TestUtil.RandomAlias();
                 UserMember payee = tokenClient.CreateMemberBlocking(granteeAlias);
                 Token token = CreateTransferTokenSample.CreateTransferToken(payer, granteeAlias, Level.Low);
                 Assert.Equal(GetTokensSample.GetToken(payer, token.Id).Id, token.Id);
-                var sigList = GetTokensSample.GetToken(payer, token.Id).PayloadSignatures.Where(sig => sig.Action == TokenSignature.Types.Action.Cancelled).ToList();
+                var sigList = GetTokensSample.GetToken(payer, token.Id).PayloadSignatures
+                    .Where(sig => sig.Action == TokenSignature.Types.Action.Cancelled).ToList();
                 Assert.Empty(sigList);
                 // cancel token
                 payer.CancelTokenBlocking(token);
-                sigList = GetTokensSample.GetToken(payer, token.Id).PayloadSignatures.Where(sig => sig.Action == TokenSignature.Types.Action.Cancelled).ToList();
+                sigList = GetTokensSample.GetToken(payer, token.Id).PayloadSignatures
+                    .Where(sig => sig.Action == TokenSignature.Types.Action.Cancelled).ToList();
                 Assert.NotEmpty(sigList);
             }
         }

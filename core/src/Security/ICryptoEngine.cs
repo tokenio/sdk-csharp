@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using Tokenio.Proto.Common.SecurityProtos;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
-namespace Tokenio.Security {
-    public interface ICryptoEngine {
+namespace Tokenio.Security
+{
+    public interface ICryptoEngine
+    {
         /// <summary>
         /// Generates keys of the specified level. If the key with the specified level
         /// already exists, it is replaced. Old key is still kept around because it could be

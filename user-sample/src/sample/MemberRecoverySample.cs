@@ -6,14 +6,17 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
+namespace Tokenio.Sample.User
+{
     /// <summary>
     /// Illustrate steps of Member recovery.
     /// </summary>
-    public class MemberRecoverySample {
+    public class MemberRecoverySample
+    {
         public UserMember agentMember; // used by complex recovery rule sample
 
-        public void SetUpDefaultRecoveryRule(UserMember member) {
+        public void SetUpDefaultRecoveryRule(UserMember member)
+        {
             member.UseDefaultRecoveryRuleBlocking();
         }
 
@@ -24,7 +27,8 @@ namespace Tokenio.Sample.User {
         /// <param name="tokenClient">SDK client</param>
         /// <param name="alias">alias of member to recoverWithDefaultRule</param>
         /// <returns>recovered member</returns>
-        public UserMember RecoverWithDefaultRule(Tokenio.User.TokenClient tokenClient, Alias alias) {
+        public UserMember RecoverWithDefaultRule(Tokenio.User.TokenClient tokenClient, Alias alias)
+        {
             string verificationId = tokenClient.BeginRecoveryBlocking(alias);
             // recoverWithDefault begin snippet to include in docs
             string memberId = tokenClient.GetMemberIdBlocking(alias);
@@ -43,7 +47,9 @@ namespace Tokenio.Sample.User {
             return recoveredMember;
         }
 
-        private void TellRecoveryAgentMemberId(string memberId) { } // this simple sample uses a no op
+        private void TellRecoveryAgentMemberId(string memberId)
+        {
+        } // this simple sample uses a no op
 
         /// <summary>
         /// Illustrate setting up a recovery rule more complex than "normal consumer"
@@ -55,7 +61,8 @@ namespace Tokenio.Sample.User {
         public void SetUpComplexRecoveryRule(
             UserMember newMember,
             Tokenio.User.TokenClient tokenClient,
-            Alias agentAlias) {
+            Alias agentAlias)
+        {
             // setUpComplex begin snippet to include in docs
             // Someday in the future, this user might ask the recovery agent
             // "Please tell Token that I am the member with ID m:12345678 ."
@@ -63,7 +70,7 @@ namespace Tokenio.Sample.User {
             // recovery agent the new member ID so the agent can "remember" later.
             TellRecoveryAgentMemberId(newMember.MemberId());
             string agentId = tokenClient.GetMemberIdBlocking(agentAlias);
-            RecoveryRule recoveryRule = new RecoveryRule { PrimaryAgent = agentId };
+            RecoveryRule recoveryRule = new RecoveryRule {PrimaryAgent = agentId};
             // This example doesn't call .setSecondaryAgents ,
             // but could have. If it had, then recovery would have
             // required one secondary agent authorization along with
@@ -73,7 +80,8 @@ namespace Tokenio.Sample.User {
         }
 
         // this simple sample approves everybody
-        private bool CheckMemberId(string memberId) {
+        private bool CheckMemberId(string memberId)
+        {
             return true;
         }
 
@@ -82,14 +90,17 @@ namespace Tokenio.Sample.User {
         /// </summary>
         /// <param name="authorization">client's claim to be some member</param>
         /// <returns>if authorization seems legitimate, return signature; else error</returns>
-        public Signature GetRecoveryAgentSignature(MemberRecoveryOperation.Types.Authorization authorization) {
+        public Signature GetRecoveryAgentSignature(MemberRecoveryOperation.Types.Authorization authorization)
+        {
             // authorizeRecovery begin snippet to include in doc
             // "Remember" whether this person who claims to be member with
             // the ID m:12345678 really is:
             bool isCorrect = CheckMemberId(authorization.MemberId);
-            if (isCorrect) {
+            if (isCorrect)
+            {
                 return agentMember.AuthorizeRecoveryBlocking(authorization);
             }
+
             throw new ArgumentException("I don't authorize this");
             // authorizeRecovery done snippet to include in doc
         }
@@ -102,7 +113,8 @@ namespace Tokenio.Sample.User {
         /// <returns>recovered member</returns>
         public UserMember RecoverWithComplexRule(
             Tokenio.User.TokenClient tokenClient,
-            Alias alias) {
+            Alias alias)
+        {
             // complexRecovery begin snippet to include in docs
             string memberId = tokenClient.GetMemberIdBlocking(alias);
             ICryptoEngine cryptoEngine = new TokenCryptoEngine(memberId, new InMemoryKeyStore());
@@ -115,13 +127,14 @@ namespace Tokenio.Sample.User {
             Signature agentSignature = GetRecoveryAgentSignature(authorization);
             // We have all the signed authorizations we need.
             // (In this example, "all" is just one.)
-            MemberRecoveryOperation mro = new MemberRecoveryOperation {
+            MemberRecoveryOperation mro = new MemberRecoveryOperation
+            {
                 Authorization = authorization,
                 AgentSignature = agentSignature
             };
             UserMember recoveredMember = tokenClient.CompleteRecoveryBlocking(
                 memberId,
-                (new [] { mro }).ToList(),
+                (new[] {mro}).ToList(),
                 newKey,
                 cryptoEngine);
             // after recovery, aliases aren't verified

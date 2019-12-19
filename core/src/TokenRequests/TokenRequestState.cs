@@ -3,13 +3,17 @@ using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
-namespace Tokenio.TokenRequests {
+namespace Tokenio.TokenRequests
+{
     [Serializable]
-    public class TokenRequestState {
-        public static TokenRequestState Create(string csrfTokenHash, string state) {
-            return new TokenRequestState {
+    public class TokenRequestState
+    {
+        public static TokenRequestState Create(string csrfTokenHash, string state)
+        {
+            return new TokenRequestState
+            {
                 CsrfTokenHash = csrfTokenHash,
-                    InnerState = state
+                InnerState = state
             };
         }
 
@@ -18,7 +22,8 @@ namespace Tokenio.TokenRequests {
         /// </summary>
         /// <returns>The from.</returns>
         /// <param name="serialized">Serialized.</param>
-        public static TokenRequestState ParseFrom(string serialized) {
+        public static TokenRequestState ParseFrom(string serialized)
+        {
             //ToDo(RD-2410): Remove WebUtility.UrlEncode call. It's only for backward compatibility with the old Token Request Flow.
             var urlDecoded = WebUtility.UrlDecode(serialized);
             var json = Base64UrlEncoder.Decode(urlDecoded);
@@ -33,7 +38,8 @@ namespace Tokenio.TokenRequests {
         /// Serialize into JSON fomrat and encode.
         /// </summary>
         /// <returns>The serialize.</returns>
-        public string Serialize() {
+        public string Serialize()
+        {
             var json = JsonConvert.SerializeObject(this);
             return Base64UrlEncoder.Encode(json);
         }

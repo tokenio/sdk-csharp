@@ -2,20 +2,25 @@ using Tokenio.TokenRequests;
 using Xunit;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace Tokenio.Sample.Tpp {
+namespace Tokenio.Sample.Tpp
+{
     /// <summary>
     /// Sample to show how to store and retrieve token requests.
     /// </summary>
-    public class StoreAndRetrieveTokenRequestSampleTest {
+    public class StoreAndRetrieveTokenRequestSampleTest
+    {
         private static string setTransferDestinationsUrl = "https://tpp-sample.com/callback/"
-            + "transferDestinations";
+                                                           + "transferDestinations";
+
         private static string setTransferDestinationsCallback = "https://tpp-sample.com/callback/"
-            + "transferDestinations?supportedTransferDestinationType=FASTER_PAYMENTS&"
-            + "supportedTransferDestinationType=SEPA&bankName=Iron&country=UK";
+                                                                + "transferDestinations?supportedTransferDestinationType=FASTER_PAYMENTS&"
+                                                                + "supportedTransferDestinationType=SEPA&bankName=Iron&country=UK";
 
         [Fact]
-        public void StoreAndRetrieveTransferTokenTest() {
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void StoreAndRetrieveTransferTokenTest()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 TppMember payee = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string requestId = StoreAndRetrieveTokenRequestSample.StoreTransferTokenRequest(payee);
                 TokenRequest request = tokenClient.RetrieveTokenRequestBlocking(requestId);
@@ -24,8 +29,10 @@ namespace Tokenio.Sample.Tpp {
         }
 
         [Fact]
-        public void StoreAndRetrieveAccessTokenTest() {
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void StoreAndRetrieveAccessTokenTest()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 TppMember grantee = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string requestId = StoreAndRetrieveTokenRequestSample.StoreTransferTokenRequest(grantee);
                 TokenRequest request = tokenClient.RetrieveTokenRequestBlocking(requestId);
@@ -34,8 +41,10 @@ namespace Tokenio.Sample.Tpp {
         }
 
         [Fact]
-        public void StoreTokenRequestAndSetTransferDestinationsTest() {
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void StoreTokenRequestAndSetTransferDestinationsTest()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 TppMember payee = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string requestId = StoreAndRetrieveTokenRequestSample
                     .StoreTransferTokenRequestWithDestinationsCallback(
@@ -54,10 +63,10 @@ namespace Tokenio.Sample.Tpp {
                     .Instructions
                     .TransferDestinations.Count);
                 Assert.True(request
-                    .GetTokenRequestPayload()
-                    .TransferBody
-                    .Instructions
-                    .TransferDestinations[0].FasterPayments != null);
+                                .GetTokenRequestPayload()
+                                .TransferBody
+                                .Instructions
+                                .TransferDestinations[0].FasterPayments != null);
             }
         }
     }

@@ -1,8 +1,10 @@
-namespace Tokenio.Security {
+namespace Tokenio.Security
+{
     /// <summary>
     /// Creates {@link CryptoEngine} instances bound to a given member id.
     /// </summary>
-    public interface ICryptoEngineFactory {
+    public interface ICryptoEngineFactory
+    {
         /// <summary>
         /// Creates a new <see cref="ICryptoEngine"/> for a given member.
         /// </summary>

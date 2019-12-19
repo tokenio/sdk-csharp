@@ -2,14 +2,16 @@ using System;
 using System.Threading.Tasks;
 using WebRequest = System.Net.WebRequest;
 
-namespace Tokenio.User.Browser {
+namespace Tokenio.User.Browser
+{
     /// <summary>
     /// A browser abstraction used by the SDK to interact with web content.
     /// <p>Pages will only be displayed in the browser as a result of a call to GoTo(url).
     /// Hyperlinks and redirects will cause the url() Task to be notified
     /// but will not load the page unless goTo(url) is explicitly called by a Task.</p>
     /// </summary>
-    public interface IBrowser : IDisposable {
+    public interface IBrowser : IDisposable
+    {
         /// <summary>
         /// Instructs the browser to load the given url.
         /// </summary>

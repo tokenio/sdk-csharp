@@ -4,17 +4,20 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Security;
 using TppMember = Tokenio.Tpp.Member;
 
-namespace Tokenio.Sample.Tpp {
-    public static class CreateMemberSample {
+namespace Tokenio.Sample.Tpp
+{
+    public static class CreateMemberSample
+    {
         /// <summary>
         /// Creates and returns a new token member.
         /// </summary>
         /// <returns>a new Member instance</returns>
-        public static TppMember CreateMember() {
+        public static TppMember CreateMember()
+        {
             // Create the client, which communicates with
             // the Token cloud.
-            try {
-
+            try
+            {
                 var key = Directory.CreateDirectory("./keys");
 
                 Tokenio.Tpp.TokenClient tokenClient = Tokenio.Tpp.TokenClient.NewBuilder()
@@ -28,7 +31,8 @@ namespace Tokenio.Sample.Tpp {
                 // so a random address wouldn't be useful for much.
                 // We use a random address because otherwise, if we ran a second
                 // time, Token would say the alias was already taken.
-                Alias alias = new Alias {
+                Alias alias = new Alias
+                {
                     Value = TestUtil.RandomNumeric(10) + "+noverify@example.com",
                     Type = Alias.Types.Type.Email
                 };
@@ -38,7 +42,9 @@ namespace Tokenio.Sample.Tpp {
                 newMember.UseDefaultRecoveryRule();
 
                 return newMember;
-            } catch (IOException ioe) {
+            }
+            catch (IOException ioe)
+            {
                 throw new ArgumentException("", ioe);
             }
         }

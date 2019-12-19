@@ -4,11 +4,13 @@ using Tokenio.Proto.Common.TransferProtos;
 using Tokenio.User.Utils;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
+namespace Tokenio.Sample.User
+{
     /// <summary>
     /// Redeems a transfer token.
     /// </summary>
-    public static class RedeemTransferTokenSample {
+    public static class RedeemTransferTokenSample
+    {
         /// <summary>
         /// Redeems a transfer token to transfer money from payer bank account to payee bank account.
         /// </summary>
@@ -29,10 +31,12 @@ namespace Tokenio.Sample.User {
             // Retrieve a transfer token to redeem.
             Token transferToken = payee.GetTokenBlocking(tokenId);
             // Set token destination
-            TransferDestination tokenDestination = new TransferDestination {
-                Token = new TransferDestination.Types.Token {
-                MemberId = payee.MemberId(),
-                AccountId = accountId
+            TransferDestination tokenDestination = new TransferDestination
+            {
+                Token = new TransferDestination.Types.Token
+                {
+                    MemberId = payee.MemberId(),
+                    AccountId = accountId
                 }
             };
             // Payee redeems a transfer token.

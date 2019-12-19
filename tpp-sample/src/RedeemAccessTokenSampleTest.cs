@@ -10,17 +10,22 @@ using Xunit;
 using TppMember = Tokenio.Tpp.Member;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.Tpp {
-    public class RedeemAccessTokenSampleTest {
+namespace Tokenio.Sample.Tpp
+{
+    public class RedeemAccessTokenSampleTest
+    {
         [Fact]
-        public void RedeemBalanceAccessTokenTest() {
-            using(var tokenClient = TestUtil.CreateClient()) {
+        public void RedeemBalanceAccessTokenTest()
+        {
+            using (var tokenClient = TestUtil.CreateClient())
+            {
                 UserMember grantor = TestUtil.CreateUserMember();
-                string accountId = grantor.GetAccountsBlocking() [0].Id();
+                string accountId = grantor.GetAccountsBlocking()[0].Id();
                 Alias granteeAlias = TestUtil.RandomAlias();
                 TppMember grantee = tokenClient.CreateMemberBlocking(granteeAlias);
 
-                Token token = CreateAndEndorseAccessTokenSample.CreateBalanceAccessToken(grantor, accountId, granteeAlias);
+                Token token =
+                    CreateAndEndorseAccessTokenSample.CreateBalanceAccessToken(grantor, accountId, granteeAlias);
                 Money balance0 = RedeemAccessTokenSample.RedeemBalanceAccessToken(grantee, token.Id);
 
                 Assert.True(Convert.ToDecimal(balance0.Value) > (decimal.One * 10));
@@ -28,10 +33,12 @@ namespace Tokenio.Sample.Tpp {
         }
 
         [Fact]
-        public void RedeemTransactionsAccessTokenTest() {
-            using(var tokenClient = TestUtil.CreateClient()) {
+        public void RedeemTransactionsAccessTokenTest()
+        {
+            using (var tokenClient = TestUtil.CreateClient())
+            {
                 UserMember grantor = TestUtil.CreateUserMember();
-                string accountId = grantor.GetAccountsBlocking() [0].Id();
+                string accountId = grantor.GetAccountsBlocking()[0].Id();
                 Alias granteeAlias = TestUtil.RandomAlias();
                 TppMember grantee = tokenClient.CreateMemberBlocking(granteeAlias);
 
@@ -39,7 +46,8 @@ namespace Tokenio.Sample.Tpp {
                 Alias payeeAlias = TestUtil.RandomAlias();
                 TppMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
                 var payeeAccount = payee.CreateTestBankAccountBlocking(1000, "EUR");
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 5; i++)
+                {
                     Token token = CreateTransferTokenSample.CreateTransferToken(
                         grantor,
                         payeeAlias,
@@ -50,25 +58,30 @@ namespace Tokenio.Sample.Tpp {
                         token.Id);
                 }
 
-                Token accessToken = CreateAndEndorseAccessTokenSample.CreateTransactionsAccessToken(grantor, accountId, granteeAlias);
-                IList<Transaction> transactions = RedeemAccessTokenSample.RedeemTransactionsAccessToken(grantee, accessToken.Id);
+                Token accessToken =
+                    CreateAndEndorseAccessTokenSample.CreateTransactionsAccessToken(grantor, accountId, granteeAlias);
+                IList<Transaction> transactions =
+                    RedeemAccessTokenSample.RedeemTransactionsAccessToken(grantee, accessToken.Id);
 
                 Assert.Equal(5, transactions.Count);
             }
         }
 
         [Fact]
-        public void RedeemStandingOrdersAccessTokenTest() {
-            using(var tokenClient = TestUtil.CreateClient()) {
+        public void RedeemStandingOrdersAccessTokenTest()
+        {
+            using (var tokenClient = TestUtil.CreateClient())
+            {
                 UserMember grantor = TestUtil.CreateUserMember();
-                string accountId = grantor.GetAccountsBlocking() [0].Id();
+                string accountId = grantor.GetAccountsBlocking()[0].Id();
                 Alias granteeAlias = TestUtil.RandomAlias();
                 TppMember grantee = tokenClient.CreateMemberBlocking(granteeAlias);
 
                 // make some standing orders
                 Alias payeeAlias = TestUtil.RandomAlias();
                 TppMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 5; i++)
+                {
                     Token token = CreateStandingOrderTokenSample.CreateStandingOrderToken(
                         grantor,
                         payeeAlias,
@@ -78,8 +91,10 @@ namespace Tokenio.Sample.Tpp {
                         token.Id);
                 }
 
-                Token accessToken = CreateAndEndorseAccessTokenSample.CreateStandingOrdersAccessToken(grantor, accountId, granteeAlias);
-                IList<StandingOrder> standingOrders = RedeemAccessTokenSample.RedeemStandingOrdersAccessToken(grantee, accessToken.Id);
+                Token accessToken =
+                    CreateAndEndorseAccessTokenSample.CreateStandingOrdersAccessToken(grantor, accountId, granteeAlias);
+                IList<StandingOrder> standingOrders =
+                    RedeemAccessTokenSample.RedeemStandingOrdersAccessToken(grantee, accessToken.Id);
 
                 Assert.Equal(5, standingOrders.Count);
             }

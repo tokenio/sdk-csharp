@@ -5,11 +5,13 @@ using Tokenio.Rpc;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 
-namespace Tokenio {
+namespace Tokenio
+{
     /// <summary>
     /// Represents a funding account in the Token system.
     /// </summary>
-    public class Account {
+    public class Account
+    {
         protected readonly Member member;
         protected readonly ProtoAccount account;
         protected readonly Client client;
@@ -18,7 +20,8 @@ namespace Tokenio {
         /// Initializes a new instance of the <see cref="T:Tokenio.Account"/> class.
         /// </summary>
         /// <param name="account">Account.</param>
-        public Account(Account account) {
+        public Account(Account account)
+        {
             this.member = account.member;
             this.account = account.account;
             this.client = account.client;
@@ -30,7 +33,8 @@ namespace Tokenio {
         /// <param name="member">account owner</param>
         /// <param name="account">account information</param>
         /// <param name="client">RPC client used to perform operations against the server</param>
-        public Account(Member member, ProtoAccount account, Client client) {
+        public Account(Member member, ProtoAccount account, Client client)
+        {
             this.member = member;
             this.account = account;
             this.client = client;
@@ -40,7 +44,8 @@ namespace Tokenio {
         /// Gets an account owner.
         /// </summary>
         /// <returns>account owner</returns>
-        public virtual Member Member() {
+        public virtual Member Member()
+        {
             return member;
         }
 
@@ -48,7 +53,8 @@ namespace Tokenio {
         /// Gets an account ID.
         /// </summary>
         /// <returns>account id</returns>
-        public string Id() {
+        public string Id()
+        {
             return account.Id;
         }
 
@@ -56,7 +62,8 @@ namespace Tokenio {
         /// Gets an account name.
         /// </summary>
         /// <returns>account name</returns>
-        public string Name() {
+        public string Name()
+        {
             return account.Name;
         }
 
@@ -64,7 +71,8 @@ namespace Tokenio {
         /// Looks up if this account is locked.
         /// </summary>
         /// <returns>true if this account is locked; false otherwise.</returns>
-        public bool IsLocked() {
+        public bool IsLocked()
+        {
             return account.IsLocked;
         }
 
@@ -72,7 +80,8 @@ namespace Tokenio {
         /// Gets the bank ID.
         /// </summary>
         /// <returns>the bank ID</returns>
-        public string BankId() {
+        public string BankId()
+        {
             return account.BankId;
         }
 
@@ -81,7 +90,8 @@ namespace Tokenio {
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the account balance</returns>
-        public Task<Balance> GetBalance(Level keyLevel) {
+        public Task<Balance> GetBalance(Level keyLevel)
+        {
             return client.GetBalance(account.Id, keyLevel);
         }
 
@@ -90,7 +100,8 @@ namespace Tokenio {
         /// </summary>
         /// <param name="keyLevel">key level</param>
         /// <returns>the account balance</returns>
-        public Balance GetBalanceBlocking(Level keyLevel) {
+        public Balance GetBalanceBlocking(Level keyLevel)
+        {
             return GetBalance(keyLevel).Result;
         }
 
@@ -102,7 +113,8 @@ namespace Tokenio {
         /// <returns>the transaction</returns>
         public Task<Transaction> GetTransaction(
             string transactionId,
-            Level keyLevel) {
+            Level keyLevel)
+        {
             return client.GetTransaction(account.Id, transactionId, keyLevel);
         }
 
@@ -114,7 +126,8 @@ namespace Tokenio {
         /// <returns>the transaction</returns>
         public Transaction GetTransactionBlocking(
             string transactionId,
-            Level keyLevel) {
+            Level keyLevel)
+        {
             return GetTransaction(transactionId, keyLevel).Result;
         }
 
@@ -128,7 +141,8 @@ namespace Tokenio {
         public Task<PagedList<Transaction>> GetTransactions(
             string offset,
             int limit,
-            Level keyLevel) {
+            Level keyLevel)
+        {
             return GetTransactions(limit, keyLevel, offset, null, null);
         }
 
@@ -137,7 +151,8 @@ namespace Tokenio {
             Level keyLevel,
             string offset = null,
             string startDate = null,
-            string endDate = null) {
+            string endDate = null)
+        {
             return client.GetTransactions(account.Id, limit, keyLevel, offset, startDate, endDate);
         }
 
@@ -145,7 +160,8 @@ namespace Tokenio {
         /// Returns ProtoAccount object
         /// </summary>
         /// <returns> the ProtoAccount object</returns>
-        public ProtoAccount toProto() {
+        public ProtoAccount toProto()
+        {
             return account;
         }
 
@@ -159,7 +175,8 @@ namespace Tokenio {
         public PagedList<Transaction> GetTransactionsBlocking(
             int limit,
             Level keyLevel,
-            string offset) {
+            string offset)
+        {
             return GetTransactions(offset, limit, keyLevel).Result;
         }
 
@@ -177,7 +194,8 @@ namespace Tokenio {
             Level keyLevel,
             string offset = null,
             string startDate = null,
-            string endDate = null) {
+            string endDate = null)
+        {
             return GetTransactions(limit, keyLevel, offset, startDate, endDate).Result;
         }
 
@@ -189,7 +207,8 @@ namespace Tokenio {
         /// <returns>standing order record</returns>
         public Task<StandingOrder> GetStandingOrder(
             string standingOrderId,
-            Level keyLevel) {
+            Level keyLevel)
+        {
             return client.GetStandingOrder(account.Id, standingOrderId, keyLevel);
         }
 
@@ -201,7 +220,8 @@ namespace Tokenio {
         /// <returns>standing order record</returns>
         public StandingOrder GetStandingOrderBlocking(
             string standingOrderId,
-            Level keyLevel) {
+            Level keyLevel)
+        {
             return GetStandingOrder(standingOrderId, keyLevel).Result;
         }
 
@@ -215,7 +235,8 @@ namespace Tokenio {
         public Task<PagedList<StandingOrder>> GetStandingOrders(
             int limit,
             Level keyLevel,
-            string offset = null) {
+            string offset = null)
+        {
             return client.GetStandingOrders(account.Id, limit, keyLevel, offset);
         }
 
@@ -229,23 +250,28 @@ namespace Tokenio {
         public PagedList<StandingOrder> GetStandingOrdersBlocking(
             int limit,
             Level keyLevel,
-            string offset = null) {
+            string offset = null)
+        {
             return GetStandingOrders(limit, keyLevel, offset).Result;
         }
 
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return account.Id.GetHashCode();
         }
 
-        public override bool Equals(object obj) {
-            if (obj != null && obj.GetType().IsInstanceOfType(this)) {
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj.GetType().IsInstanceOfType(this))
+            {
                 return ((Account) obj).account.Equals(account);
             }
 
             return false;
         }
 
-        public ProtoAccount GetAccount() {
+        public ProtoAccount GetAccount()
+        {
             return account;
         }
     }

@@ -7,19 +7,25 @@ using Xunit;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
-namespace Tokenio.Sample.User {
-    public class PollNotificationsSampleTest {
+namespace Tokenio.Sample.User
+{
+    public class PollNotificationsSampleTest
+    {
         [Fact]
-        public void NotifyPaymentRequestSampleTest() {
-            using(Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void NotifyPaymentRequestSampleTest()
+        {
+            using (Tokenio.User.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 UserMember payer = TestUtil.CreateMemberAndLinkAccounts(tokenClient);
                 UserMember payee = PollNotificationsSample.CreateMember(tokenClient);
                 Alias payeeAlias = payee.GetFirstAliasBlocking();
                 Tokenio.User.Account account = LinkMemberAndBankSample.LinkBankAccounts(payer);
                 LinkMemberAndBankSample.LinkBankAccounts(payee);
-                TransferDestination tokenDestination = new TransferDestination {
-                    Token = new TransferDestination.Types.Token {
-                    MemberId = payee.MemberId()
+                TransferDestination tokenDestination = new TransferDestination
+                {
+                    Token = new TransferDestination.Types.Token
+                    {
+                        MemberId = payee.MemberId()
                     }
                 };
                 TransferTokenBuilder builder = payer.CreateTransferTokenBuilder(100.00, "EUR")

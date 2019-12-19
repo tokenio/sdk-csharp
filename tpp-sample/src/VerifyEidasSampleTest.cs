@@ -10,12 +10,15 @@ using Org.BouncyCastle.X509;
 using Tokenio.Proto.Common.AliasProtos;
 using Xunit;
 
-namespace Tokenio.Sample.Tpp {
-    public class VerifyEidasSampleTest {
-
+namespace Tokenio.Sample.Tpp
+{
+    public class VerifyEidasSampleTest
+    {
         [Fact]
-        public void VerifyEidasTest() {
-            using(Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient()) {
+        public void VerifyEidasTest()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            {
                 var tppAuthNumber = RandomNumeric(15);
                 var keyPair = GenerateKeyPair();
                 string certificate = GenerateCert(keyPair, tppAuthNumber);
@@ -31,13 +34,16 @@ namespace Tokenio.Sample.Tpp {
                 Assert.Equal(Alias.Types.Type.Eidas, verifiedAliases[0].Type);
             }
         }
-        private static AsymmetricCipherKeyPair GenerateKeyPair() {
+
+        private static AsymmetricCipherKeyPair GenerateKeyPair()
+        {
             var generator = GeneratorUtilities.GetKeyPairGenerator("RSA");
             generator.Init(new KeyGenerationParameters(new SecureRandom(), 2048));
             return generator.GenerateKeyPair();
         }
 
-        private static string GenerateCert(AsymmetricCipherKeyPair keyPair, string tppAuthNumber) {
+        private static string GenerateCert(AsymmetricCipherKeyPair keyPair, string tppAuthNumber)
+        {
             long now = Utils.Util.CurrentMillis();
             DateTime startDate = DateTime.UtcNow;
 
@@ -74,7 +80,8 @@ namespace Tokenio.Sample.Tpp {
             return Convert.ToBase64String(certificate.GetEncoded());
         }
 
-        private static string RandomNumeric(int size) {
+        private static string RandomNumeric(int size)
+        {
             return Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, size);
         }
     }
