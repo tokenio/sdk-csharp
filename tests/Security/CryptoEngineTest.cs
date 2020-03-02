@@ -20,7 +20,7 @@ namespace Test.Security
             keyStore = new InMemoryKeyStore();
             cryptoEngine = new TokenCryptoEngine(memberId, keyStore);
         }
-        
+
         [Fact]
         public void VerifierTest()
         {
@@ -40,7 +40,7 @@ namespace Test.Security
             var verifier = cryptoEngine.CreateVerifier(signer.GetKeyId());
             verifier.Verify(payload, signature);
         }
-        
+
         [Fact]
         public void SignAndVerify_protobuf()
         {
@@ -62,6 +62,18 @@ namespace Test.Security
             var signature = signer.Sign(payload);
             var verifier = cryptoEngine.CreateVerifier(oldKey.Id);
             Assert.Throws<CryptographicException>(() => verifier.Verify(payload, signature));
+        }
+
+        [Fact]
+        public void useOldKey()
+        {
+            var oldKey = cryptoEngine.GenerateKey(Privileged);
+            cryptoEngine.GenerateKey(Privileged);
+            var signer = cryptoEngine.CreateSigner(oldKey.Id);
+            var payload = Util.Nonce();
+            var signature = signer.Sign(payload);
+            var verifier = cryptoEngine.CreateVerifier(oldKey.Id);
+            verifier.Verify(payload, signature);
         }
     }
 }
