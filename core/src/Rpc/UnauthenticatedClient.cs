@@ -207,7 +207,7 @@ namespace Tokenio.Rpc
             operations.Add(Util.ToAddKeyOperation(cryptoEngine.GenerateKey(Level.Standard)));
             operations.Add(Util.ToAddKeyOperation(cryptoEngine.GenerateKey(Level.Low)));
 
-            var signer = cryptoEngine.CreateSigner(Level.Privileged);
+            var signer = cryptoEngine.CreateSigner(privilegedKey.Id);
             var memberRequest = new GetMemberRequest { MemberId = memberId };
             return gateway.GetMemberAsync(memberRequest)
                 .ToTask(response => response.Member)

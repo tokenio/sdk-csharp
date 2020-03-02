@@ -31,6 +31,12 @@ namespace Tokenio.Security
             return new Ed25519Signer(keyPair.Id, keyPair.PrivateKey);
         }
 
+        public ISigner CreateSigner(string keyId)
+        {
+            var keyPair = keys.GetById(memberId, keyId);
+            return new Ed25519Signer(keyPair.Id, keyPair.PrivateKey);
+        }
+
         public IVerifier CreateVerifier(string keyId)
         {
             var keyPair = keys.GetById(memberId, keyId);

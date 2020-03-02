@@ -20,7 +20,14 @@ namespace Tokenio.Security
         /// <param name="level">the key level</param>
         /// <returns>the signer</returns>
         ISigner CreateSigner(Level level);
-        
+
+        /// <summary>
+        /// Create a signer that signs data with a specific key.
+        /// </summary>
+        /// <param name="keyId">the key id</param>
+        /// <returns>the signer</returns>
+        ISigner CreateSigner(string keyId);
+
         /// <summary>
         /// Create a verifier that verifies signatures with a specific key.
         /// </summary>
