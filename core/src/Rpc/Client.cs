@@ -39,7 +39,7 @@ namespace Tokenio.Rpc
         protected readonly ICryptoEngine cryptoEngine;
         protected readonly ManagedChannel channel;
         protected bool customerInitiated;
-        private SecurityMetadata trackingMetadata = new SecurityMetadata();
+        protected CustomerTrackingMetadata customerTrackingMetadata = new CustomerTrackingMetadata();
         protected string onBehalfOf;
 
         /// <summary>
@@ -586,24 +586,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Sets the security metadata to be sent with each request.
-        /// </summary>
-        /// <param name="trackingMetadata">security metadata</param>
-        /// TODO: RD-2335: Change from SecurityMetaData to TrackingMetaData
-        public void SetTrackingMetadata(SecurityMetadata trackingMetadata)
-        {
-            this.trackingMetadata = trackingMetadata;
-        }
-
-        /// <summary>
-        /// Clears tracking metadata
-        /// </summary>
-        public void ClearTrackingMetaData()
-        {
-            this.trackingMetadata = new SecurityMetadata();
-        }
-
-        /// <summary>
         /// Update an existing token request.
         /// </summary>
         /// <param name="requestId">token request ID</param>
@@ -611,7 +593,7 @@ namespace Tokenio.Rpc
         /// <returns>a task</returns>
         public Task UpdateTokenRequest(
             string requestId,
-            Proto.Common.TokenProtos.TokenRequestOptions options)
+            TokenRequestOptions options)
         {
             var request = new UpdateTokenRequestRequest
             {
@@ -903,12 +885,12 @@ namespace Tokenio.Rpc
 
         protected AuthenticationContext authenticationContext(Level level)
         {
-            return new AuthenticationContext(null, level, false, trackingMetadata);
+            return new AuthenticationContext(null, level, false, customerTrackingMetadata);
         }
 
         protected AuthenticationContext authenticateOnBehalfOf(Level level = Level.Low)
         {
-            return new AuthenticationContext(GetOnBehalfOf(), level, customerInitiated, trackingMetadata);
+            return new AuthenticationContext(GetOnBehalfOf(), level, customerInitiated, customerTrackingMetadata);
         }
 
         protected GatewayServiceClient gateway(AuthenticationContext authentication)

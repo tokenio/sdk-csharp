@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
+using Grpc.Core;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.EidasProtos;
@@ -29,8 +30,6 @@ namespace Tokenio.Tpp.Rpc
     /// </summary>
     public sealed class Client : Tokenio.Rpc.Client
     {
-        private SecurityMetadata securityMetadata = new SecurityMetadata();
-
         /// <summary>
         /// Instantiates a client.
         /// </summary>
@@ -88,7 +87,28 @@ namespace Tokenio.Tpp.Rpc
         {
             Client updated = new Client(MemberId, cryptoEngine, channel);
             updated.UseAccessToken(tokenId, customerInitiated);
-            updated.SetSecurityMetadata(securityMetadata);
+            return updated;
+        }
+
+        /// <summary>
+        /// Creates a new instance with On-Behalf-Of authentication set.
+        /// </summary>
+        /// <param name="tokenId">access token ID to be used</param>
+        /// <param name="customerTrackingMetadata">customer tracking metadata</param>
+        /// <returns>new client instance</returns>
+        public Client ForAccessToken(
+                string tokenId,
+                CustomerTrackingMetadata customerTrackingMetadata)
+        {
+            if (customerTrackingMetadata.Equals(new CustomerTrackingMetadata()))
+            {
+                throw new RpcException(
+                    new Status(StatusCode.InvalidArgument,
+                        "User tracking metadata is empty. "
+                        + "Use forAccessToken(String, boolean) instead."));
+            }
+            Client updated = new Client(MemberId, cryptoEngine, channel);
+            updated.UseAccessToken(tokenId, customerTrackingMetadata);
             return updated;
         }
 
@@ -103,6 +123,24 @@ namespace Tokenio.Tpp.Rpc
         {
             this.onBehalfOf = accessTokenId;
             this.customerInitiated = customerInitiated;
+        }
+
+        /// <summary>
+        /// Sets the On-Behalf-Of authentication value to be used
+        /// with this client.The value must correspond to an existing
+        /// Access Token ID issued for the client member.Uses the given customer
+        /// initiated flag.
+        ///
+        /// </summary>
+        /// <param name="accessTokenId">the access token id to be used</param>
+        /// <param name="customerTrackingMetadata">the tracking metadata of the customer</param>
+        private void UseAccessToken(
+                string accessTokenId,
+                CustomerTrackingMetadata customerTrackingMetadata)
+        {
+            this.onBehalfOf = accessTokenId;
+            this.customerInitiated = true;
+            this.customerTrackingMetadata = customerTrackingMetadata;
         }
 
         /// <summary>
@@ -312,15 +350,6 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
-        /// Sets security metadata included in all requests.
-        /// </summary>
-        /// <param name="securityMetadata">Security metadata.</param>
-        private void SetSecurityMetadata(SecurityMetadata securityMetadata)
-        {
-            this.securityMetadata = securityMetadata;
-        }
-
-        /// <summary>
         /// Creates a new transfer token.
         /// </summary>
         /// <param name="payload">the transfer token payload</param>
@@ -521,6 +550,52 @@ namespace Tokenio.Tpp.Rpc
                 {
                     TokenId = tokenId
                 }).ToTask(response => response.Submission);
+        }
+
+        /// <summary>
+        /// Get url to bank authorization page for a token request.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>url</returns>
+        public Task<string> GetBankAuthUrl(string bankId, string tokenRequestId)
+        {
+            return gateway(authenticationContext())
+                    .GetBankAuthUrlAsync(new GetBankAuthUrlRequest
+                    {
+                        BankId = bankId,
+                        TokenRequestId = tokenRequestId
+                    }).ToTask(response => response.Url);
+        }
+
+        /// <summary>
+        /// Forward the callback from the bank (after user authentication) to Token.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="query">HTTP query string</param>
+        /// <returns>token request ID</returns>
+        public Task<string> OnBankAuthCallback(string bankId, string query)
+        {
+            return gateway(authenticationContext())
+                    .OnBankAuthCallbackAsync(new OnBankAuthCallbackRequest
+                    {
+                        BankId = bankId,
+                        Query = query
+                    }).ToTask(response => response.TokenRequestId);
+        }
+
+        /// <summary>
+        /// Get the raw consent from the bank associated with a token.
+        /// </summary>
+        /// <param name="tokenId">token ID</param>
+        /// <returns>raw consent</returns>
+        public Task<string> GetRawConsent(string tokenId)
+        {
+            return gateway(authenticationContext())
+                    .GetRawConsentAsync(new GetRawConsentRequest
+                    {
+                        TokenId = tokenId
+                    }).ToTask(response => response.Consent);
         }
     }
 }

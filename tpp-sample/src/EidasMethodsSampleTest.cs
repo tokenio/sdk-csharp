@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Tokenio.Sample.Tpp
 {
-    public class VerifyEidasSampleTest
+    public class EidasMethodsSampleTest
     {
         [Fact]
         public void VerifyEidasTest()
@@ -22,13 +22,47 @@ namespace Tokenio.Sample.Tpp
                 var tppAuthNumber = RandomNumeric(15);
                 var keyPair = GenerateKeyPair();
                 string certificate = GenerateCert(keyPair, tppAuthNumber);
-                Member verifiedTppMember = VerifyEidasSample.VerifyEidas(
+                Member verifiedTppMember = EidasMethodsSample.VerifyEidas(
                     tokenClient,
                     tppAuthNumber,
                     certificate,
                     "wood",
                     keyPair.ParseRsaKeyPair().PrivateKey);
                 IList<Alias> verifiedAliases = verifiedTppMember.GetAliasesBlocking();
+                Assert.Equal(1, verifiedAliases.Count);
+                Assert.Equal(tppAuthNumber, verifiedAliases[0].Value);
+                Assert.Equal(Alias.Types.Type.Eidas, verifiedAliases[0].Type);
+            }
+        }
+
+        [Fact]
+        public void RecoverEidasTest()
+        {
+            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
+            using (Tokenio.Tpp.TokenClient anotherTokenClient = TestUtil.CreateClient()) {
+                var tppAuthNumber = RandomNumeric(15);
+                var keyPair = GenerateKeyPair();
+                string certificate = GenerateCert(keyPair, tppAuthNumber);
+                string bankId = "wood";
+
+                // create and verify member first
+                Member verifiedTppMember = EidasMethodsSample.VerifyEidas(
+                        tokenClient,
+                        tppAuthNumber,
+                        certificate,
+                        bankId,
+                        keyPair.ParseRsaKeyPair().PrivateKey);
+
+                // now pretend we lost the keys and need to recover the member
+                Member recoveredMember = EidasMethodsSample.RecoverEidas(
+                        anotherTokenClient,
+                        verifiedTppMember.MemberId(),
+                        tppAuthNumber,
+                        certificate,
+                        keyPair.ParseRsaKeyPair().PrivateKey);
+
+                IList<Alias> verifiedAliases = recoveredMember.GetAliasesBlocking();
+
                 Assert.Equal(1, verifiedAliases.Count);
                 Assert.Equal(tppAuthNumber, verifiedAliases[0].Value);
                 Assert.Equal(Alias.Types.Type.Eidas, verifiedAliases[0].Type);

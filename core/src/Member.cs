@@ -882,24 +882,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Sets security metadata included in all requests
-        /// </summary>
-        /// <param name="metaData">security metadata</param>
-        /// TODO: RD-2335: Change class from SecurityMetaData to TrackingMetaData
-        public void SetTrackingMetaData(SecurityMetadata metaData)
-        {
-            client.SetTrackingMetadata(metaData);
-        }
-
-        /// <summary>
-        /// Clears the security metadata
-        /// </summary>
-        public void ClearTrackingMetaData()
-        {
-            client.ClearTrackingMetaData();
-        }
-
-        /// <summary>
         /// Creates a test bank account in a fake bank and links the account.
         /// </summary>
         /// <param name="balance">account balance to set</param>

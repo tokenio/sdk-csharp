@@ -119,6 +119,7 @@ namespace Tokenio
             string agent = null)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
+            // TODO(RD-3727): we probably should not set recovery agent for realmed members at all
             return (agent == null
                     ? unauthenticated.GetDefaultAgent()
                     : Task.Factory.StartNew(() => { return agent; }))
