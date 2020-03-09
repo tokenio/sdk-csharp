@@ -2,6 +2,7 @@
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Tokenio.Proto.Common.SecurityProtos;
+using Tokenio.Security.Crypto;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 
