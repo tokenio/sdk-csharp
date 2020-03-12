@@ -21,6 +21,7 @@ using static Tokenio.Proto.Gateway.ReplaceTokenRequest.Types;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
+using System;
 
 namespace Tokenio.User.Rpc
 {
@@ -144,13 +145,12 @@ namespace Tokenio.User.Rpc
         public Task<StandingOrderSubmission> GetStandingOrderSubmission(string submissionId)
         {
             return gateway(authenticationContext())
-                    .GetStandingOrderSubmissionAsync(new GetStandingOrderSubmissionRequest
-                    {
-                        SubmissionId = submissionId
-                    })
-                    .ToTask(response => response.Submission);
+                .GetStandingOrderSubmissionAsync(new GetStandingOrderSubmissionRequest
+                {
+                    SubmissionId = submissionId
+                })
+                .ToTask(response => response.Submission);
         }
-
 
         /// <summary>
         /// Looks up a list of existing transfers.
@@ -187,6 +187,7 @@ namespace Tokenio.User.Rpc
                     .ToTask(response =>
                             new PagedList<Transfer>(response.Transfers, response.Offset));
         }
+
         /// <summary>
         /// Looks up a list of existing standing order submissions.
         /// </summary>
@@ -194,19 +195,18 @@ namespace Tokenio.User.Rpc
         /// <param name="offset">optional offset to start at</param>
         /// <returns>standing order submissions</returns>
         public Task<PagedList<StandingOrderSubmission>> GetStandingOrderSubmissions(
-                int limit,
-                string offset = null)
+            int limit,
+            string offset = null)
         {
             GetStandingOrderSubmissionsRequest request = new GetStandingOrderSubmissionsRequest
             {
                 Page = PageBuilder(limit, offset)
             };
-
             return gateway(authenticationContext())
-                    .GetStandingOrderSubmissionsAsync(request)
-                    .ToTask(response => new PagedList<StandingOrderSubmission>(
-                            response.Submissions,
-                            response.Offset));
+                .GetStandingOrderSubmissionsAsync(request)
+                .ToTask(response => new PagedList<StandingOrderSubmission>(
+                    response.Submissions,
+                    response.Offset));
         }
 
 
