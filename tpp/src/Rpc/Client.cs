@@ -10,6 +10,7 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferProtos;
+using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Rpc;
 using Tokenio.Security;
@@ -122,6 +123,26 @@ namespace Tokenio.Tpp.Rpc
 
             return gateway(authenticationContext()).StoreTokenRequestAsync(request)
                 .ToTask(response => response.TokenRequest.Id);
+        }
+
+        /// <summary>
+        /// Sets destination accounts for once if it hasn't been set.
+        /// </summary>
+        /// <param name="tokenRequestId">token request Id</param>
+        /// <param name="transferDestinations">destination accounts</param>
+        /// <returns>Task that completes when request handled</returns>
+        public Task SetTokenRequestTransferDestinations(
+            string tokenRequestId,
+            IList<TransferDestination> transferDestinations)
+        {
+            return gateway(authenticationContext())
+                .SetTokenRequestTransferDestinationsAsync(
+                    new SetTokenRequestTransferDestinationsRequest
+                    {
+                        TokenRequestId = tokenRequestId,
+                        TransferDestinations = { transferDestinations }
+                    })
+                .ToTask();
         }
 
         /// <summary>

@@ -618,6 +618,31 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
+        /// Sets destination account for once if it hasn't been set.
+        /// </summary>
+        /// <param name="tokenRequestId">token request Id</param>
+        /// <param name="transferDestinations">destination account</param>
+        /// <returns>Task that completes when request handled</returns>
+        public Task SetTokenRequestTransferDestinations(
+            string tokenRequestId,
+            IList<TransferDestination> transferDestinations)
+        {
+            return client.SetTokenRequestTransferDestinations(tokenRequestId, transferDestinations);
+        }
+
+        /// <summary>
+        /// Sets destination account for once if it hasn't been set.
+        /// </summary>
+        /// <param name="tokenRequestId">token request Id</param>
+        /// <param name="transferDestinations">destination account</param>
+        public void SetTokenRequestTransferDestinationsBlocking(
+            string tokenRequestId,
+            IList<TransferDestination> transferDestinations)
+        {
+            SetTokenRequestTransferDestinations(tokenRequestId, transferDestinations).Wait();
+        }
+
+        /// <summary>
         /// Creates a customization
         /// </summary>
         /// <param name="logo">logo</param>
