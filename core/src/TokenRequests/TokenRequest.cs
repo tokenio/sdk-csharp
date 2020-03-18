@@ -436,7 +436,7 @@ namespace Tokenio.TokenRequests
             public TransferBuilder SetExecutionDate(DateTime executionDate)
             {
                 this.requestPayload.TransferBody
-                        .ExecutionDate = executionDate.ToString(Util.BASIC_ISO_DATE);
+                    .ExecutionDate = executionDate.ToString(Util.ISO_DATE);
                 return this;
             }
 
