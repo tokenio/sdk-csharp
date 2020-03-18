@@ -890,6 +890,10 @@ namespace Tokenio.User
             {
                 payload.RefId = refId;
             }
+            else if (amount == null || Util.DoubleToString(amount.Value) == token.Payload.Transfer.LifetimeAmount)
+            {
+                payload.RefId = token.Payload.RefId;
+            }
             else
             {
                 logger.Warn("refId is not set. A random ID will be used.");
@@ -935,6 +939,10 @@ namespace Tokenio.User
             if (refId != null)
             {
                 payload.RefId = refId;
+            }
+            else if (amount == null || Util.DoubleToString(amount.Value) == token.Payload.Transfer.LifetimeAmount)
+            {
+                payload.RefId = token.Payload.RefId;
             }
             else
             {
