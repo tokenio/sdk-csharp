@@ -556,6 +556,27 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> RedeemBulkTransferToken(string tokenId)
+        {
+            return client.CreateBulkTransfer(tokenId);
+        }
+
+        /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>bulk transfer record</returns>
+        public BulkTransfer RedeemBulkTransferTokenBlocking(string tokenId)
+        {
+            return RedeemBulkTransferToken(tokenId)
+                .Result;
+        }
+        
+        /// <summary>
         /// Redeems a standing order token.
         /// </summary>
         /// <param name="tokenId">ID of token to redeem</param>
@@ -679,6 +700,27 @@ namespace Tokenio.Tpp
         public Transfer GetTransferBlocking(string transferId)
         {
             return GetTransfer(transferId).Result;
+        }
+
+        /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulk transfer ID</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId)
+        {
+            return client.GetBulkTransfer(bulkTransferId);
+        }
+
+        /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulk transfer ID</param>
+        /// <returns>bulk transfer record</returns>
+        public BulkTransfer GetBulkTransferBlocking(string bulkTransferId)
+        {
+            return GetBulkTransfer(bulkTransferId)
+                .Result;
         }
 
         /// <summary>

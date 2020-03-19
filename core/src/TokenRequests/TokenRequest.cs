@@ -99,6 +99,21 @@ namespace Tokenio.TokenRequests
         }
 
         /// <summary>
+        /// Create a new Builder instance for a bulk transfer token request.
+        /// </summary>
+        /// <param name="transfers">transfers list of transfers</param>
+        /// <param name="totalAmount">total amount irrespective of currency. Used for redundancy check.</param>
+        /// <param name="source">source account for all transfer</param>
+        /// <returns>Builder instance</returns>
+        public static BulkTransferBuilder BulkTransferRequestBuilder(
+            IList<BulkTransferBody.Types.Transfer> transfers,
+            double totalAmount)
+        {
+            return new BulkTransferBuilder(transfers,
+                totalAmount);
+        }
+        
+        /// <summary>
         /// Create a new Builder instance for a standing order token request.
         /// 
         /// </summary>
@@ -355,7 +370,8 @@ namespace Tokenio.TokenRequests
                 resourcesList.Resources.Add(resources);
                 requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
                 {
-                    ResourceTypeList = resourcesList
+                    ResourceTypeList = resourcesList,
+                    Type = {resources},
                 };
             }
 
@@ -466,6 +482,18 @@ namespace Tokenio.TokenRequests
             }
 
             /// <summary>
+            /// Optional. Sets the source account to bypass account selection. May be required for
+            /// some banks.
+            /// </summary>
+            /// <param name="source">Source</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetSource(TransferEndpoint source)
+            {
+                this.requestPayload.TransferBody.Instructions.Source = source;
+                return this;
+            }
+            
+            /// <summary>
             /// Optional. Sets the ultimate party to which the money is due.
             /// </summary>
             /// <param name="ultimateCreditor">the ultimate creditor</param>
@@ -520,6 +548,28 @@ namespace Tokenio.TokenRequests
             }
         }
 
+        public class BulkTransferBuilder : Builder<BulkTransferBuilder>
+        {
+            internal BulkTransferBuilder(IList<BulkTransferBody.Types.Transfer> transfers,
+                double totalAmount)
+            {
+                this.requestPayload.BulkTransferBody = new BulkTransferBody
+                {
+                    Transfers =
+                    {
+                        transfers
+                    },
+                    TotalAmount = totalAmount.ToString(),
+                };
+            }
+            
+            public BulkTransferBuilder SetSource(TransferEndpoint source)
+            {
+                this.requestPayload.BulkTransferBody.Source = source;
+                return this;
+            }
+        }
+        
         public class StandingOrderBuilder : Builder<StandingOrderBuilder>
         {
             internal StandingOrderBuilder()
