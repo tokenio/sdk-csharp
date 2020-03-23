@@ -16,7 +16,10 @@ namespace Tokenio.Sample.User
                 string accountId = grantor.CreateTestBankAccountBlocking(1000, "EUR").Id();
                 Alias granteeAlias = TestUtil.RandomAlias();
                 UserMember grantee = tokenClient.CreateMemberBlocking(granteeAlias);
-                Token token = CreateAndEndorseAccessTokenSample.CreateBalanceAccessToken(grantor, accountId, granteeAlias);
+                Token token = CreateAndEndorseAccessTokenSample.CreateBalanceAccessToken(
+                    grantor,
+                    accountId,
+                    granteeAlias);
                 Assert.NotNull(token);
             }
         }

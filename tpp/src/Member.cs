@@ -329,7 +329,7 @@ namespace Tokenio.Tpp
             {
                 payload.RefId = refId;
             }
-            else if (amount == null || Util.DoubleToString(amount.Value) == token.Payload.Transfer.LifetimeAmount)
+            else if (!string.IsNullOrEmpty (token.Payload.RefId) && amount == null)
             {
                 payload.RefId = token.Payload.RefId;
             }
@@ -372,7 +372,7 @@ namespace Tokenio.Tpp
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
         /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
-        [Obsolete ("Deprecated")]
+        [Obsolete ("Use TransferDestination instead of TransferEndpoint.")]
         public Task<Transfer> RedeemTokenInternal (
             Token token,
             double? amount,

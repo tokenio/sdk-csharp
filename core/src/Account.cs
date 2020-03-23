@@ -146,6 +146,15 @@ namespace Tokenio
             return GetTransactions(limit, keyLevel, offset, null, null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="limit">limit</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">offset</param>
+        /// <param name="startDate">startDate inclusive lower bound of transaction booking date : ISO 8601 YYYY-MM-DD</param>
+        /// <param name="endDate">endDate inclusive upper bound of transaction booking date : ISO 8601 YYYY-MM-DD</param>
+        /// <returns>paged list of transactions</returns>
         public Task<PagedList<Transaction>> GetTransactions(
             int limit,
             Level keyLevel,
@@ -173,9 +182,10 @@ namespace Tokenio
         /// <param name="keyLevel">key level</param>
         /// <returns>a paged list of transactions</returns>
         public PagedList<Transaction> GetTransactionsBlocking(
+            string offset,
             int limit,
-            Level keyLevel,
-            string offset)
+            Level keyLevel
+        )
         {
             return GetTransactions(offset, limit, keyLevel).Result;
         }
@@ -186,8 +196,8 @@ namespace Tokenio
         /// <param name="limit">limit</param>
         /// <param name="keyLevel">keyLevel</param>
         /// <param name="offset">offset</param>
-        /// <param name="startDate">inclusive lower bound of transaction booking date</param>
-        /// <param name="endDate">inclusive upper bound of transaction booking date</param>
+        /// <param name="startDate">inclusive lower bound of transaction booking date : ISO 8601 YYYY-MM-DD</param>
+        /// <param name="endDate">inclusive upper bound of transaction booking date : ISO 8601 YYYY-MM-DD</param>
         /// <returns>paged list of transactions</returns>
         public PagedList<Transaction> GetTransactionsBlocking(
             int limit,

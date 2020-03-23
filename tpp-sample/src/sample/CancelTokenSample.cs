@@ -4,12 +4,12 @@ using TppMember = Tokenio.Tpp.Member;
 namespace Tokenio.Sample.Tpp
 {
     /// <summary>
-    /// Cancels an access token.
+    /// Cancels active tokens.
     /// </summary>
     public static class CancelTokenSample
     {
         /// <summary>
-        /// Cancels the access token.
+        /// Cancels an access token.
         /// </summary>
         /// <param name="grantee">grantee Token member</param>
         /// <param name="tokenId">token ID to cancel</param>

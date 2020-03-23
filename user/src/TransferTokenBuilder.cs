@@ -401,8 +401,7 @@ namespace Tokenio.User
         /// <returns>builder</returns>
         public TransferTokenBuilder SetExecutionDate(string executionDate)
         {
-            payload.Transfer
-                .ExecutionDate = executionDate;
+            payload.Transfer.ExecutionDate = executionDate;
             return this;
         }
 
