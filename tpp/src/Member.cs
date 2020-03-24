@@ -945,5 +945,69 @@ namespace Tokenio.Tpp
         {
             return client.VerifyEidas(payload, signature);
         }
+        
+        /// <summary>
+        /// Get url to bank authorization page for a token request.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>url</returns>
+        public Task<string> GetBankAuthUrl(string bankId, string tokenRequestId)
+        {
+            return client.GetBankAuthUrl(bankId, tokenRequestId);
+        }
+
+        /// <summary>
+        /// Get url to bank authorization page for a token request.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>url</returns>
+        public string GetBankAuthUrlBlocking(string bankId, string tokenRequestId)
+        {
+            return GetBankAuthUrl(bankId, tokenRequestId).Result;
+        }
+
+        /// <summary>
+        /// Forward the callback from the bank (after user authentication) to Token.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="query">HTTP query string</param>
+        /// <returns>token request ID</returns>
+        public Task<string> OnBankAuthCallback(string bankId, string query)
+        {
+            return client.OnBankAuthCallback(bankId, query);
+        }
+
+        /// <summary>
+        /// Forward the callback from the bank (after user authentication) to Token.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="query">HTTP query string</param>
+        /// <returns>token request ID</returns>
+        public string OnBankAuthCallbackBlocking(string bankId, string query)
+        {
+            return OnBankAuthCallback(bankId, query).Result;
+        }
+
+        /// <summary>
+        /// Get the raw consent from the bank associated with a token.
+        /// </summary>
+        /// <param name="tokenId">token ID</param>
+        /// <returns>raw consent</returns>
+        public Task<string> GetRawConsent(string tokenId)
+        {
+            return client.GetRawConsent(tokenId);
+        }
+
+        /// <summary>
+        /// Get the raw consent from the bank associated with a token.
+        /// </summary>
+        /// <param name="tokenId">token ID</param>
+        /// <returns>raw consent</returns>
+        public string GetRawConsentBlocking(string tokenId)
+        {
+            return GetRawConsent(tokenId).Result;
+        }
     }
 }

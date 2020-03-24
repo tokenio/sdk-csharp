@@ -483,5 +483,51 @@ namespace Tokenio.Tpp.Rpc
                         TokenId = tokenId
                     }).ToTask(response => response.Submission);
         }
+        
+        /// <summary>
+        /// Get url to bank authorization page for a token request.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>url</returns>
+        public Task<string> GetBankAuthUrl(string bankId, string tokenRequestId)
+        {
+            return gateway(authenticationContext())
+                .GetBankAuthUrlAsync(new GetBankAuthUrlRequest
+                {
+                    BankId = bankId,
+                    TokenRequestId = tokenRequestId
+                }).ToTask(response => response.Url);
+        }
+
+        /// <summary>
+        /// Forward the callback from the bank (after user authentication) to Token.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="query">HTTP query string</param>
+        /// <returns>token request ID</returns>
+        public Task<string> OnBankAuthCallback(string bankId, string query)
+        {
+            return gateway(authenticationContext())
+                .OnBankAuthCallbackAsync(new OnBankAuthCallbackRequest
+                {
+                    BankId = bankId,
+                    Query = query
+                }).ToTask(response => response.TokenRequestId);
+        }
+
+        /// <summary>
+        /// Get the raw consent from the bank associated with a token.
+        /// </summary>
+        /// <param name="tokenId">token ID</param>
+        /// <returns>raw consent</returns>
+        public Task<string> GetRawConsent(string tokenId)
+        {
+            return gateway(authenticationContext())
+                .GetRawConsentAsync(new GetRawConsentRequest
+                {
+                    TokenId = tokenId
+                }).ToTask(response => response.Consent);
+        }
     }
 }
