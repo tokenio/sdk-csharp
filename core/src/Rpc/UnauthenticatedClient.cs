@@ -11,6 +11,7 @@ using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
+using static Tokenio.Proto.Common.BankProtos.BankFilter.Types;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
@@ -279,29 +280,49 @@ namespace Tokenio.Rpc
             return gateway.CompleteRecoveryAsync(request).ToTask(response => response.RecoveryEntry);
         }
 
+        /// <summary>
+        /// Returns a list of token enabled banks.
+        /// </summary>
+        /// <param name="ids">If specified, return banks whose 'id' matches any one of the given ids
+        ///   (case-insensitive). Can be at most 1000.</param>
+        /// <param name="search">If specified, return banks whose 'name' or 'identifier' contains the given
+        ///     search string (case-insensitive)</param>
+        /// <param name="country">If specified, return banks whose 'country' matches the given ISO 3166-1
+        ///     alpha-2 country code(case-insensitive)</param>
+        /// <param name="page">Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">Maximum number of records per page. Can be at most 200. Default to 200
+        ///     if not specified.</param>
+        /// <param name="sort">The key to sort the results. Could be one of: name, provider and country.
+        ///     Defaults to name if not specified.</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///     (case insensitive).</param>
+        /// <param name="bankFeatures">If specified, return banks who meet the bank features requirement.</param>
+        /// <returns>banks with paging information</returns>
         public Task<PagedBanks> GetBanks(
             IList<string> ids,
             string search,
             string country,
             int? page,
             int? perPage,
-            string sort)
+            string sort,
+            string provider,
+            BankFeatures bankFeatures)
         {
             var request = new GetBanksRequest();
 
             if (ids != null)
             {
-                request.Ids.Add(ids);
+                request.Filter.Ids.Add(ids);
             }
 
             if (search != null)
             {
-                request.Search = search;
+                request.Filter.Search = search;
             }
 
             if (country != null)
             {
-                request.Country = country;
+                request.Filter.Country = country;
             }
 
             if (page.HasValue)
@@ -317,6 +338,16 @@ namespace Tokenio.Rpc
             if (sort != null)
             {
                 request.Sort = sort;
+            }
+
+            if (provider != null)
+            {
+                request.Filter.Provider = provider;
+            }
+
+            if (bankFeatures != null)
+            {
+                request.Filter.BankFeatures = bankFeatures;
             }
 
             return gateway.GetBanksAsync(request)
