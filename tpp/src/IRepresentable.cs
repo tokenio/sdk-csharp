@@ -110,6 +110,42 @@ namespace Tokenio.Tpp
             Level keyLevel);
 
         /// <summary>
+        /// Looks up transactions for a given account.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <param name="startDate">inclusive lower bound of transaction booking date</param>
+        /// <param name="endDate">inclusive upper bound of transaction booking date</param>
+        /// <returns>a paged list of transaction records</returns>
+        Task<PagedList<Transaction>> GetTransactions(
+            string accountId,
+            int limit,
+            Level keyLevel,
+            string offset = null,
+            string startDate = null,
+            string endDate = null);
+
+        /// <summary>
+        /// Looks up transactions for a given account.
+        /// </summary>
+        /// <param name="accountId">the account id</param>
+        /// <param name="limit">max number of records to return</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">optional offset to start at</param>
+        /// <param name="startDate">inclusive lower bound of transaction booking date</param>
+        /// <param name="endDate">inclusive upper bound of transaction booking date</param>
+        /// <returns>a paged list of transaction records</returns>
+        PagedList<Transaction> GetTransactionsBlocking(
+            string accountId,
+            int limit,
+            Level keyLevel,
+            string offset = null,
+            string startDate = null,
+            string endDate = null);
+
+        /// <summary>
         /// Looks up an existing transaction for a given account.
         /// </summary>
         /// <param name="accountId">the account ID</param>

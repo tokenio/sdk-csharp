@@ -23,7 +23,7 @@ namespace Tokenio.Utils
     /// </summary>
     public class Util
     {
-        public static readonly string BASIC_ISO_DATE = "yyyyMMdd";
+        public static readonly string ISO_DATE = "yyyy-MM-dd";
 
         /// <summary>
         /// Generates a random string 

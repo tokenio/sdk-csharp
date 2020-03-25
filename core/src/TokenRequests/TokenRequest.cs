@@ -431,12 +431,12 @@ namespace Tokenio.TokenRequests
             /// <summary>
             /// Sets the execution date of the transfer. Used for future-dated payments.
             /// </summary>
-            /// <param name="executionDate">execution date</param>
+            /// <param name="executionDate">execution date : ISO 8601 YYYY-MM-DD</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetExecutionDate(DateTime executionDate)
+            public TransferBuilder SetExecutionDate(String  executionDate)
             {
                 this.requestPayload.TransferBody
-                        .ExecutionDate = executionDate.ToString(Util.BASIC_ISO_DATE);
+                    .ExecutionDate = executionDate;
                 return this;
             }
 

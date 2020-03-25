@@ -143,7 +143,26 @@ namespace Tokenio
             int limit,
             Level keyLevel)
         {
-            return client.GetTransactions(account.Id, limit, keyLevel, offset);
+            return GetTransactions(limit, keyLevel, offset, null, null);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="limit">limit</param>
+        /// <param name="keyLevel">key level</param>
+        /// <param name="offset">offset</param>
+        /// <param name="startDate">startDate inclusive lower bound of transaction booking date : ISO 8601 YYYY-MM-DD</param>
+        /// <param name="endDate">endDate inclusive upper bound of transaction booking date : ISO 8601 YYYY-MM-DD</param>
+        /// <returns>paged list of transactions</returns>
+        public Task<PagedList<Transaction>> GetTransactions(
+            int limit,
+            Level keyLevel,
+            string offset = null,
+            string startDate = null,
+            string endDate = null)
+        {
+            return client.GetTransactions(account.Id, limit, keyLevel, offset, startDate, endDate);
         }
 
         /// <summary>
@@ -165,11 +184,30 @@ namespace Tokenio
         public PagedList<Transaction> GetTransactionsBlocking(
             string offset,
             int limit,
-            Level keyLevel)
+            Level keyLevel
+        )
         {
             return GetTransactions(offset, limit, keyLevel).Result;
         }
 
+        /// <summary>
+        /// Looks up transactions.
+        /// </summary>
+        /// <param name="limit">limit</param>
+        /// <param name="keyLevel">keyLevel</param>
+        /// <param name="offset">offset</param>
+        /// <param name="startDate">inclusive lower bound of transaction booking date : ISO 8601 YYYY-MM-DD</param>
+        /// <param name="endDate">inclusive upper bound of transaction booking date : ISO 8601 YYYY-MM-DD</param>
+        /// <returns>paged list of transactions</returns>
+        public PagedList<Transaction> GetTransactionsBlocking(
+            int limit,
+            Level keyLevel,
+            string offset = null,
+            string startDate = null,
+            string endDate = null)
+        {
+            return GetTransactions(limit, keyLevel, offset, startDate, endDate).Result;
+        }
         /// <summary>
         /// Looks up an existing standing order for a given account.
         /// </summary>
@@ -221,7 +259,7 @@ namespace Tokenio
         public PagedList<StandingOrder> GetStandingOrdersBlocking(
                 int limit,
                 Level keyLevel,
-                string offset =null)
+                string offset = null)
         {
             return GetStandingOrders(limit, keyLevel, offset).Result;
         }
