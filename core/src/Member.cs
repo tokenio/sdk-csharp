@@ -582,7 +582,27 @@ namespace Tokenio
             Level keyLevel,
             string offset = null)
         {
-            return client.GetTransactions(accountId, limit, keyLevel, offset);
+            return GetTransactions(accountId, limit, keyLevel, offset, null, null);
+        }
+
+        /// <summary>
+        /// Looks up transactions.
+        /// </summary>
+        /// <param name="limit">limit</param>
+        /// <param name="keyLevel">keyLevel</param>
+        /// <param name="offset">offset</param>
+        /// <param name="startDate">inclusive lower bound of transaction booking date</param>
+        /// <param name="endDate">inclusive upper bound of transaction booking date</param>
+        /// <returns>paged list of transactions</returns>
+        public Task<PagedList<Transaction>> GetTransactions(
+            string accountId,
+            int limit,
+            Key.Types.Level keyLevel,
+            string offset = null,
+            string startDate = null,
+            string endDate = null)
+        {
+            return client.GetTransactions(accountId, limit, keyLevel, offset, startDate, endDate);
         }
 
         /// <summary>
@@ -601,7 +621,28 @@ namespace Tokenio
         {
             return GetTransactions(accountId, limit, keyLevel, offset).Result;
         }
-        
+
+        /// <summary>
+        /// Looks up transactions for a given account.
+        /// </summary>
+        /// <param name="limit">limit</param>
+        /// <param name="keyLevel">keyLevel</param>
+        /// <param name="offset">offset</param>
+        /// <param name="startDate">inclusive lower bound of transaction booking date</param>
+        /// <param name="endDate">inclusive upper bound of transaction booking date</param>
+        /// <returns>paged list of transactions</returns>
+        public PagedList<Transaction> GetTransactionsBlocking(
+            string accountId,
+            int limit,
+            Level keyLevel,
+            string offset = null,
+            string startDate = null,
+            string endDate = null)
+        {
+            return GetTransactions(accountId, limit, keyLevel, offset, startDate, endDate).Result;
+        }
+
+
         /// <summary>
         /// Looks up an existing standing order for a given account.
         /// </summary>

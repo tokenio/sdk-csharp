@@ -3,6 +3,7 @@ using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransactionProtos;
 using Tokenio.Proto.Common.TransferProtos;
 using Xunit;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using UserMember = Tokenio.User.Member;
 
 namespace Tokenio.Sample.User
@@ -20,9 +21,7 @@ namespace Tokenio.Sample.User
                 UserMember payee = tokenClient.CreateMemberBlocking(payeeAlias);
 
                 Account payeeAccount = LinkMemberAndBankSample.LinkBankAccounts(payee);
-
-                Token token = CreateAndEndorseTransferTokenSample.CreateTransferToken(payer, payeeAlias);
-
+                Token token = CreateTransferTokenSample.CreateTransferToken(payer, payeeAlias, Level.Low);
                 Transfer transfer = RedeemTransferTokenSample.RedeemTransferToken(
                         payee,
                         payeeAccount.Id(),
@@ -30,6 +29,7 @@ namespace Tokenio.Sample.User
 
 
                 GetTransactionsSample.getTransactionsSample(payer);
+                GetTransactionsSample.GetTransactionsByDateSample(payer);
                 Transaction transaction = GetTransactionsSample.GetTransactionSample(payer, transfer);
                 Assert.Equal(transaction.TokenId, token.Id);
             }
@@ -46,7 +46,7 @@ namespace Tokenio.Sample.User
 
                 Account payeeAccount = LinkMemberAndBankSample.LinkBankAccounts(payee);
 
-                Token token = CreateAndEndorseTransferTokenSample.CreateTransferToken(payer, payeeAlias);
+                Token token = CreateTransferTokenSample.CreateTransferToken(payer, payeeAlias,Level.Low);
 
                 Transfer transfer = RedeemTransferTokenSample.RedeemTransferToken(
                         payee,

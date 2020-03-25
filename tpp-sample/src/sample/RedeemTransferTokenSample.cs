@@ -50,10 +50,10 @@ namespace Tokenio.Sample.Tpp
             // Payee redeems a transfer token.
             // Money is transferred to a payee bank account.
             Transfer transfer = payee.RedeemTokenBlocking(
-                    transferToken,
-                    tokenDestination,
-                    // if refId not set, transfer will have random refID:
-                    cartId);
+                transferToken,
+                tokenDestination,
+                // if refId not set, transfer will use token refID:
+                cartId);
 
             return transfer;
         }
