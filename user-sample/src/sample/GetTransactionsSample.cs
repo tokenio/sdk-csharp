@@ -73,7 +73,7 @@ namespace Tokenio.Sample.User
         public static void AccountGetTransactionsSample(UserMember payer)
         {
             Tokenio.User.Account account = payer.GetAccountsBlocking()[0];
-            foreach (Transaction transaction in account.GetTransactionsBlocking(10, Level.Standard, null).List)
+            foreach (Transaction transaction in account.GetTransactionsBlocking(null, 10, Level.Standard).List)
             {
                 DisplayTransaction(
                            transaction.Amount.Currency,

@@ -8,7 +8,7 @@
     <Description>Core SDK that serves as the base for other Token SDKs.</Description>
     <Company>Token, Inc</Company>
     <Authors>Token, Inc</Authors>
-    <Version>0.0.4</Version>
+    <Version>0.0.6</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>
@@ -24,7 +24,7 @@
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.6" />
     <PackageReference Include="System.Interactive.Async" Version="4.0.0" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
-    <PackageReference Include="Token.Proto.Net" Version="0.0.2" />
-    <PackageReference Include="Token.Security.Net" Version="0.0.2" />
+    <PackageReference Include="Token.Proto.Net" Version="0.0.3" />
+    <PackageReference Include="Token.Security.Net" Version="0.0.4" />
   </ItemGroup>
 </Project>

@@ -432,6 +432,35 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
+        /// Parse the Set Transfer Destinations Url callback parameters to extract state,
+        /// region and supported.Check the CSRF token against the initial request and verify
+        /// the signature.
+        /// </summary>
+        /// <param name="url">token request callback url</param>
+        /// <returns>TokenRequestSetTransferDestinationUrl object containing the token id and
+        ///    the original state</returns>
+        public TokenRequestTransferDestinationsCallbackParameters ParseSetTransferDestinationsUrl(
+            string url)
+        {
+            var urlParams = HttpUtility.ParseQueryString(Util.GetQueryString(url));
+            return ParseSetTransferDestinationsUrlParams(urlParams);
+        }
+
+        /// <summary>
+        /// Parse the Set Transfer Destinations Url callback parameters to extract state,
+        /// region and supported.Check the CSRF token against the initial request and verify
+        /// the signature.
+        /// </summary>
+        /// <param name="urlParams"></param>
+        /// <returns></returns>
+        public TokenRequestTransferDestinationsCallbackParameters ParseSetTransferDestinationsUrlParams(
+            NameValueCollection urlParams)
+        {
+            var parameters = urlParams.AllKeys.ToDictionary(param => param, param => urlParams[param]);
+            return TokenRequestTransferDestinationsCallbackParameters.Create(parameters);
+        }
+
+        /// <summary>
         /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>

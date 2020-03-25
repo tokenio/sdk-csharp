@@ -56,7 +56,7 @@ namespace Tokenio.Sample.Tpp
 
             // Get the 10 most recent transactions
             PagedList<Transaction> transactions = accounts[0]
-                .GetTransactionsBlocking(10, Level.Standard, null);
+                .GetTransactionsBlocking(null, 10, Level.Standard);
 
             // Get the 10 most recent transactions in the specified range
             PagedList<Transaction> transactionsByDate = accounts[0]

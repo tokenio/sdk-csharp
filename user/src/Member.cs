@@ -964,19 +964,20 @@ namespace Tokenio.User
             {
                 payload.RefId = refId;
             }
-            else if (amount == null || Util.DoubleToString(amount.Value) == token.Payload.Transfer.LifetimeAmount)
+            else if (!string.IsNullOrEmpty (token.Payload.RefId) && amount == null)
             {
                 payload.RefId = token.Payload.RefId;
             }
             else
             {
                 logger.Warn("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce();
+                payload.RefId = Tokenio.Utils.Util.Nonce();
             }
             return client.CreateTransfer(payload);
         }
 
         // Remove when deprecated TransferEndpoint methods are removed.
+        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
         public Task<Transfer> RedeemTokenInternal(
                 Token token,
                 double? amount,
@@ -1014,14 +1015,14 @@ namespace Tokenio.User
             {
                 payload.RefId = refId;
             }
-            else if (amount == null || Util.DoubleToString(amount.Value) == token.Payload.Transfer.LifetimeAmount)
+            else if (!string.IsNullOrEmpty (token.Payload.RefId) && amount == null)
             {
                 payload.RefId = token.Payload.RefId;
             }
             else
             {
                 logger.Warn("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce();
+                payload.RefId = Tokenio.Utils.Util.Nonce();
             }
             return client.CreateTransfer(payload);
         }

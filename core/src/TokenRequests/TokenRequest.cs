@@ -447,12 +447,12 @@ namespace Tokenio.TokenRequests
             /// <summary>
             /// Sets the execution date of the transfer. Used for future-dated payments.
             /// </summary>
-            /// <param name="executionDate">execution date</param>
+            /// <param name="executionDate">execution date : ISO 8601 YYYY-MM-DD</param>
             /// <returns>builder</returns>
-            public TransferBuilder SetExecutionDate(DateTime executionDate)
+            public TransferBuilder SetExecutionDate(String  executionDate)
             {
                 this.requestPayload.TransferBody
-                    .ExecutionDate = executionDate.ToString(Util.ISO_DATE);
+                    .ExecutionDate = executionDate;
                 return this;
             }
 
@@ -493,6 +493,19 @@ namespace Tokenio.TokenRequests
                 return this;
             }
             
+            /// Optional. In the scenario where TPP wishes to know the user's selection of country and
+            /// bank, TPP should provide this url so that Token can make a call with relevant
+            /// information as parameters. TPP can use that information to set transfer destination.
+            /// </summary>
+            /// <param name="url">URL</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetSetTransferDestinationsUrl(string url)
+            {
+                this.requestPayload.TransferBody
+                    .SetTransferDestinationsUrl = url;
+                return this;
+            }
+
             /// <summary>
             /// Optional. Sets the ultimate party to which the money is due.
             /// </summary>
