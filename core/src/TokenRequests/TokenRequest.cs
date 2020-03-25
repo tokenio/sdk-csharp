@@ -466,6 +466,20 @@ namespace Tokenio.TokenRequests
             }
 
             /// <summary>
+            /// Optional. In the scenario where TPP wishes to know the user's selection of country and
+            /// bank, TPP should provide this url so that Token can make a call with relevant
+            /// information as parameters. TPP can use that information to set transfer destination.
+            /// </summary>
+            /// <param name="url">URL</param>
+            /// <returns>builder</returns>
+            public TransferBuilder SetSetTransferDestinationsUrl(string url)
+            {
+                this.requestPayload.TransferBody
+                    .SetTransferDestinationsUrl = url;
+                return this;
+            }
+
+            /// <summary>
             /// Optional. Sets the ultimate party to which the money is due.
             /// </summary>
             /// <param name="ultimateCreditor">the ultimate creditor</param>
