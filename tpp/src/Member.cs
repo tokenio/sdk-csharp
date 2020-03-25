@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -328,7 +329,7 @@ namespace Tokenio.Tpp
             {
                 payload.RefId = refId;
             }
-            else if (!string.IsNullOrEmpty(token.Payload.RefId))
+            else if (!string.IsNullOrEmpty (token.Payload.RefId) && amount == null)
             {
                 payload.RefId = token.Payload.RefId;
             }
@@ -371,7 +372,8 @@ namespace Tokenio.Tpp
         /// <param name="refId">the reference id of the transfer</param>
         /// <returns>a transfer record</returns>
         /// <remarks>amount, currency, description, destination and refId are nullable</remarks>>
-        public Task<Transfer> RedeemTokenInternal(
+        [Obsolete ("Use TransferDestination instead of TransferEndpoint.")]
+        public Task<Transfer> RedeemTokenInternal (
             Token token,
             double? amount,
             string currency,
@@ -408,6 +410,10 @@ namespace Tokenio.Tpp
             if (refId != null)
             {
                 payload.RefId = refId;
+            }
+            else if (!string.IsNullOrEmpty (token.Payload.RefId) && amount == null)
+            {
+                payload.RefId = token.Payload.RefId;
             }
             else
             {
@@ -615,6 +621,31 @@ namespace Tokenio.Tpp
         public string StoreTokenRequestBlocking(TokenRequest tokenRequest)
         {
             return StoreTokenRequest(tokenRequest).Result;
+        }
+
+        /// <summary>
+        /// Sets destination account for once if it hasn't been set.
+        /// </summary>
+        /// <param name="tokenRequestId">token request Id</param>
+        /// <param name="transferDestinations">destination account</param>
+        /// <returns>Task that completes when request handled</returns>
+        public Task SetTokenRequestTransferDestinations(
+            string tokenRequestId,
+            IList<TransferDestination> transferDestinations)
+        {
+            return client.SetTokenRequestTransferDestinations(tokenRequestId, transferDestinations);
+        }
+
+        /// <summary>
+        /// Sets destination account for once if it hasn't been set.
+        /// </summary>
+        /// <param name="tokenRequestId">token request Id</param>
+        /// <param name="transferDestinations">destination account</param>
+        public void SetTokenRequestTransferDestinationsBlocking(
+            string tokenRequestId,
+            IList<TransferDestination> transferDestinations)
+        {
+            SetTokenRequestTransferDestinations(tokenRequestId, transferDestinations).Wait();
         }
 
         /// <summary>

@@ -11,7 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\tpp\Tpp.csproj" />
-    <ProjectReference Include="..\user\User.csproj" />
+    <ProjectReference Include="..\user-sample\UserSample.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="xunit.runner.json">

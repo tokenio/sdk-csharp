@@ -290,13 +290,25 @@ namespace Tokenio.Rpc
             string accountId,
             int limt,
             Level keyLevel,
-            string offset = null)
+            string offset = null,
+            string startDate = null,
+            string endDate = null)
         {
             var request = new GetTransactionsRequest
             {
                 AccountId = accountId,
                 Page = PageBuilder(limt, offset)
             };
+
+            if (startDate != null)
+            {
+                request.StartDate = startDate;
+            }
+
+            if (endDate != null)
+            {
+                request.EndDate = endDate;
+            }
 
             return gateway(authenticateOnBehalfOf(keyLevel)).GetTransactionsAsync(request)
                 .ToTask(response =>

@@ -33,6 +33,9 @@ namespace Tokenio.User
 
         private readonly TokenPayload payload;
 
+        // Token request ID
+        private string tokenRequestId;
+
         /// <summary>
         /// Creates the builder object.
         /// </summary>
@@ -122,6 +125,16 @@ namespace Tokenio.User
             {
                 this.payload.ActingAs = tokenRequest.RequestPayload.ActingAs;
             }
+
+            string executionDate = tokenRequest.RequestPayload
+               .TransferBody
+               .ExecutionDate;
+            if (!string.IsNullOrEmpty(executionDate))
+            {
+                SetExecutionDate(executionDate);
+            }
+
+            this.tokenRequestId = tokenRequest.Id;
         }
 
         /// <summary>
@@ -382,13 +395,13 @@ namespace Tokenio.User
 
         /// <summary>
         /// Sets the execution date of the transfer. Used for future-dated payments.
+        /// Date should follow ISO 8601: YYYY-MM-DD format.
         /// </summary>
         /// <param name="executionDate">execution date</param>
         /// <returns>builder</returns>
-        public TransferTokenBuilder SetExecutionDate(DateTime executionDate)
+        public TransferTokenBuilder SetExecutionDate(string executionDate)
         {
-            payload.Transfer
-                    .ExecutionDate = executionDate.ToString(Util.BASIC_ISO_DATE);
+            payload.Transfer.ExecutionDate = executionDate;
             return this;
         }
 

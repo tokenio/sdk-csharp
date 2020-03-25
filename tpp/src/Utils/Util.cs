@@ -4,6 +4,7 @@ using Google.Protobuf;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
+using Tokenio.Security.Crypto;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 namespace Tokenio.Tpp.Utils

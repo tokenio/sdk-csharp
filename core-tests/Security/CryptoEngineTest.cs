@@ -3,6 +3,7 @@ using Xunit;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Security;
 using Tokenio.Utils;
+using Tokenio.Security.Crypto;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
 

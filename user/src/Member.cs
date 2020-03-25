@@ -451,7 +451,7 @@ namespace Tokenio.User
         {
             return new TransferTokenBuilder(this, payload);
         }
-        
+
         /// <summary>
         /// Creates a new standing order token builder. Defines a standing order
         /// for a fixed time span.
@@ -460,48 +460,23 @@ namespace Tokenio.User
         /// <param name="currency">currency code, e.g. "USD"</param>
         /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
         ///              DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
-        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
-        /// <param name="endDate">end date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
+        /// <param name="startDate">start date of the standing order</param>
+        /// <param name="endDate">optional end date of the standing order</param>
         /// <returns>standing order token builder</returns>
         public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(
-                double amount,
-                string currency,
-                string frequency,
-                string startDate,
-                string endDate)
+            double amount,
+            string currency,
+            string frequency,
+            DateTime startDate,
+            DateTime? endDate = null)
         {
             return new StandingOrderTokenBuilder(
-                    this,
-                    amount,
-                    currency,
-                    frequency,
-                    startDate,
-                    endDate);
-        }
-
-        /// <summary>
-        /// Creates a new indefinite standing order token builder.
-        /// 
-        /// </summary>
-        /// <param name="amount">individual transfer amount</param>
-        /// <param name="currency">currency code, e.g. "USD"</param>
-        /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
-        ///              DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
-        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
-        /// <returns>standing order token builder</returns>
-        public StandingOrderTokenBuilder CreateStandingOrderTokenBuilder(
-                double amount,
-                string currency,
-                string frequency,
-                string startDate)
-        {
-            return new StandingOrderTokenBuilder(
-                    this,
-                    amount,
-                    currency,
-                    frequency,
-                    startDate,
-                    null);
+                this,
+                amount,
+                currency,
+                frequency,
+                startDate,
+                endDate);
         }
 
         /// <summary>
@@ -915,15 +890,20 @@ namespace Tokenio.User
             {
                 payload.RefId = refId;
             }
+            else if (!string.IsNullOrEmpty (token.Payload.RefId) && amount == null)
+            {
+                payload.RefId = token.Payload.RefId;
+            }
             else
             {
                 logger.Warn("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce();
+                payload.RefId = Tokenio.Utils.Util.Nonce();
             }
             return client.CreateTransfer(payload);
         }
 
         // Remove when deprecated TransferEndpoint methods are removed.
+        [Obsolete("Use TransferDestination instead of TransferEndpoint.")]
         public Task<Transfer> RedeemTokenInternal(
                 Token token,
                 double? amount,
@@ -961,10 +941,14 @@ namespace Tokenio.User
             {
                 payload.RefId = refId;
             }
+            else if (!string.IsNullOrEmpty (token.Payload.RefId) && amount == null)
+            {
+                payload.RefId = token.Payload.RefId;
+            }
             else
             {
                 logger.Warn("refId is not set. A random ID will be used.");
-                payload.RefId = Util.Nonce();
+                payload.RefId = Tokenio.Utils.Util.Nonce();
             }
             return client.CreateTransfer(payload);
         }

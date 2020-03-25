@@ -10,7 +10,7 @@ using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.User.Utils;
 using RequestBodyCase = Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.RequestBodyOneofCase;
 
-namespace Tokenio
+namespace Tokenio.User
 {
     /// <summary>
     /// This class is used to build a transfer token.The required parameters are member, amount (which
@@ -21,7 +21,7 @@ namespace Tokenio
     public sealed class StandingOrderTokenBuilder
     {
         private static readonly ILog logger = LogManager
-                .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+            .GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static readonly int REF_ID_MAX_LENGTH = 18;
 
@@ -35,15 +35,15 @@ namespace Tokenio
         /// <param name="currency">currency of the token</param>
         /// <param name="frequency">ISO 20022 code for the frequency of the standing order:
         ///            DAIL, WEEK, TOWK, MNTH, TOMN, QUTR, SEMI, YEAR</param>
-        /// <param name="startDate">start date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
-        /// <param name="endDate">end date of the standing order: ISO 8601 YYYY-MM-DD or YYYYMMDD</param>
+        /// <param name="startDate">start date of the standing order</param>
+        /// <param name="endDate">end date of the standing order</param>
         public StandingOrderTokenBuilder(
             Member member,
             double amount,
             string currency,
             string frequency,
-            string startDate,
-            string endDate = null)
+            DateTime startDate,
+            DateTime? endDate = null)
         {
             this.payload = new TokenPayload
             {
@@ -57,8 +57,8 @@ namespace Tokenio
                     Currency = currency,
                     Amount = amount.ToString(),
                     Frequency = frequency,
-                    StartDate = startDate,
-                    EndDate = endDate ?? ""
+                    StartDate = startDate.ToString("yyyy-MM-dd"),
+                    EndDate = endDate == null ? "" : endDate.Value.ToString("yyyy-MM-dd")
                 }
             };
 
@@ -78,14 +78,16 @@ namespace Tokenio
             if (tokenRequest.RequestPayload.RequestBodyCase != RequestBodyCase.StandingOrderBody)
             {
                 throw new ArgumentException(
-                        "Require token request with standing order body.");
+                    "Require token request with standing order body.");
             }
+
             if (tokenRequest.RequestPayload.To == null)
             {
                 throw new ArgumentException("No payee on token request");
             }
+
             StandingOrderBody body = tokenRequest.RequestPayload
-                    .StandingOrderBody;
+                .StandingOrderBody;
             this.payload = new TokenPayload
             {
                 Version = "1.0",
@@ -159,6 +161,7 @@ namespace Tokenio
             {
                 instructions = new TransferInstructions();
             }
+
             instructions.Source = source;
             payload.StandingOrder.Instructions = instructions;
             return this;
@@ -175,6 +178,7 @@ namespace Tokenio
             {
                 throw new InvalidOperationException();
             }
+
             SetSource(new TransferEndpoint
             {
                 Account = new BankAccount
@@ -199,7 +203,7 @@ namespace Tokenio
             var instructions = payload.StandingOrder.Instructions;
             if (instructions == null)
             {
-                instructions = new TransferInstructions {};
+                instructions = new TransferInstructions { };
             }
 
             instructions.TransferDestinations.Add(destination);
@@ -245,10 +249,11 @@ namespace Tokenio
             if (refId.Length > REF_ID_MAX_LENGTH)
             {
                 throw new ArgumentException(string.Format(
-                        "The length of the refId is at most {0}, got: {1}",
-                        REF_ID_MAX_LENGTH,
-                        refId.Length));
+                    "The length of the refId is at most {0}, got: {1}",
+                    REF_ID_MAX_LENGTH,
+                    refId.Length));
             }
+
             payload.RefId = refId;
             return this;
         }
@@ -292,12 +297,12 @@ namespace Tokenio
         /// <param name="metadata">the metadata</param>
         /// <returns>builder</returns>
         public StandingOrderTokenBuilder SetProviderTransferMetadata(
-                ProviderTransferMetadata metadata)
+            ProviderTransferMetadata metadata)
         {
             payload.StandingOrder
-                    .Instructions
-                    .Metadata
-                    .ProviderTransferMetadata = metadata;
+                .Instructions
+                .Metadata
+                .ProviderTransferMetadata = metadata;
             return this;
         }
 
@@ -308,10 +313,10 @@ namespace Tokenio
         /// <returns>builder</returns>
         public StandingOrderTokenBuilder SetUltimateCreditor(string ultimateCreditor)
         {
-            payload.Transfer
-                    .Instructions
-                    .Metadata
-                    .UltimateCreditor = ultimateCreditor;
+            payload.StandingOrder
+                .Instructions
+                .Metadata
+                .UltimateCreditor = ultimateCreditor;
             return this;
         }
 
@@ -322,10 +327,10 @@ namespace Tokenio
         /// <returns>builder</returns>
         public StandingOrderTokenBuilder SetUltimateDebtor(string ultimateDebtor)
         {
-            payload.Transfer
-                    .Instructions
-                    .Metadata
-                    .UltimateDebtor = ultimateDebtor;
+            payload.StandingOrder
+                .Instructions
+                .Metadata
+                .UltimateDebtor = ultimateDebtor;
             return this;
         }
 
@@ -336,10 +341,10 @@ namespace Tokenio
         /// <returns>builder</returns>
         public StandingOrderTokenBuilder SetPurposeCode(string purposeCode)
         {
-            payload.Transfer
-                    .Instructions
-                    .Metadata
-                    .PurposeCode = purposeCode;
+            payload.StandingOrder
+                .Instructions
+                .Metadata
+                .PurposeCode = purposeCode;
             return this;
         }
 
@@ -354,6 +359,7 @@ namespace Tokenio
                 logger.Warn("refId is not set. A random ID will be used.");
                 payload.RefId = Util.Nonce();
             }
+
             return payload;
         }
     }

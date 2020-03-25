@@ -191,14 +191,14 @@ namespace Tokenio.User
         public AccessTokenBuilder ForAccountStandingOrders(string accountId)
         {
             payload
-                    .Access
-                    .Resources.Add(new Resource
+                .Access
+                .Resources.Add(new Resource
+                {
+                    StandingOrders = new Resource.Types.AccountStandingOrders
                     {
-                        StandingOrders = new Resource.Types.AccountStandingOrders
-                        {
-                            AccountId = accountId
-                        }
-                    });
+                        AccountId = accountId
+                    }
+                });
             return this;
         }
 

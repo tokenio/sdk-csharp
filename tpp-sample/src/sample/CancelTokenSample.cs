@@ -4,12 +4,12 @@ using TppMember = Tokenio.Tpp.Member;
 namespace Tokenio.Sample.Tpp
 {
     /// <summary>
-    /// Cancels an access token.
+    /// Cancels active tokens.
     /// </summary>
-    public static class CancelAccessTokenSample
+    public static class CancelTokenSample
     {
         /// <summary>
-        /// Cancels the access token.
+        /// Cancels an access token.
         /// </summary>
         /// <param name="grantee">grantee Token member</param>
         /// <param name="tokenId">token ID to cancel</param>
@@ -20,7 +20,21 @@ namespace Tokenio.Sample.Tpp
             Token accessToken = grantee.GetTokenBlocking(tokenId);
             // Cancel access token.
             return grantee.CancelTokenBlocking(accessToken);
+        }
 
+        /// <summary>
+        /// Cancels the transfer token.
+        /// </summary>
+        /// <param name="payee">payee Token member</param>
+        /// <param name="tokenId">token ID to cancel</param>
+        /// <returns>operation result</returns>
+        public static TokenOperationResult CancelTransferToken(TppMember payee, string tokenId)
+        {
+            // Retrieve a transfer token to cancel.
+            Token transferToken = payee.GetTokenBlocking(tokenId);
+
+            // Cancel transfer token.
+            return payee.CancelTokenBlocking(transferToken);
         }
     }
 }
