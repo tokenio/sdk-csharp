@@ -12,18 +12,18 @@ namespace Tokenio.Rpc
         private readonly string onBehalfOf;
         private readonly Level keyLevel = Level.Low;
         private readonly bool customerInitiated;
-        private readonly SecurityMetadata securityMetadata = new SecurityMetadata();
+        private readonly CustomerTrackingMetadata customerTrackingMetadata = new CustomerTrackingMetadata();
 
         public AuthenticationContext(
             string onBehalfOf,
             Level keyLevel,
             bool customerInitiated,
-            SecurityMetadata securityMetadata)
+            CustomerTrackingMetadata securityMetadata)
         {
             this.onBehalfOf = onBehalfOf;
             this.keyLevel = keyLevel;
             this.customerInitiated = customerInitiated;
-            this.securityMetadata = securityMetadata;
+            this.customerTrackingMetadata = securityMetadata;
         }
 
         public string OnBehalfOf
@@ -41,9 +41,9 @@ namespace Tokenio.Rpc
             get => customerInitiated;
         }
 
-        public SecurityMetadata SecurityMetadata
+        public CustomerTrackingMetadata CustomerTrackingMetadata
         {
-            get => securityMetadata;
+            get => customerTrackingMetadata;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.Utils;
@@ -49,7 +50,17 @@ namespace Tokenio.Rpc
             metadata.Add("token-signature", signature);
             metadata.Add("token-created-at-ms", now.ToString());
             metadata.Add("token-member-id", memberId);
-            metadata.Add("token-security-metadata", encodeSecurityMetadata(authentication));
+            
+            var customer = authentication.CustomerTrackingMetadata;
+            if (!string.IsNullOrEmpty(customer.IpAddress))
+                metadata.Add("token-customer-ip-address",
+                    customer.IpAddress);
+            if (!string.IsNullOrEmpty(customer.GeoLocation))
+                metadata.Add("token-customer-geo-location",
+                    customer.GeoLocation);
+            if (!string.IsNullOrEmpty(customer.DeviceId))
+                metadata.Add("token-customer-device-id",
+                    customer.DeviceId);
 
             if (authentication.OnBehalfOf != null)
             {
@@ -60,12 +71,6 @@ namespace Tokenio.Rpc
             return continuation(request,
                 new ClientInterceptorContext<TRequest, TResponse>(context.Method, context.Host,
                     context.Options.WithHeaders(metadata)));
-        }
-
-        private static string encodeSecurityMetadata(AuthenticationContext context)
-        {
-            var json = Util.ToJson(context.SecurityMetadata);
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
         }
     }
 }
