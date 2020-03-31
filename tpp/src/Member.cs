@@ -1016,23 +1016,24 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
-        /// Get the raw consent from the bank associated with a token.
+        /// Get the external metadata from the bank associated with a token request
         /// </summary>
-        /// <param name="tokenId">token ID</param>
-        /// <returns>raw consent</returns>
-        public Task<string> GetRawConsent(string tokenId)
+        /// <param name="tokenRequestId">tokenRequestId token request ID</param>
+        /// <returns>external metadata</returns>
+        public Task<ExternalMetadata> GetExternalMetadata(string tokenRequestId)
         {
-            return client.GetRawConsent(tokenId);
+            return client.GetExternalMetadata(tokenRequestId)
+                .Map(res => new ExternalMetadata(res.Standard,res.ConsentId,res.Consent));
         }
 
         /// <summary>
-        /// Get the raw consent from the bank associated with a token.
+        /// Get the external metadata from the bank associated with a token request
         /// </summary>
-        /// <param name="tokenId">token ID</param>
-        /// <returns>raw consent</returns>
-        public string GetRawConsentBlocking(string tokenId)
+        /// <param name="tokenRequestId">tokenRequestId token request ID</param>
+        /// <returns>external metadata</returns>
+        public ExternalMetadata GetExternalMetadataBlocking(string tokenRequestId)
         {
-            return GetRawConsent(tokenId).Result;
+            return GetExternalMetadata(tokenRequestId).Result;
         }
     }
 }

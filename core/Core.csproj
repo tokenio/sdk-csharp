@@ -25,6 +25,6 @@
     <PackageReference Include="System.Interactive.Async" Version="4.0.0" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
     <PackageReference Include="Token.Proto.Net" Version="0.0.3" />
-    <PackageReference Include="Token.Security.Net" Version="0.0.4" />
+    <PackageReference Include="Token.Security.Net" Version="0.0.5" />
   </ItemGroup>
 </Project>

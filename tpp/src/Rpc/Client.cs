@@ -542,13 +542,14 @@ namespace Tokenio.Tpp.Rpc
         /// </summary>
         /// <param name="tokenId">token ID</param>
         /// <returns>raw consent</returns>
-        public Task<string> GetRawConsent(string tokenId)
+        public Task<GetExternalMetadataResponse> GetExternalMetadata(string tokenRequestId)
         {
             return gateway(authenticationContext())
-                .GetRawConsentAsync(new GetRawConsentRequest
+                .GetExternalMetadataAsync(new GetExternalMetadataRequest
                 {
-                    TokenId = tokenId
-                }).ToTask(response => response.Consent);
+                    TokenRequestId = tokenRequestId,
+                })
+                .ToTask(res => res);
         }
     }
 }
