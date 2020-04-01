@@ -454,19 +454,18 @@ namespace Tokenio.Tpp.Rpc
         /// <returns>The eidas.</returns>
         /// <param name="payload">payload payload containing member id and the certificate.</param>
         /// <param name="signature">signature payload signed with the private key corresponding to the certificate.</param>
-        public Task VerifyEidas(
+        public Task<VerifyEidasResponse> VerifyEidas(
             VerifyEidasPayload payload,
             string signature)
         {
             var request = new VerifyEidasRequest
             {
-
                 Payload = payload,
                 Signature = signature
-
             };
             return gateway(authenticationContext())
-                    .VerifyEidasAsync(request).ToTask();
+                .VerifyEidasAsync(request)
+                .ToTask(response => response);
         }
 
         /// <summary>
