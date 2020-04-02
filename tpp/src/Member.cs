@@ -381,31 +381,36 @@ namespace Tokenio.Tpp
             TransferEndpoint destination,
             string refId)
         {
+            var tokenBody = token.Payload.Transfer;
             var payload = new TransferPayload
             {
                 TokenId = token.Id,
-                Description = token.Payload.Description
             };
+            
             if (destination != null)
-            {
                 payload.Destinations.Add(destination);
-            }
+            else
+                payload.TransferDestinations.Add(tokenBody.Instructions.TransferDestinations);
 
             if (amount.HasValue)
             {
-                var money = new Money { Value = Util.DoubleToString(amount.Value) };
+                var money = new Money {Value = Util.DoubleToString(amount.Value)};
                 payload.Amount = money;
+            }
+            else
+            {
+                payload.Amount.Value = tokenBody.LifetimeAmount;
             }
 
             if (currency != null)
-            {
                 payload.Amount.Currency = currency;
-            }
+            else
+                payload.Amount.Currency = tokenBody.Currency;
 
             if (description != null)
-            {
                 payload.Description = description;
-            }
+            else
+                payload.Description = token.Payload.Description;
 
             if (refId != null)
             {
