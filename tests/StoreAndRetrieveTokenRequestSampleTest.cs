@@ -1,6 +1,7 @@
 using Sample;
 using Xunit;
 using Tokenio;
+using Tokenio.Proto.Common.MemberProtos;
 using Member = Tokenio.Member;
 using static Test.TestUtil;
 using TokenRequest = Tokenio.TokenRequest;
@@ -15,7 +16,7 @@ namespace Test
 
         public StoreAndRetrieveTokenRequestSampleTest()
         {
-            member = tokenClient.CreateMemberBlocking(Alias());
+            member = tokenClient.CreateMemberBlocking(Alias(), CreateMemberType.Business);
         }
 
         [Fact]
