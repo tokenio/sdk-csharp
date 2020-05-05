@@ -27,7 +27,7 @@ namespace Tokenio.Sample.Tpp
                     tokenClient,
                     tppAuthNumber,
                     certificate,
-                    "wood",
+                    "gold",
                     keyPair.ParseRsaKeyPair().PrivateKey);
                 IList<Alias> verifiedAliases = verifiedTppMember.GetAliasesBlocking();
                 Assert.Equal(1, verifiedAliases.Count);
@@ -44,7 +44,7 @@ namespace Tokenio.Sample.Tpp
                 var tppAuthNumber = RandomNumeric(15);
                 var keyPair = GenerateKeyPair();
                 string certificate = GenerateCert(keyPair, tppAuthNumber);
-                string bankId = "wood";
+                string bankId = "gold";
 
                 // create and verify member first
                 Member verifiedTppMember = EidasMethodsSample.VerifyEidas(

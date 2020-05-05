@@ -97,8 +97,7 @@ namespace Tokenio.Tpp.Rpc
                 Level.Low);
 
             IList<Key> keys = new List<Key> {privilegedKey, standardKey, lowKey};
-            // TODO(RD-3764): createSigner by keyId (to make sure it's for the key in the payload)
-            ISigner signer = cryptoEngine.CreateSigner(Level.Privileged);
+            ISigner signer = cryptoEngine.CreateSigner(privilegedKey.Id);
             string memberId = payload.MemberId;
 
             var request = new RecoverEidasRequest
