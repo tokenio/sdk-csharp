@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using Xunit;
 using Tokenio;
+using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using static Test.TestUtil;
 using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types;
+using Member = Tokenio.Member;
 
 namespace Test
 {
@@ -17,7 +19,7 @@ namespace Test
 
         public TokenRequestTest()
         {
-            member = tokenClient.CreateMemberBlocking(Alias());
+            member = tokenClient.CreateMemberBlocking(Alias(), CreateMemberType.Business);
         }
 
         [Fact]
