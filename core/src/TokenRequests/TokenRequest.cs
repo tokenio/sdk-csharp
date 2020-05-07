@@ -355,7 +355,8 @@ namespace Tokenio.TokenRequests
                 resourcesList.Resources.Add(resources);
                 requestPayload.AccessBody = new TokenRequestPayload.Types.AccessBody
                 {
-                    ResourceTypeList = resourcesList
+                    ResourceTypeList = resourcesList,
+                    Type = {resources},
                 };
             }
 
