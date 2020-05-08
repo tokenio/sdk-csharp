@@ -99,6 +99,21 @@ namespace Tokenio.TokenRequests
         }
 
         /// <summary>
+        /// Create a new Builder instance for a bulk transfer token request.
+        /// </summary>
+        /// <param name="transfers">transfers list of transfers</param>
+        /// <param name="totalAmount">total amount irrespective of currency. Used for redundancy check.</param>
+        /// <param name="source">source account for all transfer</param>
+        /// <returns>Builder instance</returns>
+        public static BulkTransferBuilder BulkTransferRequestBuilder(
+            IList<BulkTransferBody.Types.Transfer> transfers,
+            double totalAmount)
+        {
+            return new BulkTransferBuilder(transfers,
+                totalAmount);
+        }
+        
+        /// <summary>
         /// Create a new Builder instance for a standing order token request.
         /// 
         /// </summary>
@@ -480,7 +495,6 @@ namespace Tokenio.TokenRequests
                 return this;
             }
 
-            /// <summary>
             /// Optional. In the scenario where TPP wishes to know the user's selection of country and
             /// bank, TPP should provide this url so that Token can make a call with relevant
             /// information as parameters. TPP can use that information to set transfer destination.
@@ -549,6 +563,28 @@ namespace Tokenio.TokenRequests
             }
         }
 
+        public class BulkTransferBuilder : Builder<BulkTransferBuilder>
+        {
+            internal BulkTransferBuilder(IList<BulkTransferBody.Types.Transfer> transfers,
+                double totalAmount)
+            {
+                this.requestPayload.BulkTransferBody = new BulkTransferBody
+                {
+                    Transfers =
+                    {
+                        transfers
+                    },
+                    TotalAmount = totalAmount.ToString(),
+                };
+            }
+            
+            public BulkTransferBuilder SetSource(TransferEndpoint source)
+            {
+                this.requestPayload.BulkTransferBody.Source = source;
+                return this;
+            }
+        }
+        
         public class StandingOrderBuilder : Builder<StandingOrderBuilder>
         {
             internal StandingOrderBuilder()

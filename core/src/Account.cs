@@ -184,8 +184,7 @@ namespace Tokenio
         public PagedList<Transaction> GetTransactionsBlocking(
             string offset,
             int limit,
-            Level keyLevel
-        )
+            Level keyLevel)
         {
             return GetTransactions(offset, limit, keyLevel).Result;
         }
