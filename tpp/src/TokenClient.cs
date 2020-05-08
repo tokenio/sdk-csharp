@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.EidasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
@@ -282,6 +283,37 @@ namespace Tokenio.Tpp
             return CompleteRecoveryWithDefaultRule(memberId, verificationId, code, cryptoEngine).Result;
         }
 
+        /// <summary>
+        /// Recovers an eIDAS-verified member with eIDAS payload.
+        /// 
+        /// </summary>
+        /// <param name="payload">a payload containing member id, the certificate and a new key to add to the member</param>
+        /// <param name="signature">a payload signature with the private key corresponding to the certificate</param>
+        /// <param name="cryptoEngine">a crypto engine that must contain the privileged key that is included in
+        ///     the payload(if it does not contain keys for other levels they will be generated)</param>
+        /// <returns>a Task of a new member</returns>
+        public Task<Member> RecoverEidasMember(
+            EidasRecoveryPayload payload,
+            string signature,
+            ICryptoEngine cryptoEngine)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            return unauthenticated.RecoverEidasMember(payload,
+                signature,
+                cryptoEngine)
+                .Map(member =>
+                {
+                    var client = ClientFactory.Authenticated(channel,
+                        member.Id,
+                        cryptoEngine);
+                    return new Member(
+                        member.Id,
+                        client,
+                        tokenCluster,
+                        member.PartnerId,
+                        member.RealmId);
+                });
+        }
 
         /// <summary>
         /// Generates a Token request URL from a request ID, an original state and a CSRF token.

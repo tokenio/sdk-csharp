@@ -15,6 +15,7 @@ using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
 using Tokenio.Proto.Common.TransferProtos;
+using Tokenio.Proto.Gateway;
 using Tokenio.Tpp.Rpc;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
@@ -999,18 +1000,23 @@ namespace Tokenio.Tpp
 
         /// <summary>
         /// Verifies eIDAS alias with an eIDAS certificate, containing auth number equal to the value
-        ///of the alias.
-        ///An eIDAS-type alias containing auth number of the TPP should be added to the
-        ///member before making this call.The member must be under the realm of a bank.
+        /// of the alias.Before making this call make sure that:<ul>
+        ///     <li>The member is under the realm of a bank(the one tpp tries to gain access to)</li>
+        ///     <li>An eIDAS-type alias with the value equal to auth number of the TPP is added
+        ///     to the member</li>
+        ///     <li>The realmId of the alias is equal to the member's realmId</li>
+        /// </ul>
         /// </summary>
         /// <returns>The eidas.</returns>
         /// <param name="payload">payload payload containing the member id and the certificate in PEM format.</param>
         /// <param name="signature">signature the payload signed with a private key corresponding to the certificate.</param>
-        public Task VerifyEidas(
+        /// <returns>a result of the verification process</returns>
+        public Task<VerifyEidasResponse> VerifyEidas(
             VerifyEidasPayload payload,
             string signature)
         {
-            return client.VerifyEidas(payload, signature);
+            return client.VerifyEidas(payload,
+                signature);
         }
     }
 }
