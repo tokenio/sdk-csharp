@@ -8,7 +8,7 @@
     <Description>Core SDK that serves as the base for other Token SDKs.</Description>
     <Company>Token, Inc</Company>
     <Authors>Token, Inc</Authors>
-    <Version>0.0.8</Version>
+    <Version>0.0.9</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>
