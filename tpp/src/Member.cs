@@ -1023,7 +1023,7 @@ namespace Tokenio.Tpp
         public Task<ExternalMetadata> GetExternalMetadata(string tokenRequestId)
         {
             return client.GetExternalMetadata(tokenRequestId)
-                .Map(res => new ExternalMetadata(res.Standard,res.ConsentId,res.Consent));
+                .Map(res => new ExternalMetadata(res.Standard,res.Consent));
         }
 
         /// <summary>

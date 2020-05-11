@@ -5,28 +5,23 @@ namespace Tokenio.Tpp
     public class ExternalMetadata
     {
         private readonly OpenBankingStandard openBankingStandard;
-        private readonly string consentId;
         private readonly string consent;
 
-
-        public ExternalMetadata(
-            OpenBankingStandard openBankingStandard,
-            string consentId = null,
-            string consent = null)
+        /// <summary>
+        /// Instantiates a new external metadata instance.
+        /// </summary>
+        /// <param name="openBankingStandard">openBankingStandard the open banking standard</param>
+        /// <param name="consent">consent the consent</param>
+        public ExternalMetadata(OpenBankingStandard openBankingStandard,
+            string consent)
         {
             this.openBankingStandard = openBankingStandard;
-            this.consentId = consentId ?? string.Empty;
-            this.consent = consent ?? string.Empty;
+            this.consent = consent;
         }
 
         public OpenBankingStandard GetOpenBankingStandard()
         {
             return openBankingStandard;
-        }
-
-        public string GetConsentId()
-        {
-            return consentId;
         }
 
         public string GetConsent()
