@@ -347,6 +347,17 @@ namespace Tokenio.TokenRequests
             }
 
             /// <summary>
+            /// Optional. Sets the token expiration in UTC timestamp in ms.
+            /// </summary>
+            /// <param name="tokenExpiration">tokenExpiration token expiration timestamp</param>
+            /// <returns>builder</returns>
+            public T SetTokenExpiration(long tokenExpiration)
+            {
+                requestPayload.TokenExpiration = tokenExpiration;
+                return (T) this;
+            }
+            
+            /// <summary>
             /// Builds the Token payload
             /// </summary>
             /// <returns>TokenRequest instance</returns>
