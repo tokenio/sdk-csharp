@@ -737,19 +737,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Verifies an affiliated TPP.
-        /// </summary>
-        /// <param name="memberId">member ID of the TPP verify</param>
-        /// <returns>a task</returns>
-        public Task VerifyAffiliate(string memberId)
-        {
-            var request = new VerifyAffiliateRequest { MemberId = memberId };
-            return gateway(authenticationContext()).VerifyAffiliateAsync(request).ToTask();
-        }
-
-
-
-        /// <summary>
         /// Adds a trusted beneficiary for whom the SCA will be skipped.
         /// </summary>
         /// <param name="payload">the trusted beneficiary payload</param>
