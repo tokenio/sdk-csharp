@@ -225,7 +225,7 @@ namespace Tokenio
                 if (!string.IsNullOrEmpty(realmId))
                 {
 
-                    alias.Realm = realmId;
+                    alias.RealmId = realmId;
                 }
                 return alias;
             }).ToList();
