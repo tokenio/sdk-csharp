@@ -19,8 +19,19 @@ namespace Tokenio.Rpc
         private readonly ICryptoEngine crypto;
         private readonly AuthenticationContext authentication;
 
-        public AsyncClientAuthenticator(
-            string memberId,
+        private readonly string TOKEN_REALM = "token-realm";
+        private readonly string TOKEN_SCHEME = "token-scheme";
+        private readonly string TOKEN_KEY_ID = "token-key-id";
+        private readonly string TOKEN_SIGNATURE = "token-signature";
+        private readonly string TOKEN_CREATED_AT_MS = "token-created-at-ms";
+        private readonly string TOKEN_MEMBER_ID = "token-member-id";
+        private readonly string TOKEN_ON_BEHALF_OF = "token-on-behalf-of";
+        private readonly string CUSTOMER_INITIATED = "customer-initiated";
+        private readonly string CUSTOMER_IP_ADDRESS_KEY = "token-customer-ip-address";
+        private readonly string CUSTOMER_GEO_LOCATION_KEY = "token-customer-geo-location";
+        private readonly string CUSTOMER_DEVICE_ID_KEY = "token-customer-device-id";
+        
+        public AsyncClientAuthenticator(string memberId,
             ICryptoEngine crypto,
             AuthenticationContext authentication)
         {
@@ -44,28 +55,28 @@ namespace Tokenio.Rpc
             };
             var signature = signer.Sign(payload);
             var metadata = context.Options.Headers ?? new Metadata();
-            metadata.Add("token-realm", "Token");
-            metadata.Add("token-scheme", "Token-Ed25519-SHA512");
-            metadata.Add("token-key-id", signer.GetKeyId());
-            metadata.Add("token-signature", signature);
-            metadata.Add("token-created-at-ms", now.ToString());
-            metadata.Add("token-member-id", memberId);
+            metadata.Add(TOKEN_REALM, "Token");
+            metadata.Add(TOKEN_SCHEME, "Token-Ed25519-SHA512");
+            metadata.Add(TOKEN_KEY_ID, signer.GetKeyId());
+            metadata.Add(TOKEN_SIGNATURE, signature);
+            metadata.Add(TOKEN_CREATED_AT_MS, now.ToString());
+            metadata.Add(TOKEN_MEMBER_ID, memberId);
             
             var customer = authentication.CustomerTrackingMetadata;
             if (!string.IsNullOrEmpty(customer.IpAddress))
-                metadata.Add("token-customer-ip-address",
+                metadata.Add(CUSTOMER_IP_ADDRESS_KEY,
                     customer.IpAddress);
             if (!string.IsNullOrEmpty(customer.GeoLocation))
-                metadata.Add("token-customer-geo-location",
+                metadata.Add(CUSTOMER_GEO_LOCATION_KEY,
                     customer.GeoLocation);
             if (!string.IsNullOrEmpty(customer.DeviceId))
-                metadata.Add("token-customer-device-id",
+                metadata.Add(CUSTOMER_DEVICE_ID_KEY,
                     customer.DeviceId);
 
             if (authentication.OnBehalfOf != null)
             {
-                metadata.Add("token-on-behalf-of", authentication.OnBehalfOf);
-                metadata.Add("customer-initiated", authentication.CustomerInitiated.ToString());
+                metadata.Add(TOKEN_ON_BEHALF_OF, authentication.OnBehalfOf);
+                metadata.Add(CUSTOMER_INITIATED, authentication.CustomerInitiated.ToString());
             }
 
             return continuation(request,
