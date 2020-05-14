@@ -1018,5 +1018,25 @@ namespace Tokenio.Tpp
             return client.VerifyEidas(payload,
                 signature);
         }
+
+        /// <summary>
+        /// Get status of the current eIDAS certificate along with the certificate itself, if present.
+        /// </summary>
+        /// <returns>eidas status and the eidas certificate, if any</returns>
+        public Task<GetEidasCertificateStatusResponse> GetEidasCertificateStatus()
+        {
+            return client.GetEidasCertificateStatus();
+        }
+
+        /// <summary>
+        /// Retrieves an eIDAS verification status by verificationId.
+        /// </summary>
+        /// <param name="verificationId">verification id</param>
+        /// <returns>a status of the verification operation together with the certificate and alias value</returns>
+        public Task<GetEidasVerificationStatusResponse> GetEidasVerificationStatus(string verificationId)
+        {
+            return client.GetEidasVerificationStatus(verificationId);
+        }
+
     }
 }

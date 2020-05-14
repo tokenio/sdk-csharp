@@ -8,6 +8,7 @@ using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.EidasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
+using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.TokenRequests;
 using Tokenio.Tpp.Rpc;
@@ -62,6 +63,24 @@ namespace Tokenio.Tpp
             .Build();
         }
 
+        /// <summary>
+        /// Creates a new instance of <see cref="TokenClient"/> that's configured to use
+        /// the specified environment and crypto engine factory.
+        /// </summary>
+        /// <param name="cluster">the token cluster to connect to</param>
+        /// <param name="developerKey">the developer key</param>
+        /// <param name="cryptoEngineFactory">cryptoEngineFactory crypto engine factory to use</param>
+        /// <returns>an instance of <see cref="TokenClient"/></returns>
+        public static TokenClient Create(TokenCluster cluster,
+            string developerKey,
+            TokenCryptoEngineFactory cryptoEngineFactory)
+        {
+            return NewBuilder()
+                .ConnectTo(cluster)
+                .DeveloperKey(developerKey)
+                .WithCryptoEngine(cryptoEngineFactory)
+                .Build();
+        }
 
         /// <summary>
         /// Creates a new Token member with a set of auto-generated keys, an alias, and member type.
@@ -313,6 +332,29 @@ namespace Tokenio.Tpp
                         member.PartnerId,
                         member.RealmId);
                 });
+        }
+
+        /// <summary>
+        /// Creates a business member under realm of a bank with an EIDAS alias (with value equal to the
+        /// authNumber from the certificate) and a PRIVILEGED-level public key taken from the certificate.
+        /// Then onboards the member with the provided certificate. A successful onboarding includes verifying
+        /// the member and the alias and adding permissions based on the certificate.<br>
+        /// The call is idempotent.<br>
+        /// If you need to submit another certificate for an existing member, please use VerifyEidas call instead.
+        /// <br><br> Note, that the call is asynchronous and the newly created member might not be onboarded at the
+        /// time the call returns. You can check the verification status using member.getEidasVerificationStatus
+        /// call with the verification id returned by this call.
+        /// </summary>
+        /// <param name="payload">payload with eIDAS certificate and bank id</param>
+        /// <param name="signature">signature payload signed with the private key corresponding to the certificate
+        /// public key</param>
+        /// <returns>member id, registered key id and id of the certificate verification request</returns>
+        public Task<RegisterWithEidasResponse> RegisterWithEidas(RegisterWithEidasPayload payload,
+            string signature)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            return unauthenticated.RegisterWithEidas(payload,
+                signature);
         }
 
         /// <summary>

@@ -484,6 +484,34 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
+        /// Get status of the current eIDAS certificate along with the certificate itself.
+        /// </summary>
+        /// <returns>eidas status and the eidas certificate, if any</returns>
+        public Task<GetEidasCertificateStatusResponse> GetEidasCertificateStatus()
+        {
+            var request = new GetEidasCertificateStatusRequest();
+            return gateway(authenticationContext())
+                .getEidasCertificateStatusAsync(request)
+                .ToTask(response => response);
+        }
+
+        /// <summary>
+        /// Retrieves an eIDAS verification status by verificationId.
+        /// </summary>
+        /// <param name="verificationId">verification id</param>
+        /// <returns>a status of the verification operation together with the certificate and alias value</returns>
+        public Task<GetEidasVerificationStatusResponse> GetEidasVerificationStatus(string verificationId)
+        {
+            var request = new GetEidasVerificationStatusRequest()
+            {
+                VerificationId = verificationId,
+            };
+            return gateway(authenticationContext())
+                .GetEidasVerificationStatusAsync(request)
+                .ToTask(response => response);
+        }
+
+        /// <summary>
         /// Creates a transfer redeeming a transfer token.
         /// </summary>
         /// <param name="payload">the transfer payload</param>

@@ -1,20 +1,30 @@
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Operators;
+using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.EidasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
+using Tokenio.Proto.Gateway;
+using Tokenio.Security;
 using Tokenio.Security.Utils;
 using Xunit;
+using TppMember = Tokenio.Tpp.Member;
 
 namespace Tokenio.Sample.Tpp
 {
     public class EidasMethodsSampleTest
     {
+        private static readonly String directBankId = "gold";
+
         [Fact]
         public void VerifyEidasTest()
         {
@@ -23,16 +33,21 @@ namespace Tokenio.Sample.Tpp
                 var tppAuthNumber = RandomNumeric(15);
                 var keyPair = GenerateKeyPair();
                 string certificate = GenerateCert(keyPair, tppAuthNumber);
-                Member verifiedTppMember = EidasMethodsSample.VerifyEidas(
+                TppMember verifiedTppMember = EidasMethodsSample.VerifyEidas(
                     tokenClient,
                     tppAuthNumber,
                     certificate,
-                    "gold",
-                    keyPair.ParseRsaKeyPair().PrivateKey);
+                    directBankId,
+                    keyPair.ParseRsaKeyPair()
+                        .PrivateKey);
                 IList<Alias> verifiedAliases = verifiedTppMember.GetAliasesBlocking();
                 Assert.Equal(1, verifiedAliases.Count);
                 Assert.Equal(tppAuthNumber, verifiedAliases[0].Value);
                 Assert.Equal(Alias.Types.Type.Eidas, verifiedAliases[0].Type);
+                GetEidasCertificateStatusResponse eidasInfo = verifiedTppMember.GetEidasCertificateStatus()
+                    .Result;
+                Assert.Equal(certificate, eidasInfo.Certificate);
+                Assert.Equal(EidasCertificateStatus.CertificateValid, eidasInfo.Status);
             }
         }
 
@@ -44,23 +59,25 @@ namespace Tokenio.Sample.Tpp
                 var tppAuthNumber = RandomNumeric(15);
                 var keyPair = GenerateKeyPair();
                 string certificate = GenerateCert(keyPair, tppAuthNumber);
-                string bankId = "gold";
+
 
                 // create and verify member first
-                Member verifiedTppMember = EidasMethodsSample.VerifyEidas(
-                        tokenClient,
-                        tppAuthNumber,
-                        certificate,
-                        bankId,
-                        keyPair.ParseRsaKeyPair().PrivateKey);
+                TppMember verifiedTppMember = EidasMethodsSample.VerifyEidas(
+                    tokenClient,
+                    tppAuthNumber,
+                    certificate,
+                    directBankId,
+                    keyPair.ParseRsaKeyPair()
+                        .PrivateKey);
 
                 // now pretend we lost the keys and need to recover the member
-                Member recoveredMember = EidasMethodsSample.RecoverEidas(
-                        anotherTokenClient,
-                        verifiedTppMember.MemberId(),
-                        tppAuthNumber,
-                        certificate,
-                        keyPair.ParseRsaKeyPair().PrivateKey);
+                TppMember recoveredMember = EidasMethodsSample.RecoverEidas(
+                    anotherTokenClient,
+                    verifiedTppMember.MemberId(),
+                    tppAuthNumber,
+                    certificate,
+                    keyPair.ParseRsaKeyPair()
+                        .PrivateKey);
 
                 IList<Alias> verifiedAliases = recoveredMember.GetAliasesBlocking();
 
@@ -117,7 +134,42 @@ namespace Tokenio.Sample.Tpp
 
         private static string RandomNumeric(int size)
         {
-            return Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, size);
+            return Guid.NewGuid()
+                .ToString()
+                .Replace("-", string.Empty)
+                .Substring(0, size);
+        }
+
+        [Fact]
+        public void RegisterWithEidasTest()
+        {
+            IKeyStore keyStore = new InMemoryKeyStore();
+            var factory = new TokenCryptoEngineFactory(keyStore, Key.Types.Algorithm.Rs256);
+            using (var tokenClient = TestUtil.CreateClient(factory))
+            {
+                var authNumber = RandomNumeric(15);
+                var rsaKeyPair = GenerateKeyPair();
+
+                var certificate = GenerateCert(rsaKeyPair, authNumber);
+                Member member = EidasMethodsSample.RegisterWithEidas(
+                    tokenClient,
+                    keyStore,
+                    directBankId,
+                    rsaKeyPair.ParseRsaKeyPair(),
+                    certificate);
+                var keys = member.GetKeys()
+                    .Result;
+                Assert.Equal(keys[0].Level, Key.Types.Level.Privileged);
+                Assert.Equal(
+                    keys[0].PublicKey,
+                    Base64UrlEncoder.Encode(
+                        rsaKeyPair.ParseRsaKeyPair()
+                            .PublicKey));
+                Assert.Equal(
+                    member.GetAliases()
+                        .Result[0].Value,
+                    authNumber);
+            }
         }
     }
 }

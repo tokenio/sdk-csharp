@@ -77,6 +77,25 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
+        /// Create and onboard a business member under realm of a bank using eIDAS certificate.
+        /// </summary>
+        /// <param name="payload">payload payload with eIDAS certificate and bank id</param>
+        /// <param name="signature">signature payload signed with the private key corresponding to the certificate
+        /// public key</param>
+        /// <returns>member id, registered key id and id of the certificate verification request</returns>
+        public Task<RegisterWithEidasResponse> RegisterWithEidas(RegisterWithEidasPayload payload,
+            string signature)
+        {
+            var request = new RegisterWithEidasRequest
+            {
+                Payload = payload,
+                Signature = signature
+            };
+            return gateway.RegisterWithEidasAsync(request)
+                .ToTask(response => response);
+        }
+        
+        /// <summary>
         /// Recovers an eIDAS-verified member with eidas payload.
         /// 
         /// </summary>

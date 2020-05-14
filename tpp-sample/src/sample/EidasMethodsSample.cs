@@ -4,7 +4,10 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.Security.Crypto;
+using Tokenio.Utils;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using TppMember = Tokenio.Tpp.Member;
+
 
 namespace Tokenio.Sample.Tpp
 {
@@ -16,12 +19,11 @@ namespace Tokenio.Sample.Tpp
         /// </summary>
         /// <param name="client">token client</param>
         /// <param name="tppAuthNumber">authNumber of the TPP</param>
-        /// <param name="certificate">base64 encoded eIDAS certificate</param>
+        /// <param name="certificate">base64 encoded eIDAS certificate (a single line, no header and footer)</param>
         /// <param name="bankId">id of the bank the TPP trying to get access to</param>
         /// <param name="privateKey">private key corresponding to the public key in the certificate</param>
         /// <returns>verified business member</returns>
-        public static Member VerifyEidas(
-            Tokenio.Tpp.TokenClient client,
+        public static TppMember VerifyEidas(Tokenio.Tpp.TokenClient client,
             string tppAuthNumber,
             string certificate,
             string bankId,
@@ -66,15 +68,14 @@ namespace Tokenio.Sample.Tpp
         /// <param name="client">token client</param>
         /// <param name="memberId">id of the member to be recovered</param>
         /// <param name="tppAuthNumber">authNumber of the TPP</param>
-        /// <param name="certificate">base64 encoded eIDAS certificate</param>
+        /// <param name="certificate">base64 encoded eIDAS certificate (a single line, no header and footer)</param>
         /// <param name="certificatePrivateKey">private key corresponding to the public key in the certificate</param>
         /// <returns>verified business member</returns>
-        public static Member RecoverEidas(
-                Tokenio.Tpp.TokenClient client,
-                string memberId,
-                string tppAuthNumber,
-                string certificate,
-                byte[] certificatePrivateKey)
+        public static TppMember RecoverEidas(Tokenio.Tpp.TokenClient client,
+            string memberId,
+            string tppAuthNumber,
+            string certificate,
+            byte[] certificatePrivateKey)
         {
             // create a signer using the certificate private key
             Algorithm signingAlgorithm = Algorithm.Rs256;
@@ -118,6 +119,42 @@ namespace Tokenio.Sample.Tpp
                     .Result;
 
             return recoveredMember;
+        }
+
+        public static TppMember RegisterWithEidas(Tokenio.Tpp.TokenClient tokenClient,
+            IKeyStore keyStore,
+            string bankId,
+            KeyPair keyPair,
+            string certificate)
+        {
+            //create a signer using the certificate private key
+            var signingAlgorithm = Algorithm.Rs256;
+            ISigner payloadSigner = new Rs256Signer(Util.Nonce(),
+                keyPair.PrivateKey);
+
+            var payload = new RegisterWithEidasPayload
+            {
+                Certificate = certificate,
+                BankId = bankId
+            };
+
+            var resp = tokenClient.RegisterWithEidas(payload,
+                payloadSigner.Sign(payload))
+                .Result;
+            var memberId = resp.MemberId;
+            // don't forget to add the registered key to the key store used by the tokenClient
+            keyStore.Put(memberId,
+                new KeyPair(resp.KeyId,
+                    Level.Privileged,
+                    keyPair.Algorithm,
+                    keyPair.PrivateKey,
+                    keyPair.PublicKey));
+
+            // now we can load a member and also check a status of the certificate verification
+            var member = tokenClient.GetMemberBlocking(memberId);
+            var statusResp = member.GetEidasVerificationStatus(resp.VerificationId)
+                .Result;
+            return member;
         }
     }
 }
