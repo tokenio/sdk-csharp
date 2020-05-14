@@ -382,14 +382,19 @@ namespace Tokenio.Tpp
             TransferEndpoint destination,
             string refId)
         {
+            TransferBody tokenBody = token.Payload.Transfer;
             var payload = new TransferPayload
             {
-                TokenId = token.Id,
-                Description = token.Payload.Description
+                TokenId = token.Id
             };
+
             if (destination != null)
             {
                 payload.Destinations.Add(destination);
+            }
+            else
+            {
+                payload.TransferDestinations.Add(tokenBody.Instructions.TransferDestinations);
             }
 
             if (amount.HasValue)
@@ -397,15 +402,27 @@ namespace Tokenio.Tpp
                 var money = new Money { Value = Util.DoubleToString(amount.Value) };
                 payload.Amount = money;
             }
+            else
+            {
+                payload.Amount = new Money { Value = tokenBody.LifetimeAmount };
+            }
 
             if (currency != null)
             {
                 payload.Amount.Currency = currency;
             }
+            else
+            {
+                payload.Amount.Currency = tokenBody.Currency;
+            }
 
             if (description != null)
             {
                 payload.Description = description;
+            }
+            else
+            {
+                payload.Description = token.Payload.Description;
             }
 
             if (refId != null)
