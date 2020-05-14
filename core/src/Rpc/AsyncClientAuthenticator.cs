@@ -35,7 +35,7 @@ namespace Tokenio.Rpc
         {
             var now = Util.EpochTimeMillis();
             var keyLevel = authentication.KeyLevel;
-            var signer = crypto.CreateSigner(keyLevel);
+            var signer = crypto.CreateSignerForLevelAtLeast(keyLevel);
             var payload = new GrpcAuthPayload
             {
                 Request = ByteString.CopyFrom(((IMessage)request).ToByteArray()),

@@ -1,11 +1,14 @@
 ﻿using System.Security.Cryptography;
+using Tokenio.Exceptions;
 using Xunit;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
 using Tokenio.Utils;
 using Tokenio.Security.Crypto;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types.Level;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Test.Security
 {
@@ -75,6 +78,58 @@ namespace Test.Security
             var signature = signer.Sign(payload);
             var verifier = cryptoEngine.CreateVerifier(oldKey.Id);
             verifier.Verify(payload, signature);
+        }
+
+        [Fact]
+        public void CreateCryptoEngine_cryptoType()
+        {
+            IKeyStore keyStore = new InMemoryKeyStore();
+            ICryptoEngine cryptoEngineDefault = new TokenCryptoEngine(Util.Nonce(), keyStore);
+            cryptoEngineDefault.GenerateKey(Low);
+            // default crypto type
+            Assert.Equal(Algorithm.Ed25519, cryptoEngineDefault.GetPublicKeys()[0].Algorithm);
+
+            // RSA crypto type
+            ICryptoEngine cryptoEngineRsa = new TokenCryptoEngine(Util.Nonce(), keyStore, Algorithm.Rs256);
+            cryptoEngineRsa.GenerateKey(Low);
+            Assert.Equal(Algorithm.Rs256, cryptoEngineRsa.GetPublicKeys()[0].Algorithm);
+
+
+            // InvalidAlgo crypto type
+            ICryptoEngine cryptoEngineInvalidAlgo = new TokenCryptoEngine(
+                Util.Nonce(),
+                keyStore,
+                Algorithm.InvalidAlgorithm);
+            cryptoEngineInvalidAlgo.GenerateKey(Low);
+            Assert.Equal(Algorithm.InvalidAlgorithm, cryptoEngineInvalidAlgo.GetPublicKeys()[0].Algorithm);
+        }
+
+        [Fact]
+        public void CreateSigner_forMinLeve()
+        {
+            IKeyStore keyStore = new InMemoryKeyStore();
+            ICryptoEngine cryptoEngine = new TokenCryptoEngine("member-id", keyStore);
+
+            Assert.Throws<CryptoKeyNotFoundException>(() => cryptoEngine.CreateSignerForLevelAtLeast(Low));
+            var privileged = cryptoEngine.GenerateKey(Privileged);
+            Assert.Equal(
+                privileged.Id,
+                cryptoEngine.CreateSignerForLevelAtLeast(Low)
+                    .GetKeyId());
+            Assert.Equal(
+                privileged.Id,
+                cryptoEngine.CreateSignerForLevelAtLeast(Standard)
+                    .GetKeyId());
+            Assert.Equal(
+                privileged.Id,
+                cryptoEngine.CreateSignerForLevelAtLeast(Privileged)
+                    .GetKeyId());
+
+            var low = cryptoEngine.GenerateKey(Low);
+            Assert.Equal(
+                cryptoEngine.CreateSignerForLevelAtLeast(Low)
+                    .GetKeyId(),
+                low.Id);
         }
     }
 }

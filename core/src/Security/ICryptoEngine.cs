@@ -49,6 +49,16 @@ namespace Tokenio.Security
         /// </summary>
         /// <returns>The public keys.</returns>
         IList<Key> GetPublicKeys();
+
+        /// <summary>
+        /// Creates a new signer that uses a key of specified level or higher
+        /// (if no key of the specified level can be found).<br>
+        /// Note, that if there are several same-level keys, a random one is used to create a signer.
+        /// If you need to create a signer for a specific key, create a signer using the key id.
+        /// </summary>
+        /// <param name="minKeyLevel">minimum level of the key to use</param>
+        /// <returns>signer that is used to generate digital signatures</returns>
+        ISigner CreateSignerForLevelAtLeast(Level minKeyLevel);
     }
 }
 

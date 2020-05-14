@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
+using Tokenio.Security;
 using Tokenio.User;
 using Tokenio.Utils;
 using UserMember = Tokenio.User.Member;
@@ -35,6 +36,19 @@ namespace Tokenio.Sample.Tpp
         public static Tokenio.Tpp.TokenClient CreateClient()
         {
             return Tokenio.Tpp.TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
+        }
+
+        /// <summary>
+        /// Creates the client with Builder.
+        /// </summary>
+        /// <returns>The client.</returns>
+        public static Tokenio.Tpp.TokenClient CreateClient(TokenCryptoEngineFactory cryptoEngineFactory)
+        {
+            return Tokenio.Tpp.TokenClient.NewBuilder()
+                .ConnectTo(Tokenio.TokenCluster.DEVELOPMENT)
+                .DeveloperKey(DEV_KEY)
+                .WithCryptoEngine(cryptoEngineFactory)
+                .Build();
         }
 
         /// <summary>

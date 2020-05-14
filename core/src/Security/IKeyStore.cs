@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Tokenio.Exceptions;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio.Security
@@ -21,7 +22,7 @@ namespace Tokenio.Security
         /// <param name="memberId">the member id</param>
         /// <param name="level">the level of the key pair</param>
         /// <returns>the key pair</returns>
-        /// <exception cref="KeyNotFoundException"></exception>>
+        /// <exception cref="CryptoKeyNotFoundException"></exception>>
         KeyPair GetByLevel(string memberId, Level level);
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace Tokenio.Security
         /// <param name="memberId">the member id</param>
         /// <param name="keyId">the key id</param>
         /// <returns>the key pair</returns>
-        /// <exception cref="KeyNotFoundException"></exception>>
+        /// <exception cref="CryptoKeyNotFoundException"></exception>>
         KeyPair GetById(string memberId, string keyId);
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace Test
         
         public static KeyPair GenerateKeyPair(Key.Types.Level level)
         {
-            return ed255519KeyGen.GenerateKeyPair().ParseEd25519KeyPair(level);
+            return ed255519KeyGen.GenerateKeyPair().ParseEd25519KeyPair(level,Key.Types.Algorithm.Ed25519);
         }
     }
 }

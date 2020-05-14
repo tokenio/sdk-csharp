@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using Tokenio.Exceptions;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 
 namespace Tokenio.Security
@@ -66,27 +67,34 @@ namespace Tokenio.Security
 
         public KeyPair GetByLevel(string memberId, Level level)
         {
-            var key = keys[memberId].Last(k => k.Level.Equals(level));
-            if (key.IsExpired())
+            try
             {
-                throw new ArgumentException("Key not found for level: " + level);
+                var key = keys[memberId].Last(k => k.Level.Equals(level));
+                if (key.IsExpired())
+                    throw new CryptoKeyNotFoundException("Key not found for level: " + level);
+                return key;
             }
-            return key;
+            catch (Exception)
+            {
+                throw new CryptoKeyNotFoundException(level);
+            }
         }
 
         public KeyPair GetById(string memberId, string keyId)
         {
-            var key = keys[memberId].First(k => k.Id.Equals(keyId));
-            if (key == null)
+            try
             {
-                throw new ArgumentException("Key not found for id: " + keyId);
+                var key = keys[memberId].First(k => k.Id.Equals(keyId));
+                if (key == null)
+                    throw new CryptoKeyNotFoundException("Key not found for id: " + keyId);
+                if (key.IsExpired())
+                    throw new CryptoKeyNotFoundException("Key with id: " + keyId + "has expired");
+                return key;
             }
-            if (key.IsExpired())
+            catch (Exception)
             {
-                throw new ArgumentException("Key with id: " + keyId + "has expired");
+                throw new CryptoKeyNotFoundException("Key not found for id: " + keyId);
             }
-            return key;
-
         }
 
         /// <summary>
