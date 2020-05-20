@@ -225,7 +225,7 @@ namespace Tokenio
                 if (!string.IsNullOrEmpty(realmId))
                 {
 
-                    alias.Realm = realmId;
+                    alias.RealmId = realmId;
                 }
                 return alias;
             }).ToList();
@@ -883,24 +883,6 @@ namespace Tokenio
         public Blob GetProfilePictureBlocking(string memberId, ProfilePictureSize size)
         {
             return GetProfilePicture(memberId, size).Result;
-        }
-
-        /// <summary>
-        /// Sets security metadata included in all requests
-        /// </summary>
-        /// <param name="metaData">security metadata</param>
-        /// TODO: RD-2335: Change class from SecurityMetaData to TrackingMetaData
-        public void SetTrackingMetaData(SecurityMetadata metaData)
-        {
-            client.SetTrackingMetadata(metaData);
-        }
-
-        /// <summary>
-        /// Clears the security metadata
-        /// </summary>
-        public void ClearTrackingMetaData()
-        {
-            client.ClearTrackingMetaData();
         }
 
         /// <summary>

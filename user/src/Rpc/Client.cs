@@ -138,6 +138,23 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulkTransferId bulk transfer ID</param>
+        /// <returns>Looks up an existing bulk transfer.</returns>
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId)
+        {
+            var request = new GetBulkTransferRequest
+            {
+                BulkTransferId = bulkTransferId
+            };
+            return gateway(authenticationContext())
+                .GetBulkTransferAsync(request)
+                .ToTask(response =>
+                    response.BulkTransfer);
+        }
+        
+        /// <summary>
         /// Looks up an existing Token standing order submission.
         /// </summary>
         /// <param name="submissionId">submission ID</param>
@@ -475,6 +492,22 @@ namespace Tokenio.User.Rpc
                     .CreateTransferAsync(request)
                     .ToTask(response =>
                             response.Transfer);
+        }
+
+        /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId">ID of token to redeem</param>
+        /// <returns>bulk transfer record </returns>
+        public Task<BulkTransfer> CreateBulkTransfer(string tokenId)
+        {
+            var request = new CreateBulkTransferRequest
+            {
+                TokenId = tokenId
+            };
+            return gateway(authenticationContext())
+                .CreateBulkTransferAsync(request)
+                .ToTask(response => response.Transfer);
         }
 
         /// <summary>
