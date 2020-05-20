@@ -1519,6 +1519,32 @@ namespace Tokenio.User
         }
 
         /// <summary>
+        ///  Stores a linking request.
+        /// </summary>
+        /// <param name="callbackUrl"> callback URL</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>linking request ID</returns>
+        public Task<string> StoreLinkingRequest(
+            string callbackUrl,
+            string tokenRequestId)
+        {
+            return client.StoreLinkingRequest(callbackUrl, tokenRequestId);
+        }
+
+        /// <summary>
+        ///  Stores a linking request.
+        /// </summary>
+        /// <param name="callbackUrl"> callback URL</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>linking request ID</returns>
+        public string StoreLinkingRequestBlocking(
+            string callbackUrl,
+            string tokenRequestId)
+        {
+            return StoreLinkingRequest(callbackUrl, tokenRequestId).Result;
+        }
+        
+        /// <summary>
         /// Apply SCA for the given list of account IDs.
         /// </summary>
         /// <param name="accountIds">list of account ids</param>

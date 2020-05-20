@@ -1039,5 +1039,70 @@ namespace Tokenio.Tpp
             return client.VerifyEidas(payload,
                 signature);
         }
+        
+        /// <summary>
+        /// Get url to bank authorization page for a token request.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>url</returns>
+        public Task<string> GetBankAuthUrl(string bankId, string tokenRequestId)
+        {
+            return client.GetBankAuthUrl(bankId, tokenRequestId);
+        }
+
+        /// <summary>
+        /// Get url to bank authorization page for a token request.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="tokenRequestId">token request ID</param>
+        /// <returns>url</returns>
+        public string GetBankAuthUrlBlocking(string bankId, string tokenRequestId)
+        {
+            return GetBankAuthUrl(bankId, tokenRequestId).Result;
+        }
+
+        /// <summary>
+        /// Forward the callback from the bank (after user authentication) to Token.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="query">HTTP query string</param>
+        /// <returns>token request ID</returns>
+        public Task<string> OnBankAuthCallback(string bankId, string query)
+        {
+            return client.OnBankAuthCallback(bankId, query);
+        }
+
+        /// <summary>
+        /// Forward the callback from the bank (after user authentication) to Token.
+        /// </summary>
+        /// <param name="bankId">bank ID</param>
+        /// <param name="query">HTTP query string</param>
+        /// <returns>token request ID</returns>
+        public string OnBankAuthCallbackBlocking(string bankId, string query)
+        {
+            return OnBankAuthCallback(bankId, query).Result;
+        }
+
+        /// <summary>
+        /// Get the external metadata from the bank associated with a token request
+        /// </summary>
+        /// <param name="tokenRequestId">tokenRequestId token request ID</param>
+        /// <returns>external metadata</returns>
+        public Task<ExternalMetadata> GetExternalMetadata(string tokenRequestId)
+        {
+            return client.GetExternalMetadata(tokenRequestId)
+                .Map(res => new ExternalMetadata(res.Standard,res.Consent));
+        }
+
+        /// <summary>
+        /// Get the external metadata from the bank associated with a token request
+        /// </summary>
+        /// <param name="tokenRequestId">tokenRequestId token request ID</param>
+        /// <returns>external metadata</returns>
+        public ExternalMetadata GetExternalMetadataBlocking(string tokenRequestId)
+        {
+            return GetExternalMetadata(tokenRequestId).Result;
+        }
     }
 }

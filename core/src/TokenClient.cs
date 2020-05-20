@@ -13,6 +13,7 @@ using Tokenio.Security;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
+using static  Tokenio.Proto.Common.BankProtos.BankFilter.Types;
 
 
 namespace Tokenio
@@ -300,174 +301,188 @@ namespace Tokenio
                 });
         }
 
-
-
+         
         /// <summary>
-        /// Returns the first 200 available banks for linking.
+        /// Returns a list of token enabled banks.
         /// </summary>
-        /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks()
-        {
-            return GetBanks(1, 200);
-        }
-
-        /// <summary>
-        /// Returns banks from a given list of bank IDs (case-insensitive).
-        /// </summary>
-        /// <param name="ids">the bank IDs</param>
-        /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks(IList<string> ids)
-        {
-            return GetBanks(ids, null, null, null, null, null);
-        }
-
-        /// <summary>
-        /// Return banks whose 'name' or 'identifier' contains the given search string (case-insensitive).
-        /// </summary>
-        /// <param name="search">the keyword to search for</param>
-        /// <returns>banks with paging information</returns>
-        public Task<PagedBanks> GetBanks(string search)
-        {
-            return GetBanks(null, search, null, null, null, null);
-        }
-
-        /// <summary>
-        /// Returns banks with specified paging information.
-        /// </summary>
-        /// <param name="page">the result page to retrieve</param>
-        /// <param name="perPage">max number of records per page, can be at most 200</param>
+        /// <param name="bankIds">bankIds If specified, return banks whose 'id' matches any one of the given id
+        /// (case-insensitive). Can be at most 1000.</param>
+         /// <param name="page">page Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">perPage Maximum number of records per page. Can be at most 200. Default to 200
+        /// if not specified.</param>
         /// <returns>banks with paging information</returns>
         public Task<PagedBanks> GetBanks(
-            int page,
-            int perPage)
+            IList<string> bankIds,
+            int? page,
+            int? perPage)
         {
-            return GetBanks(null, null, null, page, perPage, null);
-        }
+            return GetBanks(bankIds, null, null, page, perPage, null, null);
 
+        }
+        
         /// <summary>
-        /// Return banks whose 'country' matches the given country code (case-insensitive).
+        /// Returns a list of token enabled banks.
         /// </summary>
-        /// <param name="country">the ISO 3166-1 alpha-2 country code</param>
-        /// <param name="page">the result page to retrieve</param>
-        /// <param name="perPage">max number of records per page, can be at most 200</param>
+        /// <param name="search">search If specified, return banks whose 'name' or 'identifier' contains the given
+        /// search string (case-insensitive).</param>
+        /// <param name="country">country If specified, return banks whose 'country' matches the given ISO 3166-1
+        /// alpha-2 country code (case-insensitive).</param>
+        /// <param name="page">page Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">perPage Maximum number of records per page. Can be at most 200. Default to 200
+        /// if not specified.</param>
+        /// <param name="sort">sort The key to sort the results. Could be one of: name, provider and country. Defaults to name if not specified.</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///   (case insensitive)</param>
         /// <returns>banks with paging information</returns>
         public Task<PagedBanks> GetBanks(
-            string country,
-            int page,
-            int perPage)
-        {
-            return GetBanks(null, null, country, page, perPage, null);
-        }
-
-        /// <summary>
-        /// Return banks that satisfy given filtering requirements.
-        /// </summary>
-        /// <param name="ids">the bank IDs to fetch</param>
-        /// <param name="search">the keyword to search the fields 'name' and 'identifier' for</param>
-        /// <param name="country">ISO 3166-1 alpha-2 country code of the banks</param>
-        /// <param name="page">the result page to retrieve</param>
-        /// <param name="perPage">max number of records per page, can be at most 200</param>
-        /// <param name="sort">the key to sort the results, one of: name, provider and country</param>
-        /// <returns>banks with paging information</returns>
-        /// <remarks>
-        /// All fields are optional. Set to null if absent. The default value for page is 1; the default
-        /// value for perPage is 200. Values set out of range will be treated as default value.
-        /// </remarks>
-        public Task<PagedBanks> GetBanks(
-            IList<string> ids,
             string search,
             string country,
             int? page,
             int? perPage,
-            string sort)
+            string sort,
+            string provider)
+        {
+            return GetBanks(null, search, country, page, perPage, sort, provider, null);
+        }
+
+        /// <summary>
+        /// Returns a list of token enabled banks.
+        /// </summary>
+        /// <param name="bankIds">bankIds If specified, return banks whose 'id' matches any one of the given id
+        /// (case-insensitive). Can be at most 1000.</param>
+        /// <param name="search">search If specified, return banks whose 'name' or 'identifier' contains the given
+        /// search string (case-insensitive).</param>
+        /// <param name="country">country If specified, return banks whose 'country' matches the given ISO 3166-1
+        /// alpha-2 country code (case-insensitive).</param>
+        /// <param name="page">page Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">perPage Maximum number of records per page. Can be at most 200. Default to 200
+        /// if not specified.</param>
+        /// <param name="sort">sort The key to sort the results. Could be one of: name, provider and country. Defaults to name if not specified.</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///   (case insensitive)</param>
+        /// <returns>banks with paging information</returns>
+        public Task<PagedBanks> GetBanks(
+            IList<string> bankIds,
+            string search,
+            string country,
+            int? page,
+            int? perPage,
+            string sort,
+            string provider)
+        {
+            return GetBanks(bankIds, search, country, page, perPage, sort, provider, null);
+        }
+        
+        /// <summary>
+        /// Returns a list of token enabled banks.
+        /// </summary>
+        /// <param name="bankIds">bankIds If specified, return banks whose 'id' matches any one of the given id
+        /// (case-insensitive). Can be at most 1000.</param>
+        /// <param name="search">search If specified, return banks whose 'name' or 'identifier' contains the given
+        /// search string (case-insensitive).</param>
+        /// <param name="country">country If specified, return banks whose 'country' matches the given ISO 3166-1
+        /// alpha-2 country code (case-insensitive).</param>
+        /// <param name="page">page Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">perPage Maximum number of records per page. Can be at most 200. Default to 200
+        /// if not specified.</param>
+        /// <param name="sort">sort The key to sort the results. Could be one of: name, provider and country. Defaults to name if not specified.</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///   (case insensitive)</param>
+        /// <param name="bankFeatures">If specified, return banks who meet the bank features requirement.</param>
+        /// <returns>banks with paging information</returns>
+        public Task<PagedBanks> GetBanks(
+            IList<string> bankIds,
+            string search,
+            string country,
+            int? page,
+            int? perPage,
+            string sort,
+            string provider,
+            BankFeatures bankFeatures)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetBanks(ids, search, country, page, perPage, sort);
+            return unauthenticated.GetBanks(
+                bankIds,
+                search,
+                country,
+                page,
+                perPage,
+                sort,
+                provider,
+                bankFeatures);
         }
+       
 
         /// <summary>
-        /// Returns the first 200 available banks for linking.
+        /// Returns a list of token enabled banks.
         /// </summary>
-        /// <returns>banks with paging information</returns>
-        public PagedBanks GetBanksBlocking()
-        {
-            return GetBanks().Result;
-        }
-
-        /// <summary>
-        /// Returns banks from a given list of bank IDs (case-insensitive).
-        /// </summary>
-        /// <param name="ids">the bank IDs</param>
-        /// <returns>banks with paging information</returns>
-        public PagedBanks GetBanksBlocking(IList<string> ids)
-        {
-            return GetBanks(ids).Result;
-        }
-
-        /// <summary>
-        /// Return banks whose 'name' or 'identifier' contains the given search string (case-insensitive).
-        /// </summary>
-        /// <param name="search">the keyword to search for</param>
-        /// <returns>banks with paging information</returns>
-        public PagedBanks GetBanksBlocking(string search)
-        {
-            return GetBanks(search).Result;
-        }
-
-        /// <summary>
-        /// Returns banks with specified paging information.
-        /// </summary>
-        /// <param name="page">the result page to retrieve</param>
-        /// <param name="perPage">max number of records per page, can be at most 200</param>
+        /// <param name="bankIds">bankIds If specified, return banks whose 'id' matches any one of the given id
+        /// (case-insensitive). Can be at most 1000.</param>
+        /// <param name="page">page Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">perPage Maximum number of records per page. Can be at most 200. Default to 200
+        /// if not specified.</param>
         /// <returns>banks with paging information</returns>
         public PagedBanks GetBanksBlocking(
-            int page,
-            int perPage)
+            IList<string> bankIds,
+            int? page,
+            int? perPage)
         {
-            return GetBanks(page, perPage).Result;
+            return GetBanks(bankIds, page, perPage).Result;
+
         }
 
         /// <summary>
-        /// Return banks whose 'country' matches the given country code (case-insensitive).
+        /// Returns a list of token enabled banks.
         /// </summary>
-        /// <param name="country">the ISO 3166-1 alpha-2 country code</param>
-        /// <param name="page">the result page to retrieve</param>
-        /// <param name="perPage">max number of records per page, can be at most 200</param>
+        /// <param name="bankIds">bankIds If specified, return banks whose 'id' matches any one of the given id
+        /// (case-insensitive). Can be at most 1000.</param>
+        /// <param name="search">search If specified, return banks whose 'name' or 'identifier' contains the given
+        /// search string (case-insensitive).</param>
+        /// <param name="country">country If specified, return banks whose 'country' matches the given ISO 3166-1
+        /// alpha-2 country code (case-insensitive).</param>
+        /// <param name="page">page Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">perPage Maximum number of records per page. Can be at most 200. Default to 200
+        /// if not specified.</param>
+        /// <param name="sort">sort The key to sort the results. Could be one of: name, provider and country. Defaults to name if not specified.</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///   (case insensitive)</param>
         /// <returns>banks with paging information</returns>
         public PagedBanks GetBanksBlocking(
-            string country,
-            int page,
-            int perPage)
-        {
-            return GetBanks(country, page, perPage).Result;
-        }
-
-        /// <summary>
-        /// Return banks that satisfy given filtering requirements.
-        /// </summary>
-        /// <param name="ids">the bank IDs to fetch</param>
-        /// <param name="search">the keyword to search the fields 'name' and 'identifier' for</param>
-        /// <param name="country">ISO 3166-1 alpha-2 country code of the banks</param>
-        /// <param name="page">the result page to retrieve</param>
-        /// <param name="perPage">max number of records per page, can be at most 200</param>
-        /// <param name="sort">the key to sort the results, one of: name, provider and country</param>
-        /// <returns>banks with paging information</returns>
-        /// <remarks>
-        /// All fields are optional. Set to null if absent. The default value for page is 1; the default
-        /// value for perPage is 200. Values set out of range will be treated as default value.
-        /// </remarks>
-        public PagedBanks GetBanksBlocking(
-            IList<string> ids,
+            IList<string> bankIds,
             string search,
             string country,
             int? page,
             int? perPage,
-            string sort)
+            string sort,
+            string provider)
         {
-            return GetBanks(ids, search, country, page, perPage, sort).Result;
+            return GetBanks(bankIds, search, country, page, perPage, sort, provider).Result;
         }
 
-
+        /// <summary>
+        /// Returns a list of token enabled banks.
+        /// </summary>
+        /// <param name="search">search If specified, return banks whose 'name' or 'identifier' contains the given
+        /// search string (case-insensitive).</param>
+        /// <param name="country">country If specified, return banks whose 'country' matches the given ISO 3166-1
+        /// alpha-2 country code (case-insensitive).</param>
+        /// <param name="page">page Result page to retrieve. Default to 1 if not specified.</param>
+        /// <param name="perPage">perPage Maximum number of records per page. Can be at most 200. Default to 200
+        /// if not specified.</param>
+        /// <param name="sort">sort The key to sort the results. Could be one of: name, provider and country. Defaults to name if not specified.</param>
+        /// <param name="provider">If specified, return banks whose 'provider' matches the given provider
+        ///   (case insensitive)</param>
+        /// <returns>banks with paging information</returns>
+        public PagedBanks GetBanksBlocking(
+            string search,
+            string country,
+            int? page,
+            int? perPage,
+            string sort,
+            string provider)
+        {
+            return GetBanks(search, country, page, perPage, sort, provider).Result;
+        }
 
         /// <summary>
         /// Returns a list of countries with Token-enabled banks.
