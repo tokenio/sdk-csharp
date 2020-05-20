@@ -11,6 +11,7 @@ using Tokenio.Proto.Common.EidasProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.NotificationProtos;
+using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Common.TransferInstructionsProtos;
@@ -182,6 +183,26 @@ namespace Tokenio.Tpp
             return new Member(memberId, cloned, tokenCluster, partnerId, realmId);
         }
 
+        /// <summary>
+        /// Creates a {@link Representable} that acts as another member using the access token
+        /// that was granted by that member.
+        /// </summary>
+        /// <param name="tokenId">the access token id to be used</param>
+        /// <param name="customerTrackingMetadata">customer tracking data</param>
+        /// <returns></returns>
+        public IRepresentable ForAccessToken(
+            string tokenId,
+            CustomerTrackingMetadata customerTrackingMetadata)
+        {
+            var cloned = client.ForAccessToken(tokenId,
+                customerTrackingMetadata);
+            return new Member(memberId,
+                cloned,
+                tokenCluster,
+                partnerId,
+                realmId);
+        }
+        
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>

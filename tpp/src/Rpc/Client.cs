@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
+using Grpc.Core;
 using Tokenio.Exceptions;
 using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.EidasProtos;
@@ -29,8 +30,6 @@ namespace Tokenio.Tpp.Rpc
     /// </summary>
     public sealed class Client : Tokenio.Rpc.Client
     {
-        private SecurityMetadata securityMetadata = new SecurityMetadata();
-
         /// <summary>
         /// Instantiates a client.
         /// </summary>
@@ -88,7 +87,26 @@ namespace Tokenio.Tpp.Rpc
         {
             Client updated = new Client(MemberId, cryptoEngine, channel);
             updated.UseAccessToken(tokenId, customerInitiated);
-            updated.SetSecurityMetadata(securityMetadata);
+            return updated;
+        }
+        
+        /// <summary>
+        /// Creates a new instance with On-Behalf-Of authentication set.
+        /// </summary>
+        /// <param name="tokenId">access token ID to be used</param>
+        /// <param name="customerTrackingMetadata">customer tracking metadata</param>
+        /// <returns>new client instance</returns>
+        public Client ForAccessToken(
+            string tokenId,
+            CustomerTrackingMetadata customerTrackingMetadata)
+        {
+            if (customerTrackingMetadata.Equals(new CustomerTrackingMetadata()))
+                throw new RpcException(
+                    new Status(StatusCode.InvalidArgument,
+                        "User tracking metadata is empty. "
+                            + "Use forAccessToken(String, boolean) instead."));
+            var updated = new Client(MemberId, cryptoEngine, channel);
+            updated.UseAccessToken(tokenId, customerTrackingMetadata);
             return updated;
         }
 
@@ -105,6 +123,24 @@ namespace Tokenio.Tpp.Rpc
             this.customerInitiated = customerInitiated;
         }
 
+        /// <summary>
+        /// Sets the On-Behalf-Of authentication value to be used
+        /// with this client.The value must correspond to an existing
+        /// Access Token ID issued for the client member.Uses the given customer
+        /// initiated flag.
+        ///
+        /// </summary>
+        /// <param name="accessTokenId">the access token id to be used</param>
+        /// <param name="customerTrackingMetadata">the tracking metadata of the customer</param>
+        private void UseAccessToken(
+            string accessTokenId,
+            CustomerTrackingMetadata customerTrackingMetadata)
+        {
+            onBehalfOf = accessTokenId;
+            customerInitiated = true;
+            this.customerTrackingMetadata = customerTrackingMetadata;
+        }
+        
         /// <summary>
         /// Stores a transfer token request.
         /// </summary>
@@ -309,23 +345,6 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => new PagedList<StandingOrderSubmission>(
                     response.Submissions,
                     response.Offset));
-        }
-
-        /// <summary>
-        /// Sets security metadata included in all requests.
-        /// </summary>
-        /// <param name="securityMetadata">Security metadata.</param>
-        public void SetSecurityMetadata(SecurityMetadata securityMetadata)
-        {
-            this.securityMetadata = securityMetadata;
-        }
-
-        /// <summary>
-        /// Clears the security meta data.
-        /// </summary>
-        public void ClearSecurityMetaData()
-        {
-            this.securityMetadata = new SecurityMetadata();
         }
 
         /// <summary>
