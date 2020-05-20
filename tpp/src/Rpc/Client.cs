@@ -264,6 +264,21 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
+        /// Looks up an existing bulk transfer.
+        /// </summary>
+        /// <param name="bulkTransferId">bulk transfer ID</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> GetBulkTransfer(string bulkTransferId)
+        {
+            return gateway(authenticationContext())
+                .GetBulkTransferAsync(new GetBulkTransferRequest
+                {
+                    BulkTransferId = bulkTransferId
+                })
+                .ToTask(response => response.BulkTransfer);
+        }
+        
+        /// <summary>
         /// Looks up an existing Token standing order submission.
         /// </summary>
         /// <param name="submissionId">submission ID</param>
@@ -473,19 +488,18 @@ namespace Tokenio.Tpp.Rpc
         /// <returns>The eidas.</returns>
         /// <param name="payload">payload payload containing member id and the certificate.</param>
         /// <param name="signature">signature payload signed with the private key corresponding to the certificate.</param>
-        public Task VerifyEidas(
+        public Task<VerifyEidasResponse> VerifyEidas(
             VerifyEidasPayload payload,
             string signature)
         {
             var request = new VerifyEidasRequest
             {
-
                 Payload = payload,
                 Signature = signature
-
             };
             return gateway(authenticationContext())
-                    .VerifyEidasAsync(request).ToTask();
+                .VerifyEidasAsync(request)
+                .ToTask(response => response);
         }
 
         /// <summary>
@@ -510,6 +524,21 @@ namespace Tokenio.Tpp.Rpc
                 .ToTask(response => response.Transfer);
         }
 
+        /// <summary>
+        /// Redeems a bulk transfer token.
+        /// </summary>
+        /// <param name="tokenId"> ID of token to redeem</param>
+        /// <returns>bulk transfer record</returns>
+        public Task<BulkTransfer> CreateBulkTransfer(string tokenId)
+        {
+            return gateway(authenticationContext())
+                .CreateBulkTransferAsync(new CreateBulkTransferRequest
+                {
+                    TokenId = tokenId
+                })
+                .ToTask(response => response.Transfer);
+        }
+        
         /// <summary>
         /// Redeems a standing order token.
         /// </summary>
