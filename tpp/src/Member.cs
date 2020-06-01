@@ -22,6 +22,7 @@ using Tokenio.Utils;
 using static Tokenio.Proto.Common.BlobProtos.Blob.Types;
 using TokenRequest = Tokenio.TokenRequests.TokenRequest;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
+using WebhookConfig = Tokenio.Proto.Common.WebhookProtos.Webhook.Types.Config;
 
 namespace Tokenio.Tpp
 {
@@ -202,7 +203,7 @@ namespace Tokenio.Tpp
                 partnerId,
                 realmId);
         }
-        
+
         /// <summary>
         /// Redeems a transfer token.
         /// </summary>
@@ -597,7 +598,7 @@ namespace Tokenio.Tpp
             return RedeemBulkTransferToken(tokenId)
                 .Result;
         }
-        
+
         /// <summary>
         /// Redeems a standing order token.
         /// </summary>
@@ -1039,7 +1040,7 @@ namespace Tokenio.Tpp
             return client.VerifyEidas(payload,
                 signature);
         }
-        
+
         /// <summary>
         /// Get url to bank authorization page for a token request.
         /// </summary>
@@ -1103,6 +1104,60 @@ namespace Tokenio.Tpp
         public ExternalMetadata GetExternalMetadataBlocking(string tokenRequestId)
         {
             return GetExternalMetadata(tokenRequestId).Result;
+        }
+
+        /// <summary>
+        /// Set a webhook config.
+        /// </summary>
+        /// <param name="config">the webhook config</param>
+        /// <returns>a task</returns>
+        public Task SetWebhookConfig(WebhookConfig config)
+        {
+            return client.SetWebhookConfig(config);
+        }
+
+        /// <summary>
+        /// Set a webhook config.
+        /// </summary>
+        /// <param name="config">the webhook config</param>
+        public void SetWebhookConfigBlocking(WebhookConfig config)
+        {
+            SetWebhookConfig(config).Wait();
+        }
+
+        /// <summary>
+        /// Get the webhook config.
+        /// </summary>
+        /// <returns>the webhook config</returns>
+        public Task<WebhookConfig> GetWebhookConfig()
+        {
+            return client.GetWebhookConfig();
+        }
+
+        /// <summary>
+        /// Get the webhook config.
+        /// </summary>
+        /// <returns>the webhook config</returns>
+        public WebhookConfig GetWebhookConfigBlocking()
+        {
+            return client.GetWebhookConfig().Result;
+        }
+
+        /// <summary>
+        /// Delete a webhook config.
+        /// </summary>
+        /// <returns>a task</returns>
+        public Task DeleteWebhookConfig()
+        {
+            return client.DeleteWebhookConfig();
+        }
+
+        /// <summary>
+        /// Delete a webhook config.
+        /// </summary>
+        public void DeleteWebhookConfigBlocking()
+        {
+            client.DeleteWebhookConfig().Wait();
         }
     }
 }
