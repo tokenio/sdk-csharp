@@ -20,6 +20,7 @@ using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using static Tokenio.Proto.Gateway.GetTransfersRequest.Types;
 using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action;
 using TokenType = Tokenio.Proto.Gateway.GetTokensRequest.Types.Type;
+using WebhookConfig = Tokenio.Proto.Common.WebhookProtos.Webhook.Types.Config;
 
 namespace Tokenio.Tpp.Rpc
 {
@@ -89,7 +90,7 @@ namespace Tokenio.Tpp.Rpc
             updated.UseAccessToken(tokenId, customerInitiated);
             return updated;
         }
-        
+
         /// <summary>
         /// Creates a new instance with On-Behalf-Of authentication set.
         /// </summary>
@@ -140,7 +141,7 @@ namespace Tokenio.Tpp.Rpc
             customerInitiated = true;
             this.customerTrackingMetadata = customerTrackingMetadata;
         }
-        
+
         /// <summary>
         /// Stores a transfer token request.
         /// </summary>
@@ -277,7 +278,7 @@ namespace Tokenio.Tpp.Rpc
                 })
                 .ToTask(response => response.BulkTransfer);
         }
-        
+
         /// <summary>
         /// Looks up an existing Token standing order submission.
         /// </summary>
@@ -538,7 +539,7 @@ namespace Tokenio.Tpp.Rpc
                 })
                 .ToTask(response => response.Transfer);
         }
-        
+
         /// <summary>
         /// Redeems a standing order token.
         /// </summary>
@@ -552,7 +553,7 @@ namespace Tokenio.Tpp.Rpc
                         TokenId = tokenId
                     }).ToTask(response => response.Submission);
         }
-        
+
         /// <summary>
         /// Get url to bank authorization page for a token request.
         /// </summary>
@@ -598,6 +599,39 @@ namespace Tokenio.Tpp.Rpc
                     TokenRequestId = tokenRequestId,
                 })
                 .ToTask(res => res);
+        }
+
+        /// <summary>
+        /// Set a webhook config.
+        /// </summary>
+        /// <param name="config">the webhook config</param>
+        /// <returns>a task</returns>
+        public Task SetWebhookConfig(WebhookConfig config)
+        {
+            var request = new SetWebhookConfigRequest { Config = config };
+            return gateway(authenticationContext()).SetWebhookConfigAsync(request).ToTask();
+        }
+
+        /// <summary>
+        /// Get the webhook config.
+        /// </summary>
+        /// <returns>the webhook config</returns>
+        public Task<WebhookConfig> GetWebhookConfig()
+        {
+            return gateway(authenticationContext())
+                .GetWebhookConfigAsync(new GetWebhookConfigRequest())
+                .ToTask(res => res.Config);
+        }
+
+        /// <summary>
+        /// Delete a webhook config.
+        /// </summary>
+        /// <returns>a task</returns>
+        public Task DeleteWebhookConfig()
+        {
+            return gateway(authenticationContext())
+                .DeleteWebhookConfigAsync(new DeleteWebhookConfigRequest())
+                .ToTask();
         }
     }
 }
