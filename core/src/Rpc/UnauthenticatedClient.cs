@@ -308,8 +308,11 @@ namespace Tokenio.Rpc
             string provider,
             BankFeatures bankFeatures)
         {
-            var request = new GetBanksRequest();
-
+            var request = new GetBanksRequest()
+            {
+                Filter = new BankFilter(),
+            };
+            
             if (ids != null)
             {
                 request.Filter.Ids.Add(ids);
