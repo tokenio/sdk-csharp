@@ -60,6 +60,8 @@ namespace Test
         {
             IList<ResourceType> types = new List<ResourceType>();
             types.Add(ResourceType.Accounts);
+            var resourcesList = new ResourceTypeList();
+            resourcesList.Resources.Add(types);
             var storedPayload = new TokenRequestPayload
             {
                 UserRefId = Util.Nonce(),
@@ -72,7 +74,8 @@ namespace Test
                 CallbackState = Util.Nonce(),
                 AccessBody = new TokenRequestPayload.Types.AccessBody
                 {
-                    Type = {types}
+                    Type = {types},
+                    ResourceTypeList = resourcesList,
                 }
             };
 
