@@ -24,7 +24,6 @@ namespace Tokenio.Sample.Tpp
         {
             // Create token request to be stored
             TokenRequest request = TokenRequest.TransferTokenRequestBuilder(100, "EUR")
-                .SetRefId(Util.Nonce())    
                 .SetToMemberId(payee.MemberId())
                 .SetDescription("Book purchase") // optional description
                 .SetRedirectUrl("https://token.io/callback") // callback URL
@@ -53,7 +52,6 @@ namespace Tokenio.Sample.Tpp
             string setTransferDestinationsCallback)
         {
             TokenRequest tokenRequest = TokenRequest.TransferTokenRequestBuilder(250, "EUR")
-                .SetRefId(Util.Nonce())
                 .SetToMemberId(payee.MemberId())
                 .SetDescription("Book purchase")
                 // This TPP provided url gets called by Token after the user selects bank and
@@ -85,7 +83,6 @@ namespace Tokenio.Sample.Tpp
         {
             // Create token request to be stored
             TokenRequest request = TokenRequest.AccessTokenRequestBuilder(ResourceType.Accounts, ResourceType.Balances)
-                .SetRefId(Util.Nonce())
                 .SetToMemberId(grantee.MemberId())
                 .SetRedirectUrl("https://token.io/callback") // callback URL
                 .SetFromAlias(new Alias
