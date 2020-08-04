@@ -7,7 +7,7 @@
     <Description>TPP SDK for interacting with the Token System</Description>
     <Company>Token, Inc</Company>
     <Authors>Token, Inc</Authors>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>
