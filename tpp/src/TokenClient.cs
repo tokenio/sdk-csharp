@@ -22,7 +22,7 @@ namespace Tokenio.Tpp
     public class TokenClient : Tokenio.TokenClient
     {
         private static readonly string TOKEN_REQUEST_TEMPLATE =
-            "https://{0}/request-token/{1}?state={2}";
+            "https://{0}/app/request-token/{1}?state={2}";
 
         /// <summary>
         /// Creates an instance of a Token SDK.
