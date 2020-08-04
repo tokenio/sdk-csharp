@@ -17,6 +17,7 @@ namespace Sample
         public static string StoreTransferTokenRequest(Member payee)
         {
             var request = TokenRequest.TransferTokenRequestBuilder(100, "EUR")
+                .SetRefId(Util.Nonce())
                 .SetToMemberId(payee.MemberId())
                 .SetDescription("Book purchase")
                 .SetRedirectUrl("https://token.io/callback")
@@ -51,6 +52,7 @@ namespace Sample
                     TokenRequestPayload.Types.AccessBody.Types.ResourceType.Accounts,
                     TokenRequestPayload.Types.AccessBody.Types.ResourceType.Balances)
                 .SetToMemberId(grantee.MemberId())
+                .SetRefId(Util.Nonce())
                 .SetRedirectUrl("https://token.io/callback")
                 .SetFromAlias(new Alias
                 {

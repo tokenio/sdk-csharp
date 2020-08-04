@@ -4,6 +4,7 @@ using Xunit;
 using Tokenio;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.TokenProtos;
+using Tokenio.Proto.Common.TransferInstructionsProtos;
 using static Test.TestUtil;
 using static Tokenio.Proto.Common.TokenProtos.TokenRequestPayload.Types.AccessBody.Types;
 using Member = Tokenio.Member;
@@ -28,6 +29,7 @@ namespace Test
             var storedPayload = new TokenRequestPayload
             {
                 UserRefId = Util.Nonce(),
+                RefId = Util.Nonce(),
                 RedirectUrl = tokenUrl,
                 To = new TokenMember
                 {
@@ -38,7 +40,8 @@ namespace Test
                 TransferBody = new TokenRequestPayload.Types.TransferBody
                 {
                     Amount = "10.0",
-                    Currency = "EUR"
+                    Currency = "EUR",
+                    Instructions = new TransferInstructions(),
                 }
             };
 
@@ -65,6 +68,7 @@ namespace Test
             var storedPayload = new TokenRequestPayload
             {
                 UserRefId = Util.Nonce(),
+                RefId = Util.Nonce(),
                 RedirectUrl = Util.Nonce(),
                 To = new TokenMember
                 {
