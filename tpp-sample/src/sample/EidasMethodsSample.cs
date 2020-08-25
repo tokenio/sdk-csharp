@@ -4,6 +4,8 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.Security.Crypto;
+using Tokenio.Tpp.Exceptions;
+using Tokenio.Tpp.Security;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using TppMember = Tokenio.Tpp.Member;
@@ -142,18 +144,37 @@ namespace Tokenio.Sample.Tpp
                 payloadSigner.Sign(payload))
                 .Result;
             var memberId = resp.MemberId;
-            // don't forget to add the registered key to the key store used by the tokenClient
-            keyStore.Put(memberId,
-                new KeyPair(resp.KeyId,
-                    Level.Privileged,
-                    keyPair.Algorithm,
-                    keyPair.PrivateKey,
-                    keyPair.PublicKey));
-
             // now we can load a member and also check a status of the certificate verification
             var member = tokenClient.GetMemberBlocking(memberId);
             var statusResp = member.GetEidasVerificationStatus(resp.VerificationId)
                 .Result;
+            return member;
+        }
+
+        /// <summary>
+        /// Creates a TPP member under realm of a bank and registers it with the provided eIDAS
+        /// certificate.The created member has a registered PRIVILEGED-level RSA key from the provided
+        /// certificate and an EIDAS alias with value equal to authNumber from the certificate.
+        ///
+        /// </summary>
+        /// <param name="tokenClient">token client</param>
+        /// <param name="keyStore">a key store that is used by token client and contains eIDAS certificate and
+        ///      a private key</param>
+        /// <param name="bankId">id of the bank the TPP trying to get access to</param>
+        /// <returns>a newly created and oboarded member</returns>
+        public static Member CreateMemberWithEidas(Tokenio.Tpp.TokenClient tokenClient,
+            IEidasKeyStore keyStore, string bankId)
+        {
+            Member member = null;
+            try
+            {
+                member = tokenClient.CreateMemberWithEidas(bankId,
+                    keyStore, 30000);
+            }
+            catch (EidasTimeoutException ex)
+            {
+                System.Console.WriteLine($"Unable to complete eIDAS verification: memberId={ex.GetMemberId()} | verivicationId={ex.GetVerificationId()}");
+            }
             return member;
         }
     }

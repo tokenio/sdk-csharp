@@ -16,7 +16,9 @@ using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.Security.Utils;
+using Tokenio.Tpp.Security;
 using Xunit;
+using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using TppMember = Tokenio.Tpp.Member;
 
 namespace Tokenio.Sample.Tpp
@@ -55,7 +57,8 @@ namespace Tokenio.Sample.Tpp
         public void RecoverEidasTest()
         {
             using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
-            using (Tokenio.Tpp.TokenClient anotherTokenClient = TestUtil.CreateClient()) {
+            using (Tokenio.Tpp.TokenClient anotherTokenClient = TestUtil.CreateClient())
+            {
                 var tppAuthNumber = RandomNumeric(15);
                 var keyPair = GenerateKeyPair();
                 string certificate = GenerateCert(keyPair, tppAuthNumber);
@@ -143,14 +146,13 @@ namespace Tokenio.Sample.Tpp
         [Fact]
         public void RegisterWithEidasTest()
         {
-            IKeyStore keyStore = new InMemoryKeyStore();
-            var factory = new TokenCryptoEngineFactory(keyStore, Key.Types.Algorithm.Rs256);
+            var authNumber = RandomNumeric(15);
+            var rsaKeyPair = GenerateKeyPair();
+            var certificate = GenerateCert(rsaKeyPair, authNumber);
+            IEidasKeyStore keyStore = new InMemoryEidasKeyStore(certificate, rsaKeyPair);
+            var factory = new EidasCryptoEngineFactory(keyStore);
             using (var tokenClient = TestUtil.CreateClient(factory))
             {
-                var authNumber = RandomNumeric(15);
-                var rsaKeyPair = GenerateKeyPair();
-
-                var certificate = GenerateCert(rsaKeyPair, authNumber);
                 Member member = EidasMethodsSample.RegisterWithEidas(
                     tokenClient,
                     keyStore,
@@ -169,6 +171,32 @@ namespace Tokenio.Sample.Tpp
                     member.GetAliases()
                         .Result[0].Value,
                     authNumber);
+            }
+        }
+
+        [Fact]
+        public void CreateMemberWithEidasTest()
+        {
+            var authNumber = RandomNumeric(15);
+            var rsaKeyPair = GenerateKeyPair();
+            var certificate = GenerateCert(rsaKeyPair, authNumber);
+            IEidasKeyStore keyStore = new InMemoryEidasKeyStore(certificate, rsaKeyPair);
+            var factory = new EidasCryptoEngineFactory(keyStore);
+            using (var tokenClient = TestUtil.CreateClient(factory))
+            {
+                Member member = EidasMethodsSample.CreateMemberWithEidas(
+                    tokenClient,
+                    keyStore,
+                    directBankId);
+                Assert.NotNull(member);
+                var keys = member.GetKeys().Result;
+                Assert.Equal(Level.Privileged, keys[0].Level);
+                Assert.Equal(Base64UrlEncoder.Encode(
+                        rsaKeyPair.ParseRsaKeyPair()
+                            .PublicKey), keys[0].PublicKey);
+                Assert.Equal(keyStore.GetCertificateSerialNumber().ToString(),
+                    keys[0].Id);
+                Assert.Equal(member.GetAliases().Result[0].Value, authNumber);
             }
         }
     }

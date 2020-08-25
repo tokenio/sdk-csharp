@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,10 +11,13 @@ using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
+using Tokenio.Security.Crypto;
 using Tokenio.TokenRequests;
 using Tokenio.Tpp.Rpc;
+using Tokenio.Tpp.Security;
 using Tokenio.Tpp.TokenRequests;
 using Tokenio.Tpp.Utils;
+using Tokenio.Tpp.Exceptions;
 using ManagedChannel = Tokenio.Rpc.ManagedChannel;
 using TokenRequestStatePayload = Tokenio.Proto.Common.TokenProtos.TokenRequestStatePayload;
 using WebUtility = System.Net.WebUtility;
@@ -355,6 +359,40 @@ namespace Tokenio.Tpp
             var unauthenticated = ClientFactory.Unauthenticated(channel);
             return unauthenticated.RegisterWithEidas(payload,
                 signature);
+        }
+
+        public Member CreateMemberWithEidas(string bankId, IEidasKeyStore keyStore, long timeOut)
+        {
+            var unauthenticated = ClientFactory.Unauthenticated(channel);
+            KeyPair keyPair = keyStore.GetKey();
+            ISigner payloadSigner = new Rs256Signer(keyPair.Id,
+                keyPair.PrivateKey);
+            var payload = new RegisterWithEidasPayload
+            {
+                Certificate = Convert.ToBase64String(keyStore.GetCertificate().GetEncoded()),
+                BankId = bankId
+            };
+
+            var resp = unauthenticated.RegisterWithEidas(payload, payloadSigner.Sign(payload)).Result;
+            Member member = GetMemberBlocking(resp.MemberId);
+            GetEidasVerificationStatusResponse verificationResp;
+            verificationResp = Util.RetryWithExponentialBackoffNoThrow(
+                timeOut,
+                1000,
+                2,
+                5000,
+                () => member.GetEidasVerificationStatus(resp.VerificationId).Result,
+                r => EidasVerificationStatus.EidasStatusPending.Equals(r.EidasStatus));
+            if(EidasVerificationStatus.EidasStatusPending.Equals(verificationResp.EidasStatus))
+            {
+                throw new EidasTimeoutException(resp.MemberId, resp.VerificationId);
+            }
+            if(!EidasVerificationStatus.EidasStatusSuccess.Equals(verificationResp.EidasStatus))
+            {
+                throw new EidasRegistrationException(verificationResp.EidasStatus,
+                    verificationResp.StatusDetails);
+            }
+            return member;
         }
 
         /// <summary>
