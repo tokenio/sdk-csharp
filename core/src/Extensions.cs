@@ -62,7 +62,13 @@ namespace Tokenio
                 return alias;
             }
 
-            return new Alias { Value = alias.Value.ToLower().Trim(), Type = alias.Type, Realm = alias.Realm };
+            return new Alias
+            {
+                Value = alias.Value.ToLower().Trim(), 
+                Type = alias.Type, 
+                Realm = alias.Realm,
+                RealmId = alias.RealmId
+            };
         }
 
         public static async Task<TResult> Map<TSource, TResult>(
