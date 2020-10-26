@@ -48,6 +48,19 @@ namespace Test
             };
             Assert.Equal("HHzc3XVck27qD2gadGVzjffaBZrU8ZLEd2jmtcyPKeev", Util.NormalizeAndHashAlias(alias));
         }
+        
+        [Fact]
+        public void HashAlias_RealmId()
+        {
+            var alias = new Alias
+            {
+                Type = Custom,
+                Value = "obuser12@mailinator.com",
+                Realm = "token",
+                RealmId = "m:qGommD7yNfSZCun4EtK5yRAuV5d:5zKtXEAq"
+            };
+            Assert.Equal("EcoLsA476MrE2rJg3jBePYtiH2HcLARYBZyo3iWsDNNL", Util.NormalizeAndHashAlias(alias));
+        }
 
         [Fact]
         public void Base58Hashing()
