@@ -16,7 +16,7 @@ namespace Test
 
         public StoreAndRetrieveTokenRequestSampleTest()
         {
-            member = tokenClient.CreateMemberBlocking(Alias(), CreateMemberType.Business);
+            member = tokenClient.CreateMemberBlocking(DomainAlias(), CreateMemberType.Business);
         }
 
         [Fact]

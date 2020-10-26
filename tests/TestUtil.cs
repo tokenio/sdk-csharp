@@ -30,6 +30,17 @@ namespace Test
                 Realm = "token"
             };
         }
+        
+        public static Alias DomainAlias()
+        {
+            return new Alias
+            {
+                // use uppercase to test normalization
+                Value = Util.Nonce().ToUpper() + "+noverify@example.com",
+                Type = Domain,
+                Realm = "token"
+            };
+        }
 
         public static TokenClient NewSdkInstance()
         {

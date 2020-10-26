@@ -15,7 +15,7 @@ namespace Tokenio.Sample.Tpp
         private static string TOKEN_REALM = "token";
 
         /// <summary>
-        /// Generates random user name to be used for testing.
+        /// Generates random TPP name to be used for testing.
         /// </summary>
         /// <returns>The alias.</returns>
         public static Alias RandomAlias()
@@ -24,6 +24,20 @@ namespace Tokenio.Sample.Tpp
             {
                 Value = "alias-" + Util.Nonce().ToLower() + "+noverify@example.com",
                 Type = Alias.Types.Type.Domain,
+                Realm = TOKEN_REALM
+            };
+        }
+        
+        /// <summary>
+        /// Generates random user name to be used for testing.
+        /// </summary>
+        /// <returns>The alias.</returns>
+        public static Alias RandomUserAlias()
+        {
+            return new Alias
+            {
+                Value = "alias-" + Util.Nonce().ToLower() + "+noverify@example.com",
+                Type = Alias.Types.Type.Email,
                 Realm = TOKEN_REALM
             };
         }
@@ -45,7 +59,7 @@ namespace Tokenio.Sample.Tpp
         {
             Tokenio.User.TokenClient
                 client = Tokenio.User.TokenClient.Create(Tokenio.TokenCluster.DEVELOPMENT, DEV_KEY);
-            Alias alias = RandomAlias();
+            Alias alias = RandomUserAlias();
             UserMember member = client.CreateMemberBlocking(alias);
             member.CreateTestBankAccountBlocking(1000.0, "EUR");
             return member;
