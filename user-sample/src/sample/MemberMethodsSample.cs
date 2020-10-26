@@ -39,7 +39,7 @@ namespace Tokenio.Sample.User
 
             Alias alias2 = new Alias
             {
-                Type = Alias.Types.Type.Domain,
+                Type = Alias.Types.Type.Email,
                 Value = "alias2-" + Util.Nonce() + "+noverify@token.io"
 
             };
@@ -48,14 +48,14 @@ namespace Tokenio.Sample.User
 
             Alias alias3 = new Alias
             {
-                Type = Alias.Types.Type.Domain,
+                Type = Alias.Types.Type.Email,
                 Value = "alias3-" + Util.Nonce() + "+noverify@token.io"
 
             };
 
             Alias alias4 = new Alias
             {
-                Type = Alias.Types.Type.Domain,
+                Type = Alias.Types.Type.Email,
                 Value = "alias4-" + Util.Nonce() + "+noverify@token.io"
 
             };

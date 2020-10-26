@@ -20,7 +20,7 @@ namespace Test
 
         public TokenRequestTest()
         {
-            member = tokenClient.CreateMemberBlocking(Alias(), CreateMemberType.Business);
+            member = tokenClient.CreateMemberBlocking(DomainAlias(), CreateMemberType.Business);
         }
 
         [Fact]
