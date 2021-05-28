@@ -8,13 +8,13 @@
     <Description>Core SDK that serves as the base for other Token SDKs.</Description>
     <Company>Token, Inc</Company>
     <Authors>Token, Inc</Authors>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIconUrl>https://s3-us-west-2.amazonaws.com/tokenio-assets/1.0.0/logos/token_black.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/tokenio/sdk-csharp</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.11.4" />
+    <PackageReference Include="Google.Protobuf" Version="3.12.3" />
     <PackageReference Include="Grpc" Version="2.27.0" />
     <PackageReference Include="Grpc.Core" Version="2.27.0" />
     <PackageReference Include="log4net" Version="2.0.8" />
@@ -24,7 +24,7 @@
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.6" />
     <PackageReference Include="System.Interactive.Async" Version="4.0.0" />
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
-    <PackageReference Include="Token.Proto.Net" Version="0.0.5" />
+    <PackageReference Include="Token.Proto.Net" Version="1.12.59" />
     <PackageReference Include="Token.Security.Net" Version="0.0.6" />
   </ItemGroup>
 </Project>

@@ -28,8 +28,6 @@ namespace Tokenio.Sample.Tpp
                 Profile profile = MemberMethodsSample.Profiles(member);
 
                 Assert.NotEmpty(profile.DisplayNameFirst);
-                Assert.NotEmpty(profile.DisplayNameLast);
-
             }
             }
 

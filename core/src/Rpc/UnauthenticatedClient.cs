@@ -11,7 +11,6 @@ using Tokenio.Proto.Gateway;
 using Tokenio.Security;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
-using static Tokenio.Proto.Common.BankProtos.BankFilter.Types;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
