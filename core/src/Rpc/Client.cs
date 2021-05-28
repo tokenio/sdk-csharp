@@ -718,65 +718,6 @@ namespace Tokenio.Rpc
                 .ToTask(response => (IList<Device>)response.Devices);
         }
 
-        /// <summary>
-        /// Adds a trusted beneficiary for whom the SCA will be skipped.
-        /// </summary>
-        /// <param name="payload">the trusted beneficiary payload</param>
-        /// <returns>a task</returns>
-        public Task AddTrustedBeneficiary(TrustedBeneficiary.Types.Payload payload)
-        {
-            var signer = cryptoEngine.CreateSigner(Level.Standard);
-            var request = new AddTrustedBeneficiaryRequest
-            {
-                TrustedBeneficiary = new TrustedBeneficiary
-                {
-                    Payload = payload,
-                    Signature = new Signature
-                    {
-                        KeyId = signer.GetKeyId(),
-                        MemberId = MemberId,
-                        Signature_ = signer.Sign(payload)
-                    }
-                }
-            };
-            return gateway(authenticationContext()).AddTrustedBeneficiaryAsync(request).ToTask();
-        }
-
-        /// <summary>
-        /// Removes a trusted beneficiary. 
-        /// </summary>
-        /// <param name="payload">the trusted beneficiary payload</param>
-        /// <returns>a task</returns>
-        public Task RemoveTrustedBeneficiary(TrustedBeneficiary.Types.Payload payload)
-        {
-            var signer = cryptoEngine.CreateSigner(Level.Standard);
-            var request = new RemoveTrustedBeneficiaryRequest
-            {
-                TrustedBeneficiary = new TrustedBeneficiary
-                {
-                    Payload = payload,
-                    Signature = new Signature
-                    {
-                        KeyId = signer.GetKeyId(),
-                        MemberId = MemberId,
-                        Signature_ = signer.Sign(payload)
-                    }
-                }
-            };
-            return gateway(authenticationContext()).RemoveTrustedBeneficiaryAsync(request).ToTask();
-        }
-
-        /// <summary>
-        /// Gets a list of all trusted beneficiaries.
-        /// </summary>
-        /// <returns>the list</returns>
-        public Task<IList<TrustedBeneficiary>> GetTrustedBeneficiaries()
-        {
-            var request = new GetTrustedBeneficiariesRequest();
-            return gateway(authenticationContext()).GetTrustedBeneficiariesAsync(request)
-                .ToTask(response => (IList<TrustedBeneficiary>)response.TrustedBeneficiaries);
-        }
-
         protected Client Clone()
         {
             return new Client(MemberId, cryptoEngine, channel);

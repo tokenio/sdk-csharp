@@ -33,7 +33,6 @@ namespace Tokenio.Sample.User
                 Profile profile = MemberMethodsSample.Profiles(member);
 
                 Assert.NotEmpty(profile.DisplayNameFirst);
-                Assert.NotEmpty(profile.DisplayNameLast);
 
             }
         }

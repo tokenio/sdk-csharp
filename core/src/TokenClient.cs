@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.BankProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.TokenProtos;
@@ -13,7 +14,6 @@ using Tokenio.Security;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.MemberProtos.MemberRecoveryOperation.Types;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using static  Tokenio.Proto.Common.BankProtos.BankFilter.Types;
 
 
 namespace Tokenio
