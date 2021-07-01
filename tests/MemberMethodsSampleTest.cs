@@ -33,7 +33,6 @@ namespace Test
             Profile profile = MemberMethodsSample.profiles(member);
 
             Assert.NotEmpty(profile.DisplayNameFirst);
-            Assert.NotEmpty(profile.DisplayNameLast);
         }
     }
 }

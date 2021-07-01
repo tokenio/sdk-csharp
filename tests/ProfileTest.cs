@@ -25,7 +25,6 @@ namespace Test
             var inProfile = new Profile
             {
                 DisplayNameFirst = "Tomás",
-                DisplayNameLast = "de Aquino"
             };
             var backProfile = member.SetProfileBlocking(inProfile);
             var outProfile = member.GetProfileBlocking(member.MemberId());
@@ -59,8 +58,7 @@ namespace Test
         {
             var inProfile = new Profile
             {
-                DisplayNameFirst = "Tomás",
-                DisplayNameLast = "de Aquino"
+                DisplayNameFirst = "Tomás de Aquino",
             };
             member.SetProfileBlocking(inProfile);
 
@@ -105,8 +103,7 @@ namespace Test
 
             var inProfile = new Profile
             {
-                DisplayNameFirst = "Tomás",
-                DisplayNameLast = "de Aquino"
+                DisplayNameFirst = "Tomás de Aquino",
             };
 
             var otherMember = tokenClient.CreateMemberBlocking();
@@ -117,7 +114,6 @@ namespace Test
             
             Assert.NotEmpty(outProfile.OriginalPictureId);
             Assert.Equal(outProfile.DisplayNameFirst, inProfile.DisplayNameFirst);
-            Assert.Equal(outProfile.DisplayNameLast, inProfile.DisplayNameLast);
 
             var tinyGifString = ByteString.CopyFrom(tinyGif);
             var blob = otherMember.GetBlobBlocking(outProfile.OriginalPictureId);
