@@ -35,9 +35,9 @@ namespace Sample
                         Bic = "XUIWC2489",
                         Iban = "DE89370400440532013000"
                     },
-                    CustomerData = new TransferDestination.CustomerData
+                    CustomerData = new CustomerData
                     {
-                        LegalNames = (new[] { "Southside" }).ToList()
+                        LegalNames = { "Southside" }
                     }
                 })
                 .build();
