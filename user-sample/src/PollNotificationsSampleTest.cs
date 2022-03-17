@@ -30,6 +30,10 @@ namespace Tokenio.Sample.User
                     Token = new TransferDestination.Types.Token
                     {
                         MemberId = payee.MemberId()
+                    },
+                    CustomerData = new CustomerData
+                    {
+                        LegalNames = { "Southside" }
                     }
                 };
 

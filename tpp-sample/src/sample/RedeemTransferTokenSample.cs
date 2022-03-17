@@ -36,13 +36,16 @@ namespace Tokenio.Sample.Tpp
             // Set token destination
             TransferDestination tokenDestination = new TransferDestination
             {
-               
+
                 Token = new TransferDestination.Types.Token
                 {
                     MemberId = payee.MemberId(),
                     AccountId = accountId
-                }            
-                
+                },
+                CustomerData = new CustomerData
+                {
+                    LegalNames = { "Southside" }
+                }
             };
 
 
