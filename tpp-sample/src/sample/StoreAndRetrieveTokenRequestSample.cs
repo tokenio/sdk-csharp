@@ -119,18 +119,6 @@ namespace Tokenio.Sample.Tpp
                 })
                 .SetBankId("iron") // bank ID
                 .SetCsrfToken(Util.Nonce()) // nonce for CSRF check
-                .AddDestination(new TransferDestination
-                {
-                    Sepa = new TransferDestination.Types.Sepa
-                    {
-                        Bic = "XUIWC2489",
-                        Iban = "DE89370400440532013000"
-                    },
-                    CustomerData = new CustomerData
-                    {
-                        LegalNames = { "Southside" }
-                    }
-                })
                 .Build();
 
             return grantee.StoreTokenRequestBlocking(request);

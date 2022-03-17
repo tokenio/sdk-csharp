@@ -65,18 +65,6 @@ namespace Sample
                 })
                 .SetBankId("iron")
                 .SetCsrfToken(Util.Nonce())
-                .AddDestination(new TransferDestination
-                {
-                    Sepa = new TransferDestination.Types.Sepa
-                    {
-                        Bic = "XUIWC2489",
-                        Iban = "DE89370400440532013000"
-                    },
-                    CustomerData = new CustomerData
-                    {
-                        LegalNames = { "Southside" }
-                    }
-                })
                 .build();
 
             return grantee.StoreTokenRequestBlocking(request);
