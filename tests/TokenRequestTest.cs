@@ -41,7 +41,22 @@ namespace Test
                 {
                     Amount = "10.0",
                     Currency = "EUR",
-                    Instructions = new TransferInstructions(),
+                    Instructions = new TransferInstructions
+                    {
+                        TransferDestinations = { new TransferDestination
+                        {
+                            Sepa = new TransferDestination.Types.Sepa
+                            {
+                                Bic = "XUIWC2489",
+                                Iban = "DE89370400440532013000"
+                            },
+                            CustomerData = new CustomerData
+                            {
+                                LegalNames = { "Southside" }
+                            }
+                        }
+                        }
+                    }
                 }
             };
 
@@ -78,7 +93,7 @@ namespace Test
                 CallbackState = Util.Nonce(),
                 AccessBody = new TokenRequestPayload.Types.AccessBody
                 {
-                    Type = {types},
+                    Type = { types },
                     ResourceTypeList = resourcesList,
                 }
             };
@@ -88,7 +103,7 @@ namespace Test
                 BankId = "iron",
                 ReceiptRequested = false
             };
-            
+
             var requestId = member.StoreTokenRequestBlocking(storedPayload, storedOptions);
             Assert.NotEmpty(requestId);
 
@@ -97,14 +112,14 @@ namespace Test
             Assert.Equal(storedOptions, retrievedRequest.GetTokenRequestOptions());
         }
 
-        
+
         [Fact]
         public void AddAndGetTokenRequest_NotFound()
         {
             Assert.Throws<AggregateException>(() => tokenClient.RetrieveTokenRequestBlocking("bogus"));
             Assert.Throws<AggregateException>(() => tokenClient.RetrieveTokenRequestBlocking(member.MemberId()));
         }
-        
+
         [Fact]
         public void AddAndGetTokenRequest_WrongMember()
         {

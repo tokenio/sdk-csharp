@@ -24,7 +24,7 @@ namespace Tokenio
 
         public static TokenCluster PERFORMANCE => new TokenCluster("api-grpc.perf.token.io", "web-app.perf.token.io");
 
-        public static TokenCluster DEVELOPMENT => new TokenCluster("api-grpc.dev.token.io", "web-app.dev.token.io");
+        public static TokenCluster DEVELOPMENT => new TokenCluster("api-grpc.sandbox.token.io", "web-app.sandbox.token.io");
 
         public enum TokenEnv
         {
@@ -46,7 +46,7 @@ namespace Tokenio
                 case Staging: return STAGING;
                 case Performance: return PERFORMANCE;
                 case Development: return DEVELOPMENT;
-                default: return DEVELOPMENT;
+                default: return SANDBOX;
             }
         }
     }
