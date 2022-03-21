@@ -100,6 +100,10 @@ namespace Tokenio.Sample.User
                 {
                     Bic = "XUIWC2489",
                     Iban = "DE89 3704 0044 0532 0130 00"
+                },
+                CustomerData = new CustomerData
+                {
+                    LegalNames = { "Southside" }
                 }
             };
             // Set the destination and other details.

@@ -10,3 +10,4 @@ sdk/docs/html/
 .idea/
 .vs/
 .DS_Store
+.vscode/launch.json

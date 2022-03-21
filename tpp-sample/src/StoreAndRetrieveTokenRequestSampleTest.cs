@@ -39,35 +39,5 @@ namespace Tokenio.Sample.Tpp
                 Assert.NotNull(request);
             }
         }
-
-        [Fact]
-        public void StoreTokenRequestAndSetTransferDestinationsTest()
-        {
-            using (Tokenio.Tpp.TokenClient tokenClient = TestUtil.CreateClient())
-            {
-                TppMember payee = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
-                string requestId = StoreAndRetrieveTokenRequestSample
-                    .StoreTransferTokenRequestWithDestinationsCallback(
-                        payee,
-                        setTransferDestinationsUrl);
-                StoreAndRetrieveTokenRequestSample.SetTokenRequestTransferDestinations(
-                    payee,
-                    requestId,
-                    tokenClient,
-                    setTransferDestinationsCallback);
-                TokenRequest request = tokenClient.RetrieveTokenRequestBlocking(requestId);
-                Assert.NotNull(request);
-                Assert.NotEqual(0, request
-                    .GetTokenRequestPayload()
-                    .TransferBody
-                    .Instructions
-                    .TransferDestinations.Count);
-                Assert.True(request
-                                .GetTokenRequestPayload()
-                                .TransferBody
-                                .Instructions
-                                .TransferDestinations[0].FasterPayments != null);
-            }
-        }
     }
 }

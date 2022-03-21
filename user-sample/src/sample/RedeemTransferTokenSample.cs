@@ -40,6 +40,10 @@ namespace Tokenio.Sample.User
                 {
                     MemberId = payee.MemberId(),
                     AccountId = accountId
+                },
+                CustomerData = new CustomerData
+                {
+                    LegalNames = { "Southside" }
                 }
             };
 
