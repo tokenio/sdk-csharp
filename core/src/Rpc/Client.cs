@@ -81,6 +81,19 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
+        /// Looks up member id for a given alias, signed with the caller's own key.
+        /// </summary>
+        /// <param name="alias">the alias to check</param>
+        /// <returns>member id if alias already exists, throws otherwise</returns>
+        public Task<string> GetMemberId(Alias alias)
+        {
+            var request = new ResolveAliasRequest { Alias = alias };
+            return gateway(authenticationContext()).ResolveAliasAsync(request)
+                .ToTask(response => response.Member != null ?
+                response.Member.Id : throw new MemberNotFoundException(alias));
+        }
+
+        /// <summary>
         /// Updates member by applying the specified operations.
         /// </summary>
         /// <param name="operations">the operations to apply</param>
