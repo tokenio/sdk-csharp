@@ -44,15 +44,6 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
-        /// Returns the token member.
-        /// </summary>
-        /// <returns>the member</returns>
-        public Task<ProtoMember> GetTokenMember()
-        {
-            return GetMemberId(TOKEN).FlatMap(GetMember);
-        }
-
-        /// <summary>
         /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
         /// <param name="tokenRequestId">the token request id</param>

@@ -2,9 +2,11 @@
 using System.Linq;
 using Google.Protobuf;
 using Tokenio.Exceptions;
+using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Security;
 using Tokenio.Security.Crypto;
+using static Tokenio.Proto.Common.AliasProtos.Alias.Types.Type;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 namespace Tokenio.Tpp.Utils
@@ -14,6 +16,15 @@ namespace Tokenio.Tpp.Utils
     /// </summary>
     public class Util : Tokenio.Utils.Util
     {
+        /// <summary>
+        /// The token alias.
+        /// </summary>
+        public static readonly Alias TOKEN = new Alias
+        {
+            Type = Domain,
+            Value = "token.io"
+        };
+
         /// <summary>
         /// Gets the query string.
         /// </summary>
