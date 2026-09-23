@@ -575,24 +575,6 @@ namespace Tokenio.Rpc
         }
         
         /// <summary>
-        /// Update an existing token request.
-        /// </summary>
-        /// <param name="requestId">token request ID</param>
-        /// <param name="options">new token request options</param>
-        /// <returns>a task</returns>
-        public Task UpdateTokenRequest(
-            string requestId,
-            Proto.Common.TokenProtos.TokenRequestOptions options)
-        {
-            var request = new UpdateTokenRequestRequest
-            {
-                RequestId = requestId,
-                RequestOptions = options
-            };
-            return gateway(authenticationContext()).UpdateTokenRequestAsync(request).ToTask();
-        }
-
-        /// <summary>
         /// Creates an access token.
         /// </summary>
         /// <param name="payload">the access token payload</param>

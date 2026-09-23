@@ -743,7 +743,7 @@ namespace Tokenio.Tpp
         /// Stores a token request.
         /// </summary>
         /// <param name="requestPayload">the token request payload (immutable fields)</param>
-        /// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
+        /// <param name="requestOptions">the token request options</param>
         /// <returns>an id to reference the token request</returns>
         public Task<string> StoreTokenRequest(
             TokenRequestPayload requestPayload,
@@ -756,7 +756,7 @@ namespace Tokenio.Tpp
         /// Stores a token request.
         /// </summary>
         /// <param name="requestPayload">the token request payload (immutable fields)</param>
-        /// <param name="requestOptions">the token request options (mutable with UpdateTokenRequest)</param>
+        /// <param name="requestOptions">the token request options</param>
         /// <returns>an id to reference the token request</returns>
         public string StoreTokenRequestBlocking(
             TokenRequestPayload requestPayload,

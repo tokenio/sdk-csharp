@@ -416,49 +416,6 @@ namespace Tokenio.User
         }
 
         /// <summary>
-        /// Notifies subscribed devices that a token should be created and endorsed.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request ID to send</param>
-        /// <param name="keys">keys to be added</param>
-        /// <param name="deviceMetadata">device metadata of the keys</param>
-        /// <param name="receiptContact">optional receipt contact to send</param>
-        /// <returns>notify result of the notification request</returns>
-        public Task<NotifyResult> NotifyCreateAndEndorseToken(
-               string tokenRequestId,
-              IList<Key> keys,
-               DeviceMetadata deviceMetadata,
-              ReceiptContact receiptContact)
-        {
-            UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            var addKey = new AddKey
-            {
-                DeviceMetadata = deviceMetadata
-            };
-            addKey.Keys.Add(keys);
-            return unauthenticated.NotifyCreateAndEndorseToken(
-                    tokenRequestId,
-                    addKey,
-                    receiptContact);
-        }
-
-        /// <summary>
-        /// Notifies subscribed devices that a token should be created and endorsed.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request ID to send</param>
-        /// <param name="keys">keys to be added</param>
-        /// <param name="deviceMetadata">device metadata of the keys</param>
-        /// <param name="receiptContact">optional receipt contact to send</param>
-        /// <returns>notify result of the notification request</returns>
-        public NotifyResult NotifyCreateAndEndorseTokenBlocking(
-                string tokenRequestId,
-               IList<Key> keys,
-                DeviceMetadata deviceMetadata,
-               ReceiptContact receiptContact)
-        {
-            return NotifyCreateAndEndorseToken(tokenRequestId, keys, deviceMetadata, receiptContact).Result;
-        }
-
-        /// <summary>
         /// Invalidate a notification.
         /// </summary>
         /// <param name="notificationId">notification id to invalidate</param>
@@ -498,29 +455,6 @@ namespace Tokenio.User
         public Blob GetBlobBlocking(string blobId)
         {
             return GetBlob(blobId).Result;
-        }
-
-        /// <summary>
-        /// Updates an existing token request.
-        /// </summary>
-        /// <param name="requestId">token request ID</param>
-        /// <param name="options">new token request options</param>
-        /// <returns>task</returns>
-        public Task UpdateTokenRequest(string requestId, TokenRequestOptions options)
-        {
-            UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.UpdateTokenRequest(requestId, options);
-        }
-
-        /// <summary>
-        /// Updates an existing token request.
-        /// </summary>
-        /// <param name="requestId">token request ID</param>
-        /// <param name="options">new token request options</param>
-        /// <returns>task</returns>
-        public void UpdateTokenRequestBlocking(string requestId, TokenRequestOptions options)
-        {
-            UpdateTokenRequest(requestId, options).Wait();
         }
 
         public class Builder : Builder<Builder>
