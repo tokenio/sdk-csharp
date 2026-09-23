@@ -5,7 +5,6 @@ using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.TokenProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.TokenRequests;
-using ReceiptContact = Tokenio.Proto.Common.MemberProtos.ReceiptContact;
 
 namespace Tokenio.User.Rpc
 {
@@ -94,35 +93,6 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
-        /// Notifies subscribed devices that a token should be created and endorsed.
-        /// </summary>
-        /// <param name = "tokenRequestId">the token request ID to send</param>
-        /// <param name = "addKey">optional add key payload to send</param>
-        /// <param name = "receiptContact">optional receipt contact to send</param>
-        /// <returns>notify result of the notification request</returns>
-        public Task<NotifyResult> NotifyCreateAndEndorseToken(
-                string tokenRequestId,
-                AddKey addKey,
-                ReceiptContact receiptContact)
-        {
-            var request = new TriggerCreateAndEndorseTokenNotificationRequest
-            {
-                TokenRequestId = tokenRequestId
-            };
-            if (addKey != null)
-            {
-                request.AddKey = addKey;
-            }
-            if (receiptContact != null)
-            {
-                request.Contact = receiptContact;
-            }
-            return gateway.TriggerCreateAndEndorseTokenNotificationAsync(request)
-                     .ToTask(response =>
-                            NotifyResult.Create(response.NotificationId, response.Status));
-        }
-
-        /// <summary>
         /// Invalidate a notification.
         /// </summary>
         /// <param name = "notificationId">notification id to invalidate</param>
@@ -154,21 +124,5 @@ namespace Tokenio.User.Rpc
                             response.Blob);
         }
 
-        /// <summary>
-        /// Updates an existing token request.
-        /// </summary>
-        /// <param name = "requestId">token request ID</param>
-        /// <param name = "options">new token request options</param>
-        /// <returns>token request</returns>
-        public Task UpdateTokenRequest(string requestId, TokenRequestOptions options)
-        {
-            var builder = new UpdateTokenRequestRequest
-            {
-                RequestId = requestId,
-                RequestOptions = options
-            };
-            return gateway
-                    .UpdateTokenRequestAsync(builder).ToTask();
-        }
     }
 }
