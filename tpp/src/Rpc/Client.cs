@@ -183,6 +183,21 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
+        /// Get the token request result based on a token's tokenRequestId, signed with the
+        /// caller's own key.
+        /// </summary>
+        /// <param name="tokenRequestId">the token request id</param>
+        /// <returns>the token request result</returns>
+        public Task<Tokenio.TokenRequests.TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
+        {
+            var request = new GetTokenRequestResultRequest { TokenRequestId = tokenRequestId };
+            return gateway(authenticationContext()).GetTokenRequestResultAsync(request)
+                .ToTask(response => new Tokenio.TokenRequests.TokenRequestResult(
+                    response.TokenId,
+                    response.Signature));
+        }
+
+        /// <summary>
         /// Creates the customization.
         /// </summary>
         /// <returns>The customization.</returns>
