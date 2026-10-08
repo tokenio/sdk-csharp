@@ -198,5 +198,18 @@ namespace Tokenio.Sample.Tpp
 
             payee.SetTokenRequestTransferDestinationsBlocking(requestId, transferDestinations);
         }
+
+        /// <summary>
+        /// Gets the result of a token request, once the user has created a token for it.
+        /// </summary>
+        /// <param name="payee">Payee Token member (the member that stored the token request)</param>
+        /// <param name="requestId">token request id</param>
+        /// <returns>the token request result, with the token id and the user's signature</returns>
+        public static TokenRequestResult GetTokenRequestResult(
+            TppMember payee,
+            string requestId)
+        {
+            return payee.GetTokenRequestResultBlocking(requestId);
+        }
     }
 }
