@@ -6,7 +6,6 @@ using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Gateway;
 using Tokenio.Security;
-using Tokenio.TokenRequests;
 using Tokenio.Utils;
 using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
@@ -41,18 +40,6 @@ namespace Tokenio.Tpp.Rpc
             var request = new GetMemberRequest { MemberId = memberId };
             return gateway.GetMemberAsync(request)
                 .ToTask(response => response.Member);
-        }
-
-        /// <summary>
-        /// Get the token request result based on a token's tokenRequestId.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the token request result</returns>
-        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
-        {
-            var request = new GetTokenRequestResultRequest { TokenRequestId = tokenRequestId };
-            return gateway.GetTokenRequestResultAsync(request)
-                .ToTask(response => new TokenRequestResult(response.TokenId, response.Signature));
         }
 
         /// <summary>
