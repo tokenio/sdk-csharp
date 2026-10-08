@@ -17,7 +17,7 @@ namespace Tokenio.Sample.Tpp
         {
             WebhookConfig config = new WebhookConfig
             {
-                Url = "http://example.token.io/webhook"
+                Url = "https://example.com/webhook"
             };
             config.Type.Add(EventType.TransferStatusChanged);
 
