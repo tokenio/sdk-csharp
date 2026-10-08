@@ -38,7 +38,7 @@ namespace Tokenio.Sample.User
             };
 
 
-            NotifyStatus status = tokenClient.NotifyPaymentRequestBlocking(paymentRequest);
+            NotifyStatus status = payee.NotifyPaymentRequestBlocking(paymentRequest);
             return status;
         }
 
