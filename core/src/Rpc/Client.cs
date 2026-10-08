@@ -26,6 +26,7 @@ using static Tokenio.Proto.Gateway.ReplaceTokenRequest.Types;
 using ProtoAccount = Tokenio.Proto.Common.AccountProtos.Account;
 using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 using TokenAction = Tokenio.Proto.Common.TokenProtos.TokenSignature.Types.Action;
+using Transaction = Tokenio.Proto.Common.TransactionProtos.Transaction;
 
 namespace Tokenio.Rpc
 {
