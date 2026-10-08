@@ -39,7 +39,7 @@ namespace Test
                 CallbackState = Util.Nonce(),
                 TransferBody = new TokenRequestPayload.Types.TransferBody
                 {
-                    Amount = "10.0",
+                    LifetimeAmount = "10.0",
                     Currency = "EUR",
                     Instructions = new TransferInstructions
                     {
@@ -135,7 +135,7 @@ namespace Test
                 CallbackState = Util.Nonce(),
                 TransferBody = new TokenRequestPayload.Types.TransferBody
                 {
-                    Amount = "10.0",
+                    LifetimeAmount = "10.0",
                     Currency = "EUR"
                 }
             };
