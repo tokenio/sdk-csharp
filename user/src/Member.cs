@@ -9,6 +9,7 @@ using log4net;
 using Tokenio.Proto.BankLink;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
+using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
 using Tokenio.Proto.Common.SubmissionProtos;
 using Tokenio.Proto.Common.SubscriberProtos;
@@ -1382,6 +1383,30 @@ namespace Tokenio.User
         public Notification GetNotificationBlocking(string notificationId)
         {
             return GetNotification(notificationId).Result;
+        }
+
+        /// <summary>
+        /// Sends a notification to request a payment.
+        /// </summary>
+        /// <param name="tokenPayload">the payload of a token to be sent</param>
+        /// <returns>status of the notification request</returns>
+        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
+        {
+            if (string.IsNullOrEmpty(tokenPayload.RefId))
+            {
+                tokenPayload.RefId = Tokenio.Utils.Util.Nonce();
+            }
+            return client.NotifyPaymentRequest(tokenPayload);
+        }
+
+        /// <summary>
+        /// Sends a notification to request a payment.
+        /// </summary>
+        /// <param name="tokenPayload">the payload of a token to be sent</param>
+        /// <returns>status of the notification request</returns>
+        public NotifyStatus NotifyPaymentRequestBlocking(TokenPayload tokenPayload)
+        {
+            return NotifyPaymentRequest(tokenPayload).Result;
         }
 
         /// <summary>

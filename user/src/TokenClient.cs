@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tokenio.Proto.Common.AliasProtos;
 using Tokenio.Proto.Common.BlobProtos;
@@ -395,6 +396,7 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="tokenPayload">the payload of a token to be sent</param>
         /// <returns>status of the notification request</returns>
+        [Obsolete("Use Member.NotifyPaymentRequest instead.")]
         public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
         {
             UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
@@ -410,9 +412,12 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="tokenPayload">the payload of a token to be sent</param>
         /// <returns>status of the notification request</returns>
+        [Obsolete("Use Member.NotifyPaymentRequestBlocking instead.")]
         public NotifyStatus NotifyPaymentRequestBlocking(TokenPayload tokenPayload)
         {
+#pragma warning disable CS0618 // delegates to the obsolete async overload
             return NotifyPaymentRequest(tokenPayload).Result;
+#pragma warning restore CS0618
         }
 
         /// <summary>

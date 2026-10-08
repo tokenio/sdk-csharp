@@ -562,6 +562,23 @@ namespace Tokenio.User.Rpc
         }
 
         /// <summary>
+        /// Notifies subscribed devices of payment requests.
+        /// </summary>
+        /// <param name = "tokenPayload">the payload of a token to be sent</param>
+        /// <returns>status of the notification request</returns>
+        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
+        {
+            var request = new RequestTransferRequest
+            {
+                TokenPayload = tokenPayload
+            };
+            return gateway(authenticationContext())
+                    .RequestTransferAsync(request)
+                    .ToTask(response =>
+                            response.Status);
+        }
+
+        /// <summary>
         /// Removes a subscriber, to stop receiving notifications.
         /// </summary>
         /// <param name = "subscriberId">id of the subscriber</param>
