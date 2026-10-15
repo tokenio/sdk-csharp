@@ -378,27 +378,6 @@ namespace Tokenio.Tpp
             return TokenRequestTransferDestinationsCallbackParameters.Create(parameters);
         }
 
-        /// <summary>
-        /// Get the token request result based on a token's tokenRequestId.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the token request result</returns>
-        public Task<TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetTokenRequestResult(tokenRequestId);
-        }
-
-        /// <summary>
-        /// Get the token request result based on a token's tokenRequestId.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>the token request result</returns>
-        public TokenRequestResult GetTokenRequestResultBlocking(string tokenRequestId)
-        {
-            return GetTokenRequestResult(tokenRequestId).Result;
-        }
-
         public class Builder : Builder<Builder>
         {
             /// <inheritdoc />

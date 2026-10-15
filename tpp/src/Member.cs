@@ -66,6 +66,26 @@ namespace Tokenio.Tpp
 
 
         /// <summary>
+        /// Get the token request result based on a token's tokenRequestId.
+        /// </summary>
+        /// <param name="tokenRequestId">the token request id</param>
+        /// <returns>the token request result</returns>
+        public Task<Tokenio.TokenRequests.TokenRequestResult> GetTokenRequestResult(string tokenRequestId)
+        {
+            return client.GetTokenRequestResult(tokenRequestId);
+        }
+
+        /// <summary>
+        /// Get the token request result based on a token's tokenRequestId.
+        /// </summary>
+        /// <param name="tokenRequestId">the token request id</param>
+        /// <returns>the token request result</returns>
+        public Tokenio.TokenRequests.TokenRequestResult GetTokenRequestResultBlocking(string tokenRequestId)
+        {
+            return GetTokenRequestResult(tokenRequestId).Result;
+        }
+
+        /// <summary>
         /// Parse the token request callback URL to extract the state and the token ID. Verify that the
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
         /// valid.
