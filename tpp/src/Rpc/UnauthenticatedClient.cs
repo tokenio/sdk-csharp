@@ -1,14 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Tokenio.Proto.Common.EidasProtos;
-using Tokenio.Proto.Common.MemberProtos;
-using Tokenio.Proto.Common.SecurityProtos;
+﻿using System.Threading.Tasks;
 using Tokenio.Proto.Gateway;
-using Tokenio.Security;
 using Tokenio.Utils;
-using static Tokenio.Proto.Common.SecurityProtos.Key.Types;
-using ProtoMember = Tokenio.Proto.Common.MemberProtos.Member;
 
 
 namespace Tokenio.Tpp.Rpc
@@ -27,19 +19,6 @@ namespace Tokenio.Tpp.Rpc
         public UnauthenticatedClient(GatewayService.GatewayServiceClient gateway)
             : base(gateway)
         {
-        }
-
-        /// <summary>
-        /// Looks up member id for a given member ID. The user is defined by
-        /// the key used for authentication.
-        /// </summary>
-        /// <param name="memberId">the member ID to check</param>
-        /// <returns>the member</returns>
-        public Task<ProtoMember> GetMember(string memberId)
-        {
-            var request = new GetMemberRequest { MemberId = memberId };
-            return gateway.GetMemberAsync(request)
-                .ToTask(response => response.Member);
         }
 
         /// <summary>
