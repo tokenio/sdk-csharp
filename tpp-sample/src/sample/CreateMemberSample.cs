@@ -40,11 +40,7 @@ namespace Tokenio.Sample.Tpp
                     Type = Alias.Types.Type.Email
                 };
 
-                TppMember newMember = tokenClient.CreateMemberBlocking(alias);
-                // let user recover member by verifying email if they lose keys
-                newMember.UseDefaultRecoveryRule();
-
-                return newMember;
+                return tokenClient.CreateMemberBlocking(alias);
             }
             catch (IOException ioe)
             {
