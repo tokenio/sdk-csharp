@@ -34,10 +34,14 @@ To run the tests:
 
 ## Using the SDK
 
-To use the SDK, add the [Nuget](https://www.nuget.org/packages/Token.SDK.Net/) package as a dependency to your project file:
+To use the SDK, add the [Nuget](https://www.nuget.org/packages/Token.SDK.TPP/) package for TPPs
+(or [Token.SDK.User](https://www.nuget.org/packages/Token.SDK.User/) for user-side integrations)
+as a dependency to your project file:
 
 <div class="codediv"><pre>
 &lt;ItemGroup>
-    &lt;PackageReference Include="Token.SDK.Net" Version="2.0.0-beta2" />
+    &lt;PackageReference Include="Token.SDK.TPP" Version="1.0.9" />
 &lt;/ItemGroup>
 </pre></div>
+
+`Token.SDK.Net` is deprecated and no longer maintained. Migrate to `Token.SDK.TPP` or `Token.SDK.User`.
