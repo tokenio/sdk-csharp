@@ -128,23 +128,6 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
-        /// Set Token as the recovery agent.
-        /// </summary>
-        /// <returns>a task</returns>
-        public Task UseDefaultRecoveryRule()
-        {
-            return gateway(authenticationContext()).GetDefaultAgentAsync(new GetDefaultAgentRequest())
-                .ToTask(response => new MemberOperation
-                {
-                    RecoveryRules = new MemberRecoveryRulesOperation
-                    {
-                        RecoveryRule = new RecoveryRule { PrimaryAgent = response.MemberId }
-                    }
-                })
-                .FlatMap(opration => UpdateMember(new List<MemberOperation> { opration }));
-        }
-
-        /// <summary>
         /// Signs a token payload.
         /// </summary>
         /// <param name="payload"></param>
@@ -493,33 +476,6 @@ namespace Tokenio.Rpc
             };
             return gateway(authenticationContext()).RetryVerificationAsync(request)
                 .ToTask(response => response.VerificationId);
-        }
-
-        /// <summary>
-        /// Authorizes recovery as a trusted agent.
-        /// </summary>
-        /// <param name="authorization">the authorization</param>
-        /// <returns>the signature</returns>
-        public Task<Signature> AuthorizeRecovery(Authorization authorization)
-        {
-            var signer = cryptoEngine.CreateSigner(Level.Standard);
-            return Task.FromResult(new Signature
-            {
-                MemberId = MemberId,
-                KeyId = signer.GetKeyId(),
-                Signature_ = signer.Sign(authorization)
-            });
-        }
-
-        /// <summary>
-        /// Gets the member id of the default recovery agent.
-        /// </summary>
-        /// <returns>the member id</returns>
-        public Task<string> GetDefaultAgent()
-        {
-            return gateway(authenticationContext())
-                .GetDefaultAgentAsync(new GetDefaultAgentRequest())
-                .ToTask(response => response.MemberId);
         }
 
         /// <summary>

@@ -205,117 +205,6 @@ namespace Tokenio.Tpp
 
 
         /// <summary>
-        /// Completes the recovery.
-        /// </summary>
-        /// <returns>The recovery.</returns>
-        /// <param name="memberId">Member identifier.</param>
-        /// <param name="recoveryOperations">Recovery operations.</param>
-        /// <param name="privilegedKey">the privileged public key in the member recovery operations</param>
-        /// <param name="cryptoEngine">Crypto engine.</param>
-        public Task<Member> CompleteRecovery(
-                           string memberId,
-                           IList<MemberRecoveryOperation> recoveryOperations,
-                           Key privilegedKey,
-                           ICryptoEngine cryptoEngine)
-        {
-            return CompleteRecoveryImpl(memberId, recoveryOperations, privilegedKey, cryptoEngine)
-                .Map(member =>
-                {
-                    var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
-                    return new Member(member.MemberId(), client,
-                        tokenCluster, member.PartnerId(), member.RealmId());
-                });
-        }
-
-        /// <summary>
-        /// Completes the recovery blocking.
-        /// </summary>
-        /// <returns>The recovery blocking.</returns>
-        /// <param name="memberId">Member identifier.</param>
-        /// <param name="recoveryOperations">the member Recovery operations.</param>
-        /// <param name="privilegedKey">the privileged public key in the member recovery operations</param>
-        /// <param name="cryptoEngine">New Crypto engine.</param>
-        public Member CompleteRecoveryBlocking(
-        string memberId,
-        IList<MemberRecoveryOperation> recoveryOperations,
-        Key privilegedKey,
-        ICryptoEngine cryptoEngine)
-        {
-            return CompleteRecovery(memberId, recoveryOperations, privilegedKey, cryptoEngine).Result;
-        }
-
-        /// <summary>
-        /// Completes account recovery if the default recovery rule was set.
-        /// </summary>
-        /// <param name="memberId">the member id</param>
-        /// <param name="verificationId">the verification id</param>
-        /// <param name="code">the code</param>
-        /// <returns>the new member</returns>
-        public Task<Member> CompleteRecoveryWithDefaultRule(
-                 string memberId,
-                string verificationId,
-                string code,
-                ICryptoEngine cryptoEngine)
-        {
-
-            return CompleteRecoveryWithDefaultRuleImpl(memberId, verificationId, code, cryptoEngine)
-                .Map(member =>
-                {
-                    var client = ClientFactory.Authenticated(channel, member.MemberId(), cryptoEngine);
-                    return new Member(member.MemberId(), client,
-                        tokenCluster, member.PartnerId(), member.RealmId());
-                });
-        }
-
-        /// <summary>
-        /// Completes the recovery with default rule blocking.
-        /// </summary>
-        /// <returns>The recovery with default rule blocking.</returns>
-        /// <param name="memberId">Member identifier.</param>
-        /// <param name="verificationId">Verification identifier.</param>
-        /// <param name="code">Code.</param>
-        public Member CompleteRecoveryWithDefaultRuleBlocking(
-                string memberId,
-                string verificationId,
-                string code,
-                ICryptoEngine cryptoEngine)
-        {
-            return CompleteRecoveryWithDefaultRule(memberId, verificationId, code, cryptoEngine).Result;
-        }
-
-        /// <summary>
-        /// Recovers an eIDAS-verified member with eIDAS payload.
-        /// 
-        /// </summary>
-        /// <param name="payload">a payload containing member id, the certificate and a new key to add to the member</param>
-        /// <param name="signature">a payload signature with the private key corresponding to the certificate</param>
-        /// <param name="cryptoEngine">a crypto engine that must contain the privileged key that is included in
-        ///     the payload(if it does not contain keys for other levels they will be generated)</param>
-        /// <returns>a Task of a new member</returns>
-        public Task<Member> RecoverEidasMember(
-            EidasRecoveryPayload payload,
-            string signature,
-            ICryptoEngine cryptoEngine)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.RecoverEidasMember(payload,
-                signature,
-                cryptoEngine)
-                .Map(member =>
-                {
-                    var client = ClientFactory.Authenticated(channel,
-                        member.Id,
-                        cryptoEngine);
-                    return new Member(
-                        member.Id,
-                        client,
-                        tokenCluster,
-                        member.PartnerId,
-                        member.RealmId);
-                });
-        }
-
-        /// <summary>
         /// Generates a Token request URL from a request ID, an original state and a CSRF token.
         /// </summary>
         /// <param name="requestId">the request id</param>
@@ -356,15 +245,17 @@ namespace Tokenio.Tpp
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
         /// valid.
         /// </summary>
+        /// <param name="memberId">the id of the member used to authenticate the lookup of the Token member</param>
         /// <param name="callbackUrl">the token request callback url</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public Task<TokenRequestCallback> ParseTokenRequestCallbackUrl(
+            string memberId,
             string callbackUrl,
             string csrfToken = "")
         {
             var parameters = HttpUtility.ParseQueryString(Util.GetQueryString(callbackUrl));
-            return ParseTokenRequestCallbackParams(parameters, csrfToken);
+            return ParseTokenRequestCallbackParams(memberId, parameters, csrfToken);
         }
 
         /// <summary>
@@ -372,14 +263,16 @@ namespace Tokenio.Tpp
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
         /// valid.
         /// </summary>
+        /// <param name="memberId">the id of the member used to authenticate the lookup of the Token member</param>
         /// <param name="callbackUrl">the token request callback url</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public TokenRequestCallback ParseTokenRequestCallbackUrlBlocking(
+            string memberId,
             string callbackUrl,
             string csrfToken = "")
         {
-            return ParseTokenRequestCallbackUrl(callbackUrl, csrfToken).Result;
+            return ParseTokenRequestCallbackUrl(memberId, callbackUrl, csrfToken).Result;
         }
 
         /// <summary>
@@ -387,15 +280,17 @@ namespace Tokenio.Tpp
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
         /// valid.
         /// </summary>
+        /// <param name="memberId">the id of the member used to authenticate the lookup of the Token member</param>
         /// <param name="callbackParams">the token request callback parameters</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public Task<TokenRequestCallback> ParseTokenRequestCallbackParams(
+            string memberId,
             NameValueCollection callbackParams,
             string csrfToken)
         {
             var parameters = callbackParams.AllKeys.ToDictionary(param => param, param => callbackParams[param]);
-            return ParseTokenRequestCallbackParams(parameters, csrfToken);
+            return ParseTokenRequestCallbackParams(memberId, parameters, csrfToken);
         }
 
         /// <summary>
@@ -403,14 +298,16 @@ namespace Tokenio.Tpp
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
         /// valid.
         /// </summary>
+        /// <param name="memberId">the id of the member used to authenticate the lookup of the Token member</param>
         /// <param name="callbackParams">the token request callback parameters</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public TokenRequestCallback ParseTokenRequestCallbackParamsBlocking(
+            string memberId,
             NameValueCollection callbackParams,
             string csrfToken)
         {
-            return ParseTokenRequestCallbackParams(callbackParams, csrfToken).Result;
+            return ParseTokenRequestCallbackParams(memberId, callbackParams, csrfToken).Result;
         }
 
         /// <summary>
@@ -418,15 +315,22 @@ namespace Tokenio.Tpp
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
         /// valid.
         /// </summary>
+        /// <param name="memberId">the id of the member used to authenticate the lookup of the Token member</param>
         /// <param name="callbackParams">the token request callback parameters</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public Task<TokenRequestCallback> ParseTokenRequestCallbackParams(
+            string memberId,
             IDictionary<string, string> callbackParams,
             string csrfToken)
         {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetTokenMember()
+            var client = ClientFactory.Authenticated(
+                channel,
+                memberId,
+                cryptoEngineFactory.Create(memberId));
+            return ClientFactory.Unauthenticated(channel)
+                .GetDefaultAgent() // the id of the Token member
+                .FlatMap(client.GetMember)
                 .Map(member =>
                 {
                     var parameters = TokenRequestCallbackParameters.Create(callbackParams);
@@ -453,14 +357,16 @@ namespace Tokenio.Tpp
         /// state contains the CSRF token hash and that the signature on the state and CSRF token is
         /// valid.
         /// </summary>
+        /// <param name="memberId">the id of the member used to authenticate the lookup of the Token member</param>
         /// <param name="callbackParams">the token request callback parameters</param>
         /// <param name="csrfToken">the csrf token</param>
         /// <returns>an instance of <see cref="TokenRequestCallback"/></returns>
         public TokenRequestCallback ParseTokenRequestCallbackParamsBlocking(
+            string memberId,
             IDictionary<string, string> callbackParams,
             string csrfToken)
         {
-            return ParseTokenRequestCallbackParams(callbackParams, csrfToken).Result;
+            return ParseTokenRequestCallbackParams(memberId, callbackParams, csrfToken).Result;
         }
 
         /// <summary>
