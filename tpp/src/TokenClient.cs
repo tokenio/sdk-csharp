@@ -178,31 +178,6 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
-        /// Returns a token request for a specified token request id.
-        /// </summary>
-        /// <param name="requestId">the request id</param>
-        /// <returns>the token request</returns>
-        public Task<TokenRequest> RetrieveTokenRequest(string requestId)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.RetrieveTokenRequest(requestId)
-                .Map(tokenRequest => TokenRequest.FromProtos(
-                    tokenRequest.RequestPayload,
-                    tokenRequest.RequestOptions));
-        }
-
-        /// <summary>
-        /// Returns a token request for a specified token request id.
-        /// </summary>
-        /// <param name="requestId">the request id</param>
-        /// <returns>the token request</returns>
-        public TokenRequest RetrieveTokenRequestBlocking(string requestId)
-        {
-            return RetrieveTokenRequest(requestId).Result;
-        }
-
-
-        /// <summary>
         /// Generates a Token request URL from a request ID, an original state and a CSRF token.
         /// </summary>
         /// <param name="requestId">the request id</param>

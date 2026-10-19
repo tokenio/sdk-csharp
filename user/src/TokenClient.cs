@@ -198,31 +198,6 @@ namespace Tokenio.User
         }
 
         /// <summary>
-        /// Return a TokenRequest that was previously stored.
-        /// </summary>
-        /// <param name="requestId">request id</param>
-        /// <returns>token request that was stored with the request id</returns>
-        public Task<TokenRequest> RetrieveTokenRequest(string requestId)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.RetrieveTokenRequest(requestId)
-                    .Map(tokenRequest =>
-                            TokenRequest.FromProtos(
-                                    tokenRequest.RequestPayload,
-                                    tokenRequest.RequestOptions));
-        }
-
-        /// <summary>
-        /// Return a TokenRequest that was previously stored.
-        /// </summary>
-        /// <param name="requestId">request id</param>
-        /// <returns>token request that was stored with the request id</returns>
-        public TokenRequest RetrieveTokenRequestBlocking(string requestId)
-        {
-            return RetrieveTokenRequest(requestId).Result;
-        }
-
-        /// <summary>
         /// Get the token request result based on a token's tokenRequestId.
         /// </summary>
         /// <param name="tokenRequestId">token request id</param>
@@ -279,68 +254,6 @@ namespace Tokenio.User
         }
 
         /// <summary>
-        /// Notifies to add a key.
-        /// </summary>
-        /// <param name="alias">alias alias to notify</param>
-        /// <param name="keys">keys that need approval</param>
-        /// <param name="deviceMetadata">device metadata of the keys</param>
-        /// <returns>status of the notification</returns>
-        public Task<NotifyStatus> NotifyAddKey(Alias alias, IList<Key> keys, DeviceMetadata deviceMetadata)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            var addKey = new AddKey
-            {
-                DeviceMetadata = deviceMetadata
-            };
-            addKey.Keys.Add(keys);
-            return unauthenticated.NotifyAddKey(alias, addKey);
-        }
-
-        /// <summary>
-        /// Notifies to add a key.
-        /// </summary>
-        /// <param name="alias">alias alias to notify</param>
-        /// <param name="keys">keys that need approval</param>
-        /// <param name="deviceMetadata">device metadata of the keys</param>
-        /// <returns>status of the notification</returns>
-        public NotifyStatus NotifyAddKeyBlocking(
-                Alias alias,
-                IList<Key> keys,
-                DeviceMetadata deviceMetadata)
-        {
-            return NotifyAddKey(alias, keys, deviceMetadata).Result;
-        }
-
-        /// <summary>
-        /// Sends a notification to request a payment.
-        /// </summary>
-        /// <param name="tokenPayload">the payload of a token to be sent</param>
-        /// <returns>status of the notification request</returns>
-        [Obsolete("Use Member.NotifyPaymentRequest instead.")]
-        public Task<NotifyStatus> NotifyPaymentRequest(TokenPayload tokenPayload)
-        {
-            UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            if (tokenPayload.RefId.Length == 0)
-            {
-                tokenPayload.RefId = Util.Nonce();
-            }
-            return unauthenticated.NotifyPaymentRequest(tokenPayload);
-        }
-
-        /// <summary>
-        /// Sends a notification to request a payment.
-        /// </summary>
-        /// <param name="tokenPayload">the payload of a token to be sent</param>
-        /// <returns>status of the notification request</returns>
-        [Obsolete("Use Member.NotifyPaymentRequestBlocking instead.")]
-        public NotifyStatus NotifyPaymentRequestBlocking(TokenPayload tokenPayload)
-        {
-#pragma warning disable CS0618 // delegates to the obsolete async overload
-            return NotifyPaymentRequest(tokenPayload).Result;
-#pragma warning restore CS0618
-        }
-
-        /// <summary>
         /// Invalidate a notification.
         /// </summary>
         /// <param name="notificationId">notification id to invalidate</param>
@@ -359,27 +272,6 @@ namespace Tokenio.User
         public NotifyStatus InvalidateNotificationBlocking(string notificationId)
         {
             return InvalidateNotification(notificationId).Result;
-        }
-
-        /// <summary>
-        /// Retrieves a blob from the server.
-        /// </summary>
-        /// <param name="blobId">id of the blob</param>
-        /// <returns>Blob</returns>
-        public Task<Blob> GetBlob(string blobId)
-        {
-            UnauthenticatedClient unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetBlob(blobId);
-        }
-
-        /// <summary>
-        /// Retrieves a blob from the server.
-        /// </summary>
-        /// <param name="blobId">id of the blob</param>
-        /// <returns>Blob</returns>
-        public Blob GetBlobBlocking(string blobId)
-        {
-            return GetBlob(blobId).Result;
         }
 
         public class Builder : Builder<Builder>

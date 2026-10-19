@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Tokenio.Proto.Gateway;
-using Tokenio.Utils;
-
+﻿using Tokenio.Proto.Gateway;
 
 namespace Tokenio.Tpp.Rpc
 {
@@ -20,18 +17,5 @@ namespace Tokenio.Tpp.Rpc
             : base(gateway)
         {
         }
-
-        /// <summary>
-        /// Retrieves a transfer token request.
-        /// </summary>
-        /// <param name="tokenRequestId">the token request id</param>
-        /// <returns>token request that was stored with the request id</returns>
-        public Task<Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId)
-        {
-            var request = new RetrieveTokenRequestRequest { RequestId = tokenRequestId };
-            return gateway.RetrieveTokenRequestAsync(request)
-                .ToTask(response => response.TokenRequest);
-        }
-
     }
 }

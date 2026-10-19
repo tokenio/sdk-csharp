@@ -127,14 +127,14 @@ namespace Tokenio.Sample.Tpp
         /// <summary>
         /// Retrieves a token request.
         /// </summary>
-        /// <param name="tokenClient">tokenIO instance to use</param>
+        /// <param name="member">Token member to retrieve the request as</param>
         /// <param name="requestId">id of request to retrieve</param>
         /// <returns>token request that was stored with the request id</returns>
         public static TokenRequest RetrieveTokenRequest(
-            Tokenio.Tpp.TokenClient tokenClient,
+            TppMember member,
             string requestId)
         {
-            return tokenClient.RetrieveTokenRequestBlocking(requestId);
+            return member.RetrieveTokenRequestBlocking(requestId);
         }
 
         /**
