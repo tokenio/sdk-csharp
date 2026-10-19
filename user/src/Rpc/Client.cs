@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Tokenio.Exceptions;
 using Tokenio.Proto.BankLink;
+using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.NotificationProtos;
 using Tokenio.Proto.Common.SecurityProtos;
@@ -576,6 +578,62 @@ namespace Tokenio.User.Rpc
                     .RequestTransferAsync(request)
                     .ToTask(response =>
                             response.Status);
+        }
+
+        /// <summary>
+        /// Notifies subscribed devices that a key should be added.
+        /// </summary>
+        /// <param name = "alias">alias of the member</param>
+        /// <param name = "addKey">the add key payload to be sent</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyAddKey(Alias alias, AddKey addKey)
+        {
+            var request = new NotifyRequest
+            {
+                Alias = alias,
+                Body = new NotifyBody
+                {
+                    AddKey = addKey
+                }
+            };
+            return gateway(authenticationContext())
+                    .NotifyAsync(request)
+                    .ToTask(response =>
+                            response.Status);
+        }
+
+        /// <summary>
+        /// Retrieves a blob from the server.
+        /// </summary>
+        /// <param name = "blobId">id of the blob</param>
+        /// <returns>blob</returns>
+        public Task<Blob> GetBlob(string blobId)
+        {
+            var request = new GetBlobRequest
+            {
+                BlobId = blobId
+            };
+            return gateway(authenticationContext())
+                    .GetBlobAsync(request)
+                    .ToTask(response =>
+                            response.Blob);
+        }
+
+        /// <summary>
+        /// Retrieves a transfer token request.
+        /// </summary>
+        /// <param name = "tokenRequestId">token request id</param>
+        /// <returns>token request that was stored with the request id</returns>
+        public Task<Tokenio.Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId)
+        {
+            var request = new RetrieveTokenRequestRequest
+            {
+                RequestId = tokenRequestId
+            };
+            return gateway(authenticationContext())
+                    .RetrieveTokenRequestAsync(request)
+                    .ToTask(response =>
+                            response.TokenRequest);
         }
 
         /// <summary>

@@ -7,6 +7,8 @@ using Google.Protobuf;
 using Google.Protobuf.Collections;
 using log4net;
 using Tokenio.Proto.BankLink;
+using Tokenio.Proto.Common.AliasProtos;
+using Tokenio.Proto.Common.BlobProtos;
 using Tokenio.Proto.Common.MemberProtos;
 using Tokenio.Proto.Common.MoneyProtos;
 using Tokenio.Proto.Common.NotificationProtos;
@@ -1407,6 +1409,85 @@ namespace Tokenio.User
         public NotifyStatus NotifyPaymentRequestBlocking(TokenPayload tokenPayload)
         {
             return NotifyPaymentRequest(tokenPayload).Result;
+        }
+
+        /// <summary>
+        /// Notifies to add a key.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="keys">keys that need approval</param>
+        /// <param name="deviceMetadata">device metadata of the keys</param>
+        /// <returns>status of the notification</returns>
+        public Task<NotifyStatus> NotifyAddKey(
+                Alias alias,
+                IList<Key> keys,
+                DeviceMetadata deviceMetadata)
+        {
+            var addKey = new AddKey
+            {
+                DeviceMetadata = deviceMetadata
+            };
+            addKey.Keys.Add(keys);
+            return client.NotifyAddKey(alias, addKey);
+        }
+
+        /// <summary>
+        /// Notifies to add a key.
+        /// </summary>
+        /// <param name="alias">alias to notify</param>
+        /// <param name="keys">keys that need approval</param>
+        /// <param name="deviceMetadata">device metadata of the keys</param>
+        /// <returns>status of the notification</returns>
+        public NotifyStatus NotifyAddKeyBlocking(
+                Alias alias,
+                IList<Key> keys,
+                DeviceMetadata deviceMetadata)
+        {
+            return NotifyAddKey(alias, keys, deviceMetadata).Result;
+        }
+
+        /// <summary>
+        /// Retrieves a blob from the server.
+        /// </summary>
+        /// <param name="blobId">id of the blob</param>
+        /// <returns>blob</returns>
+        public Task<Blob> GetBlob(string blobId)
+        {
+            return client.GetBlob(blobId);
+        }
+
+        /// <summary>
+        /// Retrieves a blob from the server.
+        /// </summary>
+        /// <param name="blobId">id of the blob</param>
+        /// <returns>blob</returns>
+        public Blob GetBlobBlocking(string blobId)
+        {
+            return GetBlob(blobId).Result;
+        }
+
+        /// <summary>
+        /// Return a TokenRequest that was previously stored.
+        /// </summary>
+        /// <param name="requestId">request id</param>
+        /// <returns>token request that was stored with the request id</returns>
+        public Task<Tokenio.TokenRequests.TokenRequest> RetrieveTokenRequest(string requestId)
+        {
+            return client.RetrieveTokenRequest(requestId)
+                    .Map(tokenRequest =>
+                            Tokenio.TokenRequests.TokenRequest.FromProtos(
+                                    tokenRequest.RequestPayload,
+                                    tokenRequest.RequestOptions));
+        }
+
+        /// <summary>
+        /// Return a TokenRequest that was previously stored.
+        /// </summary>
+        /// <param name="requestId">request id</param>
+        /// <returns>token request that was stored with the request id</returns>
+        public Tokenio.TokenRequests.TokenRequest RetrieveTokenRequestBlocking(string requestId)
+        {
+            return RetrieveTokenRequest(requestId).Result;
         }
 
         /// <summary>

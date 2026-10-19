@@ -17,7 +17,7 @@ namespace Tokenio.Sample.User
                 remoteMember.SubscribeToNotifications("iron");
 
                 Tokenio.User.TokenClient localDeviceClient = TestUtil.CreateClient();
-                Key key = ProvisionDeviceSample.ProvisionDevice(localDeviceClient, alias);
+                Key key = ProvisionDeviceSample.ProvisionDevice(localDeviceClient, remoteMember, alias);
                 remoteMember.ApproveKeyBlocking(key);
 
                 UserMember local = ProvisionDeviceSample.UseProvisionedDevice(localDeviceClient, alias);

@@ -14,9 +14,13 @@ namespace Tokenio.Sample.User
         /// Illustrate provisioning a new device for an already-existing member.
         /// </summary>
         /// <param name="tokenClient">SDK client</param>
+        /// <param name="member">member to sign the add key notification as</param>
         /// <param name="alias">member's alias</param>
         /// <returns>key which we hope member will approve</returns>
-        public static Key ProvisionDevice(Tokenio.User.TokenClient tokenClient, Alias alias)
+        public static Key ProvisionDevice(
+            Tokenio.User.TokenClient tokenClient,
+            UserMember member,
+            Alias alias)
         {
             // generate keys, storing (private and public) locally
             DeviceInfo deviceInfo = tokenClient.ProvisionDeviceBlocking(alias);
@@ -24,7 +28,7 @@ namespace Tokenio.Sample.User
 
 
             // ask user (on "regular" device) to approve one of our keys
-            NotifyStatus status = tokenClient.NotifyAddKeyBlocking(
+            NotifyStatus status = member.NotifyAddKeyBlocking(
                     alias,
                     (new[] { lowKey }).ToImmutableList(),
                     new DeviceMetadata { Application = "SDK Sample" }

@@ -79,6 +79,18 @@ namespace Tokenio.Tpp.Rpc
         }
 
         /// <summary>
+        /// Retrieves a transfer token request.
+        /// </summary>
+        /// <param name="tokenRequestId">the token request id</param>
+        /// <returns>token request that was stored with the request id</returns>
+        public Task<Tokenio.Proto.Common.TokenProtos.TokenRequest> RetrieveTokenRequest(string tokenRequestId)
+        {
+            var request = new RetrieveTokenRequestRequest { RequestId = tokenRequestId };
+            return gateway(authenticationContext()).RetrieveTokenRequestAsync(request)
+                .ToTask(response => response.TokenRequest);
+        }
+
+        /// <summary>
         /// Creates a new instance with On-Behalf-Of authentication set.
         /// </summary>
         /// <param name="tokenId">access token ID to be used</param>

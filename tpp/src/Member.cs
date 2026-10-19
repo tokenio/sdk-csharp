@@ -312,6 +312,29 @@ namespace Tokenio.Tpp
         }
 
         /// <summary>
+        /// Returns a token request for a specified token request id.
+        /// </summary>
+        /// <param name="requestId">the request id</param>
+        /// <returns>the token request</returns>
+        public Task<TokenRequest> RetrieveTokenRequest(string requestId)
+        {
+            return client.RetrieveTokenRequest(requestId)
+                .Map(tokenRequest => TokenRequest.FromProtos(
+                    tokenRequest.RequestPayload,
+                    tokenRequest.RequestOptions));
+        }
+
+        /// <summary>
+        /// Returns a token request for a specified token request id.
+        /// </summary>
+        /// <param name="requestId">the request id</param>
+        /// <returns>the token request</returns>
+        public TokenRequest RetrieveTokenRequestBlocking(string requestId)
+        {
+            return RetrieveTokenRequest(requestId).Result;
+        }
+
+        /// <summary>
         /// Creates a {@link Representable} that acts as another member using the access token
         /// that was granted by that member.
         /// </summary>

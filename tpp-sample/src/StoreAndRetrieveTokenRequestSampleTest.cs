@@ -30,7 +30,7 @@ namespace Tokenio.Sample.Tpp
             {
                 TppMember payee = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string requestId = StoreAndRetrieveTokenRequestSample.StoreTransferTokenRequest(payee);
-                TokenRequest request = tokenClient.RetrieveTokenRequestBlocking(requestId);
+                TokenRequest request = StoreAndRetrieveTokenRequestSample.RetrieveTokenRequest(payee, requestId);
                 Assert.NotNull(request);
             }
         }
@@ -44,7 +44,7 @@ namespace Tokenio.Sample.Tpp
                 string requestId = StoreAndRetrieveTokenRequestSample.StoreTransferTokenRequest(payee);
 
                 UserMember payer = TestUtil.CreateUserMember();
-                TokenRequest request = tokenClient.RetrieveTokenRequestBlocking(requestId);
+                TokenRequest request = payee.RetrieveTokenRequestBlocking(requestId);
                 var storedRequest = new Tokenio.Proto.Common.TokenProtos.TokenRequest
                 {
                     Id = requestId,
@@ -77,7 +77,7 @@ namespace Tokenio.Sample.Tpp
             {
                 TppMember grantee = tokenClient.CreateMemberBlocking(TestUtil.RandomAlias());
                 string requestId = StoreAndRetrieveTokenRequestSample.StoreTransferTokenRequest(grantee);
-                TokenRequest request = tokenClient.RetrieveTokenRequestBlocking(requestId);
+                TokenRequest request = grantee.RetrieveTokenRequestBlocking(requestId);
                 Assert.NotNull(request);
             }
         }
