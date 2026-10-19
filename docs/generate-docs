@@ -7,8 +7,6 @@ elif [ "$1" == "user" ]; then
     rm -rf "../user/docs"
 elif [ "$1" == "tpp" ]; then
     rm -rf "../tpp/docs"
-elif [ "$1" == "sdk" ]; then
-    rm -rf "../sdk/docs"
 fi
 
 # rm -rf html
@@ -26,10 +24,6 @@ elif [ "$1" == "tpp" ]; then
     echo "INPUT = ../tpp/src /n  ../../README.md" >> Doxyfile
     echo "PROJECT_NAME = \".Net Tpp\" " >> Doxyfile
     echo "OUTPUT_DIRECTORY  = ../tpp/docs" >> Doxyfile
-elif [ "$1" == "sdk" ]; then
-    echo "INPUT = ../sdk/src /n  ../../README.md" >> Doxyfile
-    echo "PROJECT_NAME = \".Net SDK\" " >> Doxyfile
-    echo "OUTPUT_DIRECTORY  = ../sdk/docs" >> Doxyfile
 fi
 
 doxygen Doxyfile
@@ -43,7 +37,5 @@ elif [ "$1" == "user" ]; then
     python refactor_docs.py "../user/docs"
 elif [ "$1" == "tpp" ]; then
     python refactor_docs.py "../tpp/docs"
-elif [ "$1" == "sdk" ]; then
-    python refactor_docs.py "../sdk/docs"
 fi
 #python refactor_docs.py

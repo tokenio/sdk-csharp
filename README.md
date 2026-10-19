@@ -18,11 +18,7 @@ Install `Mono` from [here](https://www.mono-project.com/download/stable/).
 
 ### On OSX
 
-Make sure you have `ruby` and `dotnet-sdk` installed.
-
-Build the protobuf classes if you haven't:
-
-    ruby build_proto.rb
+Make sure you have `dotnet-sdk` installed.
 
 To build the solution:
 
@@ -40,7 +36,7 @@ as a dependency to your project file:
 
 <div class="codediv"><pre>
 &lt;ItemGroup>
-    &lt;PackageReference Include="Token.SDK.TPP" Version="1.0.9" />
+    &lt;PackageReference Include="Token.SDK.TPP" Version="&lt;current version>" />
 &lt;/ItemGroup>
 </pre></div>
 
