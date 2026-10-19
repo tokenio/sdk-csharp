@@ -18,11 +18,7 @@ Install `Mono` from [here](https://www.mono-project.com/download/stable/).
 
 ### On OSX
 
-Make sure you have `ruby` and `dotnet-sdk` installed.
-
-Build the protobuf classes if you haven't:
-
-    ruby build_proto.rb
+Make sure you have `dotnet-sdk` installed.
 
 To build the solution:
 
@@ -34,10 +30,14 @@ To run the tests:
 
 ## Using the SDK
 
-To use the SDK, add the [Nuget](https://www.nuget.org/packages/Token.SDK.Net/) package as a dependency to your project file:
+To use the SDK, add the [Nuget](https://www.nuget.org/packages/Token.SDK.TPP/) package for TPPs
+(or [Token.SDK.User](https://www.nuget.org/packages/Token.SDK.User/) for user-side integrations)
+as a dependency to your project file:
 
 <div class="codediv"><pre>
 &lt;ItemGroup>
-    &lt;PackageReference Include="Token.SDK.Net" Version="2.0.0-beta2" />
+    &lt;PackageReference Include="Token.SDK.TPP" Version="&lt;current version>" />
 &lt;/ItemGroup>
 </pre></div>
+
+`Token.SDK.Net` is deprecated and no longer maintained. Migrate to `Token.SDK.TPP` or `Token.SDK.User`.
