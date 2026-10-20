@@ -20,7 +20,7 @@ namespace Tokenio.Sample.User
                 Key key = ProvisionDeviceSample.ProvisionDevice(localDeviceClient, remoteMember, alias);
                 remoteMember.ApproveKeyBlocking(key);
 
-                UserMember local = ProvisionDeviceSample.UseProvisionedDevice(localDeviceClient, alias);
+                UserMember local = ProvisionDeviceSample.UseProvisionedDevice(localDeviceClient, remoteMember.MemberId());
 
                 Assert.Equal(local.MemberId(), remoteMember.MemberId());
             }

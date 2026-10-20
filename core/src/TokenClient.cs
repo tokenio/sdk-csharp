@@ -41,50 +41,6 @@ namespace Tokenio
         }
 
         /// <summary>
-        /// Resolve an alias to a TokenMember object, containing member ID and
-        /// the alias with the correct type.
-        /// </summary>
-        /// <param name="alias">alias to resolve</param>
-        /// <returns>TokenMember</returns>
-        public Task<TokenMember> ResolveAlias(Alias alias)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.ResolveAlias(alias);
-        }
-
-        /// <summary>
-        /// Resolve an alias to a TokenMember object, containing member ID and
-        /// the alias with the correct type.
-        /// </summary>
-        /// <param name="alias">alias to resolve</param>
-        /// <returns>TokenMember</returns>
-        public TokenMember ResolveAliasBlocking(Alias alias)
-        {
-            return ResolveAlias(alias).Result;
-        }
-
-        /// <summary>
-        /// Looks up member id for a given alias.
-        /// </summary>
-        /// <param name="alias">the alias to check</param>
-        /// <returns>member id if alias already exists, null otherwise</returns>
-        public Task<string> GetMemberId(Alias alias)
-        {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetMemberId(alias);
-        }
-
-        /// <summary>
-        /// Looks up member id for a given alias.
-        /// </summary>
-        /// <param name="alias">the alias to check</param>
-        /// <returns>member id if alias already exists, null otherwise</returns>
-        public string GetMemberIdBlocking(Alias alias)
-        {
-            return GetMemberId(alias).Result;
-        }
-
-        /// <summary>
         /// Creates a new Token member with a set of auto-generated keys, an alias, and member type.
         /// Impl method returns incomplete member object that can be used for its instance
         /// fields but will not be able to make calls
@@ -92,14 +48,12 @@ namespace Tokenio
         /// <returns>newly created member</returns>
         /// <param name="alias">Alias.</param>
         /// <param name="createMemberType">Create member type.</param>
-        /// <param name="recoveryAgent">Recovery agent.</param>
         /// <param name="partnerId">Partner identifier.</param>
         /// <param name="realmId">Realm identifier.</param>
 
         public Task<Member> CreateMemberImpl(
         Alias alias,
         CreateMemberType createMemberType,
-        string recoveryAgent,
         string partnerId = null,
         string realmId = null)
         {
@@ -108,7 +62,7 @@ namespace Tokenio
                 .CreateMemberId(createMemberType, null, partnerId, realmId)
                 .FlatMap(memberId =>
                 {
-                    return SetUpMemberImpl(memberId, alias, recoveryAgent);
+                    return SetUpMemberImpl(memberId, alias);
                 });
 
         }
@@ -119,40 +73,30 @@ namespace Tokenio
         /// <returns>The up member impl.</returns>
         /// <param name="memberId">Member identifier.</param>
         /// <param name="alias">Alias.</param>
-        /// <param name="agent">Agent.</param>
         protected Task<Member> SetUpMemberImpl(string memberId,
-             Alias alias,
-             string agent = null)
+             Alias alias)
         {
             var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return (agent == null ? unauthenticated.GetDefaultAgent()
-                : Task.Factory.StartNew(() => { return agent; }))
-                 .FlatMap(agentId =>
-                 {
-                     var crypto = cryptoEngineFactory.Create(memberId);
-                     var operations = new List<MemberOperation>
-                    {
-                        Util.ToAddKeyOperation(crypto.GenerateKey(Level.Privileged)),
-                        Util.ToAddKeyOperation(crypto.GenerateKey(Level.Standard)),
-                        Util.ToAddKeyOperation(crypto.GenerateKey(Level.Low)),
-                        Util.ToRecoveryAgentOperation(agentId)
+            var crypto = cryptoEngineFactory.Create(memberId);
+            var operations = new List<MemberOperation>
+            {
+                Util.ToAddKeyOperation(crypto.GenerateKey(Level.Privileged)),
+                Util.ToAddKeyOperation(crypto.GenerateKey(Level.Standard)),
+                Util.ToAddKeyOperation(crypto.GenerateKey(Level.Low))
+            };
+            var metadata = new List<MemberOperationMetadata>();
+            if (alias != null)
+            {
+                operations.Add(Util.ToAddAliasOperation(alias.ToNormalized()));
+                metadata.Add(Util.ToAddAliasMetadata(alias.ToNormalized()));
+            }
 
-                 };
-                     var metadata = new List<MemberOperationMetadata>();
-                     if (alias != null)
-                     {
-                         operations.Add(Util.ToAddAliasOperation(alias.ToNormalized()));
-                         metadata.Add(Util.ToAddAliasMetadata(alias.ToNormalized()));
-
-                     }
-
-                     var signer = crypto.CreateSigner(Level.Privileged);
-                     var mem = unauthenticated.CreateMember(memberId, operations, metadata, signer);
-                     return mem;
-                 }).Map(member =>
-                 {
-                     return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
-                 });
+            var signer = crypto.CreateSigner(Level.Privileged);
+            return unauthenticated.CreateMember(memberId, operations, metadata, signer)
+                .Map(member =>
+                {
+                    return new Member(member.Id, null, tokenCluster, member.PartnerId, member.RealmId);
+                });
         }
 
 

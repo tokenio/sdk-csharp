@@ -80,15 +80,13 @@ namespace Tokenio.User
         /// </summary>
         /// <param name="alias">nullable member alias to use, must be unique. If null, then no alias will
         ///     be created with the member.</param>
-        /// <param name="recoveryAgent">member id of the primary recovery agent.</param>
         /// <param name="realmId">member id of an existing Member to whose realm this new member belongs.</param>
         /// <returns>newly created member</returns>
         public Task<Member> CreateMember(
                 Alias alias,
-                string recoveryAgent = null,
                 string realmId = null)
         {
-            return CreateMemberImpl(alias, CreateMemberType.Personal, recoveryAgent, null, realmId)
+            return CreateMemberImpl(alias, CreateMemberType.Personal, null, realmId)
                     .Map(member =>
                     {
                         var crypto = cryptoEngineFactory.Create(member.MemberId());
@@ -100,16 +98,13 @@ namespace Tokenio.User
 
         /// <summary>
         /// Creates a new personal-use Token member for the Banks with a set of
-        /// auto-generated keys, an alias and recovery agent set as the Bank..
+        /// auto-generated keys and an alias.
         /// </summary>
         /// <param name="alias">alias to associate with member</param>
-        /// <param name="recoveryAgent">memver id of the primary recovery agent.</param>
         /// <returns>newly created member</returns>
-        public Member CreateMemberBlocking(
-                Alias alias,
-               string recoveryAgent = null)
+        public Member CreateMemberBlocking(Alias alias)
         {
-            return CreateMember(alias, recoveryAgent, null).Result;
+            return CreateMember(alias).Result;
         }
 
 
@@ -123,7 +118,7 @@ namespace Tokenio.User
         /// <returns>newly created member</returns>
         public Member CreateMemberInRealmBlocking(Alias alias, string realmId)
         {
-            return CreateMember(alias, realmId, realmId).Result;
+            return CreateMember(alias, realmId).Result;
         }
 
 
@@ -223,22 +218,17 @@ namespace Tokenio.User
         /// of keys that are returned back.The keys need to be approved by an
         /// existing device/keys.
         /// </summary>
-        /// <param name="alias">member id to provision the device for</param>
+        /// <param name="memberId">member id to provision the device for</param>
         /// <returns>device information</returns>
-        public Task<DeviceInfo> ProvisionDevice(Alias alias)
+        public Task<DeviceInfo> ProvisionDevice(string memberId)
         {
-            var unauthenticated = ClientFactory.Unauthenticated(channel);
-            return unauthenticated.GetMemberId(alias)
-                    .Map(memberId =>
-                    {
-                        var cryptoEngine = cryptoEngineFactory.Create(memberId);
-                        var Keys = new List<Key> {
-                                    cryptoEngine.GenerateKey(Level.Privileged),
-                                    cryptoEngine.GenerateKey(Level.Standard),
-                                    cryptoEngine.GenerateKey(Level.Low)
-                                };
-                        return new DeviceInfo(memberId, Keys);
-                    });
+            var cryptoEngine = cryptoEngineFactory.Create(memberId);
+            var keys = new List<Key> {
+                        cryptoEngine.GenerateKey(Level.Privileged),
+                        cryptoEngine.GenerateKey(Level.Standard),
+                        cryptoEngine.GenerateKey(Level.Low)
+                    };
+            return Task.FromResult(new DeviceInfo(memberId, keys));
         }
 
         /// <summary>
@@ -246,11 +236,11 @@ namespace Tokenio.User
         /// of keys that are returned back.The keys need to be approved by an
         /// existing device/keys.
         /// </summary>
-        /// <param name="alias">member id to provision the device for</param>
+        /// <param name="memberId">member id to provision the device for</param>
         /// <returns>device information</returns>
-        public DeviceInfo ProvisionDeviceBlocking(Alias alias)
+        public DeviceInfo ProvisionDeviceBlocking(string memberId)
         {
-            return ProvisionDevice(alias).Result;
+            return ProvisionDevice(memberId).Result;
         }
 
         /// <summary>

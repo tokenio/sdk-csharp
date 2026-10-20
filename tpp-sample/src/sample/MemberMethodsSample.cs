@@ -48,8 +48,8 @@ namespace Tokenio.Sample.Tpp
         /// <summary>
         /// Resolves a user's alias.
         /// </summary>
-        /// <param name="client">token client</param>
-        public static void ResolveAlias(Tokenio.Tpp.TokenClient client)
+        /// <param name="member">member to sign the request as</param>
+        public static void ResolveAlias(TppMember member)
         {
             Alias alias = new Alias
             {
@@ -59,7 +59,7 @@ namespace Tokenio.Sample.Tpp
 
 
             // If this call fails then the alias does not correspond to an existing member.
-            TokenMember resolved = client.ResolveAliasBlocking(alias);
+            TokenMember resolved = member.ResolveAliasBlocking(alias);
 
             // resolved member ID from alias
             string memberId = resolved.Id;

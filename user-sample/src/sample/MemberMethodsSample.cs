@@ -66,7 +66,7 @@ namespace Tokenio.Sample.User
 
             member.RemoveAliasesBlocking((new[] { alias2, alias3 }).ToList());
 
-            TokenMember resolved = tokenClient.ResolveAliasBlocking(alias4);
+            TokenMember resolved = member.ResolveAliasBlocking(alias4);
             return resolved;
 
         }

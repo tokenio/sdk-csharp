@@ -23,7 +23,7 @@ namespace Tokenio.Sample.User
             Alias alias)
         {
             // generate keys, storing (private and public) locally
-            DeviceInfo deviceInfo = tokenClient.ProvisionDeviceBlocking(alias);
+            DeviceInfo deviceInfo = tokenClient.ProvisionDeviceBlocking(member.MemberId());
             Key lowKey = deviceInfo.Keys.FirstOrDefault(k => k.Level == Key.Types.Level.Low);
 
 
@@ -41,11 +41,10 @@ namespace Tokenio.Sample.User
         /// Log in on provisioned device (assuming "remote" member approved key).
         /// </summary>
         /// <param name="tokenClient">SDK client</param>
-        /// <param name="alias">member's alias</param>
+        /// <param name="memberId">member's id</param>
         /// <returns>Member</returns>
-        public static UserMember UseProvisionedDevice(Tokenio.User.TokenClient tokenClient, Alias alias)
+        public static UserMember UseProvisionedDevice(Tokenio.User.TokenClient tokenClient, string memberId)
         {
-            string memberId = tokenClient.GetMemberIdBlocking(alias);
             // Uses the key that remote member approved (we hope)
             UserMember member = tokenClient.GetMemberBlocking(memberId);
             return member;

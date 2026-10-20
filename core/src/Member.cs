@@ -133,6 +133,48 @@ namespace Tokenio
         }
 
         /// <summary>
+        /// Resolves an alias to a TokenMember object, containing member ID and
+        /// the alias with the correct type.
+        /// </summary>
+        /// <param name="alias">alias to resolve</param>
+        /// <returns>TokenMember</returns>
+        public Task<TokenMember> ResolveAlias(Alias alias)
+        {
+            return client.ResolveAlias(alias);
+        }
+
+        /// <summary>
+        /// Resolves an alias to a TokenMember object, containing member ID and
+        /// the alias with the correct type.
+        /// </summary>
+        /// <param name="alias">alias to resolve</param>
+        /// <returns>TokenMember</returns>
+        public TokenMember ResolveAliasBlocking(Alias alias)
+        {
+            return ResolveAlias(alias).Result;
+        }
+
+        /// <summary>
+        /// Looks up member id for a given alias.
+        /// </summary>
+        /// <param name="alias">the alias to check</param>
+        /// <returns>member id if alias already exists, throws otherwise</returns>
+        public Task<string> GetMemberId(Alias alias)
+        {
+            return client.GetMemberId(alias);
+        }
+
+        /// <summary>
+        /// Looks up member id for a given alias.
+        /// </summary>
+        /// <param name="alias">the alias to check</param>
+        /// <returns>member id if alias already exists, throws otherwise</returns>
+        public string GetMemberIdBlocking(Alias alias)
+        {
+            return GetMemberId(alias).Result;
+        }
+
+        /// <summary>
         /// Gets the first alias owner by the user.
         /// </summary>
         /// <returns>first alias owned by the user, or throws exception if no aliases are found</returns>

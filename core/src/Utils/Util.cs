@@ -127,32 +127,6 @@ namespace Tokenio.Utils
             };
         }
 
-        /// <summary>
-        /// Converts agent id to AddKey operation.
-        /// </summary>
-        /// <returns>member operation.</returns>
-        /// <param name="agentId">Agent identifier : agent id to add.</param>
-        public static MemberOperation ToRecoveryAgentOperation(string agentId)
-        {
-
-            var MemberRecoveryRulesOperation = new MemberRecoveryRulesOperation
-            {
-
-                RecoveryRule = new RecoveryRule
-                {
-
-                    PrimaryAgent = agentId
-
-                }
-            };
-            return new MemberOperation
-            {
-                RecoveryRules = MemberRecoveryRulesOperation
-            };
-
-        }
-
-
         public static MemberOperation ToRemoveKeyOperation(string keyId)
         {
             return new MemberOperation

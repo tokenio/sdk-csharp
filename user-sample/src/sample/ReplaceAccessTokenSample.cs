@@ -23,7 +23,7 @@ namespace Tokenio.Sample.User
             UserMember grantor,
             Alias granteeAlias)
         {
-            string granteeMemberId = tokenClient.GetMemberIdBlocking(granteeAlias);
+            string granteeMemberId = grantor.GetMemberIdBlocking(granteeAlias);
             return grantor.GetActiveAccessTokenBlocking(granteeMemberId);
         }
 
