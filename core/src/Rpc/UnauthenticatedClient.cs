@@ -24,12 +24,6 @@ namespace Tokenio.Rpc
     /// </summary>
     public class UnauthenticatedClient
     {
-        protected static readonly Alias TOKEN = new Alias
-        {
-            Type = Domain,
-            Value = "token.io"
-        };
-
         protected readonly GatewayService.GatewayServiceClient gateway;
 
         /// <summary>
@@ -39,62 +33,6 @@ namespace Tokenio.Rpc
         public UnauthenticatedClient(GatewayService.GatewayServiceClient gateway)
         {
             this.gateway = gateway;
-        }
-
-        /// <summary>
-        /// Gets the default agent request.
-        /// </summary>
-        /// <returns>The default agent request.</returns>
-        public ResolveAliasRequest GetDefaultAgentRequest()
-        {
-
-            return new ResolveAliasRequest
-            {
-
-                Alias = new Alias
-                {
-                    Type = Domain,
-                    Value = "token.io"
-                }
-
-            };
-        }
-
-        /// <summary>
-        /// Gets the default agent.
-        /// </summary>
-        /// <returns>The default agent.</returns>
-        public Task<string> GetDefaultAgent()
-        {
-            return gateway.ResolveAliasAsync(GetDefaultAgentRequest())
-                 .ToTask(response => response.Member?.Id);
-        }
-
-
-        /// <summary>
-        /// Resolve an alias to a TokenMember object, containing member ID and
-        /// the alias with the correct type.
-        /// </summary>
-        /// <param name="alias">alias to resolve</param>
-        /// <returns>TokenMember</returns>
-        public Task<TokenMember> ResolveAlias(Alias alias)
-        {
-            var request = new ResolveAliasRequest { Alias = alias };
-            return gateway.ResolveAliasAsync(request)
-                .ToTask(response => response.Member);
-        }
-
-        /// <summary>
-        /// Looks up member id for a given alias.
-        /// </summary>
-        /// <param name="alias">the alias to check</param>
-        /// <returns>member id if alias already exists, null otherwise</returns>
-        public Task<string> GetMemberId(Alias alias)
-        {
-            var request = new ResolveAliasRequest { Alias = alias };
-            return gateway.ResolveAliasAsync(request)
-                .ToTask(response => response.Member != null ?
-                response.Member.Id : throw new MemberNotFoundException(alias));
         }
 
         /// <summary>

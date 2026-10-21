@@ -81,6 +81,18 @@ namespace Tokenio.Rpc
         }
 
         /// <summary>
+        /// Resolves an alias to a TokenMember object, signed with the caller's own key.
+        /// </summary>
+        /// <param name="alias">alias to resolve</param>
+        /// <returns>TokenMember</returns>
+        public Task<TokenMember> ResolveAlias(Alias alias)
+        {
+            var request = new ResolveAliasRequest { Alias = alias };
+            return gateway(authenticationContext()).ResolveAliasAsync(request)
+                .ToTask(response => response.Member);
+        }
+
+        /// <summary>
         /// Looks up member id for a given alias, signed with the caller's own key.
         /// </summary>
         /// <param name="alias">the alias to check</param>
